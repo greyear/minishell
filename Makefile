@@ -1,26 +1,17 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: azinchen <azinchen@student.hive.fi>        +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/11/07 20:16:32 by azinchen          #+#    #+#              #
-#    Updated: 2024/11/07 20:53:26 by azinchen         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
 
 # Standard
-NAME			=	pipex
+NAME			=	minishell
 
 # Directories
 LIBFT_DIR		= 	./libft
 SRC_DIR			=	./src
-SRC_MAN_DIR		=	$(SRC_DIR)/mandatory
-SRC_BON_DIR		=	$(SRC_DIR)/bonus
+
+PARS_DIR		=	parsing
+EXEC_DIR		=	execution
+CLEAN_DIR		=	cleaners
+ERR_DIR			=	errors
+
 OBJ_DIR			=	./obj
-OBJ_MAN_DIR 	=	$(OBJ_DIR)/mandatory
-OBJ_BON_DIR		=	$(OBJ_DIR)/bonus
 
 #Includes
 LIBFT_INC		=	$(LIBFT_DIR)/include
@@ -36,30 +27,28 @@ CFLAGS			=	-g -Wall -Wextra -Werror
 RM				=	rm -f
 
 # Source files
-MAN_SRC			=	pipex.c \
-					path.c \
-					errors.c \
-					checks.c \
-					cleaners.c \
-					split.c \
-					open.c \
-					utils.c
-BON_SRC			=	pipex_bonus.c \
+#PARS_FILES		=	
+EXEC_FILES		=	pipex_bonus.c \
 					path_bonus.c \
 					errors_bonus.c \
 					checks_bonus.c \
-					cleaners_bonus.c \
 					split_bonus.c \
 					open_bonus.c \
 					utils_bonus.c
 
+CLEAN_FILES		=	cleaners_bonus.c
+#ERR_FILES		=	
+
+SRC_FILES		=	$(addprefix $(EXEC_DIR)/, $(EXEC_FILES)) \
+					$(addprefix $(CLEAN_DIR)/, $(CLEAN_FILES)) \
+					# $(addprefix $(PARS_DIR)/, $(PARS_FILES)) \
+					$(addprefix $(ERR_DIR)/, $(ERR_FILES)) \
+
 # Full paths to files
-MAN_SRC_FILES	=	$(addprefix $(SRC_MAN_DIR)/, $(MAN_SRC))
-BON_SRC_FILES	=	$(addprefix $(SRC_BON_DIR)/, $(BON_SRC))
+SRC				=	$(addprefix $(SRC_DIR)/, $(SRC_FILES))
 
 # Object files
-MAN_OBJ			=	$(addprefix $(OBJ_MAN_DIR)/, $(MAN_SRC:.c=.o))
-BON_OBJ			=	$(addprefix $(OBJ_BON_DIR)/, $(BON_SRC:.c=.o))
+OBJ				=	$(patsubst $(SRC_DIR)/%, $(OBJ_DIR)/%, $(SRC:.c=.o))
 
 # Colors
 BLUE			=	\033[1;34m
@@ -72,44 +61,30 @@ all:				$(NAME)
 $(LIBFT):			
 					@make -C $(LIBFT_DIR)
 
-$(NAME):			.mandatory
+$(NAME):			.build
 
-.mandatory:			$(MAN_OBJ) $(LIBFT)
-					@$(CC) $(CFLAGS) $(MAN_OBJ) $(LIBFT) $(HEADERS) $(LIB) -o $(NAME)
+.build:				$(OBJ) $(LIBFT)
+					@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(HEADERS) $(LIB) -o $(NAME)
 					@touch $@
-					@echo "$(GREEN)--> Created pipex!$(NC)"
-					@$(RM) -r .bonus
-
-bonus:				.bonus
-
-.bonus:				$(BON_OBJ) $(LIBFT)
-					@$(CC) $(CFLAGS) $(BON_OBJ) $(LIBFT) $(HEADERS) $(LIB) -o $(NAME)
-					@touch $@
-					@echo "$(GREEN)--> Created pipex_bonus!$(NC)"
-					@$(RM) -r .mandatory
+					@echo "$(GREEN)--> Created minishell!$(NC)"
 
 # Object file compilation
-$(OBJ_MAN_DIR)/%.o: $(SRC_MAN_DIR)/%.c
-					@mkdir -p $(@D)
-					@$(CC) $(CFLAGS) $(HEADERS) -c $< -o $@
-
-$(OBJ_BON_DIR)/%.o: $(SRC_BON_DIR)/%.c
+$(OBJ_DIR)/%.o: 	$(SRC_DIR)/%.c
 					@mkdir -p $(@D)
 					@$(CC) $(CFLAGS) $(HEADERS) -c $< -o $@
 
 # Cleaning rules
 clean:
 					@$(RM) -r $(OBJ_DIR)
-					@$(RM) .cache_exists
 					@make clean -C $(LIBFT_DIR)
 					@echo "$(BLUE)*.o files removed!$(NC)"
 		
 fclean:				clean 
 					@$(RM) $(NAME)
 					@$(RM) $(LIBFT)
-					@$(RM) -r .mandatory .bonus
+					@$(RM) -r .build
 					@echo "$(BLUE)All files removed!$(NC)"
 			
 re:					fclean all
 
-.PHONY:				all clean fclean re bonus
+.PHONY:				all clean fclean re
