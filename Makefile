@@ -7,7 +7,10 @@ LIBFT_DIR		= 	./libft
 SRC_DIR			=	./src
 
 PARS_DIR		=	parsing
+BUILT_DIR		=	builtins
 EXEC_DIR		=	execution
+REDIR_DIR		=	redirection
+SIGN_DIR		=	signals
 CLEAN_DIR		=	cleaners
 ERR_DIR			=	errors
 
@@ -28,6 +31,7 @@ RM				=	rm -f
 
 # Source files
 #PARS_FILES		=	
+#BUILT_FILES	=	
 EXEC_FILES		=	pipex_bonus.c \
 					path_bonus.c \
 					errors_bonus.c \
@@ -35,13 +39,17 @@ EXEC_FILES		=	pipex_bonus.c \
 					split_bonus.c \
 					open_bonus.c \
 					utils_bonus.c
-
+#REDIR_FILES	=	
+#SIGN_FILES		=	
 CLEAN_FILES		=	cleaners_bonus.c
 #ERR_FILES		=	
 
 SRC_FILES		=	$(addprefix $(EXEC_DIR)/, $(EXEC_FILES)) \
 					$(addprefix $(CLEAN_DIR)/, $(CLEAN_FILES)) \
 					# $(addprefix $(PARS_DIR)/, $(PARS_FILES)) \
+					$(addprefix $(BUILT_DIR)/, $(BUILT_FILES)) \
+					$(addprefix $(REDIR_DIR)/, $(REDIR_FILES)) \
+					$(addprefix $(SIGN_DIR)/, $(SIGN_FILES)) \
 					$(addprefix $(ERR_DIR)/, $(ERR_FILES)) \
 
 # Full paths to files

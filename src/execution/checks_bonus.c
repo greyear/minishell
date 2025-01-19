@@ -1,5 +1,5 @@
 
-#include "pipex_bonus.h"
+#include "../../include/minishell.h"
 
 void	check_first_file(t_pipex *p)
 {

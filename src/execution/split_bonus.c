@@ -1,5 +1,5 @@
 
-#include "pipex_bonus.h"
+#include "../../include/minishell.h"
 
 static int	count_words(char *str, t_pipex *p)
 {

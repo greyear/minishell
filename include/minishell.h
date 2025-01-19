@@ -1,10 +1,11 @@
 
-#ifndef PIPEX_BONUS_H
-# define PIPEX_BONUS_H
+#ifndef MINISHELL_H
+# define MINISHELL_H
 
-# include "../../libft/include/libft.h"
-# include "../../libft/include/ft_printf.h"
-# include "../../libft/include/get_next_line.h"
+# include "constants.h"
+# include "../libft/include/libft.h"
+# include "../libft/include/ft_printf.h"
+# include "../libft/include/get_next_line.h"
 # include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>

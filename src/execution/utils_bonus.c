@@ -1,5 +1,5 @@
 
-#include "pipex_bonus.h"
+#include "../../include/minishell.h"
 
 void	init_p(t_pipex	*p)
 {

@@ -1,5 +1,5 @@
 
-#include "../execution/pipex_bonus.h"
+#include "../../include/minishell.h"
 
 void	clean_arr(char ***arr)
 {

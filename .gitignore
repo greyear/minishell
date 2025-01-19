@@ -1,0 +1,10 @@
+.DS_Store
+*.a
+*.o
+*.out
+*.swp
+.minishell
+.build
+.vscode
+obj
+*out*
