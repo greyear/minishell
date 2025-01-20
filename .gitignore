@@ -3,7 +3,7 @@
 *.o
 *.out
 *.swp
-.minishell
+minishell
 .build
 .vscode
 obj

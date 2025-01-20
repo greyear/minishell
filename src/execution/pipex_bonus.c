@@ -71,8 +71,9 @@ int	main(int argc, char *argv[], char *envp[])
 	t_pipex	*p;
 	int		status;
 
-	if (argc < 5)
-		args_number_error();
+	/*if (argc < 5)
+		args_number_error(); */
+	//will we have it btw?
 	p = (t_pipex *)malloc(sizeof(t_pipex));
 	if (!p)
 		error_exit_code(ERR_MALLOC, EXIT_FAILURE);

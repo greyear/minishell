@@ -34,6 +34,7 @@ void	error_clean_exit_code(char *reason, int exit_code, t_pipex **p)
 	exit(exit_code);
 }
 
+/*
 void	args_number_error(void)
 {
 	if (ft_putstr_fd("Invalid number of arguments\n", 2) == -1)
@@ -42,4 +43,4 @@ void	args_number_error(void)
 		exit(EXIT_FAILURE);
 	}
 	exit(EXIT_FAILURE);
-}
+}*/

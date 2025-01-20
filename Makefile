@@ -6,6 +6,7 @@ NAME			=	minishell
 LIBFT_DIR		= 	./libft
 SRC_DIR			=	./src
 
+BNF_DIR			=	bnf_syntax
 PARS_DIR		=	parsing
 BUILT_DIR		=	builtins
 EXEC_DIR		=	execution
@@ -30,27 +31,31 @@ CFLAGS			=	-g -Wall -Wextra -Werror
 RM				=	rm -f
 
 # Source files
-#PARS_FILES		=	
+BNF_FILES		=	input_validation.c \
+					and_or.c \
+					pipeline.c \
+					command.c \
+					simple_command.c \
+					redirect.c \
+					word.c
+PARS_FILES		=	split_bonus.c
 #BUILT_FILES	=	
 EXEC_FILES		=	pipex_bonus.c \
 					path_bonus.c \
-					errors_bonus.c \
 					checks_bonus.c \
-					split_bonus.c \
-					open_bonus.c \
 					utils_bonus.c
-#REDIR_FILES	=	
+REDIR_FILES	=		open_bonus.c \
 #SIGN_FILES		=	
 CLEAN_FILES		=	cleaners_bonus.c
-#ERR_FILES		=	
+ERR_FILES		=	errors_bonus.c \
 
-SRC_FILES		=	$(addprefix $(EXEC_DIR)/, $(EXEC_FILES)) \
-					$(addprefix $(CLEAN_DIR)/, $(CLEAN_FILES)) \
-					# $(addprefix $(PARS_DIR)/, $(PARS_FILES)) \
-					$(addprefix $(BUILT_DIR)/, $(BUILT_FILES)) \
+SRC_FILES		=	$(addprefix $(PARS_DIR)/, $(PARS_FILES)) \
+					$(addprefix $(EXEC_DIR)/, $(EXEC_FILES)) \
 					$(addprefix $(REDIR_DIR)/, $(REDIR_FILES)) \
-					$(addprefix $(SIGN_DIR)/, $(SIGN_FILES)) \
+					$(addprefix $(CLEAN_DIR)/, $(CLEAN_FILES)) \
 					$(addprefix $(ERR_DIR)/, $(ERR_FILES)) \
+					#$(addprefix $(BUILT_DIR)/, $(BUILT_FILES)) \
+					$(addprefix $(SIGN_DIR)/, $(SIGN_FILES)) \
 
 # Full paths to files
 SRC				=	$(addprefix $(SRC_DIR)/, $(SRC_FILES))
