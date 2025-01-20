@@ -6,7 +6,7 @@
 #    By: azinchen <azinchen@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/19 12:03:15 by azinchen          #+#    #+#              #
-#    Updated: 2024/08/27 19:40:13 by azinchen         ###   ########.fr        #
+#    Updated: 2025/01/20 18:22:39 by azinchen         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,8 @@ FTIS_DIR		=	$(SRC_DIR)ft_is/ft_isalnum.c \
 					$(SRC_DIR)ft_is/ft_isprint.c \
 					$(SRC_DIR)ft_is/ft_issign.c \
 					$(SRC_DIR)ft_is/ft_isspace.c \
-					$(SRC_DIR)ft_is/ft_isquote.c
+					$(SRC_DIR)ft_is/ft_isquote.c \
+					$(SRC_DIR)ft_is/ft_isemptystring.c
 				
 FTLST_DIR		=	$(SRC_DIR)ft_lst/ft_lstadd_back.c \
 					$(SRC_DIR)ft_lst/ft_lstadd_front.c \

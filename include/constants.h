@@ -2,6 +2,37 @@
 #ifndef CONSTANTS_H
 # define CONSTANTS_H
 
+typedef enum e_char
+{
+	NULL_TERM = 0,
+	TAB = 9,
+	NL = 10,
+	/*L_REDIR_SEPARATOR = 29,
+	R_REDIR_SEPARATOR = 30,
+	SEPARATOR = 31,*/
+	SPACE = 32,
+	DB_QUOT = 34,
+	DOLLAR = 36,
+	AND = 38,
+	SG_QUOT = 39,
+	L_PARENT = 40,
+	R_PARENT = 41,
+	ASTER = 42,
+	DASH = 45,
+	DOT = 46,
+	SLASH = 47,
+	COLON = 58,
+	SCOLON = 59,
+	L_REDIR = 60,
+	EQUAL = 61,
+	R_REDIR = 62,
+	QUEST = 63,
+	BACKSLASH = 92,
+	UNDERSC = 95,
+	//N_LOWER = 110,
+	PIPE = 124,
+}	t_char;
+
 typedef enum e_err
 {
 	ARGS_NUM,
@@ -11,7 +42,7 @@ typedef enum e_err
 
 typedef enum e_exit
 {
-	SUCCESS = 0, //??
+	SUCCESS = 0,
 	CMD_EXEC = 126,
 	CMD_NF = 127,
 	MALLOC_ERR,

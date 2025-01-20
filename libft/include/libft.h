@@ -6,7 +6,7 @@
 /*   By: azinchen <azinchen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 18:56:12 by azinchen          #+#    #+#             */
-/*   Updated: 2024/08/10 20:09:09 by azinchen         ###   ########.fr       */
+/*   Updated: 2025/01/20 18:21:44 by azinchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ int				ft_isprint(int c);
 int				ft_issign(int c);
 int				ft_isspace(int c);
 int				ft_isquote(int c);
+int				ft_isemptystring(char *str);
 size_t			ft_strlen(const char *str);
 void			*ft_memset(void *b, int c, size_t n);
 void			ft_bzero(void *s, size_t n);
