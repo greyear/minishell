@@ -39,6 +39,12 @@ typedef struct s_pipex
 	int		cur_fd;
 }	t_pipex;
 
+//BNF
+char	*validate_word(char *str, int *err_flag);
+char	*validate_redirect(char *str, int *err_flag);
+char	*validate_simple_cmd(char *str, int *err_flag);
+
+
 //Main
 void	init_p(t_pipex	*p);
 char	**path_from_envp(t_pipex *p);

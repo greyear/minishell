@@ -43,6 +43,7 @@ typedef enum e_err
 typedef enum e_exit
 {
 	SUCCESS = 0,
+	ERROR = 1,
 	CMD_EXEC = 126,
 	CMD_NF = 127,
 	MALLOC_ERR,
