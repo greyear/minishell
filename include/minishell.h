@@ -43,9 +43,11 @@ typedef struct s_pipex
 char	*validate_word(char *str, int *err_flag);
 char	*validate_redirect(char *str, int *err_flag);
 char	*validate_simple_cmd(char *str, int *err_flag);
+char	*validate_cmd(char *str, int *err_flag);
+char	*validate_pipeline(char *str, int *err_flag);
+int		validate_input(char *str);
 
-
-//Main
+//Pipex
 void	init_p(t_pipex	*p);
 char	**path_from_envp(t_pipex *p);
 char	*find_path(char **cmd_split, t_pipex *p);

@@ -4,6 +4,8 @@
 /*
 <word> — это блок, который может содержать текстовые символы.
 Может встречаться в составе команды или редиректа.
+<word> | "any" | 'any'
+интерпретируем слова как без, так и в кавычках!
 
 Специальные символы не могут являться частью блока word, они должны
 его прерывать. Например в "echo file|name" | должно быть
@@ -23,13 +25,12 @@ static int	ft_special(int c)
 	return (0);
 }
 
-static int	length_inside_quotes(char *str, int *unclosed)
+static int	length_inside_quotes(char *str, int *err_flag)
 {
 	char	any_quote;
 	int		len;
 
 	any_quote = *str;
-	//*unclosed = 0;
 	len = 0;
 	str++;
 	while (*str != '\0' && *str != any_quote)
@@ -38,7 +39,7 @@ static int	length_inside_quotes(char *str, int *unclosed)
 		str++;
 	}
 	if (*str != any_quote)
-		*unclosed = 1;
+		*err_flag = 1;
 	return (len);
 }
 
@@ -50,7 +51,6 @@ static int	length_inside_quotes(char *str, int *unclosed)
 
 char	*validate_word(char *str, int *err_flag)
 {
-	//*err_flag = 0; //do we need to initialize here?
 	int	len_inside;
 
 	while (*str && !ft_special(*str))

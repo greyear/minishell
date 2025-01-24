@@ -6,8 +6,7 @@ char	*validate_redirect(char *str, int *err_flag)
 {
 	char	*next;
 
-	//protections?
-	//всегда должно начинаться с < or >!!
+	//всегда должно начинаться с < or >!! плюс слово (файл)
 	if (str[0] != '<' && str[0] != '>')
 		return (str);
 	else if (ft_strncmp(str, "<<", 2) == 0 || \

@@ -2,6 +2,8 @@
 #include "../../include/minishell.h"
 
 //- `<simple_cmd>	::= {( <redirect> | <word> | "any" | 'any')}`
+//любое количество редиректов ЛИБО слов (в скобках или без)
+
 char	*validate_simple_cmd(char *str, int *err_flag)
 {
 	char	*next;
