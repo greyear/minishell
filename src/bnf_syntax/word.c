@@ -1,20 +1,27 @@
 
 #include "../../include/minishell.h"
 
-/*
-<word> — это блок, который может содержать текстовые символы.
-Может встречаться в составе команды или редиректа.
-<word> | "any" | 'any'
-интерпретируем слова как без, так и в кавычках!
-
-Специальные символы не могут являться частью блока word, они должны
-его прерывать. Например в "echo file|name" | должно быть
- интерпретировано как пайплайн, а не часть <word>.
-
-Всё, что внутри кавычек, считается валидным содержимым 
-<word> (даже специальные символы).
-
-*/
+/**
+ * @brief Validates a word in the input string, handling both regular words and quoted words:
+ *        <word> | "any" | 'any'.
+ * A word is a sequence of characters that does not contain special symbols. Special symbols 
+ * are not part of a word and are treated as separate tokens. The function also handles words
+ * enclosed in single or double quotes, which can contain special characters but are still treated 
+ * as valid word content.
+ * The function works as follows:
+ * - It returns the null-terminator if the word is a simple, unquoted word.
+ * - If the word is enclosed in quotes (either single or double), the function returns the first character after the closing quote.
+ * - If the word has an unclosed quote, the function sets an error flag and returns the null-terminator.
+ * - If a special symbol is encountered, it returns the special symbol.
+ * 
+ * @param str A pointer to the input string representing the word to be validated.
+ * @param err_flag A pointer to an integer flag used to indicate errors. If an unclosed quote is found, 
+ *                 the flag is set to `1`.
+ * 
+ * @return A pointer to the next character after the word. If an error occurs (e.g., unclosed quote), the 
+ *         function sets `err_flag` to `1` and returns the null-terminator.
+ */
+char	*validate_word(char *str, int *err_flag);
 
 static int	ft_special(int c)
 {
@@ -42,12 +49,6 @@ static int	length_inside_quotes(char *str, int *err_flag)
 		*err_flag = 1;
 	return (len);
 }
-
-/*Возвращаем:
-- если просто слово - нулл-терминатор
-- если слово в кавычках (даже со спецсимволами внутри) - первый символ после кавычки
-- если слово с незакрытой кавычкой - нулл-терминатор и статус фэйл
-- если спецсимвол - его*/
 
 char	*validate_word(char *str, int *err_flag)
 {

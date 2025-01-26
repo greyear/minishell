@@ -1,7 +1,14 @@
 
 #include "../../include/minishell.h"
 
-//- `<v_input>	::= <pipeline> <newline>`
+/**
+ * @brief Validates the input string according to the BNF rule:
+ *        `<v_input> ::= <pipeline> <newline>`.
+ * 
+ * @param str A pointer to the input string (null-terminated) to be validated.
+ * 
+ * @return int Returns `0` if the input is valid, or `1` if it is invalid.
+ */
 int	validate_input(char *str)
 {
 	char	*next;
