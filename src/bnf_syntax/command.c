@@ -1,8 +1,19 @@
 
 #include "../../include/minishell.h"
 
-//- `<command>	::= <simple_cmd> | '(' <pipeline> ')' {<redirect>}`
-//у нас есть ЛИБО симпл команд, ЛИБО пайплайн + редирект
+/**
+ * @brief Validates a command, which can be a simple command or a pipeline with an optional redirect.
+ *        `<command> ::= <simple_cmd> | '(' <pipeline> ')' {<redirect>}`.
+ * 
+ * @param str A pointer to the null-terminated input string to be validated.
+ * @param err_flag A pointer to an integer flag used to indicate errors. If an error is detected, 
+ *                 the flag is set to `1`.
+ * 
+ * @return A pointer to the next token in the input string after processing the command. If an error 
+ *         is encountered, `err_flag` is set to `1` and the function returns a pointer to the position 
+ *         where the error occurred.
+ */
+char	*validate_cmd(char *str, int *err_flag);
 
 static char	*pipeline_redirect(char *str, int *err_flag)
 {
