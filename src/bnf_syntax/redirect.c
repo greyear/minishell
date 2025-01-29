@@ -33,7 +33,7 @@ char	*validate_redirect(char *str, int *err_flag)
 	if (next == str) //null-terminator or special symbol
 		*err_flag = 1;
 	//2 previuos cases + unclosed quote:
-	if (*err_flag == 1) //Dima also has ")" symbol check here, why?
+	if (*err_flag == 1 || *next == R_PARENT)
 		return (next);
 	while (ft_isspace(*next))
 		next++;

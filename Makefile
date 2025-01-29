@@ -7,7 +7,8 @@ LIBFT_DIR		= 	./libft
 SRC_DIR			=	./src
 
 BNF_DIR			=	bnf_syntax
-PARS_DIR		=	parsing
+LEX_DIR			=	lexer
+PARS_DIR		=	parser
 BUILT_DIR		=	builtins
 EXEC_DIR		=	execution
 REDIR_DIR		=	redirection
@@ -38,6 +39,11 @@ BNF_FILES		=	input_validation.c \
 					simple_command.c \
 					redirect.c \
 					word.c
+LEX_FILES		=	tokenization.c \
+					creation.c \
+					deletion.c \
+					extraction.c \
+					skipping.c
 PARS_FILES		=	split_bonus.c
 #BUILT_FILES	=	
 EXEC_FILES		=	pipex_bonus.c \
@@ -49,7 +55,9 @@ REDIR_FILES	=		open_bonus.c \
 CLEAN_FILES		=	cleaners_bonus.c
 ERR_FILES		=	errors_bonus.c \
 
-SRC_FILES		=	$(addprefix $(PARS_DIR)/, $(PARS_FILES)) \
+SRC_FILES		=	$(addprefix $(BNF_DIR)/, $(BNF_FILES)) \
+					$(addprefix $(LEX_DIR)/, $(LEX_FILES)) \
+					$(addprefix $(PARS_DIR)/, $(PARS_FILES)) \
 					$(addprefix $(EXEC_DIR)/, $(EXEC_FILES)) \
 					$(addprefix $(REDIR_DIR)/, $(REDIR_FILES)) \
 					$(addprefix $(CLEAN_DIR)/, $(CLEAN_FILES)) \

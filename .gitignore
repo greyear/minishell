@@ -8,3 +8,6 @@ minishell
 .vscode
 obj
 *out*
+docs
+html
+latex
