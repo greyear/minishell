@@ -3,6 +3,7 @@
 # define MINISHELL_H
 
 # include "constants.h"
+# include "structs.h"
 # include "../libft/include/libft.h"
 # include "../libft/include/ft_printf.h"
 # include "../libft/include/get_next_line.h"
@@ -40,12 +41,23 @@ typedef struct s_pipex
 }	t_pipex;
 
 //BNF
-char	*validate_word(char *str, int *err_flag);
-char	*validate_redirect(char *str, int *err_flag);
-char	*validate_simple_cmd(char *str, int *err_flag);
-char	*validate_cmd(char *str, int *err_flag);
-char	*validate_pipeline(char *str, int *err_flag);
-int		validate_input(char *str);
+char			*validate_word(char *str, int *err_flag);
+char			*validate_redirect(char *str, int *err_flag);
+char			*validate_simple_cmd(char *str, int *err_flag);
+char			*validate_cmd(char *str, int *err_flag);
+char			*validate_pipeline(char *str, int *err_flag);
+int				validate_input(char *str);
+int				ft_special(int c);
+
+//Lexer
+
+t_token_type	define_token_type(char *str, size_t i);
+char			*word_with_quotes(char *str, size_t *start, t_token * new);
+char			*word_without_quotes(char *str, size_t *start);
+void			skip_special_tokens(char *str, size_t *i, t_token_type type);
+void			skip_whitespaces(char *str, size_t *i);
+void			clean_token(t_token *token);
+void			clean_token_list(t_token **first);
 
 //Pipex
 void	init_p(t_pipex	*p);
