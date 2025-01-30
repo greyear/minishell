@@ -52,7 +52,7 @@ typedef enum e_token_type
 	SPACE,
 	END, //?? mb ne nuzhen
 	//just &?
-	// empty?
+	DUMMY// empty?
 }	t_token_type;
 
 typedef enum e_err

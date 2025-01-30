@@ -55,7 +55,14 @@ t_token	*create_new_token(char *str, size_t *i, t_token_type type)
 		if (!new->data)
 			return (NULL); //error?
 	}
+	else if (type == SPACE)
+		skip_whitespaces(str, i);
+	else
+		skip_special_tokens(str, i, type);
 	return (new);
 }
+
+//define type -> check size -> for all except spaces and words ++ -> for word ++ and put content
+//
 
 
