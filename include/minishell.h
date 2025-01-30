@@ -52,6 +52,7 @@ int				ft_special(int c);
 //Lexer
 
 t_token_type	define_token_type(char *str, size_t i);
+t_token			*create_new_token(char *str, size_t *i, t_token_type type);
 char			*word_with_quotes(char *str, size_t *start, t_token * new);
 char			*word_without_quotes(char *str, size_t *start);
 void			skip_special_tokens(char *str, size_t *i, t_token_type type);

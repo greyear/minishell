@@ -2,24 +2,6 @@
 #include "../../include/minishell.h"
 
 
-void	free_stack(t_stack **stack)
-{
-	t_stack	*next_node;
-	t_stack	*cur_node;
-
-	if (!stack)
-		return ;
-	cur_node = *stack;
-	while (cur_node)
-	{
-		next_node = cur_node->next;
-		cur_node->n = 0;
-		free(cur_node);
-		cur_node = next_node;
-	}
-	*stack = NULL;
-}
-
 void	clean_token(t_token *token)
 {
 	if (token->data)
@@ -31,7 +13,7 @@ void	clean_token(t_token *token)
 	//NULL?
 }
 
-void	clean_token_list(t_token **first)
+void	clean_token_list(t_token **first) //change it to return NULL?
 {
 	t_token	*cur;
 	t_token	*next;
