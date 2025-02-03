@@ -13,5 +13,12 @@ typedef struct s_token
 	t_token_type	specific_redir;
 }	t_token;
 
+typedef struct s_envp
+{
+	char			*name;
+	char			*value;
+	struct s_envp	*next;
+}	t_envp;
+
 
 #endif

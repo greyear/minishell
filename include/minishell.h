@@ -50,7 +50,6 @@ int				validate_input(char *str);
 int				ft_special(int c);
 
 //Lexer
-
 t_token_type	define_token_type(char *str, size_t i);
 t_token			*create_new_token(char *str, size_t *i, t_token_type type);
 char			*word_with_quotes(char *str, size_t *start, t_token * new);
@@ -60,6 +59,10 @@ void			skip_whitespaces(char *str, size_t *i);
 void			clean_token(t_token *token);
 void			clean_token_list(t_token **first);
 t_bool			is_redirect(t_token_type type);
+void			flags_for_redirections(t_token *cur);
+
+//Envp
+t_envp			*envp_from_list(t_envp *list, char *name);
 
 //Pipex
 void	init_p(t_pipex	*p);
