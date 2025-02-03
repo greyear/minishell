@@ -59,6 +59,7 @@ void			skip_special_tokens(char *str, size_t *i, t_token_type type);
 void			skip_whitespaces(char *str, size_t *i);
 void			clean_token(t_token *token);
 void			clean_token_list(t_token **first);
+t_bool			is_redirect(t_token_type type);
 
 //Pipex
 void	init_p(t_pipex	*p);

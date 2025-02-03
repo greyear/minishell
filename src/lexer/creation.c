@@ -31,6 +31,7 @@ static void	default_values(t_token *new)
 	new->next = NULL;
 	new->quote = NULL;
 	new->unclosed = false; //check in debugger if we need it
+	new->specific_redir = EMPTY;
 	//some other fields
 }
 

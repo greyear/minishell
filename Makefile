@@ -43,7 +43,8 @@ LEX_FILES		=	tokenization.c \
 					creation.c \
 					deletion.c \
 					extraction.c \
-					skipping.c
+					skipping.c \
+					token_utils.c
 PARS_FILES		=	split_bonus.c
 #BUILT_FILES	=	
 EXEC_FILES		=	pipex_bonus.c \
