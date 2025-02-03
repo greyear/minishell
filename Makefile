@@ -44,6 +44,7 @@ LEX_FILES		=	tokenization.c \
 					deletion.c \
 					extraction.c \
 					skipping.c \
+					envps.c \
 					token_utils.c
 PARS_FILES		=	split_bonus.c
 #BUILT_FILES	=	

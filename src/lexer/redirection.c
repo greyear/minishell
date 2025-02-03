@@ -28,20 +28,20 @@ void	flags_for_redirections(t_token *cur)
 		{
 			specific = cur->type;
 			cur = cur->next;
-			continue ;
+			continue ; //don't need to stay on this one in a loop
 		}
 		if (is_redirect(specific)) //we met redir earlier
 		{
 			if (cur && cur->type == SPACE)
 				cur = cur->next;
-			while (cur && cur->type == WORD)
+			while (cur && cur->type == WORD) //case with 2 words in a row without spaces?? "a"b??
 			{
 				cur->specific_redir = specific;
 				cur = cur->next;
 			}
+			specific = EMPTY; //try case with 2 redirections in a row
 		}
 		else //we didn't meet redir
 			cur = cur->next;
-		specific = EMPTY;
 	}
 }
