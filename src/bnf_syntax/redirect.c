@@ -1,13 +1,23 @@
 
 #include "../../include/minishell.h"
 
-//- `<redirect>	::= ( '<' | '>' | '<<' | '>>' ) <word>`
+/**
+ * @brief Validates a redirection in the input string:
+ *        `<redirect> ::= ( '<' | '>' | '<<' | '>>' ) <word>`.
+ * A valid redirection must start with either a single `<` or `>` character, or double `<<` or `>>` characters,
+ * followed by a valid word (usually a file name). The function handles multiple redirections and ensures that
+ * the redirection syntax is correct. It also checks for unclosed quotes and other potential errors.
+ * 
+ * @param str A pointer to the input string to be validated.
+ * @param err_flag A pointer to an integer flag used to indicate errors. If any validation fails, `err_flag` is set to `1`.
+ * 
+ * @return A pointer to the next token in the input string after processing the redirection. If an error is encountered,
+ *         `err_flag` is set to `1` and the function returns a pointer to the position where the error occurred.
+ */
 char	*validate_redirect(char *str, int *err_flag)
 {
 	char	*next;
 
-	//protections?
-	//всегда должно начинаться с < or >!!
 	if (str[0] != '<' && str[0] != '>')
 		return (str);
 	else if (ft_strncmp(str, "<<", 2) == 0 || \
@@ -23,7 +33,7 @@ char	*validate_redirect(char *str, int *err_flag)
 	if (next == str) //null-terminator or special symbol
 		*err_flag = 1;
 	//2 previuos cases + unclosed quote:
-	if (*err_flag == 1) //Dima also has ")" symbol check here, why?
+	if (*err_flag == 1 || *next == R_PARENT)
 		return (next);
 	while (ft_isspace(*next))
 		next++;

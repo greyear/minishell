@@ -1,6 +1,7 @@
 
 #include "../../include/minishell.h"
 
+/*
 static void	child(t_pipex *p)
 {
 	int	fd_out;
@@ -71,8 +72,8 @@ int	main(int argc, char *argv[], char *envp[])
 	t_pipex	*p;
 	int		status;
 
-	/*if (argc < 5)
-		args_number_error(); */
+	if (argc < 5)
+		args_number_error();
 	//will we have it btw?
 	p = (t_pipex *)malloc(sizeof(t_pipex));
 	if (!p)
@@ -88,3 +89,4 @@ int	main(int argc, char *argv[], char *envp[])
 	clean_struct(&p);
 	return (status);
 }
+*/

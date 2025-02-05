@@ -1,6 +1,7 @@
 
 #include "../../include/minishell.h"
 
+/*
 void	init_p(t_pipex	*p)
 {
 	p->cmds = NULL;
@@ -16,7 +17,7 @@ void	close_fds(int fd1, int fd2)
 		close(fd2);
 }
 
-int	length_inside_quotes(char *str, t_pipex *p, char *cmd)
+int	length_inside(char *str, t_pipex *p, char *cmd)
 {
 	char	any_quote;
 	int		len;
@@ -56,3 +57,4 @@ int	word_length(char *str)
 	}
 	return (len);
 }
+*/
