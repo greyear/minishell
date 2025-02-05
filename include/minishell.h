@@ -3,6 +3,7 @@
 # define MINISHELL_H
 
 # include "constants.h"
+# include "structs.h"
 # include "../libft/include/libft.h"
 # include "../libft/include/ft_printf.h"
 # include "../libft/include/get_next_line.h"
@@ -40,12 +41,33 @@ typedef struct s_pipex
 }	t_pipex;
 
 //BNF
-char	*validate_word(char *str, int *err_flag);
-char	*validate_redirect(char *str, int *err_flag);
-char	*validate_simple_cmd(char *str, int *err_flag);
+char			*validate_word(char *str, int *err_flag);
+char			*validate_redirect(char *str, int *err_flag);
+char			*validate_simple_cmd(char *str, int *err_flag);
+char			*validate_cmd(char *str, int *err_flag);
+char			*validate_pipeline(char *str, int *err_flag);
+int				validate_input(char *str);
+int				ft_special(int c);
 
+//Lexer
+t_token			*tokenization(char *str);
+t_token_type	define_token_type(char *str, size_t i);
+t_token			*create_new_token(char *str, size_t *i, t_token_type type);
+char			*word_with_quotes(char *str, size_t *start, t_token * new);
+char			*word_without_quotes(char *str, size_t *start);
+void			skip_special_tokens(char *str, size_t *i, t_token_type type);
+void			skip_whitespaces(char *str, size_t *i);
+void			clean_token(t_token *token);
+void			clean_token_list(t_token **first);
+t_bool			is_redirect(t_token_type type);
+void			flags_for_redirections(t_token *cur);
 
-//Main
+//Envp
+t_envp			*envp_from_list(t_envp *list, char *name);
+t_bool			is_envp_symbol(int c);
+
+/*
+//Pipex
 void	init_p(t_pipex	*p);
 char	**path_from_envp(t_pipex *p);
 char	*find_path(char **cmd_split, t_pipex *p);
@@ -56,8 +78,8 @@ int		open_outfile(t_pipex *p);
 
 //Utils
 void	close_fds(int fd1, int fd2);
-int		length_inside_quotes(char *str, t_pipex *p, char *cmd);
-int		word_length(char *str);
+int		length_inside(char *str, t_pipex *p, char *cmd);
+int		word_length(char *str);*/
 
 //Errors
 //void	args_number_error(void);
@@ -66,9 +88,10 @@ void	cmd_error(char *reason, char *cmd, int exit_code, t_pipex **p);
 void	error_exit_code(char *reason, int exit_code);
 void	error_clean_exit_code(char *reason, int exit_code, t_pipex **p);
 
+/*
 //Checks
 void	check_first_file(t_pipex *p);
-void	check_second_file(t_pipex *p);
+void	check_second_file(t_pipex *p);*/
 
 //Cleaners
 void	clean_arr(char ***arr);

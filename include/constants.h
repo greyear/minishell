@@ -2,6 +2,12 @@
 #ifndef CONSTANTS_H
 # define CONSTANTS_H
 
+typedef enum e_bool
+{
+	false = 0,
+	true = 1
+}	t_bool;
+
 typedef enum e_char
 {
 	NULL_TERM = 0,
@@ -10,7 +16,7 @@ typedef enum e_char
 	/*L_REDIR_SEPARATOR = 29,
 	R_REDIR_SEPARATOR = 30,
 	SEPARATOR = 31,*/
-	SPACE = 32,
+	WSPACE = 32,
 	DB_QUOT = 34,
 	DOLLAR = 36,
 	AND = 38,
@@ -30,8 +36,25 @@ typedef enum e_char
 	BACKSLASH = 92,
 	UNDERSC = 95,
 	//N_LOWER = 110,
-	PIPE = 124,
+	VERTICAL = 124
 }	t_char;
+
+typedef enum e_token_type
+{
+	PIPE, // |
+	IN, // <
+	OUT, // >
+	HEREDOC, // <<
+	APPEND, // >>
+	WORD, // string
+	LPAR, // (
+	RPAR, // )
+	SPACE,
+	END, //?? mb ne nuzhen
+	//just &?
+	DUMMY, // for the first one
+	EMPTY
+}	t_token_type;
 
 typedef enum e_err
 {

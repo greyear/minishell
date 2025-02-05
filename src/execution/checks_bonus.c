@@ -1,6 +1,6 @@
 
 #include "../../include/minishell.h"
-
+/*
 void	check_first_file(t_pipex *p)
 {
 	if (access(p->argv[1], F_OK) == -1)
@@ -24,4 +24,4 @@ void	check_second_file(t_pipex *p)
 		close(p->cur_fd);
 		cmd_error(PERM_DENIED, p->argv[p->argc - 1], 1, &p);
 	}
-}
+}*/
