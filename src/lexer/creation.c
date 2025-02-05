@@ -29,7 +29,7 @@ static void	default_values(t_token *new)
 	new->data = NULL;
 	new->file = NULL;
 	new->next = NULL;
-	new->quote = NULL;
+	new->quote = NULL_TERM; //0?
 	new->unclosed = false; //check in debugger if we need it
 	new->specific_redir = EMPTY;
 	//some other fields

@@ -50,6 +50,7 @@ int				validate_input(char *str);
 int				ft_special(int c);
 
 //Lexer
+t_token			*tokenization(char *str);
 t_token_type	define_token_type(char *str, size_t i);
 t_token			*create_new_token(char *str, size_t *i, t_token_type type);
 char			*word_with_quotes(char *str, size_t *start, t_token * new);
@@ -63,7 +64,9 @@ void			flags_for_redirections(t_token *cur);
 
 //Envp
 t_envp			*envp_from_list(t_envp *list, char *name);
+t_bool			is_envp_symbol(int c);
 
+/*
 //Pipex
 void	init_p(t_pipex	*p);
 char	**path_from_envp(t_pipex *p);
@@ -75,8 +78,8 @@ int		open_outfile(t_pipex *p);
 
 //Utils
 void	close_fds(int fd1, int fd2);
-int		length_inside_quotes(char *str, t_pipex *p, char *cmd);
-int		word_length(char *str);
+int		length_inside(char *str, t_pipex *p, char *cmd);
+int		word_length(char *str);*/
 
 //Errors
 //void	args_number_error(void);
@@ -85,9 +88,10 @@ void	cmd_error(char *reason, char *cmd, int exit_code, t_pipex **p);
 void	error_exit_code(char *reason, int exit_code);
 void	error_clean_exit_code(char *reason, int exit_code, t_pipex **p);
 
+/*
 //Checks
 void	check_first_file(t_pipex *p);
-void	check_second_file(t_pipex *p);
+void	check_second_file(t_pipex *p);*/
 
 //Cleaners
 void	clean_arr(char ***arr);

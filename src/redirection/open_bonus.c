@@ -1,6 +1,7 @@
 
 #include "../../include/minishell.h"
 
+/*
 int	open_infile(t_pipex *p)
 {
 	int	fd_in;
@@ -29,4 +30,4 @@ int	open_outfile(t_pipex *p)
 		error_clean_exit_code(ERR_OPEN, EXIT_FAILURE, &p);
 	}
 	return (fd_out);
-}
+}*/

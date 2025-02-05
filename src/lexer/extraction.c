@@ -9,7 +9,8 @@ char	*word_with_quotes(char *str, size_t *start, t_token *new)
 	//str protection?
 	*start = *start + 1;
 	end = *start;
-	while (str[end] && (str[end] != new->quote))
+	while (str[end] && ((new->quote == SG_QUOT && str[end] != SG_QUOT)
+			|| (new->quote == DB_QUOT && str[end] != DB_QUOT)))
 		end++;
 	if (str[end] == '\0') //do we need the check for unclosed here also?
 		new->unclosed = true; //нужно ли здесь сразу выйти?

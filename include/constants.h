@@ -16,7 +16,7 @@ typedef enum e_char
 	/*L_REDIR_SEPARATOR = 29,
 	R_REDIR_SEPARATOR = 30,
 	SEPARATOR = 31,*/
-	SPACE = 32,
+	WSPACE = 32,
 	DB_QUOT = 34,
 	DOLLAR = 36,
 	AND = 38,
@@ -36,7 +36,7 @@ typedef enum e_char
 	BACKSLASH = 92,
 	UNDERSC = 95,
 	//N_LOWER = 110,
-	PIPE = 124
+	VERTICAL = 124
 }	t_char;
 
 typedef enum e_token_type

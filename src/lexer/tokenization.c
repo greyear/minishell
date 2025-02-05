@@ -27,6 +27,6 @@ t_token *tokenization(char *str)
 		cur = cur->next;
 	}
 	flags_for_redirections(first);
-	
-	//something about redirections, expanding $HOME and quotes
+	return (first);
+	//something about expanding $HOME and quotes
 }

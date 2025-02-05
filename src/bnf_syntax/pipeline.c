@@ -22,7 +22,7 @@ char	*validate_pipeline(char *str, int *err_flag)
 		*err_flag = 1;
 	if (*err_flag == 1) //+ слово с незакрытой кавычкой, редирект без файла или со спецсимволом вместо файла
 		return (next);
-	if (*next == PIPE && *(next + 1) != PIPE) //проверка, что не ||
+	if (*next == VERTICAL && *(next + 1) != VERTICAL) //проверка, что не ||
 	{
 		next++;
 		if (ft_isemptystring(next))
