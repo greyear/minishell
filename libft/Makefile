@@ -60,6 +60,7 @@ FTPUT_DIR		=	$(SRC_DIR)ft_put/ft_putchar_fd.c \
 				
 FTSTR_DIR		=	$(SRC_DIR)ft_str/ft_split.c \
 					$(SRC_DIR)ft_str/ft_strchr.c \
+					$(SRC_DIR)ft_str/ft_strcmp.c \
 					$(SRC_DIR)ft_str/ft_strdup.c \
 					$(SRC_DIR)ft_str/ft_striteri.c \
 					$(SRC_DIR)ft_str/ft_strjoin.c \
@@ -92,13 +93,13 @@ GNL_DIR			=	$(SRC_DIR)get_next_line/get_next_line.c \
 
 SRC 			=	$(FTIS_DIR) $(FTLST_DIR) $(FTMEM_DIR) $(FTPUT_DIR) $(FTSTR_DIR) $(FTTO_DIR) $(FTPRINTF_DIR) $(GNL_DIR)
 
-# Object files         
-OBJ 			=	$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRC))
+# Object files
+OBJ				=	$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRC))
 
 #Build rules
-all: 			$(NAME)
+all:			$(NAME)
 
-$(NAME): 		$(OBJ)
+$(NAME):		$(OBJ)
 				@$(AR) $(NAME) $(OBJ)
 
 $(OBJ_DIR)%.o:	$(SRC_DIR)%.c
@@ -109,9 +110,9 @@ clean:
 				@$(RM) -r $(OBJ_DIR)
 				@$(RM) .cache_exists
 		
-fclean: 		clean 
+fclean:			clean 
 				@$(RM) $(NAME)
 			
-re: 			fclean all
+re:				fclean all
 
-.PHONY: 		all clean fclean re
+.PHONY:			all clean fclean re

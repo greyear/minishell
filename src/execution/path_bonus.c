@@ -1,6 +1,7 @@
 
 #include "../../include/minishell.h"
 
+/*
 void	handle_command(char *cmd, t_pipex *p)
 {
 	char	*path;
@@ -96,3 +97,4 @@ char	*find_path(char **cmd_split, t_pipex *p)
 	combined_with_path = combining(cmd_split, p);
 	return (combined_with_path);
 }
+*/
