@@ -28,5 +28,16 @@ t_token *tokenization(char *str)
 	}
 	flags_for_redirections(first);
 	return (first);
-	//something about expanding $HOME and quotes
+	//something about expanding $HOME
+	// quotes handling
 }
+
+/*
+is_empty - empty words token
+clean_empty_strings - deletes empty nodes from the list
+clean_whitepace - deletes whitespace nodes (use for the 2nd node after merging)
+add_up_values - preparation for merging of tokens
+clean_quotes_and_whitespaces - if both tokens are words: joins words, deletes 2nd node,
+
+
+*/

@@ -41,6 +41,7 @@ typedef enum e_char
 
 typedef enum e_token_type
 {
+	DUMMY, // empty first technical node
 	PIPE, // |
 	IN, // <
 	OUT, // >
@@ -52,7 +53,6 @@ typedef enum e_token_type
 	SPACE,
 	END, //?? mb ne nuzhen
 	//just &?
-	DUMMY, // for the first one
 	EMPTY
 }	t_token_type;
 

@@ -58,7 +58,9 @@ char			*word_without_quotes(char *str, size_t *start);
 void			skip_special_tokens(char *str, size_t *i, t_token_type type);
 void			skip_whitespaces(char *str, size_t *i);
 void			clean_token(t_token *token);
+t_bool			is_empty_word_token(t_token *token);
 void			clean_token_list(t_token **first);
+t_token			*delete_empty_word_tokens(t_token *first);
 t_bool			is_redirect(t_token_type type);
 void			flags_for_redirections(t_token *cur);
 
