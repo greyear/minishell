@@ -46,6 +46,7 @@ LEX_FILES		=	tokenization.c \
 					deletion.c \
 					extraction.c \
 					skipping.c \
+					merging.c \
 					redirection.c \
 					token_utils.c \
 					main.c
