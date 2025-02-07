@@ -51,7 +51,7 @@ void	check_exit(char	**array)
 			if (ft_isdigit(array[1][i]) != 1)
 			{
 				ft_putstr_fd("bash: exit: numeric argument required\n", 2);
-				return;
+				exit(2);
 			}
 			i++;
 		}
