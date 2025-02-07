@@ -9,9 +9,25 @@
 	takes the struct as argument and
 	args that are for example
 	args[0]="cd", args[1]="-", args[2]=NULL
+
+	ERRORS
+	if you use cd , when HOME=invalidpath
+	print errormessage and change exit_status = 1
+
+	if you use cd -, when OLDPWD=invalidpath
+	print errormessage and change exit_status = 1
+
+	cd .. still works even if PWD=invalidpath and OLDPWD=invalidpath
 */
 
 #include "seela.h"
+
+static void	print_cd_error(char *target_dir)
+{
+	ft_putstr_fd("bash: cd: ", 2);
+	ft_putstr_fd(target_dir, 2);
+	ft_putstr_fd(": No such file or directory\n", 2);
+}
 
 static void	update_env_var(t_ms *ms, char *key, char *new_value)
 {
@@ -61,6 +77,13 @@ static char	*get_cd_target(t_ms *ms, char **args)
 			ft_putstr_fd("cd: OLDPWD not set\n", 2);
 			ms->exit_status = 1;
 		}
+		if (access(target, F_OK) != 0) // Check if path exists
+		{
+			print_cd_error(target);
+			ms->exit_status = 1;
+			return (NULL);
+		}
+
 		else
 			printf("%s\n", target);
 	}
@@ -102,9 +125,7 @@ void	handle_cd(t_ms *ms, char **args)
 		return;
 	if (chdir(target_dir) == -1)
 	{
-		ft_putstr_fd("bash: cd: ", 2);
-		ft_putstr_fd(target_dir, 2);
-        ft_putstr_fd(": No such file or directory\n", 2);
+		print_cd_error(target_dir);
 		ms->exit_status = 1;
 		return;
 	}
