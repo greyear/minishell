@@ -1,7 +1,9 @@
 
 #include "../../include/minishell.h"
 
-t_token *tokenization(char *str)
+//str is an input
+
+t_token *tokenization(char *str, t_ms *ms) //store str in ms?
 {
 	size_t			i;
 	t_token_type	type;
@@ -27,17 +29,12 @@ t_token *tokenization(char *str)
 		cur = cur->next;
 	}
 	flags_for_redirections(first);
+	first = unite_two_word_tokens(first);
+	if (check_list_for_expansions(first, ms) == 1)
+	{
+		clean_token_list(&first); //what else to clean?
+		return (NULL); //maybe create a separate cleaner?
+	}
 	return (first);
-	//something about expanding $HOME
-	// quotes handling
+	//wildcards?
 }
-
-/*
-is_empty - empty words token
-clean_empty_strings - deletes empty nodes from the list
-clean_whitepace - deletes whitespace nodes (use for the 2nd node after merging)
-add_up_values - preparation for merging of tokens
-clean_quotes_and_whitespaces - if both tokens are words: joins words, deletes 2nd node,
-
-
-*/

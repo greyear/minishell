@@ -11,7 +11,7 @@ void print_tokens(t_token *token_list)
 	printf("Tokens:\n");
 	while (cur)
 	{
-		printf("Type: %d, Value: %s\n", cur->type, cur->data);
+		printf("Type: %d, Value: %s, Quotes: %c\n", cur->type, cur->data, cur->quote);
 		cur = cur->next;
 	}
 }

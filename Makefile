@@ -52,13 +52,21 @@ LEX_FILES		=	tokenization.c \
 					main.c
 #DELETE main.c!
 PARS_FILES		=	split_bonus.c
-#BUILT_FILES	=	
+BUILT_FILES	=	=	cd.c \
+					env_export.c \
+					env_export2.c \ #rename!
+					exit.c \
+					pwd.c \
+					unset.c
 EXEC_FILES		=	pipex_bonus.c \
 					path_bonus.c \
 					checks_bonus.c \
 					utils_bonus.c
 REDIR_FILES	=		open_bonus.c
-ENVP_FILES	=		list.c \
+ENVP_FILES	=		check_all_tokens.c \
+					handle_expansion.c \
+					initialize_struct.c \ #delete?
+					list.c \
 					letters.c
 #SIGN_FILES		=	
 CLEAN_FILES		=	cleaners_bonus.c
@@ -72,7 +80,7 @@ SRC_FILES		=	$(addprefix $(BNF_DIR)/, $(BNF_FILES)) \
 					$(addprefix $(ENVP_DIR)/, $(ENVP_FILES)) \
 					$(addprefix $(CLEAN_DIR)/, $(CLEAN_FILES)) \
 					$(addprefix $(ERR_DIR)/, $(ERR_FILES)) \
-					#$(addprefix $(BUILT_DIR)/, $(BUILT_FILES)) \
+					$(addprefix $(BUILT_DIR)/, $(BUILT_FILES)) \
 					$(addprefix $(SIGN_DIR)/, $(SIGN_FILES)) \
 
 # Full paths to files

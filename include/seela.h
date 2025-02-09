@@ -6,7 +6,8 @@
 # include <fcntl.h>
 # include <sys/wait.h>
 # include <stdio.h>
-# include "libft/libft.h"
+//# include "libft/libft.h"
+# include "../libft/include/libft.h"
 
 typedef struct s_ms
 {
