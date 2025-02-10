@@ -54,10 +54,11 @@ LEX_FILES		=	tokenization.c \
 PARS_FILES		=	split_bonus.c
 BUILT_FILES	=	=	cd.c \
 					env_export.c \
-					env_export2.c \ #rename!
+					env_export2.c \
 					exit.c \
 					pwd.c \
 					unset.c
+#rename env_export2
 EXEC_FILES		=	pipex_bonus.c \
 					path_bonus.c \
 					checks_bonus.c \
@@ -65,9 +66,10 @@ EXEC_FILES		=	pipex_bonus.c \
 REDIR_FILES	=		open_bonus.c
 ENVP_FILES	=		check_all_tokens.c \
 					handle_expansion.c \
-					initialize_struct.c \ #delete?
+					initialize_struct.c \
 					list.c \
 					letters.c
+#delete initialize_struct
 #SIGN_FILES		=	
 CLEAN_FILES		=	cleaners_bonus.c
 ERR_FILES		=	errors_bonus.c \

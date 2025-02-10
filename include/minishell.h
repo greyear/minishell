@@ -51,7 +51,7 @@ int				validate_input(char *str);
 int				ft_special(int c);
 
 //Lexer
-t_token			*tokenization(char *str);
+t_token			*tokenization(char *str, t_ms *ms);
 t_token_type	define_token_type(char *str, size_t i);
 t_token			*create_new_token(char *str, size_t *i, t_token_type type);
 char			*word_with_quotes(char *str, size_t *start, t_token * new);
@@ -73,6 +73,7 @@ int				expand_in_token(t_token *cur, t_ms *ms);
 t_envp			*envp_from_list(t_envp *list, char *name);
 t_bool			is_envp_symbol(int c);
 t_bool			is_envp_first_symbol(int c);
+t_ms			*ms_init(char **envp);
 
 /*
 //Pipex
