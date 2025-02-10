@@ -41,6 +41,15 @@ void    print_array(char **m);
 //cd.c
 void	handle_cd(t_ms *ms, char **args); //CD HANDLING
 
+//cd2.c
+char	*build_relative_path(char *target, char *cwd);
+char	*get_parent_directory(void);
+char	*get_oldpwd_directory(t_ms *ms);
+char	*get_home_directory(t_ms *ms);
+
+//cd_error.c
+void	print_cd_error(char *target_dir);
+
 //pwd.c
 void	check_pwd(t_ms *ms, char **array);
 char	*get_env_value(char *key, char **envp);
@@ -55,7 +64,7 @@ char	*expand_key(char **envp, char *key, int len);
 //initialize_struct.c
 void    initialize_struct(char **envp);
 
-//cmd_errormsg_free.c
+//cmd_errormsg_free.c  (FOR PIPE AND EXECUTION ERRORS)
 void	ft_print_err(char *cmd, int c);
 void	ft_free_array(char **array);
 void    print_array(char **m);
