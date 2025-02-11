@@ -9,6 +9,8 @@ for example exit 300 would exit with 44
 
 Too many arguments (prints an error). (exit 1 1)
 Non-numeric argument (prints an error). (exit 1x)
+
+edge cases / LLONG_MAX etc explained in google docs !!!
 */
 
 /*
