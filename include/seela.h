@@ -7,6 +7,7 @@
 # include <sys/wait.h>
 # include <stdio.h>
 # include "libft/libft.h"
+# include <errno.h>
 
 typedef struct s_ms
 {
@@ -55,7 +56,10 @@ void	check_pwd(t_ms *ms, char **array);
 char	*get_env_value(char *key, char **envp);
 
 //exit.c
-void	check_exit(char	**array); //HANDLES EXITING
+void	check_exit(char	**array, t_ms *ms); //HANDLES EXITING
+
+//exit2.c
+long long	ft_strtoll(char *str, int *error);
 
 //handle_expansion.c
 char	*handle_expansion(char *args, t_ms *ms); //ENVIRONMENTAL EXPANSION HANDLNG
