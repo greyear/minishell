@@ -54,20 +54,24 @@ LEX_FILES		=	tokenization.c \
 PARS_FILES		=	cmd_creation.c \
 					cmd_blocks.c \
 					cmd_cleaning.c \
-					split_bonus.c
-BUILT_FILES	=	=	cd.c \
+					split_bonus.c \
+					main.c
+BUILT_FILES		=	cd.c \
+					cd2.c \
+					cd_error.c \
 					env_export.c \
 					env_export2.c \
 					exit.c \
+					exit2.c \
 					pwd.c \
 					unset.c
-#rename env_export2
+#rename many of them!
 EXEC_FILES		=	pipex_bonus.c \
 					path_bonus.c \
 					checks_bonus.c \
 					utils_bonus.c
-REDIR_FILES	=		open_bonus.c
-ENVP_FILES	=		check_all_tokens.c \
+REDIR_FILES		=	open_bonus.c
+ENVP_FILES		=	check_all_tokens.c \
 					handle_expansion.c \
 					initialize_struct.c \
 					list.c \

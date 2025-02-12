@@ -13,7 +13,7 @@ edge case if KEY is $$, replace the KEy with 1140
 "This is $$" "This is 1140"
 */
 
-#include "seela.h"
+#include "../../include/minishell.h"
 
 static char	*verify_key(char *key)
 {

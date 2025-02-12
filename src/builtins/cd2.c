@@ -1,4 +1,5 @@
-#include "seela.h"
+
+#include "../../include/minishell.h"
 
 char	*get_home_directory(t_ms *ms)
 {

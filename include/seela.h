@@ -6,11 +6,8 @@
 # include <fcntl.h>
 # include <sys/wait.h>
 # include <stdio.h>
-
-=======
-# include "libft/libft.h"
+# include "../libft/include/libft.h"
 # include <errno.h>
->>>>>
 
 typedef struct s_ms
 {
@@ -66,7 +63,7 @@ long long	ft_strtoll(char *str, int *error);
 
 //handle_expansion.c
 char	*handle_expansion(char *args, t_ms *ms); //ENVIRONMENTAL EXPANSION HANDLNG
-char	*expand_key(char **envp, char *key, int len);
+char	*expand_key(char **envp, char *key, int len, t_ms *ms);
 
 //initialize_struct.c
 void    initialize_struct(char **envp);
