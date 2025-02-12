@@ -67,13 +67,24 @@ t_token			*unite_two_word_tokens(t_token *first);
 t_bool			is_redirect(t_token_type type);
 void			flags_for_redirections(t_token *cur);
 
+//Parser
+int				words_in_cmd_block(t_token *start, t_token *end);
+int				put_cmg_args(t_cmd *cmd, t_token *start, t_token *end);
+t_cmd			*create_new_cmd(t_block *block, int num, t_ms *ms);
+t_cmd			*create_cmd_list(t_block *block, t_ms *ms);
+t_cmd			*clean_cmd(t_cmd *cmd);
+t_cmd			*clean_cmd_list(t_cmd **first);
+int				check_block(t_token *start, t_token *end, int *err_flag);
+t_block			*create_block(t_token *start, t_token *end, t_block *first_block, int *err_flag);
+
+
 //Envp
 int				check_list_for_expansions(t_token *first, t_ms *ms);
 int				expand_in_token(t_token *cur, t_ms *ms);
 t_envp			*envp_from_list(t_envp *list, char *name);
 t_bool			is_envp_symbol(int c);
 t_bool			is_envp_first_symbol(int c);
-t_ms			*ms_init(char **envp);
+void			initialize_struct(char **envp);
 
 /*
 //Pipex

@@ -42,8 +42,8 @@ BNF_FILES		=	input_validation.c \
 					main.c
 #DELETE main.c!
 LEX_FILES		=	tokenization.c \
-					creation.c \
-					deletion.c \
+					token_creation.c \
+					token_cleaning.c \
 					extraction.c \
 					skipping.c \
 					merging.c \
@@ -51,7 +51,10 @@ LEX_FILES		=	tokenization.c \
 					token_utils.c \
 					main.c
 #DELETE main.c!
-PARS_FILES		=	split_bonus.c
+PARS_FILES		=	cmd_creation.c \
+					cmd_blocks.c \
+					cmd_cleaning.c \
+					split_bonus.c
 BUILT_FILES	=	=	cd.c \
 					env_export.c \
 					env_export2.c \
@@ -71,7 +74,7 @@ ENVP_FILES	=		check_all_tokens.c \
 					letters.c
 #delete initialize_struct
 #SIGN_FILES		=	
-CLEAN_FILES		=	cleaners_bonus.c
+CLEAN_FILES		=	arr_cleaning.c
 ERR_FILES		=	errors_bonus.c \
 
 SRC_FILES		=	$(addprefix $(BNF_DIR)/, $(BNF_FILES)) \
