@@ -74,14 +74,12 @@ static void	rm_from_env(t_ms *ms, char *name, int len)
 static void	print_unset_error(char **args, int i, t_ms *ms)
 {
 	char	*err_out;
-	char	*err_out2;
 
 	err_out = ft_strjoin("bash: unset: '", args[i]);
-	err_out2 = ft_strjoin(err_out, "': not a valid indentifier\n");
-	ft_putstr_fd(err_out2, 2);
-	ms->exit_status = 1;
-	free(err_out2);
+	ft_putstr_fd(err_out, 2);
 	free(err_out);
+	ft_putstr_fd("': not a valid indentifier\n", 2);
+	ms->exit_status = 1;
 }
 
 static int		check_if_valid_key(char *name, char **args, int i, t_ms *ms)

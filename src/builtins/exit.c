@@ -9,6 +9,8 @@ for example exit 300 would exit with 44
 
 Too many arguments (prints an error). (exit 1 1)
 Non-numeric argument (prints an error). (exit 1x)
+
+edge cases / LLONG_MAX etc explained in google docs !!!
 */
 
 /*
@@ -20,42 +22,40 @@ Non-numeric argument (prints an error). (exit 1x)
 
 #include "seela.h"
 
-void	exit_shell(char *array)
+static void	exit_shell(long long exit_nbr, int error, char **array)
 {
-	int	exit_nbr;
-	
-	exit_nbr = (ft_atoi(array));
-	if (exit_nbr > 255)
+	if (error == 1)
+	{
+		ft_putstr_fd("bash: exit: ", 2);
+		ft_putstr_fd(array[1], 2);
+		ft_putstr_fd(": numeric argument required\n", 2);
+		exit(2);
+	}
+	if (exit_nbr > 255 || exit_nbr < 0)
 		exit(exit_nbr % 256);
 	exit(exit_nbr);
 }
 
-void	check_exit(char	**array)
+void	check_exit(char **array, t_ms *ms)
 {
-	int		i;
+	long long	exit_nbr;
+	int		error;
 
-	i = 0;
 	if (!array || !*array)
 		return;
 	if (ft_strcmp(array[0], "exit") != 0)
 		return;
+	ft_putstr_fd("exit\n", 1);
 	if (array[1])
 	{
 		if (array[2])
 		{
 			ft_putstr_fd("bash: exit: too many arguments\n", 2);
+			ms->exit_status = 1;
 			return;
 		}
-		while (array[1][i])
-		{
-			if (ft_isdigit(array[1][i]) != 1)
-			{
-				ft_putstr_fd("bash: exit: numeric argument required\n", 2);
-				return;
-			}
-			i++;
-		}
-		exit_shell(array[1]);
+		exit_nbr = ft_strtoll(array[1], &error);	// If non-numeric or out of range, print error and exit(2)
+		exit_shell(exit_nbr, error, array);
 	}
 	exit(127);
 }

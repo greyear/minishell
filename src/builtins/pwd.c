@@ -29,15 +29,17 @@ void	check_pwd(t_ms *ms, char **array)
 {
 	char	cwd[1024];
 
-	(void)ms; // `ms` is unused here
 	if (!array || !*array)
 		return;
 	if (ft_strcmp(array[0], "pwd") != 0)
 		return;
-
+	ms->exit_status = 1;
 	// Use getcwd() to get the actual directory
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
 		printf("%s\n", cwd);
 	else
+	{
+		ms->exit_status = 1;
 		perror("pwd: getcwd failed");
+	}
 }
