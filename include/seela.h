@@ -6,8 +6,11 @@
 # include <fcntl.h>
 # include <sys/wait.h>
 # include <stdio.h>
+
+=======
 # include "libft/libft.h"
 # include <errno.h>
+>>>>>
 
 typedef struct s_ms
 {

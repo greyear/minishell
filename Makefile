@@ -42,8 +42,8 @@ BNF_FILES		=	input_validation.c \
 					main.c
 #DELETE main.c!
 LEX_FILES		=	tokenization.c \
-					creation.c \
-					deletion.c \
+					token_creation.c \
+					token_cleaning.c \
 					extraction.c \
 					skipping.c \
 					merging.c \
@@ -51,17 +51,30 @@ LEX_FILES		=	tokenization.c \
 					token_utils.c \
 					main.c
 #DELETE main.c!
-PARS_FILES		=	split_bonus.c
-#BUILT_FILES	=	
+PARS_FILES		=	cmd_creation.c \
+					cmd_blocks.c \
+					cmd_cleaning.c \
+					split_bonus.c
+BUILT_FILES	=	=	cd.c \
+					env_export.c \
+					env_export2.c \
+					exit.c \
+					pwd.c \
+					unset.c
+#rename env_export2
 EXEC_FILES		=	pipex_bonus.c \
 					path_bonus.c \
 					checks_bonus.c \
 					utils_bonus.c
 REDIR_FILES	=		open_bonus.c
-ENVP_FILES	=		list.c \
+ENVP_FILES	=		check_all_tokens.c \
+					handle_expansion.c \
+					initialize_struct.c \
+					list.c \
 					letters.c
+#delete initialize_struct
 #SIGN_FILES		=	
-CLEAN_FILES		=	cleaners_bonus.c
+CLEAN_FILES		=	arr_cleaning.c
 ERR_FILES		=	errors_bonus.c \
 
 SRC_FILES		=	$(addprefix $(BNF_DIR)/, $(BNF_FILES)) \
@@ -72,7 +85,7 @@ SRC_FILES		=	$(addprefix $(BNF_DIR)/, $(BNF_FILES)) \
 					$(addprefix $(ENVP_DIR)/, $(ENVP_FILES)) \
 					$(addprefix $(CLEAN_DIR)/, $(CLEAN_FILES)) \
 					$(addprefix $(ERR_DIR)/, $(ERR_FILES)) \
-					#$(addprefix $(BUILT_DIR)/, $(BUILT_FILES)) \
+					$(addprefix $(BUILT_DIR)/, $(BUILT_FILES)) \
 					$(addprefix $(SIGN_DIR)/, $(SIGN_FILES)) \
 
 # Full paths to files
