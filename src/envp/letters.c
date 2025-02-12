@@ -29,6 +29,13 @@ echo $'VAR'      # Выведет: VAR (в $'...' работает ANSI-экра
 echo $"VAR text" # Выведет: "VAR text" (не подставляет значение переменной)
 */
 
+t_bool	is_envp_first_symbol(int c)
+{
+	if (ft_isalpha(c) || c == UNDERSC)
+		return (true);
+	return (false);
+}
+
 t_bool	is_envp_symbol(int c)
 {
 	if (ft_isalnum(c) || c == UNDERSC)

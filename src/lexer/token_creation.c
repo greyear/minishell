@@ -24,7 +24,7 @@ t_token_type	define_token_type(char *str, size_t i)
 		return (WORD);
 }
 
-static void	default_values(t_token *new)
+static void	default_token_values(t_token *new)
 {
 	new->data = NULL;
 	new->file = NULL;
@@ -42,7 +42,7 @@ t_token	*create_new_token(char *str, size_t *i, t_token_type type)
 	new = (t_token *)ft_calloc(1, sizeof(t_token));
 	if (!new)
 		return (NULL); //error?
-	default_values(new);
+	default_token_values(new);
 	new->type = type;
 	if (type == WORD)
 	{
