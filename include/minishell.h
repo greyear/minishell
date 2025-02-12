@@ -76,7 +76,9 @@ t_cmd			*clean_cmd(t_cmd *cmd);
 t_cmd			*clean_cmd_list(t_cmd **first);
 int				check_block(t_token *start, t_token *end, int *err_flag);
 t_block			*create_block(t_token *start, t_token *end, t_block *first_block, int *err_flag);
-
+t_block			*create_blocks_list(t_token *start, t_token *end, int *err_flag);
+t_block			*clean_block(t_block *block);
+t_block			*clean_block_list(t_block **first);
 
 //Envp
 int				check_list_for_expansions(t_token *first, t_ms *ms);

@@ -53,7 +53,7 @@ t_block	*create_blocks_list(t_token *start, t_token *end, int *err_flag)
 
 	first_block = NULL;
 	cur_token = start;
-	while ()
+	while (cur_token->next && cur_token != end) //check r
 	{
 		if (cur_token->type == PIPE)
 		{
@@ -62,10 +62,13 @@ t_block	*create_blocks_list(t_token *start, t_token *end, int *err_flag)
 		}
 		cur_token = cur_token->next;
 		//err_flag check
+		if (*err_flag)
+			return (clean_block_list(&first_block));
 	}
-
+	first_block = create_block(start, cur_token->next, first_block, err_flag);
 	return (first_block);
 }
+
 
 /*
 struct t_command (cmd_name, cmd_ar, red_in, red_out, index, next)

@@ -16,7 +16,8 @@ in export handling, call handle_exported(char **args, t_ms *ms) function
 with args and the ms struct
 args are for example args[0]="export" args[1]="HEY=hi" args[2]=NULL
 */
-#include "seela.h"
+
+#include "../../include/minishell.h"
 
 void    update_exported(char *arg, t_ms *ms)
 {

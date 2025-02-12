@@ -1,4 +1,5 @@
-#include "seela.h"
+
+#include "../../include/minishell.h"
 
 void	print_cd_error(char *target_dir)
 {

@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
+/*
 void print_tokens(t_token *token_list)
 {
 	t_token *cur = token_list;
@@ -37,4 +37,4 @@ int main(int argc, char **argv)
 
 	clean_token_list(&tokens);
 	return (0);
-}
+}*/

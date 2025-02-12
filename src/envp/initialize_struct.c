@@ -1,4 +1,4 @@
-#include "seela.h"
+#include "../../include/minishell.h"
 
 void    initialize_struct(char **envp)
 {

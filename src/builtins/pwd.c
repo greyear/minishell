@@ -7,7 +7,7 @@ prnts it out even if pwd 1 etc. many args, bs des this in bash
 */
 
 
-#include "seela.h"
+#include "../../include/minishell.h"
 
 char	*get_env_value(char *key, char **envp)
 {
