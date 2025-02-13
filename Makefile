@@ -69,7 +69,8 @@ BUILT_FILES		=	cd.c \
 EXEC_FILES		=	pipex_bonus.c \
 					path_bonus.c \
 					checks_bonus.c \
-					utils_bonus.c
+					utils_bonus.c \
+					cmd_errormsg_free.c
 REDIR_FILES		=	open_bonus.c
 ENVP_FILES		=	check_all_tokens.c \
 					handle_expansion.c \
@@ -78,7 +79,9 @@ ENVP_FILES		=	check_all_tokens.c \
 					letters.c
 #delete initialize_struct
 #SIGN_FILES		=	
-CLEAN_FILES		=	arr_cleaning.c
+CLEAN_FILES		=	arr_cleaning.c \
+					double_array_handling.c
+#put in one file?
 ERR_FILES		=	errors_bonus.c \
 
 SRC_FILES		=	$(addprefix $(BNF_DIR)/, $(BNF_FILES)) \

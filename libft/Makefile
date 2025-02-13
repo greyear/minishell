@@ -67,6 +67,7 @@ FTSTR_DIR		=	$(SRC_DIR)ft_str/ft_split.c \
 					$(SRC_DIR)ft_str/ft_strcat.c \
 					$(SRC_DIR)ft_str/ft_strlcat.c \
 					$(SRC_DIR)ft_str/ft_strcpy.c \
+					$(SRC_DIR)ft_str/ft_strncpy.c \
 					$(SRC_DIR)ft_str/ft_strlcpy.c \
 					$(SRC_DIR)ft_str/ft_strlen.c \
 					$(SRC_DIR)ft_str/ft_strmapi.c \
