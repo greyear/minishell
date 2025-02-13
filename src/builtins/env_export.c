@@ -15,6 +15,8 @@ in env handlind, call handle_envp(t_ms *ms) function with the ms struct
 in export handling, call handle_exported(char **args, t_ms *ms) function
 with args and the ms struct
 args are for example args[0]="export" args[1]="HEY=hi" args[2]=NULL
+
+EDGE CASES EXPLAINED IN DOCS
 */
 
 #include "seela.h"
@@ -217,6 +219,7 @@ void    add_to_exported_env(char *arg, t_ms *ms)
 void    handle_export(char **args, t_ms *ms) /// args are for exapmle args[0]="export" args[1]="HEY=hi" args[2]=NULL
 {
     int     arg_count;
+	char	*expanded;
 
     ms->exit_status = 0;
     arg_count = 0;
@@ -233,10 +236,12 @@ void    handle_export(char **args, t_ms *ms) /// args are for exapmle args[0]="e
     }
     else
     {
-        if (ft_strchr(args[1], '=')) //add to env and exported
-			add_to_exported_env(args[1], ms);
+		expanded = handle_expansion(args[1], ms);
+		if (ft_strchr(expanded, '=')) //add to env and exported
+			add_to_exported_env(expanded, ms);
 		else //add only to exported if there is no = mark
-			update_exported(args[1], ms);
+			update_exported(expanded, ms);
         sort_exported_alphaorder(ms);
     }
 }
+
