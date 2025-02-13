@@ -1,6 +1,7 @@
 
 #include "../../include/minishell.h"
 
+//what if the very first block starts from | symbol?
 int	check_block(t_token *start, t_token *end, int *err_flag) //check without
 {
 	t_token	*cur;
