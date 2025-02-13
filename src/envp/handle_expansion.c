@@ -9,8 +9,8 @@ KEY only contains numbers, alphabets or _ and the first character cant be a numb
 
 edge cases if KEY is $? , replace the KEY with latest exit_value
 "This is $?" = "This is 127"
-edge case if KEY is $$, replace the KEy with 1140
-"This is $$" "This is 1140"
+edge case if KEY is $$, replace the KEy with pid
+"This is $$" "This is 1140" for example
 */
 
 #include "seela.h"
@@ -31,7 +31,7 @@ char	*expand_key(char **envp, char *key, int len, t_ms *ms)
 	if (key[0] == '?')
 		return(ft_itoa(ms->exit_status));
 	if (key[0] == '$')
-		return (ft_itoa(1140));
+		return (ft_itoa(getpid()));
 	check = verify_key(key);
 	if (!check)
 		return (ft_strdup(""));
