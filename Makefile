@@ -30,6 +30,7 @@ LIB				=	-L$(LIBFT_DIR)
 # Compiler and compilation flags
 CC				=	cc
 CFLAGS			=	-g -Wall -Wextra -Werror
+LDFLAGS			=	-lreadline
 RM				=	rm -f
 
 # Source files
@@ -115,14 +116,14 @@ $(LIBFT):
 $(NAME):			.build
 
 .build:				$(OBJ) $(LIBFT)
-					@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(HEADERS) $(LIB) -o $(NAME)
+					@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(HEADERS) $(LIB) $(LDFLAGS) -o $(NAME)
 					@touch $@
 					@echo "$(GREEN)--> Created minishell!$(NC)"
 
 # Object file compilation
 $(OBJ_DIR)/%.o: 	$(SRC_DIR)/%.c
 					@mkdir -p $(@D)
-					@$(CC) $(CFLAGS) $(HEADERS) -c $< -o $@
+					@$(CC) $(CFLAGS) $(LDFLAGS) $(HEADERS) -c $< -o $@
 
 # Cleaning rules
 clean:
