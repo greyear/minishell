@@ -8,7 +8,7 @@ int	check_block(t_token *start, t_token *end, int *err_flag) //check without
 	cur = start;
 	while (cur != end)
 	{
-		if (!(cur->type == WORD || is_redirect(cur->type)))
+		if (!(cur->type == WORD || is_redirect(cur->type) || cur->type == DUMMY)) //dummy?
 		{
 			*err_flag = 1; //save place?
 			return (1);
