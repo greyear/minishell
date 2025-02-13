@@ -1,4 +1,5 @@
-#include "seela.h"
+//#include "seela.h"
+#include "../../include/minishell.h"
 
 void	ft_free_array(char **array)
 {
@@ -22,8 +23,8 @@ void	ft_print_err(char *cmd, int c)
 		ft_putstr_fd("Permission denied: ", 2);
 	else
 		ft_putstr_fd("command not found: ", 2);
-    if (!err_out)
-        exit(1);
+    /*if (!err_out)
+        exit(1);*/
 	ft_putstr_fd(cmd, 2);
 	ft_putstr_fd("\n", 2);
 }

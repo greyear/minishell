@@ -117,6 +117,5 @@ void	check_second_file(t_pipex *p);*/
 
 //Cleaners
 void	clean_arr(char ***arr);
-void	clean_struct(t_pipex **p);
 
 #endif

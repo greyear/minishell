@@ -1,27 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcat.c                                        :+:      :+:    :+:   */
+/*   ft_strncpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: azinchen <azinchen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/13 15:04:47 by azinchen          #+#    #+#             */
-/*   Updated: 2025/02/13 15:05:00 by azinchen         ###   ########.fr       */
+/*   Created: 2025/02/13 15:06:02 by azinchen          #+#    #+#             */
+/*   Updated: 2025/02/13 15:06:05 by azinchen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/libft.h"
 
-char	*ft_strcat(char *dst, const char *src)
+char	*ft_strncpy(char *dst, const char *src, size_t dstsize)
 {
-	size_t	lend;
-	size_t	lens;
+	size_t	i;
 
-	if (!dst || !src) // Can I add these checks if original lib function segfaults here?
-		return (NULL);
-	lend = ft_strlen(dst);
-	lens = ft_strlen(src);
-	ft_memcpy(dst + lend, src, lens);
-	dst[lend + lens] = '\0';
+	i = 0;
+	while (i < dstsize && src[i] != '\0')
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	while (i < dstsize)
+	{
+		dst[i] = '\0';
+		i++;
+	}
 	return (dst);
 }

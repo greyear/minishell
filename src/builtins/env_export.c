@@ -21,14 +21,14 @@ args are for example args[0]="export" args[1]="HEY=hi" args[2]=NULL
 
 void    update_exported(char *arg, t_ms *ms)
 {
-    char    **temp;
-    int     i;
-    int     len;
-    int     check;
+	char    **temp;
+	int     i;
+	int     len;
+	int     check;
 
-    temp = NULL;
-    i = 0;
-    check = 0;
+	temp = NULL;
+	i = 0;
+	check = 0;
 	if (arg[0] >= '0' && arg[0] <= '9')
 		return (print_error3(ms, arg));
 	while (arg[i])
@@ -38,117 +38,117 @@ void    update_exported(char *arg, t_ms *ms)
 		i++;
 	}
 	i = 0;
-    len = (int)ft_strlen(arg);
-    while (ms->exported[i])
-        i++;
-    temp = malloc(sizeof(char *) * (i + 2));
-    i = 0;
-    while (ms->exported[i])
-    {
-        if (ft_strncmp(arg, ms->exported[i], len) == 0)
-        {
-            if (ms->exported[i][len] == '\0' || ms->exported[i][len] == '=')
-                check = 1;
-        }
-        temp[i] = ft_strdup(ms->exported[i]);
-        i++;
-    }
-    if (check == 0)
-    {
-        temp[i] = ft_strdup(arg);
-        i++;
-    }
-    temp[i] = NULL;
-    ms->exported = copy_map(temp);
-    free(temp);
+	len = (int)ft_strlen(arg);
+	while (ms->exported[i])
+		i++;
+	temp = malloc(sizeof(char *) * (i + 2));
+	i = 0;
+	while (ms->exported[i])
+	{
+		if (ft_strncmp(arg, ms->exported[i], len) == 0)
+		{
+			if (ms->exported[i][len] == '\0' || ms->exported[i][len] == '=')
+				check = 1;
+		}
+		temp[i] = ft_strdup(ms->exported[i]);
+		i++;
+	}
+	if (check == 0)
+	{
+		temp[i] = ft_strdup(arg);
+		i++;
+	}
+	temp[i] = NULL;
+	ms->exported = copy_map(temp);
+	free(temp);
 }
 
 void    add_to_exported(char *arg, t_ms *ms, char *name, int len)
 {
-    int     i;
-    char    **temp;
-    int     check;
+	int     i;
+	char    **temp;
+	int     check;
 
-    i = 0;
-    check = 0;
-    while (ms->exported[i])
-        i++;
-    temp = malloc(sizeof(char *) * (i + 2));
-    i = 0;
-    while (ms->exported[i])
-    {
-        if (ft_strncmp(ms->exported[i], name, len) == 0)
-        {
-            if (ms->envp[i][len] && ms->envp[i][len] == '=')
-            {
-                temp[i] = ft_strdup(arg);
-                check = 1;
-            }
-            else
-                temp[i] = ft_strdup(ms->exported[i]);
-        }
-        else
-            temp[i] = ft_strdup(ms->exported[i]);
-        i++;
-    }
-    if (check == 0)
-    {
-        temp[i] = ft_strdup(arg);
-        i++;
-    }
-    temp[i] = NULL;
-    ms->exported = copy_map(temp);
-    free(temp);
+	i = 0;
+	check = 0;
+	while (ms->exported[i])
+		i++;
+	temp = malloc(sizeof(char *) * (i + 2));
+	i = 0;
+	while (ms->exported[i])
+	{
+		if (ft_strncmp(ms->exported[i], name, len) == 0)
+		{
+			if (ms->envp[i][len] && ms->envp[i][len] == '=')
+			{
+				temp[i] = ft_strdup(arg);
+				check = 1;
+			}
+			else
+				temp[i] = ft_strdup(ms->exported[i]);
+		}
+		else
+			temp[i] = ft_strdup(ms->exported[i]);
+		i++;
+	}
+	if (check == 0)
+	{
+		temp[i] = ft_strdup(arg);
+		i++;
+	}
+	temp[i] = NULL;
+	ms->exported = copy_map(temp);
+	free(temp);
 }
 
 void    add_to_env(char *arg, t_ms *ms, char *name, int len)
 {
-    int     i;
-    int     check;
-    char    **temp;
+	int     i;
+	int     check;
+	char    **temp;
 
-    i = 0;
-    check = 0;
-    while (ms->envp[i])
-        i++;
-    temp = malloc(sizeof(char *) * (i + 2));
-    i = 0;
-    while (ms->envp[i])
-    {
-        if (ft_strncmp(ms->envp[i], name, len) == 0)
-        {
-            if (ms->envp[i][len] && ms->envp[i][len] == '=')
-            {
-                temp[i] = ft_strdup(arg);
-                check = 1;
-            }
-            else
-                temp[i] = ft_strdup(ms->envp[i]);
-        }
-        else
-            temp[i] = ft_strdup(ms->envp[i]);
-        i++;
-    }
-    if (check == 0)
-    {
-        temp[i] = ft_strdup(arg);
-        i++;
-    }
-    temp[i] = NULL;
-    ms->envp = copy_map(temp);
-    free(temp);
+	i = 0;
+	check = 0;
+	while (ms->envp[i])
+		i++;
+	temp = malloc(sizeof(char *) * (i + 2));
+	i = 0;
+	while (ms->envp[i])
+	{
+		if (ft_strncmp(ms->envp[i], name, len) == 0)
+		{
+			if (ms->envp[i][len] && ms->envp[i][len] == '=')
+			{
+				temp[i] = ft_strdup(arg);
+				check = 1;
+			}
+			else
+				temp[i] = ft_strdup(ms->envp[i]);
+		}
+		else
+			temp[i] = ft_strdup(ms->envp[i]);
+		i++;
+	}
+	if (check == 0)
+	{
+		temp[i] = ft_strdup(arg);
+		i++;
+	}
+	temp[i] = NULL;
+	ms->envp = copy_map(temp);
+	free(temp);
 }
 
 void    add_to_exported_env(char *arg, t_ms *ms)
 {
-    int     len;
+	int     len;
 	int		i;
-    char    *name;
+	char    *name;
 
-    len = 0;
+	len = 0;
 	i = 0;
-    while (arg[len] && arg[len] != '=')
-        len++;
+	while (arg[len] && arg[len] != '=')
+		len++;
 	if (len == 0)
 		return;
 	name = malloc(sizeof(char) * (len + 1));
@@ -167,37 +167,37 @@ void    add_to_exported_env(char *arg, t_ms *ms)
 		}
 		i++;
 	}
-    add_to_exported(arg, ms, name, len);
-    add_to_env(arg, ms, name, len);
+	add_to_exported(arg, ms, name, len);
+	add_to_env(arg, ms, name, len);
 	free(name);
 }
 
 void    handle_export(char **args, t_ms *ms) /// args are for exapmle args[0]="export" args[1]="HEY=hi" args[2]=NULL
 {
-    int     arg_count;
+	int     arg_count;
 
-    ms->exit_status = 0;
-    arg_count = 0;
-    if (!args)
-        return;
-    while (args[arg_count])
-        arg_count++;
-    if (arg_count == 1)
-    {
-        sort_exported_alphaorder(ms);
-        print_exported(ms);
-    }
-    else
-    {
-        if (ft_strchr(args[1], '=') == 0) // if there is no =, then we just add value to export if dont exist already
-        {
-            update_exported(args[1], ms);
-            sort_exported_alphaorder(ms);
-        }
-        else //add value to envp and exported
-        {
-            add_to_exported_env(args[1], ms);
-            sort_exported_alphaorder(ms);
-        }
-    }
+	ms->exit_status = 0;
+	arg_count = 0;
+	if (!args)
+		return;
+	while (args[arg_count])
+		arg_count++;
+	if (arg_count == 1)
+	{
+		sort_exported_alphaorder(ms);
+		print_exported(ms);
+	}
+	else
+	{
+		if (ft_strchr(args[1], '=') == 0) // if there is no =, then we just add value to export if dont exist already
+		{
+			update_exported(args[1], ms);
+			sort_exported_alphaorder(ms);
+		}
+		else //add value to envp and exported
+		{
+			add_to_exported_env(args[1], ms);
+			sort_exported_alphaorder(ms);
+		}
+	}
 }
