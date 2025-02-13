@@ -66,7 +66,8 @@ char	*handle_expansion(char *args, t_ms *ms); //ENVIRONMENTAL EXPANSION HANDLNG
 char	*expand_key(char **envp, char *key, int len, t_ms *ms);
 
 //initialize_struct.c
-void    initialize_struct(char **envp);
+//void    initialize_struct(char **envp); how do you use it?
+t_ms    *initialize_struct(char **envp);
 
 //cmd_errormsg_free.c  (FOR PIPE AND EXECUTION ERRORS)
 void	ft_print_err(char *cmd, int c);

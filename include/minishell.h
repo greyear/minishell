@@ -86,7 +86,7 @@ int				expand_in_token(t_token *cur, t_ms *ms);
 t_envp			*envp_from_list(t_envp *list, char *name);
 t_bool			is_envp_symbol(int c);
 t_bool			is_envp_first_symbol(int c);
-void			initialize_struct(char **envp);
+t_ms			*initialize_struct(char **envp);
 
 /*
 //Pipex
