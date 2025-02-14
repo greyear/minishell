@@ -55,6 +55,6 @@ char	*validate_word(char *str, int *err_flag)
 	while (*str && !ft_special(*str))
 		str++;
 	if (*str == '\'' || *str == '\"')
-		str += length_inside_quotes(str, err_flag);
+		str = str + length_inside_quotes(str, err_flag) + 2;
 	return (str);
 }
