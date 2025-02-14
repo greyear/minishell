@@ -48,12 +48,10 @@ typedef enum e_token_type
 	HEREDOC = 4, // <<
 	APPEND = 5, // >>
 	WORD = 6, // string
-	LPAR = 7, // (
-	RPAR = 8, // )
-	SPACE = 9,
-	END = 10, //?? mb ne nuzhen
+	SPACE = 7,
+	END = 8, //?? mb ne nuzhen
 	//just &?
-	EMPTY = 11
+	EMPTY = 9
 }	t_token_type;
 
 typedef enum e_err
