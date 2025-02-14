@@ -47,7 +47,13 @@ char	*get_oldpwd_directory(t_ms *ms)
 	char	cwd[1024];
 
 	target = get_env_value("OLDPWD", ms->envp);
-	if (!target || *target == '\0')
+	if (!target)
+	{
+		ft_putstr_fd("bash: cd: OLDPWD not set\n", 2);
+		ms->exit_status = 1;
+		return (NULL);
+	}
+	if (*target == '\0')
     {
         ft_putstr_fd("\n", 1);  // Print an empty line when OLDPWD is not set
         current_pwd = get_env_value("PWD", ms->envp);
