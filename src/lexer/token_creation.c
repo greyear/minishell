@@ -12,12 +12,8 @@ t_token_type	define_token_type(char *str, size_t i)
 		return (APPEND);
 	else if (str[i] == '>')
 		return (OUT);
-	else if (str[i] == '|') // do we need to check the second | or if we already checked it in BNF it's unnecessary?
+	else if (str[i] == '|' && str[i + 1] != '|') // do we need to check the second | or if we already checked it in BNF it's unnecessary?
 		return (PIPE);
-	else if (str[i] == '(')
-		return (LPAR);
-	else if (str[i] == ')')
-		return (RPAR);
 	else if (ft_isspace(str[i]))
 		return (SPACE);
 	else

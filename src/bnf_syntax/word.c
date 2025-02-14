@@ -26,8 +26,7 @@ char	*validate_word(char *str, int *err_flag);
 int	ft_special(int c) // &? space?
 {
 	if (c == '|' || c == '&' || c == '<' || c == '>' || \
-				c == '(' || c == ')' || c == ' '|| \
-				c == '\'' || c == '\"')
+				c == ' '|| c == '\'' || c == '\"')
 		return (1);
 	return (0);
 }
