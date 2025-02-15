@@ -56,7 +56,8 @@ t_cmd	*create_new_cmd(t_block *block, int num, t_ms *ms)
 	new = (t_cmd *)malloc(1 * sizeof(t_cmd));
 	if (!new)
 		return (NULL);
-	default_cmd_values(new, num);
+	if (ms) //delete
+		default_cmd_values(new, num);
 	words = words_in_cmd_block(block->start, block->end);
 	new->args = (char **)malloc((words + 1) * sizeof(char *));
 	if (!new->args)

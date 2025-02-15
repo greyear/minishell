@@ -41,19 +41,17 @@ typedef enum e_char
 
 typedef enum e_token_type
 {
-	DUMMY, // empty first technical node
-	PIPE, // |
-	IN, // <
-	OUT, // >
-	HEREDOC, // <<
-	APPEND, // >>
-	WORD, // string
-	LPAR, // (
-	RPAR, // )
-	SPACE,
-	END, //?? mb ne nuzhen
+	DUMMY = 0, // empty first technical node
+	PIPE = 1, // |
+	IN = 2, // <
+	OUT = 3, // >
+	HEREDOC = 4, // <<
+	APPEND = 5, // >>
+	WORD = 6, // string
+	SPACE = 7,
+	END = 8, //?? mb ne nuzhen
 	//just &?
-	EMPTY
+	EMPTY = 9
 }	t_token_type;
 
 typedef enum e_err

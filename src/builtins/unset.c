@@ -13,7 +13,7 @@ if one KEY s invalid like "USER=", it will cahnge exit status to 1 but still wou
 and the t_ms *ms is the struct which holds the envp and exported
 */
 
-#include "seela.h"
+#include "../../include/minishell.h"
 
 static void	rm_from_export(t_ms *ms, char *name, int len)
 {

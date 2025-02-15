@@ -20,7 +20,7 @@ edge cases / LLONG_MAX etc explained in google docs !!!
  The error bash: syntax error near unexpected token '1' happens because of the wrong syntax.
  */
 
-#include "seela.h"
+#include "../../include/minishell.h"
 
 void	free_struct(t_ms *ms)
 {

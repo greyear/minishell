@@ -1,4 +1,5 @@
-#include "seela.h"
+
+#include "../../include/minishell.h"
 
 void    handle_env(t_ms *ms)
 {

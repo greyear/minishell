@@ -23,14 +23,14 @@ EDGE CASES EXPLAINED IN DOCS
 
 void    update_exported(char *arg, t_ms *ms)
 {
-    char    **temp;
-    int     i;
-    int     len;
-    int     check;
+	char    **temp;
+	int     i;
+	int     len;
+	int     check;
 
-    temp = NULL;
-    i = 0;
-    check = 0;
+	temp = NULL;
+	i = 0;
+	check = 0;
 	if (arg[0] >= '0' && arg[0] <= '9')
 		return (print_error3(ms, arg));
 	while (arg[i])
@@ -80,10 +80,9 @@ void    update_exported(char *arg, t_ms *ms)
 
 void    add_to_exported(char *arg, t_ms *ms, char *name, int len)
 {
-    int     i;
-    char    **temp;
-    int     check;
-
+	int     i;
+	char    **temp;
+	int     check;
     i = 0;
     check = 0;
     while (ms->exported[i])
@@ -132,9 +131,9 @@ void    add_to_exported(char *arg, t_ms *ms, char *name, int len)
 
 void    add_to_env(char *arg, t_ms *ms, char *name, int len)
 {
-    int     i;
-    int     check;
-    char    **temp;
+	int     i;
+	int     check;
+	char    **temp;
 
     i = 0;
     check = 0;
@@ -183,14 +182,14 @@ void    add_to_env(char *arg, t_ms *ms, char *name, int len)
 
 void    add_to_exported_env(char *arg, t_ms *ms)
 {
-    int     len;
+	int     len;
 	int		i;
-    char    *name;
+	char    *name;
 
-    len = 0;
+	len = 0;
 	i = 0;
-    while (arg[len] && arg[len] != '=')
-        len++;
+	while (arg[len] && arg[len] != '=')
+		len++;
 	if (len == 0)
 		return;
 	name = malloc(sizeof(char) * (len + 1));
@@ -211,8 +210,8 @@ void    add_to_exported_env(char *arg, t_ms *ms)
 		}
 		i++;
 	}
-    add_to_exported(arg, ms, name, len);
-    add_to_env(arg, ms, name, len);
+	add_to_exported(arg, ms, name, len);
+	add_to_env(arg, ms, name, len);
 	free(name);
 }
 

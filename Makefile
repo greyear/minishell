@@ -30,6 +30,7 @@ LIB				=	-L$(LIBFT_DIR)
 # Compiler and compilation flags
 CC				=	cc
 CFLAGS			=	-g -Wall -Wextra -Werror
+LDFLAGS			=	-lreadline
 RM				=	rm -f
 
 # Source files
@@ -54,27 +55,34 @@ LEX_FILES		=	tokenization.c \
 PARS_FILES		=	cmd_creation.c \
 					cmd_blocks.c \
 					cmd_cleaning.c \
-					split_bonus.c
-BUILT_FILES	=	=	cd.c \
+					split_bonus.c \
+					main.c
+BUILT_FILES		=	cd.c \
+					cd2.c \
+					cd_error.c \
 					env_export.c \
 					env_export2.c \
 					exit.c \
+					exit2.c \
 					pwd.c \
 					unset.c
-#rename env_export2
+#rename many of them!
 EXEC_FILES		=	pipex_bonus.c \
 					path_bonus.c \
 					checks_bonus.c \
-					utils_bonus.c
-REDIR_FILES	=		open_bonus.c
-ENVP_FILES	=		check_all_tokens.c \
+					utils_bonus.c \
+					cmd_errormsg_free.c
+REDIR_FILES		=	open_bonus.c
+ENVP_FILES		=	check_all_tokens.c \
 					handle_expansion.c \
 					initialize_struct.c \
 					list.c \
 					letters.c
 #delete initialize_struct
 #SIGN_FILES		=	
-CLEAN_FILES		=	arr_cleaning.c
+CLEAN_FILES		=	arr_cleaning.c \
+					double_array_handling.c
+#put in one file?
 ERR_FILES		=	errors_bonus.c \
 
 SRC_FILES		=	$(addprefix $(BNF_DIR)/, $(BNF_FILES)) \
@@ -108,14 +116,14 @@ $(LIBFT):
 $(NAME):			.build
 
 .build:				$(OBJ) $(LIBFT)
-					@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(HEADERS) $(LIB) -o $(NAME)
+					@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(HEADERS) $(LIB) $(LDFLAGS) -o $(NAME)
 					@touch $@
 					@echo "$(GREEN)--> Created minishell!$(NC)"
 
 # Object file compilation
 $(OBJ_DIR)/%.o: 	$(SRC_DIR)/%.c
 					@mkdir -p $(@D)
-					@$(CC) $(CFLAGS) $(HEADERS) -c $< -o $@
+					@$(CC) $(CFLAGS) $(LDFLAGS) $(HEADERS) -c $< -o $@
 
 # Cleaning rules
 clean:
