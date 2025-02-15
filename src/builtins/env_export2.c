@@ -9,15 +9,10 @@ void    handle_env(t_ms *ms)
 
 void	print_error3(t_ms *ms, char *arg)
 {
-	char	*error;
-	char	*temp;
-
-	error = ft_strjoin("bash: export: '", arg);
-	temp = ft_strjoin(error, "': not a valid identifier\n");
 	ms->exit_status = 1;
-	ft_putstr_fd(temp, 2);
-	free(temp);
-	free(error);
+	ft_putstr_fd("bash: export: '", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putstr_fd("': not a valid identifier\n", 2);
 }
 
 void    print_exported(t_ms *ms)
