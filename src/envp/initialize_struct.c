@@ -46,7 +46,6 @@ int	handle_oldpwd(t_ms *ms)
 t_ms	*initialize_struct(char **envp)
 {
 	t_ms *ms;
-	int		check;
 
 	ms = malloc(sizeof(t_ms));
 	if (!ms)
@@ -54,6 +53,7 @@ t_ms	*initialize_struct(char **envp)
 	ms->exit_status = 0;
 	ms->envp = copy_map(envp);
 	ms->exported = copy_map(envp);
+	ms->check_oldpwd = 1;
 	if (handle_oldpwd(ms) == 1)
 		return (NULL);
 	return (ms);
