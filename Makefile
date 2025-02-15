@@ -123,7 +123,7 @@ $(NAME):			.build
 # Object file compilation
 $(OBJ_DIR)/%.o: 	$(SRC_DIR)/%.c
 					@mkdir -p $(@D)
-					@$(CC) $(CFLAGS) $(LDFLAGS) $(HEADERS) -c $< -o $@
+					@$(CC) $(CFLAGS) $(HEADERS) -c $< -o $@
 
 # Cleaning rules
 clean:

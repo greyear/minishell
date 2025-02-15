@@ -19,7 +19,8 @@ args are for example args[0]="export" args[1]="HEY=hi" args[2]=NULL
 EDGE CASES EXPLAINED IN DOCS
 */
 
-#include "seela.h"
+//#include "seela.h"
+#include "../../include/minishell.h"
 
 void    update_exported(char *arg, t_ms *ms)
 {
@@ -40,42 +41,42 @@ void    update_exported(char *arg, t_ms *ms)
 		i++;
 	}
 	i = 0;
-    len = (int)ft_strlen(arg);
-    while (ms->exported[i])
-        i++;
-    temp = malloc(sizeof(char *) * (i + 2));
+	len = (int)ft_strlen(arg);
+	while (ms->exported[i])
+		i++;
+	temp = malloc(sizeof(char *) * (i + 2));
 	if (!temp)
 		return;
-    i = 0;
-    while (ms->exported[i])
-    {
-        if (ft_strncmp(arg, ms->exported[i], len) == 0)
-        {
-            if (ms->exported[i][len] == '\0' || ms->exported[i][len] == '=')
-                check = 1;
-        }
-        temp[i] = ft_strdup(ms->exported[i]);
-		if (!temp[i])
+	i = 0;
+	while (ms->exported[i])
+	{
+		if (ft_strncmp(arg, ms->exported[i], len) == 0)
 		{
-			ft_free_map(temp);
-			return;
+			if (ms->exported[i][len] == '\0' || ms->exported[i][len] == '=')
+				check = 1;
 		}
-        i++;
-    }
-    if (check == 0)
-    {
-        temp[i] = ft_strdup(arg);
+		temp[i] = ft_strdup(ms->exported[i]);
 		if (!temp[i])
 		{
 			ft_free_map(temp);
 			return;
 		}
 		i++;
-    }
-    temp[i] = NULL;
+	}
+	if (check == 0)
+	{
+		temp[i] = ft_strdup(arg);
+		if (!temp[i])
+		{
+			ft_free_map(temp);
+			return;
+		}
+		i++;
+	}
+	temp[i] = NULL;
 	ft_free_map(ms->exported);
-    ms->exported = copy_map(temp);
-    ft_free_map(temp);
+	ms->exported = copy_map(temp);
+	ft_free_map(temp);
 }
 
 void    add_to_exported(char *arg, t_ms *ms, char *name, int len)
@@ -83,50 +84,50 @@ void    add_to_exported(char *arg, t_ms *ms, char *name, int len)
 	int     i;
 	char    **temp;
 	int     check;
-    i = 0;
-    check = 0;
-    while (ms->exported[i])
-        i++;
-    temp = malloc(sizeof(char *) * (i + 2));
+	i = 0;
+	check = 0;
+	while (ms->exported[i])
+		i++;
+	temp = malloc(sizeof(char *) * (i + 2));
 	if (!temp)
 		return;
-    i = 0;
-    while (ms->exported[i])
-    {
-        if (ft_strncmp(ms->exported[i], name, len) == 0)
-        {
-            if ((ms->exported[i][len] && ms->exported[i][len] == '=')
-				|| ms->exported[i][len] == '\0')
-            {
-				temp[i] = ft_strdup(arg);
-                check = 1;
-            }
-            else
-                temp[i] = ft_strdup(ms->exported[i]);
-        }
-        else
-            temp[i] = ft_strdup(ms->exported[i]);
-        if (!temp[i])
+	i = 0;
+	while (ms->exported[i])
+	{
+		if (ft_strncmp(ms->exported[i], name, len) == 0)
 		{
-			ft_free_map(temp);
-			return;
+			if ((ms->exported[i][len] && ms->exported[i][len] == '=')
+				|| ms->exported[i][len] == '\0')
+			{
+				temp[i] = ft_strdup(arg);
+				check = 1;
+			}
+			else
+				temp[i] = ft_strdup(ms->exported[i]);
 		}
-		i++;
-    }
-    if (check == 0)
-    {
-        temp[i] = ft_strdup(arg);
+		else
+			temp[i] = ft_strdup(ms->exported[i]);
 		if (!temp[i])
 		{
 			ft_free_map(temp);
 			return;
 		}
 		i++;
-    }
-    temp[i] = NULL;
+	}
+	if (check == 0)
+	{
+		temp[i] = ft_strdup(arg);
+		if (!temp[i])
+		{
+			ft_free_map(temp);
+			return;
+		}
+		i++;
+	}
+	temp[i] = NULL;
 	ft_free_map(ms->exported);
-    ms->exported = copy_map(temp);
-    ft_free_map(temp);
+	ms->exported = copy_map(temp);
+	ft_free_map(temp);
 }
 
 void    add_to_env(char *arg, t_ms *ms, char *name, int len)
@@ -135,56 +136,56 @@ void    add_to_env(char *arg, t_ms *ms, char *name, int len)
 	int     check;
 	char    **temp;
 
-    i = 0;
-    check = 0;
-    while (ms->envp[i])
-        i++;
-    temp = malloc(sizeof(char *) * (i + 2));
+	i = 0;
+	check = 0;
+	while (ms->envp[i])
+		i++;
+	temp = malloc(sizeof(char *) * (i + 2));
 	if (!temp)
 		return;
-    i = 0;
-    while (ms->envp[i])
-    {
-        if (ft_strncmp(ms->envp[i], name, len) == 0)
-        {
-            if (ms->envp[i][len] && ms->envp[i][len] == '=')
-            {
-                temp[i] = ft_strdup(arg);
-                check = 1;
-            }
-            else
-                temp[i] = ft_strdup(ms->envp[i]);
-        }
-        else
-            temp[i] = ft_strdup(ms->envp[i]);
+	i = 0;
+	while (ms->envp[i])
+	{
+		if (ft_strncmp(ms->envp[i], name, len) == 0)
+		{
+			if (ms->envp[i][len] && ms->envp[i][len] == '=')
+			{
+				temp[i] = ft_strdup(arg);
+				check = 1;
+			}
+			else
+				temp[i] = ft_strdup(ms->envp[i]);
+		}
+		else
+			temp[i] = ft_strdup(ms->envp[i]);
 		if (!temp[i])
 		{
 			ft_free_map(temp);
 			return;
 		}
-        i++;
-    }
-    if (check == 0)
-    {
-        temp[i] = ft_strdup(arg);
-        if (!temp[i])
+		i++;
+	}
+	if (check == 0)
+	{
+		temp[i] = ft_strdup(arg);
+		if (!temp[i])
 		{
 			ft_free_map(temp);
 			return;
 		}
 		i++;
-    }
-    temp[i] = NULL;
+	}
+	temp[i] = NULL;
 	ft_free_map(ms->envp);
-    ms->envp = copy_map(temp);
-    ft_free_map(temp);
+	ms->envp = copy_map(temp);
+	ft_free_map(temp);
 }
 
-void    add_to_exported_env(char *arg, t_ms *ms)
+void	add_to_exported_env(char *arg, t_ms *ms)
 {
-	int     len;
+	int		len;
 	int		i;
-	char    *name;
+	char	*name;
 
 	len = 0;
 	i = 0;
@@ -217,30 +218,30 @@ void    add_to_exported_env(char *arg, t_ms *ms)
 
 void    handle_export(char **args, t_ms *ms) /// args are for exapmle args[0]="export" args[1]="HEY=hi" args[2]=NULL
 {
-    int     arg_count;
+	int     arg_count;
 	char	*expanded;
 
-    ms->exit_status = 0;
-    arg_count = 0;
-    if (!args)
-        return;
+	ms->exit_status = 0;
+	arg_count = 0;
+	if (!args)
+		return;
 	if (args[0] && ft_strcmp(args[0], "export") != 0)
 		return;
-    while (args[arg_count])
-        arg_count++;
-    if (arg_count == 1)
-    {
-        sort_exported_alphaorder(ms);
-        print_exported(ms);
-    }
-    else
-    {
+	while (args[arg_count])
+		arg_count++;
+	if (arg_count == 1)
+	{
+		sort_exported_alphaorder(ms);
+		print_exported(ms);
+	}
+	else
+	{
 		expanded = handle_expansion(args[1], ms);
 		if (ft_strchr(expanded, '=')) //add to env and exported
 			add_to_exported_env(expanded, ms);
 		else //add only to exported if there is no = mark
 			update_exported(expanded, ms);
-        sort_exported_alphaorder(ms);
-    }
+		sort_exported_alphaorder(ms);
+	}
 }
 

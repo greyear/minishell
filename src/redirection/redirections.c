@@ -46,7 +46,7 @@ void handle_heredoc(char *limiter, t_ms *ms)
     len = 0;
     temp_fd = open(".heredoc_tmp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
     if (temp_fd < 0)
-        exit(1);
+        exit(1); //I guess we cannot just exit without an error msg and cleaning?
     while (1)
     {
         write(STDOUT_FILENO, "heredoc> ", 9);
@@ -72,7 +72,7 @@ void handle_heredoc(char *limiter, t_ms *ms)
     close(temp_fd);
 }
 
-static void	check_access(char *checking, int c)
+static void	check_access(char *checking, int c) //mb change c to enum with like "read/write" options?
 {
 	if (c == 1)
 	{
