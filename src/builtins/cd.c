@@ -27,7 +27,9 @@
 
 */
 
-#include "seela.h"
+#include "../../include/minishell.h"
+
+void	update_env_var(t_ms *ms, char *key, char *new_value);
 
 static char	*get_cd_target(t_ms *ms, char **args)
 {
@@ -89,7 +91,7 @@ static void	add_to_env_end(t_ms *ms, char *new_env_entry, int i)
 	free(new_envp);
 }
 
-static void	update_env_var(t_ms *ms, char *key, char *new_value)
+void	update_env_var(t_ms *ms, char *key, char *new_value) //was static but it was called from another file
 {
 	int		i;
 	int		len;

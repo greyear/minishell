@@ -31,3 +31,30 @@ t_cmd	*clean_cmd_list(t_cmd **first)
 	*first = NULL;
 	return (NULL);
 }
+
+t_block	*clean_block(t_block *block)
+{
+	if (!block)
+		return (NULL);
+	//add fields
+	free(block);
+	return (NULL);
+}
+
+t_block	*clean_block_list(t_block **first)
+{
+	t_block	*cur;
+	t_block	*next;
+
+	if (!first || !*first)
+		return (NULL);
+	cur = *first;
+	while (cur)
+	{
+		next = cur->next;
+		clean_block(cur);
+		cur = next;
+	}
+	*first = NULL;
+	return (NULL);
+}

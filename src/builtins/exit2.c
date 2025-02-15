@@ -1,4 +1,4 @@
-#include "seela.h"
+#include "../../include/minishell.h"
 
 static int	error_found(int *error)
 {

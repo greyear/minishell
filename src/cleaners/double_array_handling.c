@@ -1,15 +1,16 @@
-#include "seela.h"
+//#include "seela.h"
+#include "../../include/minishell.h"
 
 void    print_array(char **m)
 {
-    int     i;
+	int	i;
 
-    i = 0;
-    while (m[i])
-    {
-        printf("%s\n", m[i]);
-        i++;
-    }
+	i = 0;
+	while (m[i])
+	{
+		printf("%s\n", m[i]);
+		i++;
+	}
 }
 
 void	ft_free_map(char **map)
@@ -32,15 +33,15 @@ void	ft_free_map(char **map)
 char	**copy_map(char **original_map)
 {
 	char	**new_map;
-    int     i;
+	int		i;
 
-    i = 0;
-    while (original_map[i])
-        i++;
+	i = 0;
+	while (original_map[i])
+		i++;
 	new_map = malloc(sizeof(char *) * (i + 1));
 	if (!new_map)
 		return (NULL);
-    i = 0;
+	i = 0;
 	while (original_map[i])
 	{
 		new_map[i] = ft_strdup(original_map[i]);

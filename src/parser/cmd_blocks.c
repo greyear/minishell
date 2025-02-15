@@ -1,6 +1,7 @@
 
 #include "../../include/minishell.h"
 
+//what if the very first block starts from | symbol?
 int	check_block(t_token *start, t_token *end, int *err_flag) //check without
 {
 	t_token	*cur;
@@ -8,7 +9,7 @@ int	check_block(t_token *start, t_token *end, int *err_flag) //check without
 	cur = start;
 	while (cur != end)
 	{
-		if (!(cur->type == WORD || is_redirect(cur->type)))
+		if (!(cur->type == WORD || is_redirect(cur->type) || cur->type == DUMMY)) //dummy?
 		{
 			*err_flag = 1; //save place?
 			return (1);
@@ -53,7 +54,7 @@ t_block	*create_blocks_list(t_token *start, t_token *end, int *err_flag)
 
 	first_block = NULL;
 	cur_token = start;
-	while ()
+	while (cur_token->next && cur_token != end) //check r
 	{
 		if (cur_token->type == PIPE)
 		{
@@ -62,10 +63,13 @@ t_block	*create_blocks_list(t_token *start, t_token *end, int *err_flag)
 		}
 		cur_token = cur_token->next;
 		//err_flag check
+		if (*err_flag)
+			return (clean_block_list(&first_block));
 	}
-
+	first_block = create_block(start, cur_token->next, first_block, err_flag);
 	return (first_block);
 }
+
 
 /*
 struct t_command (cmd_name, cmd_ar, red_in, red_out, index, next)
