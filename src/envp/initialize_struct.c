@@ -1,7 +1,7 @@
 #include "../../include/minishell.h"
 
 
-char	**make_args(char *cmd)
+char	**make_args(char *cmd, char *name)
 {
 	char	**args;
 
@@ -14,7 +14,7 @@ char	**make_args(char *cmd)
 		ft_free_map(args);
 		return (NULL);
 	}
-	args[1] = ft_strdup("OLDPWD");
+	args[1] = ft_strdup(name);
 	if (!args[1])
 	{
 		ft_free_map(args);
@@ -30,12 +30,12 @@ int	handle_oldpwd(t_ms *ms)
 {
 	char	**args;
 
-	args = make_args("unset");
+	args = make_args("unset", "OLDPWD");
 	if (!args)
 		return (1);
 	handle_unset(args, ms);
 	ft_free_map(args);
-	args = make_args("export");
+	args = make_args("export", "OLDPWD");
 	if (!args)
 		return (1);
 	handle_export(args, ms);
