@@ -52,7 +52,7 @@ static char	*get_cd_target(t_ms *ms, char **args)
 	return (ft_strdup(args[1]));
 }
 
-static void	update_cd_env(t_ms *ms, char *pwd_now)
+static void	update_cd_env(t_ms *ms, char *pwd_before)
 {
 	char cwd[1024];
 	char	*current_pwd;
@@ -72,7 +72,7 @@ static void	update_cd_env(t_ms *ms, char *pwd_now)
 	if (current_pwd && *current_pwd != '\0')
 		update_env_var(ms, "OLDPWD=", current_pwd);
 	else
-		update_env_var(ms, "OLDPWD=", pwd_now);
+		update_env_var(ms, "OLDPWD=", pwd_before);
 	// If PWD is empty or not set, consider current directory as the new PWD
 	update_env_var(ms, "PWD=", cwd);
 }
@@ -102,6 +102,22 @@ void	update_env_var(t_ms *ms, char *key, char *new_value)
 	}
 }
 
+static void	add_oldpwd_first_time(t_ms *ms, char *pwd_before)
+{
+	char	**args;
+	char	*oldpwd;
+	
+	oldpwd = ft_strjoin("OLDPWD=", pwd_before);
+	if (!oldpwd)
+		return;
+	args = make_args("export", oldpwd);
+	if (!args)
+		return;
+	handle_export(args, ms);
+	ms->oldpwd_check = 0;
+}
+
+
 void	handle_cd(t_ms *ms, char **args)
 {
 	char	*target_dir;
@@ -128,4 +144,6 @@ void	handle_cd(t_ms *ms, char **args)
 	}
 	free(target_dir);
 	update_cd_env(ms, cwd);
+	if (ms->oldpwd_check == 1)
+		add_oldpwd_first_time(ms, cwd);
 }
