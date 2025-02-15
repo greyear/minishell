@@ -15,7 +15,10 @@ in env handlind, call handle_envp(t_ms *ms) function with the ms struct
 in export handling, call handle_exported(char **args, t_ms *ms) function
 with args and the ms struct
 args are for example args[0]="export" args[1]="HEY=hi" args[2]=NULL
+
+EDGE CASES EXPLAINED IN DOCS
 */
+
 #include "seela.h"
 
 void    update_exported(char *arg, t_ms *ms)
@@ -41,6 +44,8 @@ void    update_exported(char *arg, t_ms *ms)
     while (ms->exported[i])
         i++;
     temp = malloc(sizeof(char *) * (i + 2));
+	if (!temp)
+		return;
     i = 0;
     while (ms->exported[i])
     {
@@ -50,16 +55,27 @@ void    update_exported(char *arg, t_ms *ms)
                 check = 1;
         }
         temp[i] = ft_strdup(ms->exported[i]);
+		if (!temp[i])
+		{
+			ft_free_map(temp);
+			return;
+		}
         i++;
     }
     if (check == 0)
     {
         temp[i] = ft_strdup(arg);
-        i++;
+		if (!temp[i])
+		{
+			ft_free_map(temp);
+			return;
+		}
+		i++;
     }
     temp[i] = NULL;
+	ft_free_map(ms->exported);
     ms->exported = copy_map(temp);
-    free(temp);
+    ft_free_map(temp);
 }
 
 void    add_to_exported(char *arg, t_ms *ms, char *name, int len)
@@ -73,14 +89,17 @@ void    add_to_exported(char *arg, t_ms *ms, char *name, int len)
     while (ms->exported[i])
         i++;
     temp = malloc(sizeof(char *) * (i + 2));
+	if (!temp)
+		return;
     i = 0;
     while (ms->exported[i])
     {
         if (ft_strncmp(ms->exported[i], name, len) == 0)
         {
-            if (ms->envp[i][len] && ms->envp[i][len] == '=')
+            if ((ms->exported[i][len] && ms->exported[i][len] == '=')
+				|| ms->exported[i][len] == '\0')
             {
-                temp[i] = ft_strdup(arg);
+				temp[i] = ft_strdup(arg);
                 check = 1;
             }
             else
@@ -88,16 +107,27 @@ void    add_to_exported(char *arg, t_ms *ms, char *name, int len)
         }
         else
             temp[i] = ft_strdup(ms->exported[i]);
-        i++;
+        if (!temp[i])
+		{
+			ft_free_map(temp);
+			return;
+		}
+		i++;
     }
     if (check == 0)
     {
         temp[i] = ft_strdup(arg);
-        i++;
+		if (!temp[i])
+		{
+			ft_free_map(temp);
+			return;
+		}
+		i++;
     }
     temp[i] = NULL;
+	ft_free_map(ms->exported);
     ms->exported = copy_map(temp);
-    free(temp);
+    ft_free_map(temp);
 }
 
 void    add_to_env(char *arg, t_ms *ms, char *name, int len)
@@ -111,6 +141,8 @@ void    add_to_env(char *arg, t_ms *ms, char *name, int len)
     while (ms->envp[i])
         i++;
     temp = malloc(sizeof(char *) * (i + 2));
+	if (!temp)
+		return;
     i = 0;
     while (ms->envp[i])
     {
@@ -126,16 +158,27 @@ void    add_to_env(char *arg, t_ms *ms, char *name, int len)
         }
         else
             temp[i] = ft_strdup(ms->envp[i]);
+		if (!temp[i])
+		{
+			ft_free_map(temp);
+			return;
+		}
         i++;
     }
     if (check == 0)
     {
         temp[i] = ft_strdup(arg);
-        i++;
+        if (!temp[i])
+		{
+			ft_free_map(temp);
+			return;
+		}
+		i++;
     }
     temp[i] = NULL;
+	ft_free_map(ms->envp);
     ms->envp = copy_map(temp);
-    free(temp);
+    ft_free_map(temp);
 }
 
 void    add_to_exported_env(char *arg, t_ms *ms)
@@ -151,7 +194,9 @@ void    add_to_exported_env(char *arg, t_ms *ms)
 	if (len == 0)
 		return;
 	name = malloc(sizeof(char) * (len + 1));
-	name = ft_strncpy(name, arg, len);
+	if (!name)
+		return;
+	ft_strncpy(name, arg, len);
 	if (name[0] >= '0' && name[0] <= '9')
 	{
 		free(name);
@@ -174,11 +219,14 @@ void    add_to_exported_env(char *arg, t_ms *ms)
 void    handle_export(char **args, t_ms *ms) /// args are for exapmle args[0]="export" args[1]="HEY=hi" args[2]=NULL
 {
     int     arg_count;
+	char	*expanded;
 
     ms->exit_status = 0;
     arg_count = 0;
     if (!args)
         return;
+	if (args[0] && ft_strcmp(args[0], "export") != 0)
+		return;
     while (args[arg_count])
         arg_count++;
     if (arg_count == 1)
@@ -188,15 +236,12 @@ void    handle_export(char **args, t_ms *ms) /// args are for exapmle args[0]="e
     }
     else
     {
-        if (ft_strchr(args[1], '=') == 0) // if there is no =, then we just add value to export if dont exist already
-        {
-            update_exported(args[1], ms);
-            sort_exported_alphaorder(ms);
-        }
-        else //add value to envp and exported
-        {
-            add_to_exported_env(args[1], ms);
-            sort_exported_alphaorder(ms);
-        }
+		expanded = handle_expansion(args[1], ms);
+		if (ft_strchr(expanded, '=')) //add to env and exported
+			add_to_exported_env(expanded, ms);
+		else //add only to exported if there is no = mark
+			update_exported(expanded, ms);
+        sort_exported_alphaorder(ms);
     }
 }
+
