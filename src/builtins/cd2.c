@@ -1,13 +1,15 @@
 
 #include "../../include/minishell.h"
 
-char	*get_home_directory(t_ms *ms)
+char	*get_home_directory(t_ms *ms, int flag)
 {
 	char *temp;
 
 	temp = get_env_value("HOME", ms->envp);
 	if (!temp)
 	{
+		if (flag == 1)
+			return (ft_strdup(getenv("HOME")));
 		ft_putstr_fd("bash: cd: HOME not set\n", 2);
         ms->exit_status = 1;
         return (NULL);
@@ -46,7 +48,13 @@ char	*get_oldpwd_directory(t_ms *ms)
 	char	cwd[1024];
 
 	target = get_env_value("OLDPWD", ms->envp);
-	if (!target || *target == '\0')
+	if (!target)
+	{
+		ft_putstr_fd("bash: cd: OLDPWD not set\n", 2);
+		ms->exit_status = 1;
+		return (NULL);
+	}
+	if (*target == '\0')
     {
         ft_putstr_fd("\n", 1);  // Print an empty line when OLDPWD is not set
         current_pwd = get_env_value("PWD", ms->envp);
@@ -68,7 +76,7 @@ char	*get_oldpwd_directory(t_ms *ms)
 	return (return_target(ms, target));
 }
 
-char	*get_parent_directory(void)
+char	*get_parent_directory(t_ms *ms)
 {
 	char cwd[1024];
 	char *parent_dir;
@@ -76,6 +84,7 @@ char	*get_parent_directory(void)
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
 		perror("cd: getcwd failed");
+		ms->exit_status = 1;
 		return (NULL);
 	}
 	parent_dir = ft_strrchr(cwd, '/');

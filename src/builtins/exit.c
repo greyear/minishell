@@ -22,6 +22,12 @@ edge cases / LLONG_MAX etc explained in google docs !!!
 
 #include "../../include/minishell.h"
 
+void	free_struct(t_ms *ms)
+{
+	ft_free_array(ms->envp);
+	ft_free_array(ms->exported);
+}
+
 static void	exit_shell(long long exit_nbr, int error, char **array)
 {
 	if (error == 1)
@@ -54,8 +60,10 @@ void	check_exit(char **array, t_ms *ms)
 			ms->exit_status = 1;
 			return;
 		}
+		free_struct(ms);
 		exit_nbr = ft_strtoll(array[1], &error);	// If non-numeric or out of range, print error and exit(2)
 		exit_shell(exit_nbr, error, array);
 	}
+	free_struct(ms);
 	exit(127);
 }

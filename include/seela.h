@@ -45,9 +45,9 @@ void	handle_cd(t_ms *ms, char **args); //CD HANDLING
 
 //cd2.c
 char	*build_relative_path(char *target, char *cwd);
-char	*get_parent_directory(void);
+char	*get_parent_directory(t_ms *ms);
 char	*get_oldpwd_directory(t_ms *ms);
-char	*get_home_directory(t_ms *ms);
+char	*get_home_directory(t_ms *ms, int flag);
 
 //cd_error.c
 void	print_cd_error(char *target_dir);
@@ -58,6 +58,7 @@ char	*get_env_value(char *key, char **envp);
 
 //exit.c
 void	check_exit(char	**array, t_ms *ms); //HANDLES EXITING
+void	free_struct(t_ms *ms); //FREES STRUCT THAT WAS INITIALIZED AND MALLOCED
 
 //exit2.c
 long long	ft_strtoll(char *str, int *error);
