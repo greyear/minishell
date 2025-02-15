@@ -53,7 +53,7 @@ t_ms	*initialize_struct(char **envp)
 	ms->exit_status = 0;
 	ms->envp = copy_map(envp);
 	ms->exported = copy_map(envp);
-	ms->check_oldpwd = 1;
+	ms->oldpwd_check = 1;
 	if (handle_oldpwd(ms) == 1)
 		return (NULL);
 	return (ms);
