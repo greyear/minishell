@@ -15,38 +15,42 @@ void	print_error3(t_ms *ms, char *arg)
 	ft_putstr_fd("': not a valid identifier\n", 2);
 }
 
-void    print_exported(t_ms *ms)
+static void print_var(char *var)
 {
-    int     i;
-    int     x;
+    int x;
 
-    i = 0;
     x = 0;
+	while (var[x])
+    {
+        if (var[x] != '=')
+        {
+            printf("%c", var[x]);
+        }
+        else
+        {
+            printf("%c\"", var[x]);
+            x++;
+            while (var[x])
+            {
+                printf("%c", var[x]);
+                x++;
+            }
+            printf("\"");
+            break;
+        }
+        x++;
+    }
+}
+
+void print_exported(t_ms *ms)
+{
+    int i;
+
+	i = 0;
     while (ms->exported[i])
     {
-        x = 0;
         printf("declare -x ");
-        while (ms->exported[i][x])
-        {
-            if (ms->exported[i][x] != '=')
-            {
-                printf("%c", ms->exported[i][x]);
-                x++;
-            }
-            else
-            {
-                printf("%c", ms->exported[i][x]);
-                x++;
-                printf("\"");
-                while (ms->exported[i][x])
-                {
-                    printf("%c", ms->exported[i][x]);
-                    x++;
-                }
-                printf("\"");
-                break;
-            }
-        }
+        print_var(ms->exported[i]);  // Printing the variable
         printf("\n");
         i++;
     }
