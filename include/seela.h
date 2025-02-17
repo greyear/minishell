@@ -38,7 +38,7 @@ void	rm_from_env_ex(char ***env, char *name, int len, int flag);
 
 //helper_functions.c
 int	check_env(char *env, char *name, int len, int flag);
-char	**allocate_temp_env(char **env);
+char	**allocate_temp_env(char **env, int x);
 
 //key_handling.c
 int		check_if_valid_key(char *name); 
@@ -47,12 +47,12 @@ char	*extract_key(char *arg, int len);
 
 //double_array_handling.c
 char	**copy_map(char **original_map); //COPYING **ARRAYS
-void	ft_free_map(char **map) // FREEING **ARRAYS
+void	ft_free_map(char **map); // FREEING **ARRAYS
 void    print_array(char **a); // PRINTING **ARRAYS
 
 //cd.c
 void	handle_cd(t_ms *ms, char **args); //CD HANDLING
-void	update_env_var(t_ms *ms, char *key, char *new_value)
+void	update_env_var(t_ms *ms, char *key, char *new_value);
 
 //cd2.c
 char	*build_relative_path(char *target, char *cwd);
