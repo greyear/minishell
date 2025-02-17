@@ -130,13 +130,15 @@ void	handle_unset(char **args, t_ms *ms)
 		else
 		{
 			name = malloc(sizeof(char) * (len + 1));
+			if (!name)
+				return;
 			ft_strncpy(name, args[i], len);
 			if (check_if_valid_key(name, args, i, ms) == 0)
 			{
 				rm_from_export(ms, name, len);
 				rm_from_env(ms, name, len);
-				free(name);
 			}
+			free(name);
 		}
 		i++;
 		len = 0;
