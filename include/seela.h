@@ -33,8 +33,15 @@ void	update_env_var(t_ms *ms, char *key, char *new_value);
 
 //unset.c
 void	handle_unset(char **args, t_ms *ms); //UNSET HANDLING
-//static void	rm_from_env(t_ms *ms, char *name, int len);
-//static void	rm_from_export(t_ms *ms, char *name, int len);
+
+//unset2.c
+void	rm_from_env_ex(char ***env, char *name, int len, int flag);
+
+//key_handling.c
+void	process_unset_entry(char **args, int i, t_ms *ms, int len);
+int		get_key_length(char *arg);
+char	*extract_key(char *arg, int len);
+
 
 //double_array_handling.c
 char	**copy_map(char **original_map);
