@@ -96,6 +96,6 @@ void    execute_cmd(int num_cmds, char **argv, t_ms *ms); //PIPE AND EXECVE HAND
 void	redirection_outfile_emptied(char *file); //< HANDLING
 void	redirection_infile(char *file); //> HANDLING
 void	redirection_outfile_append(char *file); //<< HANDLING
-void    handle_heredoc(char *limiter, t_ms *ms); //>> HANDLNG
+void    handle_heredoc(char *limiter); //>> HANDLNG
 
 #endif
