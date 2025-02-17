@@ -46,7 +46,7 @@ static void    sort_exported_alphaorder(t_ms *ms)
     }
 }
 
-char	**copy_to_temp(char *arg, char ***env, char *name, int *flag)
+static char	**copy_to_temp(char *arg, char ***env, char *name, int *flag)
 {
 	char	**temp;
 	int		i;
@@ -77,7 +77,7 @@ char	**copy_to_temp(char *arg, char ***env, char *name, int *flag)
 	return (temp);
 }
 
-void	change_values(char *arg, char ***env, char *name, int flag)
+static void	change_values(char *arg, char ***env, char *name, int flag)
 {
 	char	**temp;
 	int		i;
@@ -103,7 +103,7 @@ void	change_values(char *arg, char ***env, char *name, int flag)
 	*env = temp;
 }
 
-void    change_values_env_ex(char *arg, t_ms *ms)
+static void    change_values_env_ex(char *arg, t_ms *ms)
 {
     int     len;
     char    *name;
