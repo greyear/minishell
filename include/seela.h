@@ -37,8 +37,12 @@ void	handle_unset(char **args, t_ms *ms); //UNSET HANDLING
 //unset2.c
 void	rm_from_env_ex(char ***env, char *name, int len, int flag);
 
+//helper_functions.c
+int	check_env(char *env, char *name, int len, int flag);
+char	**allocate_temp_env(char **env);
+
 //key_handling.c
-void	process_unset_entry(char **args, int i, t_ms *ms, int len);
+int		check_if_valid_key(char *name);
 int		get_key_length(char *arg);
 char	*extract_key(char *arg, int len);
 
