@@ -29,8 +29,6 @@
 
 #include "../../include/minishell.h"
 
-void	update_env_var(t_ms *ms, char *key, char *new_value);
-
 static char	*get_cd_target(t_ms *ms, char **args)
 {
 	char	cwd[1024];
