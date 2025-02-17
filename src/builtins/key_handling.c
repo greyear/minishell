@@ -22,17 +22,20 @@ char	*extract_key(char *arg, int len)
 	return (name);
 }
 
-void	process_unset_entry(char **args, int i, t_ms *ms, int len)
+int		check_if_valid_key(char *name)
 {
-	char	*name;
+	int		x;
 
-	name = extract_key(args[i], len);
-	if (!name)
-		return;
-	if (check_if_valid_key(name, args, i, ms) == 0)
+	x = 0;
+	if (!name || !*name)
+		return (1);
+	if (name[0] >= '0' && name[0] <= '9')
+		return (1);
+	while (name[x])
 	{
-		rm_from_env_ex(&ms->exported, name, len, 1);
-		rm_from_env_ex(&ms->envp, name, len, 0);
+		if (!ft_isalnum(name[x]) && name[x] != '_')
+			return (1);
+		x++;
 	}
-	free(name);
+	return (0);
 }
