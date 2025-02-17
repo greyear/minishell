@@ -80,6 +80,7 @@ char	*expand_key(char **envp, char *key, int len, t_ms *ms);
 
 //initialize_struct.c
 t_ms    *initialize_struct(char **envp);
+char	**make_args(char *cmd, char *name);
 
 //cmd_errormsg_free.c  (FOR PIPE AND EXECUTION ERRORS)
 void	ft_print_err(char *cmd, int c);
