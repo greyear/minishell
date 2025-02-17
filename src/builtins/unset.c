@@ -33,11 +33,14 @@ static void	process_unset_entry(char **args, int i, t_ms *ms, int len)
 	name = extract_key(args[i], len);
 	if (!name)
 		return;
-	if (check_if_valid_key(name, args, i, ms) == 0)
+	if (check_if_valid_key(name) == 1)
 	{
-		rm_from_env_ex(&ms->exported, name, len, 1);
-		rm_from_env_ex(&ms->envp, name, len, 0);
+		print_unset_error(args, i, ms);
+		free(name);
+		return;
 	}
+	rm_from_env_ex(&ms->exported, name, len, 1);
+	rm_from_env_ex(&ms->envp, name, len, 0);
 	free(name);
 }
 
