@@ -6,14 +6,14 @@ static char	**filter_env_entries(char **env, char *name, int len, int flag)
 	int		i;
 	int		x;
 
-	temp = allocate_temp_env(env);
+	temp = allocate_temp_env(env, 0);
 	if (!temp)
 		return (NULL);
 	i = 0;
 	x = 0;
 	while (env[i])
 	{
-		if (should_skip(env[i], name, len, flag))
+		if (check_env(env[i], name, len, flag))
 		{
 			i++;
 			continue;
