@@ -1,6 +1,6 @@
 #include "../../include/minishell.h"
 
-void	add_to_end(char ***ex, char ***temp, char *key, int i)
+static void	add_to_end(char ***ex, char ***temp, char *key, int i)
 {
 	(*temp)[i] = ft_strdup(key);
 	if (!(*temp)[i])
@@ -14,7 +14,7 @@ void	add_to_end(char ***ex, char ***temp, char *key, int i)
 	*ex = *temp;
 }
 
-void	copy_exported(char *key, char ***ex, char ***temp, int len)
+static void	copy_exported(char *key, char ***ex, char ***temp, int len)
 {
 	int	i;
 	int	check;
