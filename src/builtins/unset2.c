@@ -6,7 +6,8 @@ static int	should_skip(char *env, char *name, int len, int flag)
 		return (0);
 	if (flag == 0 && (env[len] && env[len] == '='))
 		return (1);
-	if (flag == 1 && (env[len] == '=' || env[len] == '\0'))
+	if (flag == 1 && env[len]
+		&& (env[len] == '=' || env[len] == '\0'))
 		return (1);
 	return (0);
 }
