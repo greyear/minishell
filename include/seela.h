@@ -79,7 +79,6 @@ char	*handle_expansion(char *args, t_ms *ms); //ENVIRONMENTAL EXPANSION HANDLNG
 char	*expand_key(char **envp, char *key, int len, t_ms *ms);
 
 //initialize_struct.c
-//void    initialize_struct(char **envp); how do you use it?
 t_ms    *initialize_struct(char **envp);
 
 //cmd_errormsg_free.c  (FOR PIPE AND EXECUTION ERRORS)
@@ -97,6 +96,6 @@ void    execute_cmd(int num_cmds, char **argv, t_ms *ms); //PIPE AND EXECVE HAND
 void	redirection_outfile_emptied(char *file); //< HANDLING
 void	redirection_infile(char *file); //> HANDLING
 void	redirection_outfile_append(char *file); //<< HANDLING
-void    handle_heredoc(char *limiter); //>> HANDLNG
+void    handle_heredoc(char *limiter, t_ms *ms); //>> HANDLNG
 
 #endif
