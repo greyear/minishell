@@ -26,6 +26,8 @@ static void	rm_from_export(t_ms *ms, char *name, int len)
 	while (ms->exported[i])
 		i++;
 	temp = malloc(sizeof(char *) * (i + 1));
+	if (!temp)
+		return;
 	i = 0;
 	while (ms->exported[i])
     {
@@ -54,6 +56,8 @@ static void	rm_from_env(t_ms *ms, char *name, int len)
 	while (ms->envp[i])
 		i++;
 	temp = malloc(sizeof(char *) * (i + 1));
+	if (!temp)
+		return;
 	i = 0;
 	while (ms->envp[i])
     {
@@ -126,7 +130,7 @@ void	handle_unset(char **args, t_ms *ms)
 		else
 		{
 			name = malloc(sizeof(char) * (len + 1));
-			name = ft_strncpy(name, args[i], len);
+			ft_strncpy(name, args[i], len);
 			if (check_if_valid_key(name, args, i, ms) == 0)
 			{
 				rm_from_export(ms, name, len);
