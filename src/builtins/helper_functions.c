@@ -12,7 +12,7 @@ int	check_env(char *env, char *name, int len, int flag)
 	return (0);
 }
 
-char	**allocate_temp_env(char **env)
+char	**allocate_temp_env(char **env, int x)
 {
 	char	**temp;
 	int	i;
@@ -22,7 +22,7 @@ char	**allocate_temp_env(char **env)
 		i++;
 	if (i == 0)
 		return (NULL);
-	temp = malloc(sizeof(char *) * i);
+	temp = malloc(sizeof(char *) * (i + x));
 	if (!temp)
 		return (NULL);
 	return (temp);
