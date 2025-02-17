@@ -1,14 +1,14 @@
 //#include "seela.h"
 #include "../../include/minishell.h"
 
-void    print_array(char **m)
+void    print_array(char **a)
 {
 	int	i;
 
 	i = 0;
-	while (m[i])
+	while (a[i])
 	{
-		printf("%s\n", m[i]);
+		printf("%s\n", a[i]);
 		i++;
 	}
 }
