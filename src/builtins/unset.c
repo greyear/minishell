@@ -48,6 +48,10 @@ void	handle_unset(char **args, t_ms *ms)
 
 	i = 1;
 	ms->exit_status = 0;
+	if (!args || !*args)
+		return;
+	if (ft_strcmp(args[0], "unset") != 0)
+		return;
 	while (args[i])
 	{
 		len = get_key_length(args[i]);
@@ -60,4 +64,3 @@ void	handle_unset(char **args, t_ms *ms)
 		i++;
 	}
 }
-
