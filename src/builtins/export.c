@@ -145,13 +145,10 @@ void    handle_export(char **args, t_ms *ms) /// args are for exapmle args[0]="e
     }
     else
     {
-		expanded = handle_expansion(args[1], ms);
-		if (!expanded)
-			return;
-		if (ft_strchr(expanded, '=')) //add to env and exported
-			change_values_env_ex(expanded, ms);
+		if (ft_strchr(args[1], '=')) //add to env and exported
+			change_values_env_ex(args[1], ms);
 		else //add only to exported if there is no = mark
-			add_to_exported(expanded, ms);
+			add_to_exported(args[1], ms);
         sort_exported_alphaorder(ms);
     }
 }
