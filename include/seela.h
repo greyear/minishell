@@ -17,6 +17,9 @@ typedef struct s_ms
 	int		oldpwd_check; // Check if OLDPWD is added first time around
 } t_ms;
 
+//echo.c
+void	handle_echo(char **args, t_ms *ms);
+
 //env.c
 void    handle_env(t_ms *ms); //ENV HANDLING
 
