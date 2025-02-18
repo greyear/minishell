@@ -6,7 +6,7 @@ static char	**filter_env_entries(char **env, char *name, int len, int flag)
 	int		i;
 	int		x;
 
-	temp = allocate_temp_env(env, 0);
+	temp = allocate_temp_env(env, 1);
 	if (!temp)
 		return (NULL);
 	i = 0;
