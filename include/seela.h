@@ -26,6 +26,7 @@ void	print_error3(t_ms *ms, char *arg);
 
 //export2.c
 void	add_to_exported(char *key, t_ms *ms);
+void    sort_exported_alphaorder(t_ms *ms);
 
 //export.c
 void    handle_export(char **args, t_ms *ms); //EXPORT HANDLING
