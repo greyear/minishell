@@ -21,31 +21,6 @@ EDGE CASES EXPLAINED IN DOCS
 
 #include "../../include/minishell.h"
 
-static void    sort_exported_alphaorder(t_ms *ms)
-{
-    int     i;
-    int     j;
-    char    *temp;
-
-    i = 0;
-    j = 0;
-    while (ms->exported[i])
-    {
-        j = i + 1;
-        while (ms->exported[j])
-        {
-            if (ft_strcmp(ms->exported[i], ms->exported[j]) > 0)
-            {
-                temp = ms->exported[i];
-                ms->exported[i] = ms->exported[j];
-                ms->exported[j] = temp;
-            }
-            j++;
-        }
-        i++;
-    }
-}
-
 static char	**copy_to_temp(char *arg, char ***env, char *name, int *flag)
 {
 	char	**temp;
@@ -125,10 +100,26 @@ static void    change_values_env_ex(char *arg, t_ms *ms)
 	free(name);
 }
 
+
+static void	handle_export2(char **args, t_ms *ms)
+{
+	int		i;
+
+	i = 1;
+	while (args[i])
+	{
+		if (ft_strchr(args[i], '=')) //add to env and exported
+			change_values_env_ex(args[i], ms);
+		else //add only to exported if there is no = mark
+			add_to_exported(args[i], ms);
+        sort_exported_alphaorder(ms);
+		i++;
+	}
+}
+
 void    handle_export(char **args, t_ms *ms) /// args are for exapmle args[0]="export" args[1]="HEY=hi" args[2]=NULL
 {
     int     arg_count;
-	char	*expanded;
 
     ms->exit_status = 0;
     arg_count = 0;
@@ -142,14 +133,7 @@ void    handle_export(char **args, t_ms *ms) /// args are for exapmle args[0]="e
     {
         sort_exported_alphaorder(ms);
         print_exported(ms);
+		return;
     }
-    else
-    {
-		if (ft_strchr(args[1], '=')) //add to env and exported
-			change_values_env_ex(args[1], ms);
-		else //add only to exported if there is no = mark
-			add_to_exported(args[1], ms);
-        sort_exported_alphaorder(ms);
-    }
+	handle_export2(args, ms);
 }
-
