@@ -17,11 +17,8 @@ and the t_ms *ms is the struct which holds the envp and exported
 
 static void	print_unset_error(char **args, int i, t_ms *ms)
 {
-	char	*err_out;
-
-	err_out = ft_strjoin("bash: unset: '", args[i]);
-	ft_putstr_fd(err_out, 2);
-	free(err_out);
+	ft_putstr_fd("bash: unset: '", 2);
+	ft_putstr_fd(args[i], 2);
 	ft_putstr_fd("': not a valid indentifier\n", 2);
 	ms->exit_status = 1;
 }
