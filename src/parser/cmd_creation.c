@@ -50,6 +50,25 @@ int	put_cmg_args(t_cmd *cmd, t_token *start, t_token *end)
 	return (0);
 }
 
+void	redir_in_block(t_block *block, t_cmd *cmd) //, t_ms *ms)
+{
+	t_token	*cur;
+
+	cur = block->start;
+	while (cur != block->end)
+	{
+		if (is_redirect(cur->type)) //what about heredoc??
+		{
+			if (cur->type == IN)
+				put_infile_fd(cur, cmd);
+			else if (cur->type == OUT || cur->type == APPEND)
+				put_outfile_fd(cur, cmd);
+			//if smth failed here (cmd->infile || cmd->outfile == NO_FD) we save exit value for the process
+		}
+		cur = cur->next;
+	}
+}
+
 t_cmd	*create_new_cmd(t_block *block, int num, t_ms *ms)
 {
 	t_cmd	*new;
@@ -67,7 +86,7 @@ t_cmd	*create_new_cmd(t_block *block, int num, t_ms *ms)
 	if (put_cmg_args(new, block->start, block->end))
 		return (clean_cmd(new));
 	new->name = new->args[0];
-	//redir?
+	redir_in_block(block, new);
 	return (new);
 }
 
