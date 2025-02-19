@@ -36,7 +36,7 @@ CMD_ARRAY[0] = "CAT", CMD_ARRAY[1] = "LS -LA", CMD_ARRAY[2] = "GREP ERROR", CMD_
 
 #include "seela.h"
 
-void handle_heredoc(char *limiter, t_ms *ms)
+void handle_heredoc(char *limiter)
 {
     char    buffer[1024];
     size_t  len;
