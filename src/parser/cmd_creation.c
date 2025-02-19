@@ -6,6 +6,8 @@ static void	default_cmd_values(t_cmd *new, int num) //check r
 	new->name = NULL;
 	new->args = NULL;
 	new->num = num;
+	new->infile = DEF;
+	new->outfile = DEF;
 	new->next = NULL;
 	//some other fields
 }

@@ -29,7 +29,7 @@
 # define CMD_EXEC 126
 # define CMD_NF 127
 
-typedef struct s_pipex
+/*typedef struct s_pipex
 {
 	int		argc;
 	char	**argv;
@@ -39,7 +39,7 @@ typedef struct s_pipex
 	int		cmd_num;
 	int		fd[2];
 	int		cur_fd;
-}	t_pipex;
+}	t_pipex;*/
 
 //BNF
 char			*validate_word(char *str, int *err_flag);
@@ -66,6 +66,7 @@ t_token			*delete_whitespace_tokens(t_token *first);
 t_token			*unite_two_word_tokens(t_token *first);
 t_bool			is_redirect(t_token_type type);
 void			flags_for_redirections(t_token *cur);
+void			put_files_for_redirections(t_token *cur);
 
 //Parser
 int				words_in_cmd_block(t_token *start, t_token *end);
@@ -88,6 +89,11 @@ t_bool			is_envp_symbol(int c);
 t_bool			is_envp_first_symbol(int c);
 t_ms			*initialize_struct(char **envp);
 
+//Redirections
+void			put_infile_fd(t_token *token, t_cmd *cmd);
+void			put_outfile_fd(t_token *token, t_cmd *cmd);
+void			check_access(char *filename, t_oper operation);
+
 /*
 //Pipex
 void	init_p(t_pipex	*p);
@@ -104,11 +110,12 @@ int		length_inside(char *str, t_pipex *p, char *cmd);
 int		word_length(char *str);*/
 
 //Errors
+void			print_file_error(char *file, t_print reason);
 //void	args_number_error(void);
-void	execve_fail(char **path, char **cmd_split, t_pipex **p);
+/*void	execve_fail(char **path, char **cmd_split, t_pipex **p);
 void	cmd_error(char *reason, char *cmd, int exit_code, t_pipex **p);
 void	error_exit_code(char *reason, int exit_code);
-void	error_clean_exit_code(char *reason, int exit_code, t_pipex **p);
+void	error_clean_exit_code(char *reason, int exit_code, t_pipex **p);*/
 
 /*
 //Checks
@@ -116,6 +123,7 @@ void	check_first_file(t_pipex *p);
 void	check_second_file(t_pipex *p);*/
 
 //Cleaners
-void	clean_arr(char ***arr);
+void			clean_arr(char ***arr);
+void			ft_free_map(char **map);
 
 #endif

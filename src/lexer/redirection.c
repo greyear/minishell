@@ -45,3 +45,32 @@ void	flags_for_redirections(t_token *cur)
 			cur = cur->next;
 	}
 }
+
+void	put_files_for_redirections(t_token *cur)
+{
+	t_token	*deleted;
+
+	while (cur)
+	{
+		if (is_redirect(cur->type) && cur->next && cur->next->type == WORD)
+		{
+			deleted = cur->next;
+			cur->ambiguous = cur->next->ambiguous;
+			if (!cur->ambiguous)
+			{
+				cur->file = cur->next->data;
+				if (deleted->file)
+					free(deleted->file);
+			}
+			else
+			{
+				cur->file = cur->next->file; //check it's created
+				free(deleted->data);
+			}
+			cur->quote = cur->next->quote;
+			cur->next = cur->next->next;
+			free(deleted); //we have the node itself and 2 allocated fields
+		} //and we free 2 of them which we don't need
+		cur = cur->next;
+	}
+}
