@@ -100,7 +100,7 @@ void	update_env_var(t_ms *ms, char *key, char *new_value)
 	}
 }
 
-static void	add_oldpwd_first_time(t_ms *ms, char *pwd_before)
+/*static void	add_oldpwd_first_time(t_ms *ms, char *pwd_before)
 {
 	char	**args;
 	char	*oldpwd;
@@ -113,7 +113,7 @@ static void	add_oldpwd_first_time(t_ms *ms, char *pwd_before)
 		return;
 	handle_export(args, ms);
 	ms->oldpwd_check = 0;
-}
+}*/
 
 
 void	handle_cd(t_ms *ms, char **args)
@@ -142,6 +142,6 @@ void	handle_cd(t_ms *ms, char **args)
 	}
 	free(target_dir);
 	update_cd_env(ms, cwd);
-	if (ms->oldpwd_check == 1)
-		add_oldpwd_first_time(ms, cwd);
+	//if (ms->oldpwd_check == 1)
+	//	add_oldpwd_first_time(ms, cwd);
 }
