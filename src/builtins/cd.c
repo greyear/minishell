@@ -29,8 +29,6 @@
 
 #include "../../include/minishell.h"
 
-void	update_env_var(t_ms *ms, char *key, char *new_value);
-
 static char	*get_cd_target(t_ms *ms, char **args)
 {
 	char	cwd[1024];
@@ -52,9 +50,10 @@ static char	*get_cd_target(t_ms *ms, char **args)
 	return (ft_strdup(args[1]));
 }
 
-static void	update_cd_env(t_ms *ms)
+static void	update_cd_env(t_ms *ms, char *pwd_before)
 {
 	char cwd[1024];
+	char	*current_pwd;
 
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
@@ -62,36 +61,21 @@ static void	update_cd_env(t_ms *ms)
 		ms->exit_status = 1;
 		return;
 	}
-	update_env_var(ms, "OLDPWD=", get_env_value("PWD", ms->envp));
+	// fetch the current pwd value to the oldpwd's value
+	// if PWD is unset, then use the actual drectory we were in (pwd_now), before we changed the
+	// directory with chdir n prevous function
+	current_pwd = get_env_value("PWD", ms->envp);
+	if (!current_pwd)
+		current_pwd = "";
+	if (current_pwd && *current_pwd != '\0')
+		update_env_var(ms, "OLDPWD=", current_pwd);
+	else
+		update_env_var(ms, "OLDPWD=", pwd_before);
+	// If PWD is empty or not set, consider current directory as the new PWD
 	update_env_var(ms, "PWD=", cwd);
-	ms->exit_status = 0;
 }
 
-static void	add_to_env_end(t_ms *ms, char *new_env_entry, int i)
-{
-	int		j;
-	char	**new_envp;
-
-	j = 0;
-	new_envp = malloc((i + 2) * sizeof(char *));
-	if (!new_envp)
-	{
-		free(new_env_entry);
-		return;
-	}
-	while (j < i)
-	{
-		new_envp[j] = ms->envp[j];
-		j++;
-	}
-	new_envp[i] = new_env_entry;
-	new_envp[i + 1] = NULL;
-	ft_free_array(ms->envp);
-	ms->envp = copy_map(new_envp);
-	free(new_envp);
-}
-
-void	update_env_var(t_ms *ms, char *key, char *new_value) //was static but it was called from another file
+void	update_env_var(t_ms *ms, char *key, char *new_value)
 {
 	int		i;
 	int		len;
@@ -114,12 +98,28 @@ void	update_env_var(t_ms *ms, char *key, char *new_value) //was static but it wa
 		}
 		i++;
 	}
-	add_to_env_end(ms, new_env_entry, i);
 }
+
+/*static void	add_oldpwd_first_time(t_ms *ms, char *pwd_before)
+{
+	char	**args;
+	char	*oldpwd;
+	
+	oldpwd = ft_strjoin("OLDPWD=", pwd_before);
+	if (!oldpwd)
+		return;
+	args = make_args("export", oldpwd);
+	if (!args)
+		return;
+	handle_export(args, ms);
+	ms->oldpwd_check = 0;
+}*/
+
 
 void	handle_cd(t_ms *ms, char **args)
 {
 	char	*target_dir;
+	char	cwd[1024];
 
 	ms->exit_status = 0;
 	if (ft_strcmp(args[0], "cd") != 0)
@@ -127,6 +127,12 @@ void	handle_cd(t_ms *ms, char **args)
 	target_dir = get_cd_target(ms, args);
 	if (ms->exit_status == 1 || !target_dir)
 		return;
+	if (getcwd(cwd, sizeof(cwd)) == NULL)
+	{
+		free(target_dir);
+		ms->exit_status = 1;
+		return;
+	}
 	if (chdir(target_dir) == -1)
 	{
 		print_cd_error(target_dir);
@@ -135,5 +141,7 @@ void	handle_cd(t_ms *ms, char **args)
 		return;
 	}
 	free(target_dir);
-	update_cd_env(ms);
+	update_cd_env(ms, cwd);
+	//if (ms->oldpwd_check == 1)
+	//	add_oldpwd_first_time(ms, cwd);
 }

@@ -15,126 +15,52 @@ and the t_ms *ms is the struct which holds the envp and exported
 
 #include "../../include/minishell.h"
 
-static void	rm_from_export(t_ms *ms, char *name, int len)
-{
-	int		i;
-	int		x;
-	char	**temp;
-
-	i = 0;
-	x = 0;
-	while (ms->exported[i])
-		i++;
-	temp = malloc(sizeof(char *) * (i + 1));
-	i = 0;
-	while (ms->exported[i])
-    {
-        if (ft_strncmp(name, ms->exported[i], len) == 0)
-        {
-            if (ms->exported[i][len] == '\0' || ms->exported[i][len] == '=')
-				i++;
-        }
-		temp[x] = ft_strdup(ms->exported[i]);
-        x++;
-		i++;
-    }
-	temp[x] = NULL;
-    ms->exported = copy_map(temp);
-    free(temp);
-}
-
-static void	rm_from_env(t_ms *ms, char *name, int len)
-{
-	int		i;
-	int		x;
-	char	**temp;
-
-	i = 0;
-	x = 0;
-	while (ms->envp[i])
-		i++;
-	temp = malloc(sizeof(char *) * (i + 1));
-	i = 0;
-	while (ms->envp[i])
-    {
-        if (ft_strncmp(name, ms->envp[i], len) == 0)
-        {
-            if (ms->envp[i] && ms->envp[i][len] == '=')
-				i++;
-        }
-		temp[x] = ft_strdup(ms->envp[i]);
-        x++;
-		i++;
-    }
-	temp[x] = NULL;
-    ms->envp = copy_map(temp);
-    free(temp);
-}
-
 static void	print_unset_error(char **args, int i, t_ms *ms)
 {
-	char	*err_out;
-
-	err_out = ft_strjoin("bash: unset: '", args[i]);
-	ft_putstr_fd(err_out, 2);
-	free(err_out);
+	ft_putstr_fd("bash: unset: '", 2);
+	ft_putstr_fd(args[i], 2);
 	ft_putstr_fd("': not a valid indentifier\n", 2);
 	ms->exit_status = 1;
 }
 
-static int		check_if_valid_key(char *name, char **args, int i, t_ms *ms)
+static void	process_unset_entry(char **args, int i, t_ms *ms, int len)
 {
-	int		x;
+	char	*name;
 
-	x = 0;
-	if (name[0] >= '0' && name[0] <= '9')
+	name = extract_key(args[i], len);
+	if (!name)
+		return;
+	if (check_if_valid_key(name) == 1)
 	{
-		free(name);
 		print_unset_error(args, i, ms);
-		return (1);
+		free(name);
+		return;
 	}
-	while (name[x])
-	{
-		if (!ft_isalnum(name[x]) && name[x] != '_')
-		{
-			free(name);
-			print_unset_error(args, i, ms);
-			return (1);
-		}
-		x++;
-	}
-	return (0);
+	rm_from_env_ex(&ms->exported, name, len, 1);
+	rm_from_env_ex(&ms->envp, name, len, 0);
+	free(name);
 }
 
 void	handle_unset(char **args, t_ms *ms)
 {
-	int		len;
-	char	*name;
-	int		i;
+	int	len;
+	int	i;
 
-	len = 0;
 	i = 1;
 	ms->exit_status = 0;
+	if (!args || !*args)
+		return;
+	if (ft_strcmp(args[0], "unset") != 0)
+		return;
 	while (args[i])
 	{
-		while (args[i][len] && args[i][len] != '=')
-			len++;
+		len = get_key_length(args[i]);
 		if (len == 0)
 			return;
-		if (ft_strchr(args[i], '=') != 0)
+		if (ft_strchr(args[i], '='))
 			print_unset_error(args, i, ms);
 		else
-		{
-			name = malloc(sizeof(char) * (len + 1));
-			name = ft_strncpy(name, args[i], len);
-			if (check_if_valid_key(name, args, i, ms) == 0)
-			{
-				rm_from_export(ms, name, len);
-				rm_from_env(ms, name, len);
-				free(name);
-			}
-		}
+			process_unset_entry(args, i, ms, len);
 		i++;
-		len = 0;
 	}
 }
