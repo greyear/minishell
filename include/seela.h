@@ -13,35 +13,50 @@ typedef struct s_ms
 {
     int     exit_status; // Store the last exit status
     char    **envp;     // Environment variables
-    char    **exported;
+    char    **exported; // store exported variables
+	//int		oldpwd_check; // Check if OLDPWD is added first time around
 } t_ms;
 
-//env_export2.c
+//echo.c
+void	handle_echo(char **args, t_ms *ms);
+
+//env.c
 void    handle_env(t_ms *ms); //ENV HANDLING
+
+//export3.c
 void    print_exported(t_ms *ms);
-void    sort_exported_alphaorder(t_ms *ms);
 void	print_error3(t_ms *ms, char *arg);
 
-//env_export.c
+//export2.c
+void	add_to_exported(char *key, t_ms *ms);
+void    sort_exported_alphaorder(t_ms *ms);
+
+//export.c
 void    handle_export(char **args, t_ms *ms); //EXPORT HANDLING
-void    add_to_exported_env(char *arg, t_ms *ms);
-void    add_to_env(char *arg, t_ms *ms, char *name, int len);
-void    add_to_exported(char *arg, t_ms *ms, char *name, int len);
-void    update_exported(char *arg, t_ms *ms);
-void	update_env_var(t_ms *ms, char *key, char *new_value);
 
 //unset.c
 void	handle_unset(char **args, t_ms *ms); //UNSET HANDLING
-//static void	rm_from_env(t_ms *ms, char *name, int len);
-//static void	rm_from_export(t_ms *ms, char *name, int len);
+
+//unset2.c
+void	rm_from_env_ex(char ***env, char *name, int len, int flag);
+
+//helper_functions.c
+int	check_env(char *env, char *name, int len, int flag);
+char	**allocate_temp_env(char **env, int x);
+
+//key_handling.c
+int		check_if_valid_key(char *name); 
+int		get_key_length(char *arg);
+char	*extract_key(char *arg, int len);
 
 //double_array_handling.c
-char	**copy_map(char **original_map);
-void	ft_command(char **envp, char *cmd);
-void    print_array(char **m);
+char	**copy_map(char **original_map); //COPYING **ARRAYS
+void	ft_free_map(char **map); // FREEING **ARRAYS
+void    print_array(char **a); // PRINTING **ARRAYS
 
 //cd.c
 void	handle_cd(t_ms *ms, char **args); //CD HANDLING
+void	update_env_var(t_ms *ms, char *key, char *new_value);
 
 //cd2.c
 char	*build_relative_path(char *target, char *cwd);
@@ -57,19 +72,19 @@ void	check_pwd(t_ms *ms, char **array);
 char	*get_env_value(char *key, char **envp);
 
 //exit.c
-void	check_exit(char	**array, t_ms *ms); //HANDLES EXITING
-void	free_struct(t_ms *ms); //FREES STRUCT THAT WAS INITIALIZED AND MALLOCED
+void	check_exit(char	**array, t_ms *ms); //EXIT HANDLING
+void	free_struct(t_ms *ms); //FREES STRUCT
 
 //exit2.c
 long long	ft_strtoll(char *str, int *error);
 
-//handle_expansion.c
+//expansion.c
 char	*handle_expansion(char *args, t_ms *ms); //ENVIRONMENTAL EXPANSION HANDLNG
 char	*expand_key(char **envp, char *key, int len, t_ms *ms);
 
 //initialize_struct.c
-//void    initialize_struct(char **envp); how do you use it?
 t_ms    *initialize_struct(char **envp);
+char	**make_args(char *cmd, char *name);
 
 //cmd_errormsg_free.c  (FOR PIPE AND EXECUTION ERRORS)
 void	ft_print_err(char *cmd, int c);

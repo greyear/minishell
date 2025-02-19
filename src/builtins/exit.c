@@ -65,5 +65,5 @@ void	check_exit(char **array, t_ms *ms)
 		exit_shell(exit_nbr, error, array);
 	}
 	free_struct(ms);
-	exit(127);
+	exit(ms->exit_status);
 }
