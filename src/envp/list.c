@@ -57,7 +57,10 @@ handle_expansion:
 			check $1 case!
 
 So potential problems are:
-- process handling instead of hardcode in $$ case
-- recursive handling of env which has env inside!
+
+Check for infinite loop:
+export A='$A'
+echo $A
+
 */
 

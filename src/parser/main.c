@@ -13,7 +13,7 @@ static void print_tokens(t_token *token_list)
 	printf("Tokens:\n");
 	while (cur)
 	{
-		printf("Type: %d, Value: %s, Quotes: %c\n", cur->type, cur->data, cur->quote);
+		printf("Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->type, cur->data, cur->quote, cur->specific_redir, cur->ambiguous, cur->file);
 		cur = cur->next;
 	}
 }
@@ -182,7 +182,8 @@ int main(int argc, char **argv, char **envp)
 			printf("Error: tokenization failed\n");
 			continue;
 		}
-
+		//???????????
+		put_files_for_redirections(tokens);
 		// Вывод токенов
 		print_tokens(tokens);
 

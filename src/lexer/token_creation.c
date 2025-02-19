@@ -28,6 +28,7 @@ static void	default_token_values(t_token *new)
 	new->quote = 0;
 	new->unclosed = false; //check in debugger if we need it
 	new->specific_redir = EMPTY;
+	new->ambiguous = false;
 	//some other fields
 }
 
