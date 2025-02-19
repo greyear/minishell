@@ -14,9 +14,15 @@ int	expand_in_token(t_token *cur, t_ms *ms)
 		free(data_copy);
 		return (1);
 	}
+	if (cur->specific_redir && !cur->quote && \
+			data_copy[0] && !cur->data[0])
+	{
+		cur->ambiguous = true;
+		cur->file = data_copy;
+	}
 	//what if after expanding it became empty?
-	//what if we expanded redir filename and it became empty?
-	free(data_copy);
+	else
+		free(data_copy);
 	return (0);
 }
 

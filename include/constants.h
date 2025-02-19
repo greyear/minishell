@@ -13,9 +13,6 @@ typedef enum e_char
 	NULL_TERM = 0,
 	TAB = 9,
 	NL = 10,
-	/*L_REDIR_SEPARATOR = 29,
-	R_REDIR_SEPARATOR = 30,
-	SEPARATOR = 31,*/
 	WSPACE = 32,
 	DB_QUOT = 34,
 	DOLLAR = 36,
@@ -35,7 +32,6 @@ typedef enum e_char
 	QUEST = 63,
 	BACKSLASH = 92,
 	UNDERSC = 95,
-	//N_LOWER = 110,
 	VERTICAL = 124
 }	t_char;
 
@@ -50,7 +46,6 @@ typedef enum e_token_type
 	WORD = 6, // string
 	SPACE = 7,
 	END = 8, //?? mb ne nuzhen
-	//just &?
 	EMPTY = 9
 }	t_token_type;
 
@@ -58,8 +53,18 @@ typedef enum e_err
 {
 	ARGS_NUM,
 	INV_ARGS,
-	MLLC
+	MLLC,
+	NO_FD = -1, //same as err output of open, dup2...
+	DEF = -2, //divide into 2 structs? change values
 }	t_err;
+
+typedef enum e_print
+{
+	AMBIG,
+	PERM_DEN,
+	NO_FILE,
+	HERED_ERR,
+}	t_print;
 
 typedef enum e_exit
 {
@@ -70,6 +75,13 @@ typedef enum e_exit
 	MALLOC_ERR,
 }	t_exit;
 
+typedef enum e_oper
+{
+	RD,
+	WR,
+}	t_oper;
+
+# define OWN_ERR_MSG "ms error: "
 
 /*POSIX ограничивает диапазон exit status от 0 до 255. 
 При использовании значений выше 255 операционная система может 

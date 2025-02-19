@@ -11,6 +11,7 @@ typedef struct s_token
 	t_char			quote;
 	t_bool			unclosed;
 	t_token_type	specific_redir;
+	t_bool			ambiguous;
 	struct s_token	*next;
 }	t_token;
 
@@ -19,6 +20,8 @@ typedef struct s_cmd
 	char			*name;
 	char			**args;
 	int				num;
+	int				infile;
+	int				outfile;
 	struct s_cmd	*next;
 	//mb smth else
 }	t_cmd;

@@ -72,7 +72,8 @@ EXEC_FILES		=	pipex_bonus.c \
 					checks_bonus.c \
 					utils_bonus.c \
 					cmd_errormsg_free.c
-REDIR_FILES		=	open_bonus.c
+REDIR_FILES		=	open_bonus.c \
+					redirections.c
 ENVP_FILES		=	check_all_tokens.c \
 					handle_expansion.c \
 					initialize_struct.c \
