@@ -14,7 +14,7 @@ typedef struct s_ms
     int     exit_status; // Store the last exit status
     char    **envp;     // Environment variables
     char    **exported; // store exported variables
-	int		oldpwd_check; // Check if OLDPWD is added first time around
+	//int		oldpwd_check; // Check if OLDPWD is added first time around
 } t_ms;
 
 //echo.c
