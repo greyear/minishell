@@ -61,7 +61,7 @@ static void	change_values(char *arg, char ***env, char *key, int flag)
 	temp = copy_to_temp(arg, env, key, &flag);
 	if (!temp || !*temp)
 		return;
-	if (flag != 2)
+	if (flag != 2) // add value to end
 	{
 		while (temp[i])
 			i++;
@@ -84,11 +84,7 @@ static void    change_values_env_ex(char *arg, t_ms *ms)
     char    *key;
 
 	len = get_key_length(arg);
-	if (len == 0)
-		return;
 	key = extract_key(arg, len);
-	if (!key)
-		return;
 	if (check_if_valid_key(key) == 1)
 	{
 		free(key);
@@ -99,7 +95,6 @@ static void    change_values_env_ex(char *arg, t_ms *ms)
     change_values(arg, &ms->envp, key, 0);
 	free(key);
 }
-
 
 static void	handle_export2(char **args, t_ms *ms)
 {
