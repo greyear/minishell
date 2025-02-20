@@ -123,7 +123,7 @@ void    handle_export(char **args, t_ms *ms) /// args are for exapmle args[0]="e
 
     ms->exit_status = 0;
     arg_count = 0;
-    if (!args)
+    if (!args || !*args)
         return;
 	if (args[0] && ft_strcmp(args[0], "export") != 0)
 		return;
