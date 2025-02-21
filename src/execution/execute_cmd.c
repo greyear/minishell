@@ -51,6 +51,7 @@ void	execute_single_cmd(t_cmd *cmd, t_ms *ms)
 	pid_t	pid;
 	int		status;
 
+	ms->exit_status = 0;
 	pid = fork();
 	if (pid < 0)
 	{

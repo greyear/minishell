@@ -11,3 +11,7 @@ obj
 docs
 html
 latex
+infile
+outfile
+input
+output
