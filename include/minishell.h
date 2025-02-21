@@ -55,6 +55,7 @@ t_token			*unite_two_word_tokens(t_token *first);
 t_bool			is_redirect(t_token_type type);
 void			flags_for_redirections(t_token *cur);
 void			put_files_for_redirections(t_token *cur);
+void print_tokens(t_token *token_list);
 
 //Parser
 int				words_in_cmd_block(t_token *start, t_token *end);
@@ -73,6 +74,7 @@ t_block			*clean_block_list(t_block **first);
 //Execution
 int				is_builtin(t_cmd *cmd);
 void			handle_builtin(t_cmd *cmd, t_ms *ms);
+int				if_children_needed(t_cmd *cmd);
 
 
 //Envp

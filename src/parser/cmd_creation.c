@@ -97,7 +97,7 @@ t_cmd	*create_cmd_list(t_block *block, t_ms *ms)
 	int		i;
 
 	if (!block)
-		return (NULL); //is it needed?
+		return (NULL); //is it needed
 	first = create_new_cmd(block, 0, ms);
 	if (!first)
 		return (NULL);

@@ -33,3 +33,13 @@ void	handle_builtin(t_cmd *cmd, t_ms *ms)
 	else if (ft_strcmp(cmd->name, "exit") == 0)
 		check_exit(cmd->args, ms);
 }
+
+int	if_children_needed(t_cmd *cmd)
+{
+	if (ft_strcmp(cmd->name, "cd") == 0 || \
+		ft_strcmp(cmd->name, "exit") == 0 || \
+		ft_strcmp(cmd->name, "unset") == 0 || \
+		(ft_strcmp(cmd->name, "export") == 0 && cmd->args[1]))
+		return (false);
+	return (true);
+}
