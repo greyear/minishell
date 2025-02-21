@@ -30,11 +30,13 @@ t_token *tokenization(char *str, t_ms *ms) //store str in ms?
 	}
 	flags_for_redirections(first);
 	first = unite_two_word_tokens(first);
+	//print_tokens(first);
 	if (check_list_for_expansions(first, ms) == 1)
 	{
 		clean_token_list(&first); //what else to clean?
 		return (NULL); //maybe create a separate cleaner?
 	}
+	//print_tokens(first);
 	return (first);
 	//wildcards?
 }

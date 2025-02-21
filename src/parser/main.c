@@ -6,7 +6,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 /*
-static void print_tokens(t_token *token_list)
+void print_tokens(t_token *token_list)
 {
 	t_token *cur = token_list;
 
@@ -16,8 +16,8 @@ static void print_tokens(t_token *token_list)
 		printf("Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->type, cur->data, cur->quote, cur->specific_redir, cur->ambiguous, cur->file);
 		cur = cur->next;
 	}
-}*/
-/*
+}
+
 static void print_blocks(t_block *block_list)
 {
 	t_block *cur = block_list;
@@ -35,7 +35,7 @@ static void print_blocks(t_block *block_list)
 	}
 }*/
 
-static void print_cmds(t_cmd *cmd_list)
+/*static void print_cmds(t_cmd *cmd_list)
 {
 	t_cmd *cur = cmd_list;
 
@@ -59,6 +59,32 @@ static void print_cmds(t_cmd *cmd_list)
 
 		cur = cur->next;
 	}
+}*/
+
+/*
+static void	input_output(t_cmd *cmd)
+{
+	t_cmd	*cur;
+
+	cur = cmd;
+	while (cur)
+	{
+		if (cur->infile != DEF && cur->infile != NO_FD)
+		{
+			dup2(cur->infile, STDIN_FILENO);
+		}
+		if (cur->outfile != DEF && cur->outfile != NO_FD)
+		{
+			dup2(cur->outfile, STDOUT_FILENO);
+		}
+		cur = cur->next;
+	}
+}*/
+
+static void	inout(int saved_stdin, int saved_stdout)
+{
+	dup2(saved_stdin, STDIN_FILENO);
+	dup2(saved_stdout, STDOUT_FILENO);
 }
 
 int main(int argc, char **argv, char **envp)
@@ -71,6 +97,9 @@ int main(int argc, char **argv, char **envp)
 	char *input;
 	int err_flag;
 	int	i;
+
+	int saved_stdin = dup(STDIN_FILENO);
+	int saved_stdout = dup(STDOUT_FILENO);
 
 	// Проверяем, что программа запущена без аргументов
 	if (argc != 1 && argv)
@@ -91,6 +120,7 @@ int main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		// Считываем ввод пользователя
+		inout(saved_stdin, saved_stdout); // Restore STDIN and STDOUT
 		input = readline("minishell> ");
 		if (!input) // Проверка EOF (Ctrl+D)
 		{
@@ -122,10 +152,11 @@ int main(int argc, char **argv, char **envp)
 			continue;
 		}
 		//???????????
+		//print_tokens(tokens);
 		put_files_for_redirections(tokens);
 		// Вывод токенов
 		//print_tokens(tokens);
-
+		
 		// Разбиваем токены на блоки
 		blocks = create_blocks_list(tokens, NULL, &err_flag);
 		if (err_flag)
@@ -137,7 +168,6 @@ int main(int argc, char **argv, char **envp)
 
 		// Вывод блоков
 		//print_blocks(blocks);
-
 		// Создаём команды из блоков
 		cmds = create_cmd_list(blocks, ms);
 		if (!cmds)
@@ -147,7 +177,6 @@ int main(int argc, char **argv, char **envp)
 			clean_block_list(&blocks);
 			continue;
 		}
-
 		i = 0;
 		cur = cmds;
 		while (cur)
@@ -155,16 +184,23 @@ int main(int argc, char **argv, char **envp)
 			cur = cur->next;
 			i++;
 		}
+		//ft_putstr_fd("here", 2);
 		// Вывод команд
-		print_cmds(cmds);
-		if (is_builtin(cmds))
+		//print_cmds(cmds);
+		//input_output(cmds);
+		if (is_builtin(cmds) && if_children_needed(cmds) == false)
 			handle_builtin(cmds, ms);
 		else
+		{
 			execute_cmd(i, cmds, ms);
-		/*// Очистка перед следующим вводом
+			//ft_putstr_fd("here", 2);
+		}
+			
+		//Очистка перед следующим вводом
 		clean_token_list(&tokens);
 		clean_block_list(&blocks);
-		clean_cmd_list(&cmds);*/
+		//print_cmds(cmds);
+		//clean_cmd_list(&cmds);
 	}
 
 	// Освобождаем глобальные ресурсы

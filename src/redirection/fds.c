@@ -125,6 +125,8 @@ void	put_outfile_fd(t_token *token, t_cmd *cmd)
 			cmd->outfile = open(token->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if (cmd->outfile < 0)
 			check_access(token->file, WR);
+		dup2(cmd->outfile, STDOUT_FILENO);
+		close (cmd->outfile);
 	}
 }
 
@@ -159,6 +161,8 @@ void	put_infile_fd(t_token *token, t_cmd *cmd)
 		cmd->infile = open(token->file, O_RDONLY);
 		if (cmd->infile < 0)
 			check_access(token->file, RD);
+		dup2(cmd->infile, STDIN_FILENO);
+		close (cmd->infile);
 	}
 }
 /*
