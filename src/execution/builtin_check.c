@@ -29,7 +29,7 @@ void	handle_builtin(t_cmd *cmd, t_ms *ms)
 	else if (ft_strcmp(cmd->name, "unset") == 0)
 		handle_unset(cmd->args, ms);
 	else if (ft_strcmp(cmd->name, "env") == 0)
-		handle_env(ms);
+		handle_env(cmd->args, ms);
 	else if (ft_strcmp(cmd->name, "exit") == 0)
 		check_exit(cmd->args, ms);
 }
