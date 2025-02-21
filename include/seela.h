@@ -14,14 +14,13 @@ typedef struct s_ms
     int     exit_status; // Store the last exit status
     char    **envp;     // Environment variables
     char    **exported; // store exported variables
-	//int		oldpwd_check; // Check if OLDPWD is added first time around
 } t_ms;
 
 //echo.c
-void	handle_echo(char **args, t_ms *ms);
+void	handle_echo(char **args, t_ms *ms); // ECHO HANDLING
 
 //env.c
-void    handle_env(t_ms *ms); //ENV HANDLING
+void    handle_env(char **args, t_ms *ms); //ENV HANDLING
 
 //export3.c
 void    print_exported(t_ms *ms);
