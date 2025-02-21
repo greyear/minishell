@@ -106,7 +106,7 @@ static void	handle_export2(char **args, t_ms *ms)
 		if (ft_strchr(args[i], '=')) //add to env and exported
 			change_values_env_ex(args[i], ms);
 		else //add only to exported if there is no = mark
-			add_to_exported(args[i], ms);
+			//add_to_exported(args[i], ms);
         sort_exported_alphaorder(ms);
 		i++;
 	}
