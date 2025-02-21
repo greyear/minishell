@@ -70,6 +70,11 @@ void			redir_in_block(t_block *block, t_cmd *cmd);
 t_block			*clean_block(t_block *block);
 t_block			*clean_block_list(t_block **first);
 
+//Execution
+int				is_builtin(t_cmd *cmd);
+void			handle_builtin(t_cmd *cmd, t_ms *ms);
+
+
 //Envp
 int				check_list_for_expansions(t_token *first, t_ms *ms);
 int				expand_in_token(t_token *cur, t_ms *ms);
