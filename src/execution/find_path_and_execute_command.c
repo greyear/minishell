@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipe_utils.c                                       :+:      :+:    :+:   */
+/*   find_path_and_execute_command.c                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 15:38:13 by ssalorin          #+#    #+#             */
-/*   Updated: 2025/01/15 15:39:30 by ssalorin         ###   ########.fr       */
+/*   Updated: 2025/02/21 18:51:11 by ssalorin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,17 +106,13 @@ static char	*ft_find_path(char **envp, char **cmds)
 static void	ft_check_dir(char *cmd)
 {
 	int		len;
-	char	*err_out;
-	char	*err_temp;
 
 	len = ft_strlen(cmd) - 1;
 	if (cmd[0] == '.' && cmd[len] == '/')
 	{
-		err_out = ft_strjoin("zsh: ", cmd);
-		err_temp = ft_strjoin(err_out, ": Is a directory\n");
-		free(err_out);
-		ft_putstr_fd(err_temp, STDERR_FILENO);
-		free(err_temp);
+		ft_putstr_fd("bash: ", 2);
+		ft_putstr_fd(cmd, 2);
+		ft_putstr_fd(": Is a directory\n", 2);
 		exit(126);
 	}
 }
@@ -141,14 +137,11 @@ void	ft_command(char **envp, char **cmd)
 	//char	**cmds;
 	char	*path;
 
-	/*if (cmd[0] == '\0' || cmd[0] == ' ')
+	if (!cmd || !*cmd)
 	{
-		ft_print_err(cmd, 0);
+		ft_print_err(cmd[0], 0);
 		exit(127);
-	}*/
-	//cmds = ft_split(cmd, ' ');
-	//if (!cmds)
-	//	exit(EXIT_FAILURE);
+	}
 	path = ft_find_path(envp, cmd);
 	if (!path)
 		ft_if_not_path(cmd);
