@@ -44,7 +44,8 @@ It uses execve to execute the command at the found path with the given arguments
 If execve fails, it frees resources and exits with failure.
 */
 
-#include "seela.h"
+//#include "seela.h"
+#include "../../include/minishell.h"
 
 static char	*ft_find_path2(char **paths, char *full_path, char *cmd)
 {

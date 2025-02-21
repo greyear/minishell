@@ -60,20 +60,28 @@ PARS_FILES		=	cmd_creation.c \
 BUILT_FILES		=	cd.c \
 					cd2.c \
 					cd_error.c \
-					env_export.c \
-					env_export2.c \
+					env.c \
+					export.c \
+					export2.c \
+					export3.c \
+					echo.c \
 					exit.c \
 					exit2.c \
 					pwd.c \
-					unset.c
+					unset.c \
+					unset2.c \
+					key_handling.c \
+					helper_functions.c
 #rename many of them!
-EXEC_FILES		=	pipex_bonus.c \
+EXEC_FILES		=	builtin_check.c \
+					cmd_exec.c \
+					execute_cmd.c \
+					find_path_and_execute_command.c \
+					pipex_bonus.c \
 					path_bonus.c \
-					checks_bonus.c \
-					utils_bonus.c \
 					cmd_errormsg_free.c
 REDIR_FILES		=	open_bonus.c \
-					redirections.c
+					fds.c
 ENVP_FILES		=	check_all_tokens.c \
 					handle_expansion.c \
 					initialize_struct.c \

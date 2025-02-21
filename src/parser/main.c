@@ -17,7 +17,7 @@ static void print_tokens(t_token *token_list)
 		cur = cur->next;
 	}
 }
-
+/*
 static void print_blocks(t_block *block_list)
 {
 	t_block *cur = block_list;
@@ -33,7 +33,7 @@ static void print_blocks(t_block *block_list)
 
 		cur = cur->next;
 	}
-}
+}*/
 
 static void print_cmds(t_cmd *cmd_list)
 {
@@ -42,8 +42,10 @@ static void print_cmds(t_cmd *cmd_list)
 	printf("\nCommands:\n");
 	while (cur)
 	{
-		printf("Command %d:\n", cur->num);
+		printf("\nCommand %d:\n", cur->num);
 		printf("  Name: %s\n", cur->name ? cur->name : "NULL");
+		printf("Infile %d:\n", cur->infile);
+		printf("Outfile %d:\n", cur->outfile);
 
 		if (cur->args)
 		{
@@ -58,71 +60,6 @@ static void print_cmds(t_cmd *cmd_list)
 		cur = cur->next;
 	}
 }
-/*
-int main(int argc, char **argv, char **envp)
-{
-	t_token *tokens;
-	t_block *blocks;
-	t_cmd *cmds;
-	t_ms *ms;
-	int err_flag = 0;
-
-	if (argc != 2)
-	{
-		printf("Usage: %s \"command string\"\n", argv[0]);
-		return (1);
-	}
-
-	// Initialize shell struct
-	ms = initialize_struct(envp);
-	if (!ms)
-	{
-		printf("Error: failed to initialize shell structure\n");
-		return (1);
-	}
-
-	// Tokenize input
-	tokens = tokenization(argv[1], ms);
-	if (!tokens)
-	{
-		printf("Error: tokenization failed\n");
-		free(ms);
-		return (1);
-	}
-
-	// Print tokens
-	print_tokens(tokens);
-
-	// Create blocks from tokens
-	blocks = create_blocks_list(tokens, NULL, &err_flag);
-	if (err_flag)
-	{
-		printf("Error: failed to create blocks\n");
-		clean_token_list(&tokens);
-		free(ms);
-		return (1);
-	}
-
-	// Print blocks
-	print_blocks(blocks);
-
-	// Create commands from blocks
-	cmds = create_cmd_list(blocks, ms);
-	if (!cmds)
-	{
-		printf("Error: failed to create commands\n");
-		clean_token_list(&tokens);
-		clean_block_list(&blocks);
-		free(ms);
-		return (1);
-	}
-
-	// Print commands
-	print_cmds(cmds);
-
-	return (0);
-}
-*/
 
 int main(int argc, char **argv, char **envp)
 {
@@ -197,7 +134,7 @@ int main(int argc, char **argv, char **envp)
 		}
 
 		// Вывод блоков
-		print_blocks(blocks);
+		//print_blocks(blocks);
 
 		// Создаём команды из блоков
 		cmds = create_cmd_list(blocks, ms);
