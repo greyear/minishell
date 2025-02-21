@@ -29,18 +29,6 @@
 # define CMD_EXEC 126
 # define CMD_NF 127
 
-/*typedef struct s_pipex
-{
-	int		argc;
-	char	**argv;
-	char	**envp;
-	pid_t	*pids;
-	char	**cmds;
-	int		cmd_num;
-	int		fd[2];
-	int		cur_fd;
-}	t_pipex;*/
-
 //BNF
 char			*validate_word(char *str, int *err_flag);
 char			*validate_redirect(char *str, int *err_flag);
@@ -78,8 +66,14 @@ t_cmd			*clean_cmd_list(t_cmd **first);
 int				check_block(t_token *start, t_token *end, int *err_flag);
 t_block			*create_block(t_token *start, t_token *end, t_block *first_block, int *err_flag);
 t_block			*create_blocks_list(t_token *start, t_token *end, int *err_flag);
+void			redir_in_block(t_block *block, t_cmd *cmd);
 t_block			*clean_block(t_block *block);
 t_block			*clean_block_list(t_block **first);
+
+//Execution
+int				is_builtin(t_cmd *cmd);
+void			handle_builtin(t_cmd *cmd, t_ms *ms);
+
 
 //Envp
 int				check_list_for_expansions(t_token *first, t_ms *ms);
@@ -101,8 +95,6 @@ char	**path_from_envp(t_pipex *p);
 char	*find_path(char **cmd_split, t_pipex *p);
 char	**split_cmd(char *cmd, t_pipex *p);
 void	handle_command(char *cmd, t_pipex *p);
-int		open_infile(t_pipex *p);
-int		open_outfile(t_pipex *p);
 
 //Utils
 void	close_fds(int fd1, int fd2);

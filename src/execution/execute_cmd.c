@@ -25,7 +25,8 @@ cmd2 reads from the read end of the pipe.
 ALSO WORKS WITH SINGLE COMMAND EXECUTION SO CALL THIS WHENEVER YOU NEED TO EXECUTE!!!
 */
 
-#include "seela.h"
+//include "seela.h"
+#include "../../include/minishell.h"
 
 static void	pipe_process(int *prev_pipe, int *next_pipe)
 {
