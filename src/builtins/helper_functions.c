@@ -1,8 +1,8 @@
 #include "../../include/minishell.h"
 
-int	check_env(char *env, char *name, int len, int flag)
+int	check_env(char *env, char *key, int len, int flag)
 {
-	if (ft_strncmp(name, env, len) != 0)
+	if (ft_strncmp(key, env, len) != 0)
 		return (0);
 	if (flag == 0 && (env[len] && env[len] == '='))
 		return (1);

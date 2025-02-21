@@ -21,7 +21,7 @@ EDGE CASES EXPLAINED IN DOCS
 
 #include "../../include/minishell.h"
 
-static char	**copy_to_temp(char *arg, char ***env, char *name, int *flag)
+static char	**copy_to_temp(char *arg, char ***env, char *key, int *flag)
 {
 	char	**temp;
 	int		i;
@@ -34,7 +34,7 @@ static char	**copy_to_temp(char *arg, char ***env, char *name, int *flag)
 		return (NULL);
 	while ((*env)[i])
 	{
-		if (check_env((*env)[i], name, len, *flag)) //check if we replace the value
+		if (check_env((*env)[i], key, len, *flag)) //check if we replace the value
 		{
 			*flag = 2;
 			temp[i] = ft_strdup(arg);
@@ -52,16 +52,16 @@ static char	**copy_to_temp(char *arg, char ***env, char *name, int *flag)
 	return (temp);
 }
 
-static void	change_values(char *arg, char ***env, char *name, int flag)
+static void	change_values(char *arg, char ***env, char *key, int flag)
 {
 	char	**temp;
 	int		i;
 
 	i = 0;
-	temp = copy_to_temp(arg, env, name, &flag);
+	temp = copy_to_temp(arg, env, key, &flag);
 	if (!temp || !*temp)
 		return;
-	if (flag != 2)
+	if (flag != 2) // add value to end
 	{
 		while (temp[i])
 			i++;
@@ -81,25 +81,20 @@ static void	change_values(char *arg, char ***env, char *name, int flag)
 static void    change_values_env_ex(char *arg, t_ms *ms)
 {
     int     len;
-    char    *name;
+    char    *key;
 
 	len = get_key_length(arg);
-	if (len == 0)
-		return;
-	name = extract_key(arg, len);
-	if (!name)
-		return;
-	if (check_if_valid_key(name) == 1)
+	key = extract_key(arg, len);
+	if (check_if_valid_key(key) == 1)
 	{
-		free(name);
+		free(key);
 		print_error3(ms, arg);
 		return;
 	}
-    change_values(arg, &ms->exported, name, 1);
-    change_values(arg, &ms->envp, name, 0);
-	free(name);
+    change_values(arg, &ms->exported, key, 1);
+    change_values(arg, &ms->envp, key, 0);
+	free(key);
 }
-
 
 static void	handle_export2(char **args, t_ms *ms)
 {
@@ -123,8 +118,8 @@ void    handle_export(char **args, t_ms *ms) /// args are for exapmle args[0]="e
 
     ms->exit_status = 0;
     arg_count = 0;
-	if (!args)
-		return;
+    if (!args || !*args)
+        return;
 	if (args[0] && ft_strcmp(args[0], "export") != 0)
 		return;
     while (args[arg_count])
