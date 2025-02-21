@@ -46,11 +46,12 @@ static void	pipe_process(int *prev_pipe, int *next_pipe)
 	}
 }
 
-void	execute_single_cmd(char *cmd, t_ms *ms)
+void	execute_single_cmd(t_cmd *cmd, t_ms *ms)
 {
 	pid_t	pid;
 	int		status;
 
+	ms->exit_status = 0;
 	pid = fork();
 	if (pid < 0)
 	{
@@ -59,15 +60,23 @@ void	execute_single_cmd(char *cmd, t_ms *ms)
 	}
 	if (pid == 0) // Child process
 	{
-		ft_command(ms->envp, cmd); // Execute command
-		exit(127); // Only reached if execve fails
+		if (is_builtin(cmd))
+		{
+			handle_builtin(cmd, ms);
+			exit(ms->exit_status);
+		}
+		else
+		{
+			ft_command(ms->envp, cmd->args); // Execute command
+			exit(127); // Only reached if execve fails
+		}
 	}
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		ms->exit_status = WEXITSTATUS(status);
 }
 
-void	execute_cmd(int num_cmds, char **cmds, t_ms *ms)
+void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
 {
 	int		pipe_fd[num_cmds - 1][2];
 	int		i;
@@ -75,15 +84,17 @@ void	execute_cmd(int num_cmds, char **cmds, t_ms *ms)
     pid_t   last_pid;
     pid_t   wpid;
     int     status;
+	t_cmd	*cur;
 
     i = 0;
     last_pid = -1;
 	if (num_cmds == 1) // Handle single command case
     {
-        execute_single_cmd(cmds[0], ms);
+        execute_single_cmd(cmds, ms);
         return;
     }
-	while (i < num_cmds)
+	cur = cmds;
+	while (cur)//(i < num_cmds)
 	{
 		if (i < num_cmds - 1)
 		{
@@ -107,7 +118,10 @@ void	execute_cmd(int num_cmds, char **cmds, t_ms *ms)
 				pipe_process(pipe_fd[i - 1], NULL);
 			else //any commands in between
 				pipe_process(pipe_fd[i - 1], pipe_fd[i]);
-			ft_command(ms->envp, cmds[i]); //execute command
+			if (is_builtin(cur))
+				handle_builtin(cur, ms);
+			else
+				ft_command(ms->envp, cur->args); //execute command
 		}
 		if (i > 0)
 		{
@@ -115,6 +129,7 @@ void	execute_cmd(int num_cmds, char **cmds, t_ms *ms)
 			close(pipe_fd[i - 1][1]);
 		}
         last_pid = pid;
+		cur = cur->next;
 		i++;
 	}
 	i = 0;
