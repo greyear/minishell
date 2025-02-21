@@ -122,7 +122,7 @@ int main(int argc, char **argv, char **envp)
 		// Считываем ввод пользователя
 		inout(saved_stdin, saved_stdout); // Restore STDIN and STDOUT
 		input = readline("minishell> ");
-		if (!input) // Проверка EOF (Ctrl+D)
+		if (!input || !input[0]) // Проверка EOF (Ctrl+D)
 		{
 			printf("exit\n");
 			break;
