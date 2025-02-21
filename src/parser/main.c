@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-
+/*
 static void print_tokens(t_token *token_list)
 {
 	t_token *cur = token_list;
@@ -16,7 +16,7 @@ static void print_tokens(t_token *token_list)
 		printf("Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->type, cur->data, cur->quote, cur->specific_redir, cur->ambiguous, cur->file);
 		cur = cur->next;
 	}
-}
+}*/
 /*
 static void print_blocks(t_block *block_list)
 {
@@ -67,8 +67,10 @@ int main(int argc, char **argv, char **envp)
 	t_token *tokens;
 	t_block *blocks;
 	t_cmd *cmds;
+	t_cmd	*cur;
 	char *input;
 	int err_flag;
+	int	i;
 
 	// Проверяем, что программа запущена без аргументов
 	if (argc != 1 && argv)
@@ -98,7 +100,7 @@ int main(int argc, char **argv, char **envp)
 
 		// Проверяем ввод на соответствие BNF
 		err_flag = validate_input(input);
-		printf("BNF validation result: %d\n", err_flag);
+		//printf("BNF validation result: %d\n", err_flag);
 		if (err_flag)
 		{
 			printf("Error: invalid input format\n");
@@ -122,7 +124,7 @@ int main(int argc, char **argv, char **envp)
 		//???????????
 		put_files_for_redirections(tokens);
 		// Вывод токенов
-		print_tokens(tokens);
+		//print_tokens(tokens);
 
 		// Разбиваем токены на блоки
 		blocks = create_blocks_list(tokens, NULL, &err_flag);
@@ -146,9 +148,19 @@ int main(int argc, char **argv, char **envp)
 			continue;
 		}
 
+		i = 0;
+		cur = cmds;
+		while (cur)
+		{
+			cur = cur->next;
+			i++;
+		}
 		// Вывод команд
 		print_cmds(cmds);
-
+		if (is_builtin(cmds))
+			handle_builtin(cmds, ms);
+		else
+			execute_cmd(i, cmds, ms);
 		/*// Очистка перед следующим вводом
 		clean_token_list(&tokens);
 		clean_block_list(&blocks);
