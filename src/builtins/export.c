@@ -106,7 +106,7 @@ static void	handle_export2(char **args, t_ms *ms)
 		if (ft_strchr(args[i], '=')) //add to env and exported
 			change_values_env_ex(args[i], ms);
 		else //add only to exported if there is no = mark
-			//add_to_exported(args[i], ms);
+			add_to_exported(args[i], ms);
         sort_exported_alphaorder(ms);
 		i++;
 	}
@@ -119,8 +119,8 @@ void    handle_export(char **args, t_ms *ms) /// args are for exapmle args[0]="e
     ms->exit_status = 0;
     arg_count = 0;
     if (!args || !*args)
-        return;
-	if (args[0] && ft_strcmp(args[0], "export") != 0)
+		return;
+	if (ft_strcmp(args[0], "export") != 0)
 		return;
     while (args[arg_count])
         arg_count++;

@@ -91,10 +91,10 @@ void	ft_free_array(char **array);
 void    print_array(char **m);
 
 //find_path_and_execute_command.c
-void	ft_command(char **envp, char *cmd);
+void	ft_command(char **envp, char **cmd);
 
 //pipe.c
-void    execute_cmd(int num_cmds, char **argv, t_ms *ms); //PIPE AND EXECVE HANDLING
+void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms); //PIPE AND EXECVE HANDLING
 
 //redrections.c
 void	redirection_outfile_emptied(char *file); //< HANDLING

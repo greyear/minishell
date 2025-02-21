@@ -1,6 +1,5 @@
 
 #include "../../include/minishell.h"
-
 /*
 void	handle_command(char *cmd, t_pipex *p)
 {

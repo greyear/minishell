@@ -136,24 +136,24 @@ static void	ft_if_not_path(char **cmds)
 	exit(127);
 }
 
-void	ft_command(char **envp, char *cmd)
+void	ft_command(char **envp, char **cmd)
 {
-	char	**cmds;
+	//char	**cmds;
 	char	*path;
 
-	if (cmd[0] == '\0' || cmd[0] == ' ')
+	/*if (cmd[0] == '\0' || cmd[0] == ' ')
 	{
 		ft_print_err(cmd, 0);
 		exit(127);
-	}
-	cmds = ft_split(cmd, ' ');
-	if (!cmds)
-		exit(EXIT_FAILURE);
-	path = ft_find_path(envp, cmds);
+	}*/
+	//cmds = ft_split(cmd, ' ');
+	//if (!cmds)
+	//	exit(EXIT_FAILURE);
+	path = ft_find_path(envp, cmd);
 	if (!path)
-		ft_if_not_path(cmds);
-	execve(path, cmds, envp);
+		ft_if_not_path(cmd);
+	execve(path, cmd, envp);
 	free(path);
-	ft_free_array(cmds);
+	ft_free_array(cmd);
 	exit(EXIT_FAILURE);
 }
