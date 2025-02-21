@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-/*
+
 void print_tokens(t_token *token_list)
 {
 	t_token *cur = token_list;
@@ -17,7 +17,7 @@ void print_tokens(t_token *token_list)
 		cur = cur->next;
 	}
 }
-
+/*
 static void print_blocks(t_block *block_list)
 {
 	t_block *cur = block_list;
@@ -154,8 +154,6 @@ int main(int argc, char **argv, char **envp)
 		//???????????
 		//print_tokens(tokens);
 		put_files_for_redirections(tokens);
-		// Вывод токенов
-		//print_tokens(tokens);
 		
 		// Разбиваем токены на блоки
 		blocks = create_blocks_list(tokens, NULL, &err_flag);
@@ -184,7 +182,6 @@ int main(int argc, char **argv, char **envp)
 			cur = cur->next;
 			i++;
 		}
-		//ft_putstr_fd("here", 2);
 		// Вывод команд
 		//print_cmds(cmds);
 		//input_output(cmds);

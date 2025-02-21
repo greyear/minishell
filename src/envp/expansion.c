@@ -32,6 +32,8 @@ char	*expand_key(char **envp, char *key, int len, t_ms *ms)
 		return(ft_itoa(ms->exit_status));
 	if (key[0] == '$')
 		return (ft_itoa(getpid()));
+	if (key[0] == ' ')
+		return (ft_strdup(" "));
 	check = verify_key(key);
 	if (!check)
 		return (ft_strdup(""));

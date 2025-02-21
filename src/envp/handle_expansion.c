@@ -63,11 +63,11 @@ char	*handle_expansion(char *args, t_ms *ms)
 	x = 0;
 	while (args[i])
 	{
-		if (args[i] == '$' && args[i + 1])
+		if (args[i] == '$' && args[i + 1] && !ft_isspace(args[i + 1]))
 		{
 			i++;
 			x = 0;
-			if (ft_isdigit(args[i]) || args[i] == '?' || args[i] == '$') // Stop if it starts with a number
+			if (ft_isdigit(args[i]) || args[i] == '?' || args[i] == '$' || args[i] == ' ') // Stop if it starts with a number
 				x = 1;
 			else
 			{
