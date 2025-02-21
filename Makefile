@@ -73,13 +73,15 @@ BUILT_FILES		=	cd.c \
 					key_handling.c \
 					helper_functions.c
 #rename many of them!
-EXEC_FILES		=	pipex_bonus.c \
+EXEC_FILES		=	builtin_check.c \
+					cmd_exec.c \
+					execute_cmd.c \
+					find_path_and_execute_command.c \
+					pipex_bonus.c \
 					path_bonus.c \
-					checks_bonus.c \
-					utils_bonus.c \
 					cmd_errormsg_free.c
 REDIR_FILES		=	open_bonus.c \
-					redirections.c
+					fds.c
 ENVP_FILES		=	check_all_tokens.c \
 					handle_expansion.c \
 					initialize_struct.c \
