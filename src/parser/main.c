@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-
+/*
 void print_tokens(t_token *token_list)
 {
 	t_token *cur = token_list;
@@ -16,7 +16,7 @@ void print_tokens(t_token *token_list)
 		printf("Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->type, cur->data, cur->quote, cur->specific_redir, cur->ambiguous, cur->file);
 		cur = cur->next;
 	}
-}
+}*/
 /*
 static void print_blocks(t_block *block_list)
 {
@@ -35,7 +35,7 @@ static void print_blocks(t_block *block_list)
 	}
 }*/
 
-/*static void print_cmds(t_cmd *cmd_list)
+static void print_cmds(t_cmd *cmd_list)
 {
 	t_cmd *cur = cmd_list;
 
@@ -59,7 +59,7 @@ static void print_blocks(t_block *block_list)
 
 		cur = cur->next;
 	}
-}*/
+}
 
 /*
 static void	input_output(t_cmd *cmd)
@@ -183,7 +183,7 @@ int main(int argc, char **argv, char **envp)
 			i++;
 		}
 		// Вывод команд
-		//print_cmds(cmds);
+		print_cmds(cmds);
 		//input_output(cmds);
 		if (is_builtin(cmds) && if_children_needed(cmds) == false)
 			handle_builtin(cmds, ms);
