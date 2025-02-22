@@ -35,7 +35,10 @@ t_token	*unite_two_word_tokens(t_token *first)
 		else
 			cur = cur->next;
 	}
+	//print_tokens(first);
 	first = delete_whitespace_tokens(first);
+	//print_tokens(first);
 	first = delete_empty_word_tokens(first);
+	//print_tokens(first);
 	return (first);
 }
