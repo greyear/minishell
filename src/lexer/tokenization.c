@@ -37,6 +37,7 @@ t_token *tokenization(char *str, t_ms *ms) //store str in ms?
 		return (NULL); //maybe create a separate cleaner?
 	}
 	//print_tokens(first);
+	//print_tokens(first);
 	return (first);
 	//wildcards?
 }
