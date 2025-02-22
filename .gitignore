@@ -4,6 +4,7 @@
 *.out
 *.swp
 minishell
+minishell_tester
 .build
 .vscode
 obj
@@ -11,6 +12,7 @@ obj
 docs
 html
 latex
+
 infile
 outfile
 input
