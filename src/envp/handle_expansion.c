@@ -63,7 +63,7 @@ char	*handle_expansion(char *args, t_ms *ms)
 	x = 0;
 	while (args[i])
 	{
-		if (args[i] == '$' && args[i + 1])
+		if (args[i] == '$' && args[i + 1] && args[i + 1] != ' ')
 		{
 			i++;
 			x = 0;
