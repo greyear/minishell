@@ -42,6 +42,8 @@ int	check_list_for_expansions(t_token *first, t_ms *ms)
 		}
 		cur = cur->next;
 	}
+	first = delete_whitespace_tokens(first);
+	first = delete_empty_word_tokens(first);
 	return (0);
 }
 

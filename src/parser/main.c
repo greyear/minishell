@@ -16,8 +16,8 @@ void print_tokens(t_token *token_list)
 		printf("Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->type, cur->data, cur->quote, cur->specific_redir, cur->ambiguous, cur->file);
 		cur = cur->next;
 	}
-}
-
+}*/
+/*
 static void print_blocks(t_block *block_list)
 {
 	t_block *cur = block_list;
@@ -35,7 +35,7 @@ static void print_blocks(t_block *block_list)
 	}
 }*/
 
-/*static void print_cmds(t_cmd *cmd_list)
+static void print_cmds(t_cmd *cmd_list)
 {
 	t_cmd *cur = cmd_list;
 
@@ -59,7 +59,7 @@ static void print_blocks(t_block *block_list)
 
 		cur = cur->next;
 	}
-}*/
+}
 
 /*
 static void	input_output(t_cmd *cmd)
@@ -154,8 +154,6 @@ int main(int argc, char **argv, char **envp)
 		//???????????
 		//print_tokens(tokens);
 		put_files_for_redirections(tokens);
-		// Вывод токенов
-		//print_tokens(tokens);
 		
 		// Разбиваем токены на блоки
 		blocks = create_blocks_list(tokens, NULL, &err_flag);
@@ -184,9 +182,8 @@ int main(int argc, char **argv, char **envp)
 			cur = cur->next;
 			i++;
 		}
-		//ft_putstr_fd("here", 2);
 		// Вывод команд
-		//print_cmds(cmds);
+		print_cmds(cmds);
 		//input_output(cmds);
 		if (is_builtin(cmds) && if_children_needed(cmds) == false)
 			handle_builtin(cmds, ms);
