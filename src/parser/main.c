@@ -190,12 +190,11 @@ int main(int argc, char **argv, char **envp)
 		// Вывод команд
 		//print_cmds(cmds);
 		//input_output(cmds);
-		if (is_builtin(cmds) && if_children_needed(cmds) == false)
-			handle_builtin(cmds, ms);
+		if (is_builtin(cmds) && if_children_needed(cmds) == false && i == 1)
+			handle_builtin(cmds, ms, 0);
 		else
 		{
 			execute_cmd(i, cmds, ms);
-			//ft_putstr_fd("here", 2);
 		}
 			
 		//Очистка перед следующим вводом
