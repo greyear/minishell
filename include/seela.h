@@ -93,7 +93,7 @@ void    print_array(char **m);
 //find_path_and_execute_command.c
 void	ft_command(char **envp, char **cmd);
 
-//pipe.c
+//execute_cmd.c
 void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms); //PIPE AND EXECVE HANDLING
 
 //redrections.c
