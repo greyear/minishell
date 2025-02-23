@@ -25,7 +25,7 @@ char	*get_env_value(char *key, char **envp)
     return (NULL); // Key not found
 }
 
-void	check_pwd(t_ms *ms, char **array)
+void	check_pwd(char **array, t_ms *ms)
 {
 	char	cwd[1024];
 

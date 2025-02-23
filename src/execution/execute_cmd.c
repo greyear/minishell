@@ -62,7 +62,7 @@ void	execute_single_cmd(t_cmd *cmd, t_ms *ms)
 	{
 		if (is_builtin(cmd))
 		{
-			handle_builtin(cmd, ms);
+			handle_builtin(cmd, ms, 0);
 			exit(ms->exit_status);
 		}
 		else
@@ -76,9 +76,24 @@ void	execute_single_cmd(t_cmd *cmd, t_ms *ms)
 		ms->exit_status = WEXITSTATUS(status);
 }
 
+void	free_int_array(int **array)
+{
+	int	i;	
+
+	i = 0;
+	while (array[i])
+	{
+		free(array[i]);
+		i++;
+	}
+	free(array);
+}
+
+
 void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
 {
-	int		pipe_fd[num_cmds - 1][2];
+	//int		pipe_fd[num_cmds - 1][2];
+	int		**pipe_fd;
 	int		i;
 	pid_t	pid;
     pid_t   last_pid;
@@ -93,9 +108,18 @@ void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
         execute_single_cmd(cmds, ms);
         return;
     }
+	pipe_fd = malloc(sizeof(int *) * (num_cmds - 1));
+	if (!pipe_fd)
+		return;
 	cur = cmds;
 	while (cur)//(i < num_cmds)
 	{
+		pipe_fd[i] = malloc(sizeof(int) * 2);
+		if (!pipe_fd[i])
+		{
+			free_int_array(pipe_fd);
+			return;
+		}
 		if (i < num_cmds - 1)
 		{
 			if (pipe(pipe_fd[i]) == -1)
@@ -119,7 +143,10 @@ void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
 			else //any commands in between
 				pipe_process(pipe_fd[i - 1], pipe_fd[i]);
 			if (is_builtin(cur))
-				handle_builtin(cur, ms);
+			{
+				handle_builtin(cur, ms, 1);
+				exit(ms->exit_status);
+			}
 			else
 				ft_command(ms->envp, cur->args); //execute command
 		}
@@ -137,8 +164,10 @@ void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
 	{
 		close(pipe_fd[i][0]);
  		close(pipe_fd[i][1]);
+		free(pipe_fd[i]);
 		i++;
 	}
+	free(pipe_fd);
 	i = 0;
 	while (i < num_cmds)
 	{

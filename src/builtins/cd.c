@@ -116,7 +116,7 @@ static int	cd_error(char **args)
 }
 
 
-void	handle_cd(t_ms *ms, char **args)
+void	handle_cd(char **args, t_ms *ms)
 {
 	char	*target_dir;
 	char	cwd[1024];
