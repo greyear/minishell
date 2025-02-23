@@ -54,7 +54,7 @@ void	ft_free_map(char **map); // FREEING **ARRAYS
 void    print_array(char **a); // PRINTING **ARRAYS
 
 //cd.c
-void	handle_cd(t_ms *ms, char **args); //CD HANDLING
+void	handle_cd(char **args, t_ms *ms); //CD HANDLING
 void	update_env_var(t_ms *ms, char *key, char *new_value);
 
 //cd2.c
@@ -67,7 +67,7 @@ char	*get_home_directory(t_ms *ms, int flag);
 void	print_cd_error(char *target_dir);
 
 //pwd.c
-void	check_pwd(t_ms *ms, char **array);
+void	check_pwd(char **array, t_ms *ms);
 char	*get_env_value(char *key, char **envp);
 
 //exit.c
