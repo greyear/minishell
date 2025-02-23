@@ -118,6 +118,8 @@ void    handle_export(char **args, t_ms *ms) /// args are for exapmle args[0]="e
 
     ms->exit_status = 0;
     arg_count = 0;
+	if (!ms)  // Running in a child, don't modify ms->envp
+		return;
     if (!args || !*args)
 		return;
 	if (ft_strcmp(args[0], "export") != 0)
