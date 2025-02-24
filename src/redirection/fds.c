@@ -158,7 +158,9 @@ void	put_infile_fd(t_token *token, t_cmd *cmd)
 	}
 	else
 	{
+		//printf("infile %s\n", token->file);
 		cmd->infile = open(token->file, O_RDONLY);
+		//printf("infile fd %d\n", cmd->infile);
 		if (cmd->infile < 0)
 			check_access(token->file, RD);
 		dup2(cmd->infile, STDIN_FILENO);
