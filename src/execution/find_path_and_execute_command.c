@@ -143,6 +143,7 @@ void	ft_command(char **envp, char **cmd)
 		exit(127);
 	}
 	path = ft_find_path(envp, cmd);
+	//printf("Path %s\n", path);
 	if (!path)
 		ft_if_not_path(cmd);
 	execve(path, cmd, envp);
