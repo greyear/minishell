@@ -8,6 +8,8 @@
 # include <stdio.h>
 # include "../libft/include/libft.h"
 # include <errno.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 
 typedef struct s_ms
 {
@@ -101,5 +103,6 @@ void	redirection_outfile_emptied(char *file); //< HANDLING
 void	redirection_infile(char *file); //> HANDLING
 void	redirection_outfile_append(char *file); //<< HANDLING
 void    handle_heredoc(char *limiter); //>> HANDLNG
+void	put_heredoc_fd(t_token *token, t_cmd *cmd);
 
 #endif

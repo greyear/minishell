@@ -74,6 +74,32 @@ void handle_heredoc(char *limiter, t_ms *ms)
 	close(temp_fd);
 }*/
 
+void	handle_heredoc(char *limiter)
+{
+	char	*read_line;
+	int		pipe_fd[2];
+
+	if (pipe(pipe_fd) == -1)
+		return;
+	while (1)
+	{
+		read_line = readline("heredoc> ");
+		if (!read_line)
+			exit(1);
+		if (ft_strcmp(read_line, limiter) == 0)
+		{
+			free(read_line);
+			break;
+		}
+		ft_putstr_fd(read_line, pipe_fd[1]);
+		write(pipe_fd[1], "\n", 1);
+		free(read_line);
+	}
+	close(pipe_fd[1]);
+	dup2(pipe_fd[0], STDIN_FILENO);
+	close(pipe_fd[0]);
+}
+
 void	check_access(char *filename, t_oper operation)
 {
 	if (operation == RD)
@@ -108,6 +134,21 @@ void	redirection_outfile_append(char *file)
 	close(file2);
 }*/
 
+void	put_heredoc_fd(t_token *token, t_cmd *cmd)
+{
+	if (cmd->infile > 0)
+	close(cmd->infile);
+	if (token->ambiguous)
+	{
+		cmd->infile = NO_FD;
+		print_file_error(token->file, AMBIG);
+	}
+	else
+	{
+		cmd->infile = -3;
+	}
+}
+
 void	put_outfile_fd(t_token *token, t_cmd *cmd)
 {
 	if (cmd->outfile > 0)
@@ -125,8 +166,8 @@ void	put_outfile_fd(t_token *token, t_cmd *cmd)
 			cmd->outfile = open(token->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if (cmd->outfile < 0)
 			check_access(token->file, WR);
-		dup2(cmd->outfile, STDOUT_FILENO);
-		close (cmd->outfile);
+		//dup2(cmd->outfile, STDOUT_FILENO);
+		//close (cmd->outfile);
 	}
 }
 
@@ -163,8 +204,8 @@ void	put_infile_fd(t_token *token, t_cmd *cmd)
 		//printf("infile fd %d\n", cmd->infile);
 		if (cmd->infile < 0)
 			check_access(token->file, RD);
-		dup2(cmd->infile, STDIN_FILENO);
-		close (cmd->infile);
+		//dup2(cmd->infile, STDIN_FILENO);
+		//close (cmd->infile);
 	}
 }
 /*
