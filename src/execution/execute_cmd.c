@@ -52,6 +52,13 @@ void	execute_single_cmd(t_cmd *cmd, t_ms *ms)
 	int		status;
 
 	ms->exit_status = 0;
+
+	if (cmd->infile == NO_FD || cmd->outfile == NO_FD) 
+	{
+		ms->exit_status = 1;
+		return ;
+	}
+
 	pid = fork();
 	if (pid < 0)
 	{
@@ -96,24 +103,31 @@ void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
 	int		**pipe_fd;
 	int		i;
 	pid_t	pid;
-    pid_t   last_pid;
-    pid_t   wpid;
-    int     status;
+	pid_t   last_pid;
+	pid_t   wpid;
+	int     status;
 	t_cmd	*cur;
 
-    i = 0;
-    last_pid = -1;
+	i = 0;
+	last_pid = -1;
 	if (num_cmds == 1) // Handle single command case
-    {
-        execute_single_cmd(cmds, ms);
-        return;
-    }
+	{
+		execute_single_cmd(cmds, ms);
+		return;
+	}
 	pipe_fd = malloc(sizeof(int *) * (num_cmds - 1));
 	if (!pipe_fd)
 		return;
 	cur = cmds;
 	while (cur)//(i < num_cmds)
 	{
+
+		if (cur->infile == NO_FD || cur->outfile == NO_FD)
+		{
+			ms->exit_status = 1;
+			return ;
+		}
+
 		pipe_fd[i] = malloc(sizeof(int) * 2);
 		if (!pipe_fd[i])
 		{
@@ -125,7 +139,7 @@ void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
 			if (pipe(pipe_fd[i]) == -1)
 			{
 				ms->exit_status = 1;
-		        return;
+				return;
 			}
 		}
 		pid = fork();
@@ -155,7 +169,7 @@ void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
 			close(pipe_fd[i - 1][0]);
 			close(pipe_fd[i - 1][1]);
 		}
-        last_pid = pid;
+		last_pid = pid;
 		cur = cur->next;
 		i++;
 	}
@@ -171,9 +185,9 @@ void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
 	i = 0;
 	while (i < num_cmds)
 	{
-        wpid = wait(&status);
+		wpid = wait(&status);
 		if (wpid == last_pid && WIFEXITED(status))
-            ms->exit_status = WEXITSTATUS(status); //use this in echo ?$
+			ms->exit_status = WEXITSTATUS(status); //use this in echo ?$
 		i++;
 	}
 }

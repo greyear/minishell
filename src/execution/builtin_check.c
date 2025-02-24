@@ -14,8 +14,6 @@ int	is_builtin(t_cmd *cmd)
 	return (0);
 }
 
-//needs to be checked by Seela mb
-//mb all the arguments should be in the same order? like cmd 1st, ms 2nd... and names -handle everywhere instead of check
 void	handle_builtin(t_cmd *cmd, t_ms *ms, int in_child)
 {
 	if (ft_strcmp(cmd->name, "echo") == 0)

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+
 /*
 void print_tokens(t_token *token_list)
 {
@@ -34,8 +35,8 @@ static void print_blocks(t_block *block_list)
 		cur = cur->next;
 	}
 }*/
-
-/*static void print_cmds(t_cmd *cmd_list)
+/*
+static void print_cmds(t_cmd *cmd_list)
 {
 	t_cmd *cur = cmd_list;
 
@@ -101,14 +102,14 @@ int main(int argc, char **argv, char **envp)
 	int saved_stdin = dup(STDIN_FILENO);
 	int saved_stdout = dup(STDOUT_FILENO);
 
-	// Проверяем, что программа запущена без аргументов
+	// Args check
 	if (argc != 1 && argv)
 	{
 		printf("Usage: ./minishell\n");
 		return (1);
 	}
 
-	// Инициализируем структуру t_ms
+	// t_ms init
 	ms = initialize_struct(envp);
 	if (!ms)
 	{
@@ -116,13 +117,13 @@ int main(int argc, char **argv, char **envp)
 		return (1);
 	}
 
-	// Главный цикл минишелла
+	// Main loop
 	while (1)
 	{
-		// Считываем ввод пользователя
+		// Reading the input
 		inout(saved_stdin, saved_stdout); // Restore STDIN and STDOUT
 		input = readline("minishell> ");
-		if (!input) // Проверка EOF (Ctrl+D)
+		if (!input) // EOF check (Ctrl+D)
 		{
 			printf("exit\n");
 			break;
@@ -133,7 +134,7 @@ int main(int argc, char **argv, char **envp)
     		continue;
 		}
 
-		// Проверяем ввод на соответствие BNF
+		// BNF checking
 		err_flag = validate_input(input);
 		//printf("BNF validation result: %d\n", err_flag);
 		if (err_flag)
@@ -143,11 +144,10 @@ int main(int argc, char **argv, char **envp)
 			continue;
 		}
 
-		// Добавляем ввод в историю (если не пустой)
 		if (*input)
 			add_history(input);
 
-		// Парсинг строки
+		// Parsing
 		tokens = tokenization(input, ms);
 		free(input); // Освобождаем readline-буфер
 
@@ -156,11 +156,11 @@ int main(int argc, char **argv, char **envp)
 			printf("Error: tokenization failed\n");
 			continue;
 		}
-		//???????????
+
 		//print_tokens(tokens);
 		put_files_for_redirections(tokens);
-		
-		// Разбиваем токены на блоки
+		//print_tokens(tokens);
+
 		blocks = create_blocks_list(tokens, NULL, &err_flag);
 		if (err_flag)
 		{
@@ -169,9 +169,10 @@ int main(int argc, char **argv, char **envp)
 			continue;
 		}
 
-		// Вывод блоков
+		// Blocks printing
 		//print_blocks(blocks);
-		// Создаём команды из блоков
+
+		// Cmds creation
 		cmds = create_cmd_list(blocks, ms);
 		if (!cmds)
 		{
@@ -187,24 +188,29 @@ int main(int argc, char **argv, char **envp)
 			cur = cur->next;
 			i++;
 		}
-		// Вывод команд
+
+		// Cmd printing
 		//print_cmds(cmds);
 		//input_output(cmds);
 		if (is_builtin(cmds) && if_children_needed(cmds) == false && i == 1)
+		{
+			//printf("Here1\n");
 			handle_builtin(cmds, ms, 0);
+		}
 		else
 		{
+			//printf("Here2\n");
 			execute_cmd(i, cmds, ms);
 		}
 			
-		//Очистка перед следующим вводом
+		//Cleaning before the next input
 		clean_token_list(&tokens);
 		clean_block_list(&blocks);
 		//print_cmds(cmds);
 		//clean_cmd_list(&cmds);
 	}
 
-	// Освобождаем глобальные ресурсы
+	// Freeing struct
 	free(ms);
 	return (0);
 }
