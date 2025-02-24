@@ -55,7 +55,7 @@ t_token			*unite_two_word_tokens(t_token *first);
 t_bool			is_redirect(t_token_type type);
 void			flags_for_redirections(t_token *cur);
 void			put_files_for_redirections(t_token *cur);
-void print_tokens(t_token *token_list);
+void			print_tokens(t_token *token_list);
 
 //Parser
 int				words_in_cmd_block(t_token *start, t_token *end);
@@ -67,7 +67,7 @@ t_cmd			*clean_cmd_list(t_cmd **first);
 int				check_block(t_token *start, t_token *end, int *err_flag);
 t_block			*create_block(t_token *start, t_token *end, t_block *first_block, int *err_flag);
 t_block			*create_blocks_list(t_token *start, t_token *end, int *err_flag);
-void			redir_in_block(t_block *block, t_cmd *cmd);
+void			redir_in_block(t_block *block, t_cmd *cmd, t_ms *ms);
 t_block			*clean_block(t_block *block);
 t_block			*clean_block_list(t_block **first);
 
