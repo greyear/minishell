@@ -63,6 +63,8 @@ void	redir_in_block(t_block *block, t_cmd *cmd, t_ms *ms)
 				put_infile_fd(cur, cmd);
 			else if (cur->type == OUT || cur->type == APPEND)
 				put_outfile_fd(cur, cmd);
+			else if (cur->type == HEREDOC)
+				put_heredoc_fd(cur, cmd);
 			if (cmd->infile == NO_FD || cmd->outfile == NO_FD)
 			{
 				ms->exit_status = 1;

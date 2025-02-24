@@ -6,8 +6,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-/*
-void print_tokens(t_token *token_list)
+
+/*void print_tokens(t_token *token_list)
 {
 	t_token *cur = token_list;
 
@@ -17,8 +17,8 @@ void print_tokens(t_token *token_list)
 		printf("Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->type, cur->data, cur->quote, cur->specific_redir, cur->ambiguous, cur->file);
 		cur = cur->next;
 	}
-}*/
-/*
+}
+
 static void print_blocks(t_block *block_list)
 {
 	t_block *cur = block_list;
@@ -34,8 +34,8 @@ static void print_blocks(t_block *block_list)
 
 		cur = cur->next;
 	}
-}*/
-/*
+}
+
 static void print_cmds(t_cmd *cmd_list)
 {
 	t_cmd *cur = cmd_list;
@@ -159,6 +159,7 @@ int main(int argc, char **argv, char **envp)
 
 		//print_tokens(tokens);
 		put_files_for_redirections(tokens);
+		//printf("tokens again \n");
 		//print_tokens(tokens);
 
 		blocks = create_blocks_list(tokens, NULL, &err_flag);
@@ -181,6 +182,7 @@ int main(int argc, char **argv, char **envp)
 			clean_block_list(&blocks);
 			continue;
 		}
+		//print_cmds(cmds);
 		i = 0;
 		cur = cmds;
 		while (cur)

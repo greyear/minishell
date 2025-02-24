@@ -28,7 +28,7 @@ ALSO WORKS WITH SINGLE COMMAND EXECUTION SO CALL THIS WHENEVER YOU NEED TO EXECU
 //include "seela.h"
 #include "../../include/minishell.h"
 
-static void	pipe_process(int *prev_pipe, int *next_pipe)
+/*static void	pipe_process(int *prev_pipe, int *next_pipe)
 {
 	if (prev_pipe)
 	{
@@ -44,21 +44,53 @@ static void	pipe_process(int *prev_pipe, int *next_pipe)
 		close(next_pipe[0]);
 		close(next_pipe[1]);
 	}
+}*/
+
+static void	pipe_process(int infile, int outfile, int *prev_pipe, int *next_pipe)
+{
+	if (prev_pipe)
+	{
+		if (dup2(prev_pipe[0], STDIN_FILENO) == -1) //It duplicates previous pipes read-end to stadard input
+			exit(1);
+		close(prev_pipe[0]);
+		close(prev_pipe[1]);
+	}
+	if (infile != -2 && infile != -1) 
+	{
+		if (dup2(infile, STDIN_FILENO) == -1) //It duplicates previous pipes read-end to stadard input
+			exit(1);
+		close(infile);
+	}
+	if (next_pipe)
+	{
+		if (dup2(next_pipe[1], STDOUT_FILENO) == -1) //It duplicates the next pipes write-end to standard output
+			exit(1);
+		close(next_pipe[0]);
+		close(next_pipe[1]);
+	}
+	if (outfile != -2 && outfile != -1)
+	{
+		if (dup2(outfile, STDOUT_FILENO) == -1) //It duplicates the next pipes write-end to standard output
+			exit(1);
+		close(outfile);
+
+	}
 }
 
-void	execute_single_cmd(t_cmd *cmd, t_ms *ms)
+void	execute_single_cmd(t_cmd *cmd, t_ms *ms) ///t_token *token?
 {
 	pid_t	pid;
 	int		status;
+	//t_token	*cur;
 
+	//cur = token;
 	ms->exit_status = 0;
 
-	if (cmd->infile == NO_FD || cmd->outfile == NO_FD) 
+	if (cmd->infile == NO_FD || cmd->outfile == NO_FD)
 	{
 		ms->exit_status = 1;
 		return ;
 	}
-
 	pid = fork();
 	if (pid < 0)
 	{
@@ -67,6 +99,25 @@ void	execute_single_cmd(t_cmd *cmd, t_ms *ms)
 	}
 	if (pid == 0) // Child process
 	{
+		/*if (cmd->infile == -3)
+		{
+			cur = cur->next;
+			cur = cur->next;
+			if (cur)
+				handle_heredoc(cur->file);
+		}*/
+		if (cmd->infile != -2 && cmd->infile != -1)
+		{
+			if (dup2(cmd->infile, STDIN_FILENO) == -1)
+				exit(1);
+			close(cmd->infile);
+		}
+		if (cmd->outfile != -2 && cmd->outfile != -1)
+		{
+			if (dup2(cmd->outfile, STDOUT_FILENO) == -1)
+				exit(1);
+			close(cmd->outfile);
+		}
 		if (is_builtin(cmd))
 		{
 			handle_builtin(cmd, ms, 0);
@@ -107,6 +158,7 @@ void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
 	pid_t   wpid;
 	int     status;
 	t_cmd	*cur;
+	//t_token	*cur2;
 
 	i = 0;
 	last_pid = -1;
@@ -119,8 +171,9 @@ void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
 	if (!pipe_fd)
 		return;
 	cur = cmds;
-
-	while (cur)//(i < num_cmds)
+	//cur2 = tokens;
+	//cur2 = cur2->next;
+	while (cur && i < num_cmds)
 	{
 		pipe_fd[i] = malloc(sizeof(int) * 2);
 		if (!pipe_fd[i])
@@ -147,12 +200,21 @@ void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
 			if (cur->infile == NO_FD || cur->outfile == NO_FD)
 				exit(1); //not sure about that!
 
-			if (i == 0) // first command
-				pipe_process(NULL, pipe_fd[i]);
-			else if (i == num_cmds - 1) // last command
-				pipe_process(pipe_fd[i - 1], NULL);
-			else //any commands in between
-				pipe_process(pipe_fd[i - 1], pipe_fd[i]);
+			//if (i == 0) // first command
+			//pipe_process(cur->infile, cur->outfile, pipe_fd[i-1], pipe_fd[i]);
+			//else if (i == num_cmds - 1) // last command
+				//pipe_process(pipe_fd[i - 1], NULL);
+			//else //any commands in between
+				//pipe_process(pipe_fd[i - 1], pipe_fd[i]);
+			//if (cmds->infile == -3)
+			//	handle_heredoc(cur->args[1]);
+			if (i == 0) // First command
+                pipe_process(cur->infile, cur->outfile, NULL, pipe_fd[i]);
+            else if (i == num_cmds - 1) // Last command
+                pipe_process(cur->infile, cur->outfile, pipe_fd[i-1], NULL);
+            else // Any commands in between
+                pipe_process(cur->infile, cur->outfile, pipe_fd[i-1], pipe_fd[i]);
+
 			if (is_builtin(cur))
 			{
 				handle_builtin(cur, ms, 1);
@@ -168,6 +230,7 @@ void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
 		}
 		last_pid = pid;
 		cur = cur->next;
+		//cur2 = cur2->next;
 		i++;
 	}
 	i = 0;
