@@ -145,7 +145,7 @@ void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
 		if (pid == 0) // Child process
 		{
 			if (cur->infile == NO_FD || cur->outfile == NO_FD)
-				exit(1);
+				exit(1); //not sure about that!
 
 			if (i == 0) // first command
 				pipe_process(NULL, pipe_fd[i]);
