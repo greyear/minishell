@@ -112,6 +112,12 @@ void	execute_single_cmd(t_cmd *cmd, t_ms *ms) ///t_token *token?
 				exit(1);
 			close(cmd->infile);
 		}
+		if (cmd->outfile != -2 && cmd->outfile != -1)
+		{
+			if (dup2(cmd->outfile, STDOUT_FILENO) == -1)
+				exit(1);
+			close(cmd->outfile);
+		}
 		if (is_builtin(cmd))
 		{
 			handle_builtin(cmd, ms, 0);
