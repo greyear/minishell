@@ -74,6 +74,37 @@ static char	*ft_find_path2(char **paths, char *full_path, char *cmd)
 	return (NULL);
 }
 
+#include <dirent.h> // Needed for opendir()
+
+void	check_dir(char **envp, char **cmds)
+{
+	DIR *dir = opendir(cmds[0]);
+    if (dir) // If it's a directory
+    {
+        closedir(dir);
+        ft_putstr_fd("bash: ", 2);
+        ft_putstr_fd(cmds[0], 2);
+        ft_putstr_fd(": is a directory\n", 2);
+        exit(126);
+    }
+    if (access(cmds[0], F_OK) == 0) // File exists
+    {
+        if (access(cmds[0], X_OK) == 0) // File is executable
+            execve(cmds[0], cmds, envp);
+        else
+        {
+            ft_putstr_fd("bash: ", 2);
+            ft_putstr_fd(cmds[0], 2);
+            ft_putstr_fd(": Permission denied\n", 2);
+            exit(126);
+        }
+    }
+    ft_putstr_fd("bash: ", 2);
+    ft_putstr_fd(cmds[0], 2);
+    ft_putstr_fd(": No such file or directory\n", 2);
+    exit(127);
+}
+
 static char	*ft_find_path(char **envp, char **cmds)
 {
 	int		i;
@@ -83,10 +114,10 @@ static char	*ft_find_path(char **envp, char **cmds)
 
 	i = 0;
 	full_path = NULL;
-	if (cmds[0][0] == '/')
+	if (cmds[0][0] == '/' || cmds[0][0] == '.')
 	{
-		if (access(cmds[0], F_OK) == 0 && access(cmds[0], X_OK) == 0)
-			execve(cmds[0], cmds, envp);
+		check_dir(envp, cmds);
+		// 	execve(cmds[0], cmds, envp);
 	}
 	while (envp[i] && ft_strncmp(envp[i], "PATH=", 5) != 0)
 		i++;
