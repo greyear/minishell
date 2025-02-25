@@ -84,7 +84,7 @@ void	check_dir(char **envp, char **cmds)
         closedir(dir);
         ft_putstr_fd("bash: ", 2);
         ft_putstr_fd(cmds[0], 2);
-        ft_putstr_fd(": is a directory\n", 2);
+        ft_putstr_fd(": Is a directory\n", 2);
         exit(126);
     }
     if (access(cmds[0], F_OK) == 0) // File exists

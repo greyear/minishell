@@ -3,6 +3,9 @@
 
 int	is_builtin(t_cmd *cmd)
 {
+	if (!cmd->name)
+	return (0);
+
 	if ((ft_strcmp(cmd->name, "echo") == 0) || \
 		(ft_strcmp(cmd->name, "cd") == 0) || \
 		(ft_strcmp(cmd->name, "pwd") == 0) || \
