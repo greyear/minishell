@@ -86,6 +86,12 @@ void	execute_single_cmd(t_cmd *cmd, t_ms *ms) ///t_token *token?
 	//cur = token;
 	ms->exit_status = 0;
 
+	if (!cmd->args || !cmd->args[0])
+	{
+		ms->exit_status = 0;
+		return ;
+	}
+
 	if (cmd->infile == NO_FD || cmd->outfile == NO_FD)
 	{
 		ms->exit_status = 1;
@@ -175,6 +181,14 @@ void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
 	//cur2 = cur2->next;
 	while (cur && i < num_cmds)
 	{
+		if (!cur->args || !cur->args[0])
+		{
+			ms->exit_status = 0;
+			cur = cur->next;
+			i++;
+			continue ;
+		}
+
 		pipe_fd[i] = malloc(sizeof(int) * 2);
 		if (!pipe_fd[i])
 		{
@@ -223,7 +237,7 @@ void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
 			else
 				ft_command(ms->envp, cur->args); //execute command
 		}
-		if (i > 0)
+		if (i > 0 && pipe_fd[i - 1] != NULL)
 		{
 			close(pipe_fd[i - 1][0]);
 			close(pipe_fd[i - 1][1]);
@@ -236,9 +250,12 @@ void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
 	i = 0;
 	while (i < num_cmds - 1)
 	{
-		close(pipe_fd[i][0]);
- 		close(pipe_fd[i][1]);
-		free(pipe_fd[i]);
+		if (pipe_fd[i] != NULL)
+		{
+			close(pipe_fd[i][0]);
+			close(pipe_fd[i][1]);
+			free(pipe_fd[i]);
+		}
 		i++;
 	}
 	free(pipe_fd);
