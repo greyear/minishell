@@ -4,16 +4,19 @@
 int	expand_in_token(t_token *cur, t_ms *ms)
 {
 	char	*data_copy;
+	char	*expanded;
 
 	data_copy = ft_strdup(cur->data);
 	if (!data_copy)
 		return (1); //error msg?
-	cur->data = handle_expansion(cur->data, ms);
-	if (!cur->data)
+	expanded = handle_expansion(cur->data, ms);
+	if (!expanded)
 	{
 		free(data_copy);
 		return (1);
 	}
+	free(cur->data);
+	cur->data = expanded;
 	if (cur->specific_redir && !cur->quote && \
 			data_copy[0] && !cur->data[0])
 	{
