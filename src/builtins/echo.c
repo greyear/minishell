@@ -66,17 +66,14 @@ void	handle_echo(char **args, t_ms *ms)
 {
 	int		i;
 	int		check;
-	int		has_printed;
 
 	if (!args || !*args || ft_strcmp(args[0], "echo") != 0)
 		return;
 	ms->exit_status = 0;
 	i = 1;
 	check = handle_n_flags(args, &i);
-	has_printed = 0;
 	while (args[i])
 	{
-		has_printed = 1;
 		ft_putstr_fd(args[i], STDOUT_FILENO);
 		if (args[i + 1])
 			ft_putstr_fd(" ", STDOUT_FILENO);
