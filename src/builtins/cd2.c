@@ -37,7 +37,7 @@ static char	*return_target(t_ms *ms, char *target)
         ms->exit_status = 1;
         return (NULL);
     }
-    ft_putendl_fd(target, 1);
+    ft_putendl_fd(target, STDOUT_FILENO);
 	return (ft_strdup(target));
 }
 
@@ -56,7 +56,7 @@ char	*get_oldpwd_directory(t_ms *ms)
 	}
 	if (*target == '\0')
     {
-        ft_putstr_fd("\n", 1);  // Print an empty line when OLDPWD is not set
+        ft_putstr_fd("\n", STDOUT_FILENO);  // Print an empty line when OLDPWD is not set
         current_pwd = get_env_value("PWD", ms->envp);
         if (!current_pwd || *current_pwd == '\0')
         {
