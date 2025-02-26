@@ -57,7 +57,7 @@ static void	update_cd_env(t_ms *ms, char *pwd_before)
 
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
-		printf("cd: getcwd failed");
+		perror("cd: getcwd failed");
 		ms->exit_status = 1;
 		return;
 	}
