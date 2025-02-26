@@ -3,6 +3,22 @@
 
 //str is an input
 
+/**
+ * @brief Tokenizes an input string into a linked list of tokens.
+ * 
+ * This function processes a given command string, splitting it into tokens based on 
+ * spaces, special characters (e.g. `<`, `>`, `|`), and quotes. It assigns each 
+ * token a specific type and applies necessary post-processing such as handling 
+ * redirections and merging adjacent words.
+ * 
+ * @param str The null-terminated input string to be tokenized.
+ * @param ms A pointer to the t_ms structure, potentially used for expansions.
+ * 
+ * @return A pointer to the first token in the linked list, or NULL if an error occurs.
+ * 
+ * @note The function allocates memory dynamically. The caller is responsible for 
+ *       freeing the token list using clean_token_list().
+ */
 t_token *tokenization(char *str, t_ms *ms) //store str in ms?
 {
 	size_t			i;
