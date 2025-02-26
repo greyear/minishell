@@ -224,10 +224,10 @@ int main(int argc, char **argv, char **envp)
 		}
 			
 		//Cleaning before the next input
-		//clean_token_list(&tokens);
-		//clean_block_list(&blocks);
+		clean_token_list(&tokens);
+		clean_block_list(&blocks);
 		//print_cmds(cmds);
-		//clean_cmd_list(&cmds);
+		clean_cmd_list(&cmds);
 		
 		//printf("Exiting shell, cleaning struct...\n");
 		//clean_struct(ms);
@@ -238,7 +238,7 @@ int main(int argc, char **argv, char **envp)
 
 	// Freeing struct
 	//free(ms);
-	//clean_struct(ms);
-	//write(2, "exit...\n", 8);
+	clean_struct(ms);
+	write(1, "HELLO...\n", 8);
 	return (0);
 }
