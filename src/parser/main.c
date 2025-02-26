@@ -228,17 +228,12 @@ int main(int argc, char **argv, char **envp)
 		clean_block_list(&blocks);
 		//print_cmds(cmds);
 		clean_cmd_list(&cmds);
-		
-		//printf("Exiting shell, cleaning struct...\n");
-		//clean_struct(ms);
-		//printf("Struct cleaned, exiting program.\n");
-
-		//printf("Here\n");
+		//printf("cleaning 3 instances...\n");
 	}
 
 	// Freeing struct
 	//free(ms);
-	clean_struct(ms);
-	write(1, "HELLO...\n", 8);
+	//clean_struct(ms);
+	//write(1, "HELLO...\n", 8);
 	return (0);
 }

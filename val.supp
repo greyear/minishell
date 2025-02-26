@@ -1563,6 +1563,32 @@
    fun:main
 }
 
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:xmalloc
+   fun:_rl_init_locale
+   fun:_rl_reset_locale
+   fun:rl_initialize
+   fun:readline
+   fun:main
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:xrealloc
+   obj:/usr/lib/x86_64-linux-gnu/libreadline.so.8.2
+   fun:rl_expand_prompt
+   fun:rl_set_prompt
+   fun:readline
+   fun:main
+}
+
 
 
 
