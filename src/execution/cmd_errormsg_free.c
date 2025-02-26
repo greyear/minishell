@@ -1,4 +1,4 @@
-//#include "seela.h"
+
 #include "../../include/minishell.h"
 
 void	ft_free_array(char **array)

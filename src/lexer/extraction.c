@@ -1,6 +1,18 @@
 
 #include "../../include/minishell.h"
 
+/**
+ * @brief Extracts a quoted word from the input string, handling both single ('') and double ("") quotes.
+ * 
+ * This function scans the input string starting from the given index (`*start`) and extracts a word enclosed 
+ * in either single or double quotes. The type of quotes is determined by the `new->quote` field.
+ * 
+ * @param str A pointer to the null-terminated input string.
+ * @param start A pointer to the current position in `str`, updated after processing.
+ * @param new A pointer to a `t_token` struct that stores quote type and other stuff.
+ * 
+ * @return A newly allocated string containing the extracted quoted word, or NULL if memory allocation fails.
+ */
 char	*word_with_quotes(char *str, size_t *start, t_token *new)
 {
 	char	*res;
@@ -23,6 +35,18 @@ char	*word_with_quotes(char *str, size_t *start, t_token *new)
 		*start = *start + 1;
 	return (res);
 }
+
+/**
+ * @brief Extracts a word from the input string that is not enclosed in quotes.
+ * 
+ * This function scans the input string starting from `*start` and extracts a word until it encounters 
+ * a special character (as defined by `ft_special()`) or a whitespace character.
+ * 
+ * @param str A pointer to the null-terminated input string.
+ * @param start A pointer to the current position in `str`, updated after processing.
+ * 
+ * @return A newly allocated string containing the extracted word, or NULL if memory allocation fails.
+ */
 char	*word_without_quotes(char *str, size_t *start)
 {
 	char	*res;

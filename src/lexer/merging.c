@@ -1,6 +1,17 @@
 
 #include "../../include/minishell.h"
 
+/**
+ * @brief Merges relevant fields from the second token into the first token.
+ * 
+ * This function updates `first` by incorporating values from `second`, ensuring that 
+ * quote type and unclosed status are properly inherited when applicable.
+ * 
+ * @param first A pointer to the first token, which will be modified.
+ * @param second A pointer to the second token, whose values may be merged into `first`.
+ * 
+ * @note The function assumes that both tokens are valid and properly initialized.
+ */
 static void	merged_values(t_token *first, t_token *second)
 {
 	if (!first->quote && second->quote) // ) + 1 = 1, else we don't need to change the value of the 1st
@@ -10,6 +21,21 @@ static void	merged_values(t_token *first, t_token *second)
 	//some other fields
 }
 
+/**
+ * @brief Merges consecutive WORD tokens into a single token.
+ * 
+ * This function traverses a linked list of tokens and combines adjacent tokens of type WORD 
+ * into a single token by concatenating their data fields. It also updates relevant token 
+ * properties and removes unnecessary whitespace or empty tokens.
+ * 
+ * @param first A pointer to the first token in the linked list.
+ * 
+ * @return A pointer to the updated first token of the modified list.
+ *         Returns NULL if memory allocation for concatenation fails.
+ * 
+ * @note This function modifies the linked list in place, freeing redundant tokens 
+ *       and updating the structure accordingly.
+ */
 t_token	*unite_two_word_tokens(t_token *first)
 {
 	t_token	*cur;
