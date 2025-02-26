@@ -56,6 +56,7 @@ t_bool			is_redirect(t_token_type type);
 void			flags_for_redirections(t_token *cur);
 void			put_files_for_redirections(t_token *cur);
 void			print_tokens(t_token *token_list);
+int             check_list_for_tilde(t_token *first, t_ms *ms);
 
 //Parser
 int				words_in_cmd_block(t_token *start, t_token *end);
