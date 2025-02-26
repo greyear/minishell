@@ -52,6 +52,7 @@ t_token	*unite_two_word_tokens(t_token *first)
 			joined = ft_strjoin(cur->data, cur->next->data);
 			if (!joined)
 				return (NULL);
+			free(cur->data);
 			cur->data = joined;
 			merged_values(cur, cur->next);
 			deleted = cur->next;
@@ -61,10 +62,19 @@ t_token	*unite_two_word_tokens(t_token *first)
 		else
 			cur = cur->next;
 	}
-	//print_tokens(first);
+
+	/*printf("before deleting whitespaces\n");
+	print_tokens(first);*/
+
 	first = delete_whitespace_tokens(first);
-	//print_tokens(first);
+	
+	/*printf("after deleting whitespaces\n");
+	print_tokens(first);*/
+
 	first = delete_empty_word_tokens(first);
-	//print_tokens(first);
+	
+	/*printf("after deleting empty\n");
+	print_tokens(first);*/
+
 	return (first);
 }

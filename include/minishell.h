@@ -119,5 +119,6 @@ void	check_second_file(t_pipex *p);*/
 //Cleaners
 void			clean_arr(char ***arr);
 void			ft_free_map(char **map);
+void			clean_struct(t_ms *ms);
 
 #endif
