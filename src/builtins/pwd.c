@@ -36,7 +36,10 @@ void	check_pwd(char **array, t_ms *ms)
 	ms->exit_status = 0;
 	// Use getcwd() to get the actual directory
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
-		printf("%s\n", cwd);
+	{
+		ft_putstr_fd(cwd, STDOUT_FILENO);
+		ft_putstr_fd("\n", STDOUT_FILENO);
+	}
 	else
 	{
 		ms->exit_status = 1;
