@@ -62,8 +62,13 @@ t_token *tokenization(char *str, t_ms *ms) //store str in ms?
 		clean_token_list(&first); //what else to clean?
 		return (NULL); //maybe create a separate cleaner?
 	}
-	/*printf("inside tokenization end\n");
-	print_tokens(first);*/
+	if (check_list_for_tilde(first, ms) == 1)
+	{
+
+		clean_token_list(&first);
+		return (NULL);
+	}
+	//print_tokens(first);
 	//print_tokens(first);
 	return (first);
 	//wildcards?
