@@ -1,9 +1,24 @@
 
 #include "../../include/minishell.h"
 
-//what if the very first block starts from | symbol?
+/**
+ * @brief Validates a sequence of tokens within a command block.
+ * 
+ * This function checks whether all tokens between `start` and `end` are valid. A valid token
+ * is considered to be a WORD, a redirection, or a DUMMY token. If an invalid token is found,
+ * the error flag is set, and the function returns an error.
+ * 
+ * @param start A pointer to the first token in the block.
+ * @param end A pointer to the token marking the end of the block (not included in validation).
+ * @param err_flag A pointer to an integer flag used to indicate errors. If an invalid token 
+ *                 is encountered, the flag is set to `1`.
+ * 
+ * @return `0` if the block is valid, `1` if an error is found.
+ * 
+ * @note If no tokens exist between `start` and `end`, the function still returns `0`.
+ */
 int	check_block(t_token *start, t_token *end, int *err_flag) //check without
-{
+{ //what if the very first block starts from | symbol?
 	t_token	*cur;
 	//what if nothing in between
 	cur = start;

@@ -122,7 +122,23 @@ int main(int argc, char **argv, char **envp)
 	{
 		// Reading the input
 		inout(saved_stdin, saved_stdout); // Restore STDIN and STDOUT
-		input = readline("minishell> ");
+		
+		 //FOR USUAL EXECUTION
+		//input = readline("minishell> ");
+
+		//FOR TESTER
+		if (isatty(fileno(stdin))) // If running interactively
+			input = readline("minishell> ");
+		else // If receiving input from another program
+		{
+			char *line = get_next_line(fileno(stdin));
+			if (!line) // Handle EOF (Ctrl+D in non-interactive mode)
+				break;
+			input = ft_strtrim(line, "\n"); // Remove newline from input
+			free(line);
+		}
+
+
 		if (!input) // EOF check (Ctrl+D)
 		{
 			printf("exit\n");
