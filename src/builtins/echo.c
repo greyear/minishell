@@ -27,11 +27,16 @@ void	handle_echo(char **args, t_ms *ms)
 			continue;
 		}
 		has_printed = 1;
-		printf("%s", args[i]);
+		//printf("%s", args[i]);
+		ft_putstr_fd(args[i], STDOUT_FILENO);
 		if (args[i + 1])
-			printf(" ");
+		{
+			ft_putstr_fd(" ", STDOUT_FILENO);
+		}
+			//printf(" ");
 		i++;
 	}
 	if (check == 0)
-		printf("\n");
+		ft_putstr_fd("\n", STDOUT_FILENO);
+		//printf("\n");
 }
