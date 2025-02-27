@@ -52,7 +52,7 @@ void	check_exit(char **array, t_ms *ms)
 		return;
 	if (ft_strcmp(array[0], "exit") != 0)
 		return;
-	ft_putstr_fd("exit\n", 1);
+	ft_putstr_fd("exit\n", STDOUT_FILENO);
 	if (array[1])
 	{
 		if (array[2])
