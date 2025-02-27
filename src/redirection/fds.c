@@ -37,68 +37,52 @@ CMD_ARRAY[0] = "CAT", CMD_ARRAY[1] = "LS -LA", CMD_ARRAY[2] = "GREP ERROR", CMD_
 //#include "seela.h"
 #include "../../include/minishell.h"
 
-/*
-void handle_heredoc(char *limiter, t_ms *ms)
+/*void	handle_heredoc(t_ms *ms, char *limiter)
 {
-	char    buffer[1024];
-	size_t  len;
-	ssize_t bytes_read;
-	int     temp_fd;
+	char	*line;
+	int		temp_fd;
+	char	*filename;
 
-	len = 0;
-	temp_fd = open(".heredoc_tmp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	// Generate unique filename
+	filename = generate_heredoc_filename(ms->heredoc_count);
+	ms->heredoc_files[ms->heredoc_count++] = filename;
+
+	// Open heredoc file
+	temp_fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (temp_fd < 0)
-		exit(1); //I guess we cannot just exit without an error msg and cleaning?
+	{
+		perror("heredoc: open failed");
+		exit(1);
+	}
 	while (1)
 	{
 		write(STDOUT_FILENO, "heredoc> ", 9);
-		len = 0;
-		bytes_read = read(STDIN_FILENO, buffer + len, 1);
-		while (bytes_read > 0)
+		line = get_next_line(STDIN_FILENO);
+		if (!line)
 		{
-			if (buffer[len] == '\n')
-			{
-				buffer[len] = '\0';
-				break;
-			}
-			len++;
-			bytes_read = read(STDIN_FILENO, buffer + len, 1);
-		}
-		if (bytes_read < 0)
+			perror("heredoc: read error");
+			close(temp_fd);
 			exit(1);
-		if (ft_strcmp(buffer, limiter) == 0)
+		}
+		if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0 && line[ft_strlen(limiter)] == '\n')
+		{
+			free(line);
 			break;
-		write(temp_fd, buffer, len);
-		write(temp_fd, "\n", 1);
+		}
+		write(temp_fd, line, ft_strlen(line));
+		free(line);
 	}
 	close(temp_fd);
-}*/
-
-void	handle_heredoc(char *limiter)
-{
-	char	*read_line;
-	int		pipe_fd[2];
-
-	if (pipe(pipe_fd) == -1)
-		return;
-	while (1)
+	temp_fd = open(filename, O_RDONLY);
+	if (temp_fd < 0)
 	{
-		read_line = readline("heredoc> ");
-		if (!read_line)
-			exit(1);
-		if (ft_strcmp(read_line, limiter) == 0)
-		{
-			free(read_line);
-			break;
-		}
-		ft_putstr_fd(read_line, pipe_fd[1]);
-		write(pipe_fd[1], "\n", 1);
-		free(read_line);
+		perror("heredoc: reopen failed");
+		exit(1);
 	}
-	close(pipe_fd[1]);
-	dup2(pipe_fd[0], STDIN_FILENO);
-	close(pipe_fd[0]);
-}
+	// Redirect STDIN to read from the heredoc file
+	dup2(temp_fd, STDIN_FILENO);
+	close(temp_fd);
+}*/
 
 void	check_access(char *filename, t_oper operation)
 {
@@ -117,27 +101,11 @@ void	check_access(char *filename, t_oper operation)
 			print_file_error(filename, PERM_DEN);
 	}
 }
-/*
-void	redirection_outfile_append(char *file)
-{
-	int		file2;
 
-	file2 = open(file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	if (file2 < 0)
-		exit(1);
-	check_access(file, 0);
-	if (dup2(file2, STDOUT_FILENO) == -1)
-	{
-		close(file2);
-		exit(1);
-	}
-	close(file2);
-}*/
-
-void	put_heredoc_fd(t_token *token, t_cmd *cmd)
+void	put_heredoc_fd(t_token *token, t_cmd *cmd, t_ms *ms)
 {
 	if (cmd->infile > 0)
-	close(cmd->infile);
+		close(cmd->infile);
 	if (token->ambiguous)
 	{
 		cmd->infile = NO_FD;
@@ -145,7 +113,7 @@ void	put_heredoc_fd(t_token *token, t_cmd *cmd)
 	}
 	else
 	{
-		cmd->infile = -3;
+		cmd->infile = handle_heredoc(ms, token->file);
 	}
 }
 
@@ -166,27 +134,8 @@ void	put_outfile_fd(t_token *token, t_cmd *cmd)
 			cmd->outfile = open(token->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if (cmd->outfile < 0)
 			check_access(token->file, WR);
-		//dup2(cmd->outfile, STDOUT_FILENO);
-		//close (cmd->outfile);
 	}
 }
-
-/*
-void	redirection_infile(char *file)
-{
-	int		file1;
-
-	check_access(file, 1);	
-	file1 = open(file, O_RDONLY);
-	if (file1 < 0)
-		exit(1);
-	if (dup2(file1, STDIN_FILENO) == -1)
-	{
-		close(file1);
-		exit(1);
-	}
-	close(file1);
-}*/
 
 void	put_infile_fd(t_token *token, t_cmd *cmd)
 {
@@ -199,32 +148,11 @@ void	put_infile_fd(t_token *token, t_cmd *cmd)
 	}
 	else
 	{
-		//printf("infile %s\n", token->file);
 		cmd->infile = open(token->file, O_RDONLY);
-		//printf("infile fd %d\n", cmd->infile);
 		if (cmd->infile < 0)
 			check_access(token->file, RD);
-		//dup2(cmd->infile, STDIN_FILENO);
-		//close (cmd->infile);
 	}
 }
-/*
-void	redirection_outfile_emptied(char *file)
-{
-	int		file2;
-
-	file2 = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (file2 < 0)
-		exit(1);
-	check_access(file, 0);
-	if (dup2(file2, STDOUT_FILENO) == -1)
-	{
-		close(file2);
-		exit(1);
-	}
-	close(file2);
-}*/
-
 
 
 /*

@@ -10,6 +10,15 @@ t_ms	*initialize_struct(char **envp)
 	ms->exit_status = 0;
 	ms->envp = copy_map(envp);
 	ms->exported = copy_map(envp);
+	ms->heredoc_count = 0;
+	ms->heredoc_files = malloc(sizeof(char *) * 100); // Support 100 heredocs max
+	ms->heredoc_files[0] = NULL;
+	ft_memset(ms->heredoc_files, 0, sizeof(char *) * 100); // Set all entries to NULL
+	if (!ms->heredoc_files)
+	{
+		perror("heredoc: memory allocation failed");
+		exit(1);
+	}
 	return (ms);
 }
 
