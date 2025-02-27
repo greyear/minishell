@@ -81,7 +81,9 @@ EXEC_FILES		=	builtin_check.c \
 					path_bonus.c \
 					cmd_errormsg_free.c
 REDIR_FILES		=	open_bonus.c \
-					fds.c
+					fds.c \
+					heredoc.c \
+					generate_filename.c
 ENVP_FILES		=	check_all_tokens.c \
 					handle_expansion.c \
 					initialize_struct.c \

@@ -36,7 +36,7 @@ static void print_blocks(t_block *block_list)
 	}
 }
 
-static void print_cmds(t_cmd *cmd_list)
+*//*static void print_cmds(t_cmd *cmd_list)
 {
 	t_cmd *cur = cmd_list;
 
@@ -125,9 +125,9 @@ int main(int argc, char **argv, char **envp)
 		inout(saved_stdin, saved_stdout); // Restore STDIN and STDOUT
 		
 		// FOR USUAL EXECUTION
-		input = readline("minishell> ");
+		//input = readline("minishell> ");
 
-		/*//FOR TESTER
+		//FOR TESTER
 		if (isatty(fileno(stdin))) // If running interactively
 			input = readline("minishell> ");
 		else // If receiving input from another program
@@ -137,9 +137,7 @@ int main(int argc, char **argv, char **envp)
 				break;
 			input = ft_strtrim(line, "\n"); // Remove newline from input
 			free(line);
-		}*/
-
-
+		}
 		if (!input) // EOF check (Ctrl+D)
 		{
 			printf("exit\n");
