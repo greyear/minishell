@@ -21,10 +21,10 @@ void	clean_struct(t_ms *ms)
 		clean_arr(&(ms->envp));
 	if (ms->exported)
 		clean_arr(&(ms->exported));
-	/*if (ms->tokens)
+	if (ms->tokens)
 		clean_token_list(&(ms->tokens));
 	if (ms->blocks)
-		clean_block_list(&(ms->blocks));*/
+		clean_block_list(&(ms->blocks));
 	/*if (ms->cmds)
 		clean_cmd_list(&(ms->cmds));*/
 	free(ms);
