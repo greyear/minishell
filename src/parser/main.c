@@ -17,8 +17,8 @@
 		printf("Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->type, cur->data, cur->quote, cur->specific_redir, cur->ambiguous, cur->file);
 		cur = cur->next;
 	}
-}
-
+}*/
+/*
 static void print_blocks(t_block *block_list)
 {
 	t_block *cur = block_list;
@@ -110,6 +110,7 @@ int main(int argc, char **argv, char **envp)
 	}
 
 	// t_ms init
+	//printf("Initializing struct...\n");
 	ms = initialize_struct(envp);
 	if (!ms)
 	{
@@ -123,10 +124,10 @@ int main(int argc, char **argv, char **envp)
 		// Reading the input
 		inout(saved_stdin, saved_stdout); // Restore STDIN and STDOUT
 		
-		 //FOR USUAL EXECUTION
-		//input = readline("minishell> ");
+		// FOR USUAL EXECUTION
+		input = readline("minishell> ");
 
-		//FOR TESTER
+		/*//FOR TESTER
 		if (isatty(fileno(stdin))) // If running interactively
 			input = readline("minishell> ");
 		else // If receiving input from another program
@@ -136,7 +137,7 @@ int main(int argc, char **argv, char **envp)
 				break;
 			input = ft_strtrim(line, "\n"); // Remove newline from input
 			free(line);
-		}
+		}*/
 
 
 		if (!input) // EOF check (Ctrl+D)
@@ -173,7 +174,8 @@ int main(int argc, char **argv, char **envp)
 			continue;
 		}
 
-		//print_tokens(tokens);
+		/*printf("after tokenization\n");
+		print_tokens(tokens);*/
 		put_files_for_redirections(tokens);
 		//printf("tokens again \n");
 		//print_tokens(tokens);
@@ -225,10 +227,13 @@ int main(int argc, char **argv, char **envp)
 		clean_token_list(&tokens);
 		clean_block_list(&blocks);
 		//print_cmds(cmds);
-		//clean_cmd_list(&cmds);
+		clean_cmd_list(&cmds);
+		//printf("cleaning 3 instances...\n");
 	}
 
 	// Freeing struct
-	free(ms);
+	//free(ms);
+	//clean_struct(ms);
+	//write(1, "HELLO...\n", 8);
 	return (0);
 }

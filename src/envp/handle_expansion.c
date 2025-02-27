@@ -57,6 +57,7 @@ char	*handle_expansion(char *args, t_ms *ms)
 	char	*s;
 	char	*temp;
 	char	*string;
+	char	*substr;
 
 	string = ft_strdup("");;
 	i = 0;
@@ -85,7 +86,9 @@ char	*handle_expansion(char *args, t_ms *ms)
 		}
 		else
 		{
-			temp = ft_strjoin(string, ft_substr(args, i, 1));
+			substr = ft_substr(args, i, 1);
+			temp = ft_strjoin(string, substr);
+			free(substr); 
 			free(string);
 			string = temp;
 			i++;

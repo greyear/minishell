@@ -11,10 +11,19 @@
  */
 void	clean_token(t_token *token)
 {
+	 if (!token)
+		return ; //?
 	if (token->data)
+	{
 		free(token->data);
+		token->data = NULL;
+		//printf("cleaned token->data\n");
+	}
 	if (token->file)
+	{
 		free(token->file);
+		token->file = NULL;
+	}
 	//add another fields
 	free(token);
 	//NULL?
