@@ -5,8 +5,6 @@ t_cmd	*clean_cmd(t_cmd *cmd)
 {
 	if (!cmd)
 		return (NULL);
-	if (cmd->name)
-		free(cmd->name);
 	if (cmd->args)
 		clean_arr(&(cmd->args));
 	//add another fields

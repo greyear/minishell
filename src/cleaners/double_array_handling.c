@@ -47,7 +47,8 @@ char	**copy_map(char **original_map)
 		new_map[i] = ft_strdup(original_map[i]);
 		if (!new_map[i])
 		{
-			ft_free_map(new_map);
+			//ft_free_map(new_map);
+			clean_arr(&(new_map));
 			return (NULL);
 		}
 		i++;

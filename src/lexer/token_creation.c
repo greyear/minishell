@@ -88,7 +88,11 @@ t_token	*create_new_token(char *str, size_t *i, t_token_type type)
 			new->data = word_with_quotes(str, i, new);
 		}
 		else
+		{
 			new->data = word_without_quotes(str, i);
+			//printf("created new->data\n");
+		}
+			
 		if (!new->data)
 			return (NULL); //error?
 	}
