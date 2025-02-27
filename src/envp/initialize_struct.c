@@ -18,15 +18,15 @@ void	clean_struct(t_ms *ms)
 	if (!ms)
 		return ;
 	if (ms->envp)
-	{
 		clean_arr(&(ms->envp));
-		//ft_printf(2, "Freeing envp...\n");
-	}
 	if (ms->exported)
-	{
 		clean_arr(&(ms->exported));
-		//ft_printf(2, "Freeing exported...\n");
-	}
+	/*if (ms->tokens)
+		clean_token_list(&(ms->tokens));
+	if (ms->blocks)
+		clean_block_list(&(ms->blocks));*/
+	/*if (ms->cmds)
+		clean_cmd_list(&(ms->cmds));*/
 	free(ms);
 }
 

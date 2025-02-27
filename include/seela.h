@@ -13,9 +13,12 @@
 
 typedef struct s_ms
 {
-    int     exit_status; // Store the last exit status
-    char    **envp;     // Environment variables
-    char    **exported; // store exported variables
+	int		exit_status; // Store the last exit status
+	char	**envp;     // Environment variables
+	char	**exported; // store exported variables
+	t_token	*tokens; //Tried to put this all here not to have problems with cleaning
+	t_block	*blocks;
+	t_cmd	*cmds;
 } t_ms;
 
 //echo.c
