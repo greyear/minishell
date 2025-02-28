@@ -37,53 +37,6 @@ CMD_ARRAY[0] = "CAT", CMD_ARRAY[1] = "LS -LA", CMD_ARRAY[2] = "GREP ERROR", CMD_
 //#include "seela.h"
 #include "../../include/minishell.h"
 
-/*void	handle_heredoc(t_ms *ms, char *limiter)
-{
-	char	*line;
-	int		temp_fd;
-	char	*filename;
-
-	// Generate unique filename
-	filename = generate_heredoc_filename(ms->heredoc_count);
-	ms->heredoc_files[ms->heredoc_count++] = filename;
-
-	// Open heredoc file
-	temp_fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (temp_fd < 0)
-	{
-		perror("heredoc: open failed");
-		exit(1);
-	}
-	while (1)
-	{
-		write(STDOUT_FILENO, "heredoc> ", 9);
-		line = get_next_line(STDIN_FILENO);
-		if (!line)
-		{
-			perror("heredoc: read error");
-			close(temp_fd);
-			exit(1);
-		}
-		if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0 && line[ft_strlen(limiter)] == '\n')
-		{
-			free(line);
-			break;
-		}
-		write(temp_fd, line, ft_strlen(line));
-		free(line);
-	}
-	close(temp_fd);
-	temp_fd = open(filename, O_RDONLY);
-	if (temp_fd < 0)
-	{
-		perror("heredoc: reopen failed");
-		exit(1);
-	}
-	// Redirect STDIN to read from the heredoc file
-	dup2(temp_fd, STDIN_FILENO);
-	close(temp_fd);
-}*/
-
 void	check_access(char *filename, t_oper operation)
 {
 	if (operation == RD)
