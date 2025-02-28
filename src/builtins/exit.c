@@ -60,7 +60,7 @@ void	check_exit(char **array, t_ms *ms)
 		return;
 	if (ft_strcmp(array[0], "exit") != 0) //we already checked it in handle builtin?
 		return;
-	ft_putstr_fd("exit\n", 1);
+	ft_putstr_fd("exit\n", STDOUT_FILENO);
 	if (array[1])
 	{
 		if (array[2])
@@ -80,5 +80,5 @@ void	check_exit(char **array, t_ms *ms)
 	clean_struct(ms);
 	exit(exit_code);
 }
- 
+
 //check more the case when I call 1- echo, 2-exit 42 - leaks in exit

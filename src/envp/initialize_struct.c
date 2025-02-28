@@ -28,6 +28,16 @@ t_ms	*initialize_struct(char **envp)
 	{
 		print_system_error(HIST_ERR);
 		ms->history_file = false;
+  }
+	ms->heredoc_count = 0;
+	ms->heredoc_files = malloc(sizeof(char *) * 100); // Support 100 heredocs max
+	ms->heredoc_files[0] = NULL;
+	ft_memset(ms->heredoc_files, 0, sizeof(char *) * 100); // Set all entries to NULL
+	if (!ms->heredoc_files)
+	{
+		perror("heredoc: memory allocation failed");
+		exit(1);
+
 	}
 	return (ms);
 }
