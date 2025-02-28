@@ -10,6 +10,7 @@ int	expand_in_token(t_token *cur, t_ms *ms)
 	if (!data_copy)
 		return (1); //error msg?
 	expanded = handle_expansion(cur->data, ms);
+	//printf("expanded: %s\n", expanded);
 	if (!expanded)
 	{
 		free(data_copy);
