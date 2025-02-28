@@ -22,11 +22,18 @@
 	if (p)
 		exit(exit_code);
 }*/
-
+/*
 void	error_exit_code(char *reason, int exit_code)
 {
 	perror(reason);
 	exit(exit_code);
+}*/
+
+void	print_system_error(t_print reason)
+{
+	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
+	if (reason == HIST_ERR)
+		ft_putendl_fd("Reading from history file failed", STDERR_FILENO);
 }
 
 void	print_file_error(char *file, t_print reason)

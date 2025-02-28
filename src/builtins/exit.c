@@ -28,17 +28,25 @@ void	free_struct(t_ms *ms)
 	ft_free_array(ms->exported);
 }
 
-static void	exit_shell(long long exit_nbr, int error, char **array)
+static void	exit_shell(long long exit_nbr, int error, char **array, t_ms *ms)
 {
-	if (error == 1)
+	if (error == 1 && ms)
 	{
 		ft_putstr_fd("bash: exit: ", 2);
 		ft_putstr_fd(array[1], 2);
 		ft_putstr_fd(": numeric argument required\n", 2);
+		clean_cmd_list(&(ms->cmds));
+		clean_struct(ms);
 		exit(2);
 	}
 	if (exit_nbr > 255 || exit_nbr < 0)
+	{
+		clean_cmd_list(&(ms->cmds));
+		clean_struct(ms);
 		exit(exit_nbr % 256);
+	}
+	clean_cmd_list(&(ms->cmds));
+	clean_struct(ms);
 	exit(exit_nbr);
 }
 
@@ -50,7 +58,7 @@ void	check_exit(char **array, t_ms *ms)
 
 	if (!array || !*array)
 		return;
-	if (ft_strcmp(array[0], "exit") != 0)
+	if (ft_strcmp(array[0], "exit") != 0) //we already checked it in handle builtin?
 		return;
 	ft_putstr_fd("exit\n", STDOUT_FILENO);
 	if (array[1])
@@ -62,12 +70,13 @@ void	check_exit(char **array, t_ms *ms)
 			return;
 		}
 		//free_struct(ms);
-		clean_struct(ms);
+		//clean_struct(ms);
 		exit_nbr = ft_strtoll(array[1], &error);	// If non-numeric or out of range, print error and exit(2)
-		exit_shell(exit_nbr, error, array);
+		exit_shell(exit_nbr, error, array, ms);
 	}
 	exit_code = ms->exit_status;
 	//free_struct(ms); Changed it as it gave a leak, i can explain!
+	clean_cmd_list(&(ms->cmds));
 	clean_struct(ms);
 	exit(exit_code);
 }
