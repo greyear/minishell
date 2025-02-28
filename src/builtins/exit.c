@@ -55,7 +55,9 @@ void	check_exit(char **array, t_ms *ms)
 	long long	exit_nbr;
 	int			error;
 	int			exit_code;
+	int			i;
 
+	i = 0;
 	if (!array || !*array)
 		return;
 	if (ft_strcmp(array[0], "exit") != 0) //we already checked it in handle builtin?
@@ -63,14 +65,18 @@ void	check_exit(char **array, t_ms *ms)
 	ft_putstr_fd("exit\n", STDOUT_FILENO);
 	if (array[1])
 	{
+		while (array[1][i])
+		{
+			if (!ft_isdigit(array[1][i]))
+				exit_shell(2, 1, array, ms);
+			i++;
+		}
 		if (array[2])
 		{
 			ft_putstr_fd("bash: exit: too many arguments\n", 2);
 			ms->exit_status = 1;
 			return;
 		}
-		//free_struct(ms);
-		//clean_struct(ms);
 		exit_nbr = ft_strtoll(array[1], &error);	// If non-numeric or out of range, print error and exit(2)
 		exit_shell(exit_nbr, error, array, ms);
 	}
