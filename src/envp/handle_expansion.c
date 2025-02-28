@@ -88,6 +88,7 @@ char	*handle_expansion(char *args, t_ms *ms)
 		{
 			substr = ft_substr(args, i, 1);
 			temp = ft_strjoin(string, substr);
+			//printf("temp: %s\n", temp);
 			free(substr); 
 			free(string);
 			string = temp;
