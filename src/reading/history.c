@@ -87,3 +87,10 @@ void	clean_ms_history(t_ms *ms) //free_history
 		i++;
 	}
 }
+
+void	history_exit(t_ms *ms)
+{
+	//add smth
+	write_to_history_file(ms);
+	clean_ms_history(ms);
+}

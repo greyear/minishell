@@ -13,7 +13,7 @@
  * 
  * @note If memory allocation fails, the function stops reading further lines.
  */
-static void	read_from_history_file(int fd, t_ms *ms) //fill_history
+static void	read_from_history_file(int fd, t_ms *ms) //fill_history +
 {
 	int		i;
 	char	*buf;
@@ -34,6 +34,7 @@ static void	read_from_history_file(int fd, t_ms *ms) //fill_history
 		free(buf);
 		i++;
 	}
+	printf("read from history file\n");
 }
 
 /**

@@ -126,6 +126,9 @@ int main(int argc, char **argv, char **envp)
 		
 		// FOR USUAL EXECUTION
 		input = readline("minishell> ");
+		//add_line_to_history(input, ms); //fix
+		if (ms->history[ms->history_num])
+			printf("history %s in line %d\n", ms->history[ms->history_num], ms->history_num);
 
 		/*//FOR TESTER
 		if (isatty(fileno(stdin))) // If running interactively
@@ -235,6 +238,6 @@ int main(int argc, char **argv, char **envp)
 	// Freeing struct
 	//free(ms);
 	//clean_struct(ms);
-	//write(1, "HELLO...\n", 8);
+	history_exit(ms); //here?
 	return (0);
 }
