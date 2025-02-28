@@ -36,7 +36,7 @@ static void print_blocks(t_block *block_list)
 	}
 }
 
-static void print_cmds(t_cmd *cmd_list)
+*//*static void print_cmds(t_cmd *cmd_list)
 {
 	t_cmd *cur = cmd_list;
 
@@ -130,7 +130,8 @@ int main(int argc, char **argv, char **envp)
 		if (ms->history[ms->history_num])
 			printf("history %s in line %d\n", ms->history[ms->history_num], ms->history_num);
 
-		/*//FOR TESTER
+
+		//FOR TESTER
 		if (isatty(fileno(stdin))) // If running interactively
 			input = readline("minishell> ");
 		else // If receiving input from another program
@@ -140,9 +141,7 @@ int main(int argc, char **argv, char **envp)
 				break;
 			input = ft_strtrim(line, "\n"); // Remove newline from input
 			free(line);
-		}*/
-
-
+		}
 		if (!input) // EOF check (Ctrl+D)
 		{
 			printf("exit\n");
