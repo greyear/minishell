@@ -33,27 +33,41 @@ static void	pipe_and_redir(int infile, int outfile, int *prev_pipe, int *next_pi
 	if (prev_pipe)
 	{
 		if (dup2(prev_pipe[0], STDIN_FILENO) == -1) //It duplicates previous pipes read-end to stadard input
+		{
+			close(prev_pipe[0]);
+			close(prev_pipe[1]);
 			exit(1);
+		}	
 		close(prev_pipe[0]);
 		close(prev_pipe[1]);
 	}
 	if (infile != -2 && infile != -1) 
 	{
 		if (dup2(infile, STDIN_FILENO) == -1) //It duplicates previous pipes read-end to stadard input
+		{
+			close(infile);
 			exit(1);
+		}
 		close(infile);
 	}
 	if (next_pipe)
 	{
 		if (dup2(next_pipe[1], STDOUT_FILENO) == -1) //It duplicates the next pipes write-end to standard output
+		{
+			close(next_pipe[0]);
+			close(next_pipe[1]);
 			exit(1);
+		}	
 		close(next_pipe[0]);
 		close(next_pipe[1]);
 	}
 	if (outfile != -2 && outfile != -1)
 	{
 		if (dup2(outfile, STDOUT_FILENO) == -1) //It duplicates the next pipes write-end to standard output
+		{
+			close (outfile);
 			exit(1);
+		}
 		close(outfile);
 	}
 }
