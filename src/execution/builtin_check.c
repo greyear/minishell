@@ -52,7 +52,7 @@ void	handle_builtin(t_cmd *cmd, t_ms *ms, int in_child)
 		check_pwd(cmd->args, ms);
 	else if (ft_strcmp(cmd->name, "export") == 0)
 	{
-		if (in_child)
+		if (in_child && cmd->args[1])
 			handle_export(cmd->args, NULL);
 		else
 			handle_export(cmd->args, ms);
