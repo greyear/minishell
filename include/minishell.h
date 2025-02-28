@@ -56,7 +56,7 @@ t_bool			is_redirect(t_token_type type);
 void			flags_for_redirections(t_token *cur);
 void			put_files_for_redirections(t_token *cur);
 void			print_tokens(t_token *token_list);
-int             check_list_for_tilde(t_token *first, t_ms *ms);
+int				check_list_for_tilde(t_token *first, t_ms *ms);
 
 //Parser
 int				words_in_cmd_block(t_token *start, t_token *end);
@@ -91,6 +91,15 @@ void			put_infile_fd(t_token *token, t_cmd *cmd);
 void			put_outfile_fd(t_token *token, t_cmd *cmd);
 void			check_access(char *filename, t_oper operation);
 
+//Reading + history
+t_bool			open_read_history_file(t_ms *ms);
+void			write_to_history_file(t_ms *ms);
+void			add_line_to_history(char *line, t_ms *ms);
+void			default_history(char **history);
+void			clean_ms_history(t_ms *ms);
+void			history_exit(t_ms *ms);
+
+
 /*
 //Pipex
 void	init_p(t_pipex	*p);
@@ -106,6 +115,7 @@ int		word_length(char *str);*/
 
 //Errors
 void			print_file_error(char *file, t_print reason);
+void			print_system_error(t_print reason);
 //void	args_number_error(void);
 /*void	execve_fail(char **path, char **cmd_split, t_pipex **p);
 void	cmd_error(char *reason, char *cmd, int exit_code, t_pipex **p);

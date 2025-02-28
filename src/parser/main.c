@@ -91,9 +91,9 @@ static void	inout(int saved_stdin, int saved_stdout)
 int main(int argc, char **argv, char **envp)
 {
 	t_ms *ms;
-	t_token *tokens;
+	/*t_token *tokens;
 	t_block *blocks;
-	t_cmd *cmds;
+	t_cmd *cmds;*/
 	t_cmd	*cur;
 	char *input;
 	int err_flag;
@@ -125,7 +125,11 @@ int main(int argc, char **argv, char **envp)
 		inout(saved_stdin, saved_stdout); // Restore STDIN and STDOUT
 		
 		// FOR USUAL EXECUTION
-		//input = readline("minishell> ");
+		input = readline("minishell> ");
+		//add_line_to_history(input, ms); //fix
+		if (ms->history[ms->history_num])
+			printf("history %s in line %d\n", ms->history[ms->history_num], ms->history_num);
+
 
 		//FOR TESTER
 		if (isatty(fileno(stdin))) // If running interactively
@@ -163,10 +167,10 @@ int main(int argc, char **argv, char **envp)
 			add_history(input);
 
 		// Parsing
-		tokens = tokenization(input, ms);
+		ms->tokens = tokenization(input, ms);
 		free(input); // Освобождаем readline-буфер
 
-		if (!tokens)
+		if (!ms->tokens)
 		{
 			printf("Error: tokenization failed\n");
 			continue;
@@ -174,15 +178,15 @@ int main(int argc, char **argv, char **envp)
 
 		/*printf("after tokenization\n");
 		print_tokens(tokens);*/
-		put_files_for_redirections(tokens);
+		put_files_for_redirections(ms->tokens);
 		//printf("tokens again \n");
 		//print_tokens(tokens);
 
-		blocks = create_blocks_list(tokens, NULL, &err_flag);
+		ms->blocks = create_blocks_list(ms->tokens, NULL, &err_flag);
 		if (err_flag)
 		{
 			printf("Error: failed to create blocks\n");
-			clean_token_list(&tokens);
+			clean_token_list(&(ms->tokens));
 			continue;
 		}
 
@@ -190,17 +194,17 @@ int main(int argc, char **argv, char **envp)
 		//print_blocks(blocks);
 
 		// Cmds creation
-		cmds = create_cmd_list(blocks, ms);
-		if (!cmds)
+		ms->cmds = create_cmd_list(ms->blocks, ms);
+		if (!ms->cmds)
 		{
 			printf("Error: failed to create commands\n");
-			clean_token_list(&tokens);
-			clean_block_list(&blocks);
+			clean_token_list(&(ms->tokens));
+			clean_block_list(&(ms->blocks));
 			continue;
 		}
 		//print_cmds(cmds);
 		i = 0;
-		cur = cmds;
+		cur = ms->cmds;
 		while (cur)
 		{
 			cur = cur->next;
@@ -210,28 +214,29 @@ int main(int argc, char **argv, char **envp)
 		// Cmd printing
 		//print_cmds(cmds);
 		//input_output(cmds);
-		if (is_builtin(cmds) && if_children_needed(cmds) == false && i == 1)
+		if (is_builtin(ms->cmds) && if_children_needed(ms->cmds) == false && i == 1)
 		{
 			//printf("Here1\n");
-			handle_builtin(cmds, ms, 0);
+			handle_builtin(ms->cmds, ms, 0);
 		}
 		else
 		{
 			//printf("Here2\n");
-			execute_cmd(i, cmds, ms);
+			execute_cmd(i, ms->cmds, ms);
 		}
 			
 		//Cleaning before the next input
-		clean_token_list(&tokens);
-		clean_block_list(&blocks);
+		clean_token_list(&(ms->tokens));
+		clean_block_list(&(ms->blocks));
 		//print_cmds(cmds);
-		clean_cmd_list(&cmds);
+		clean_cmd_list(&(ms->cmds));
+		//clean_struct(ms);
 		//printf("cleaning 3 instances...\n");
 	}
 
 	// Freeing struct
 	//free(ms);
 	//clean_struct(ms);
-	//write(1, "HELLO...\n", 8);
+	history_exit(ms); //here?
 	return (0);
 }
