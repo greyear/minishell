@@ -33,27 +33,41 @@ static void	pipe_and_redir(int infile, int outfile, int *prev_pipe, int *next_pi
 	if (prev_pipe)
 	{
 		if (dup2(prev_pipe[0], STDIN_FILENO) == -1) //It duplicates previous pipes read-end to stadard input
+		{
+			close(prev_pipe[0]);
+			close(prev_pipe[1]);
 			exit(1);
+		}	
 		close(prev_pipe[0]);
 		close(prev_pipe[1]);
 	}
 	if (infile != -2 && infile != -1) 
 	{
 		if (dup2(infile, STDIN_FILENO) == -1) //It duplicates previous pipes read-end to stadard input
+		{
+			close(infile);
 			exit(1);
+		}
 		close(infile);
 	}
 	if (next_pipe)
 	{
 		if (dup2(next_pipe[1], STDOUT_FILENO) == -1) //It duplicates the next pipes write-end to standard output
+		{
+			close(next_pipe[0]);
+			close(next_pipe[1]);
 			exit(1);
+		}	
 		close(next_pipe[0]);
 		close(next_pipe[1]);
 	}
 	if (outfile != -2 && outfile != -1)
 	{
 		if (dup2(outfile, STDOUT_FILENO) == -1) //It duplicates the next pipes write-end to standard output
+		{
+			close (outfile);
 			exit(1);
+		}
 		close(outfile);
 	}
 }
@@ -125,6 +139,7 @@ void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
 		cleanup_heredocs(ms->heredoc_files);
 		ms->heredoc_files = malloc(sizeof(char *) * 100); // Support 100 heredocs max
 		ft_memset(ms->heredoc_files, 0, sizeof(char *) * 100); // Set all entries to NULL
+		ms->heredoc_count = 0;
 		return;
 	}
 	pipe_fd = malloc(sizeof(int *) * (num_cmds - 1));
@@ -209,4 +224,5 @@ void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
 	cleanup_heredocs(ms->heredoc_files);
 	ms->heredoc_files = malloc(sizeof(char *) * 100); // Support 100 heredocs max
 	ft_memset(ms->heredoc_files, 0, sizeof(char *) * 100); // Set all entries to NULL
+	ms->heredoc_count = 0;
 }

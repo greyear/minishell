@@ -7,8 +7,12 @@ void cleanup_heredocs(char **filenames)
 	i = 0;
     while (filenames[i])
 	{
-        unlink(filenames[i]);  // Remove file
-        free(filenames[i]);    // Free the memory for the filename
+        if (unlink(filenames[i]) == -1)  // Remove file
+		{
+			perror("unlink fail\n");
+			return;
+		}
+		free(filenames[i]);    // Free the memory for the filename
         i++;
     }
     free(filenames);  // Free the array of filenames
@@ -62,5 +66,10 @@ int	handle_heredoc(t_ms *ms, char *limiter)
 	open_heredoc_file(filename, &temp_fd);
 	read_heredoc_input(temp_fd, limiter);
 	fd = open(filename, O_RDONLY);
+	if (fd < 0)
+	{
+		ms->exit_status = 1;
+		return (-1);
+	}
 	return (fd);
 }
