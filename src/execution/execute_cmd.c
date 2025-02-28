@@ -139,6 +139,7 @@ void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
 		cleanup_heredocs(ms->heredoc_files);
 		ms->heredoc_files = malloc(sizeof(char *) * 100); // Support 100 heredocs max
 		ft_memset(ms->heredoc_files, 0, sizeof(char *) * 100); // Set all entries to NULL
+		ms->heredoc_count = 0;
 		return;
 	}
 	pipe_fd = malloc(sizeof(int *) * (num_cmds - 1));
@@ -223,4 +224,5 @@ void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
 	cleanup_heredocs(ms->heredoc_files);
 	ms->heredoc_files = malloc(sizeof(char *) * 100); // Support 100 heredocs max
 	ft_memset(ms->heredoc_files, 0, sizeof(char *) * 100); // Set all entries to NULL
+	ms->heredoc_count = 0;
 }
