@@ -19,8 +19,9 @@ typedef struct s_ms
 	t_token	*tokens; //Tried to put this all here not to have problems with cleaning
 	t_block	*blocks;
 	t_cmd	*cmds;
+	t_bool	history_file; //yes (1) if save, no (0) if can't save in file
 	char	*history[500];
-	char	history_num;
+	int		history_num;
 } t_ms;
 
 //echo.c
