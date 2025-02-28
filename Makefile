@@ -14,6 +14,7 @@ EXEC_DIR		=	execution
 REDIR_DIR		=	redirection
 ENVP_DIR		=	envp
 SIGN_DIR		=	signals
+READING_DIR		=	reading
 CLEAN_DIR		=	cleaners
 ERR_DIR			=	errors
 
@@ -87,6 +88,8 @@ ENVP_FILES		=	check_all_tokens.c \
 					initialize_struct.c \
 					list.c \
 					letters.c
+READING_FILES	=	history.c \
+					history_file.c
 #delete initialize_struct
 #SIGN_FILES		=	
 CLEAN_FILES		=	arr_cleaning.c \
@@ -100,6 +103,7 @@ SRC_FILES		=	$(addprefix $(BNF_DIR)/, $(BNF_FILES)) \
 					$(addprefix $(EXEC_DIR)/, $(EXEC_FILES)) \
 					$(addprefix $(REDIR_DIR)/, $(REDIR_FILES)) \
 					$(addprefix $(ENVP_DIR)/, $(ENVP_FILES)) \
+					$(addprefix $(READING_DIR)/, $(READING_FILES)) \
 					$(addprefix $(CLEAN_DIR)/, $(CLEAN_FILES)) \
 					$(addprefix $(ERR_DIR)/, $(ERR_FILES)) \
 					$(addprefix $(BUILT_DIR)/, $(BUILT_FILES)) \

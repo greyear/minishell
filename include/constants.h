@@ -64,6 +64,7 @@ typedef enum e_print
 	PERM_DEN,
 	NO_FILE,
 	HERED_ERR,
+	HIST_ERR,
 }	t_print;
 
 typedef enum e_exit
@@ -82,6 +83,8 @@ typedef enum e_oper
 }	t_oper;
 
 # define OWN_ERR_MSG "ms error: "
+# define HISTORY_FILE ".history.tmp"
+# define HISTORY_SIZE 500
 
 /*POSIX ограничивает диапазон exit status от 0 до 255. 
 При использовании значений выше 255 операционная система может 
