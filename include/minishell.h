@@ -92,11 +92,12 @@ void			put_outfile_fd(t_token *token, t_cmd *cmd);
 void			check_access(char *filename, t_oper operation);
 
 //Reading + history
-t_bool	open_read_history_file(t_ms *ms);
-void	write_to_history_file(t_ms *ms);
-void	add_line_to_history(char *line, t_ms *ms);
-void	default_history(char **history);
-void	clean_ms_history(t_ms *ms);
+t_bool			open_read_history_file(t_ms *ms);
+void			write_to_history_file(t_ms *ms);
+void			add_line_to_history(char *line, t_ms *ms);
+void			default_history(char **history);
+void			clean_ms_history(t_ms *ms);
+void			history_exit(t_ms *ms);
 
 
 /*
