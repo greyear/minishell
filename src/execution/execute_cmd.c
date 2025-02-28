@@ -139,14 +139,14 @@ void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
 			i++;
 			continue ;
 		}
-		pipe_fd[i] = malloc(sizeof(int) * 2);
-		if (!pipe_fd[i])
-		{
-			free_int_array(pipe_fd);
-			return;
-		}
 		if (i < num_cmds - 1)
 		{
+			pipe_fd[i] = malloc(sizeof(int) * 2);
+			if (!pipe_fd[i])
+			{
+				free_int_array(pipe_fd);
+				return;
+			}
 			if (pipe(pipe_fd[i]) == -1)
 			{
 				ms->exit_status = 1;

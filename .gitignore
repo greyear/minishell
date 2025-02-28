@@ -5,6 +5,7 @@
 *.swp
 minishell
 minishell_tester
+42_minishell_tester
 .build
 .vscode
 obj
@@ -15,6 +16,9 @@ latex
 
 infile
 outfile
-input
-output
+file*.txt
+input*
+output*
 .history.tmp
+.heredoc*
+
