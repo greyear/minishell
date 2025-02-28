@@ -55,9 +55,8 @@ void	handle_unset(char **args, t_ms *ms)
 	while (args[i])
 	{
 		len = get_key_length(args[i]);
-		if (len == 0)
-			return;
-		if (ft_strchr(args[i], '='))
+		if (len == 0 || ft_strchr(args[i], '=')
+			|| args[i][0] == '=')
 			print_unset_error(args, i, ms);
 		else
 			process_unset_entry(args, i, ms, len);

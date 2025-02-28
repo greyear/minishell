@@ -16,6 +16,8 @@ typedef struct s_ms
     int     exit_status; // Store the last exit status
     char    **envp;     // Environment variables
     char    **exported; // store exported variables
+    char    **heredoc_files; // Store heredoc filenames
+    int     heredoc_count;   // Number of heredoc files
 } t_ms;
 
 //echo.c
@@ -98,11 +100,14 @@ void	ft_command(char **envp, char **cmd);
 //execute_cmd.c
 void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms); //PIPE AND EXECVE HANDLING
 
-//redrections.c
-void	redirection_outfile_emptied(char *file); //< HANDLING
-void	redirection_infile(char *file); //> HANDLING
-void	redirection_outfile_append(char *file); //<< HANDLING
-void    handle_heredoc(char *limiter); //>> HANDLNG
-void	put_heredoc_fd(t_token *token, t_cmd *cmd);
+//generate_filename.c
+char *generate_heredoc_filename(int index);
+
+//fds.c
+void	put_heredoc_fd(t_token *token, t_cmd *cmd, t_ms *ms);
+
+//heredoc.c
+int    handle_heredoc(t_ms *ms, char *limiter); //>> HANDLNG
+void    cleanup_heredocs(char **filenames);
 
 #endif
