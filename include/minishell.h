@@ -106,6 +106,7 @@ int		word_length(char *str);*/
 
 //Errors
 void			print_file_error(char *file, t_print reason);
+void			print_system_error(t_print reason);
 //void	args_number_error(void);
 /*void	execve_fail(char **path, char **cmd_split, t_pipex **p);
 void	cmd_error(char *reason, char *cmd, int exit_code, t_pipex **p);

@@ -1,18 +1,20 @@
-42_minishell_tester
+docs
 Doxyfile
 Doxyfile.bak
 echo
 empty
 file name with spaces
+html
 include
 infile
 invalid_permission
+latex
 libft
 Makefile
 minishell
 minishell_tester
 obj
-outfile
+outf
 src
 test_files
 testing functions of minishell
@@ -20,23 +22,24 @@ tmp_err_bash
 tmp_err_minishell
 tmp_out_bash
 tmp_out_minishell
-valgrind_output.log
 val.supp
-42_minishell_tester
+docs
 Doxyfile
 Doxyfile.bak
 echo
 empty
 file name with spaces
+html
 include
 infile
 invalid_permission
+latex
 libft
 Makefile
 minishell
 minishell_tester
 obj
-outfile
+outf
 src
 test_files
 testing functions of minishell
@@ -44,7 +47,6 @@ tmp_err_bash
 tmp_err_minishell
 tmp_out_bash
 tmp_out_minishell
-valgrind_output.log
 val.supp
 hi
 hi

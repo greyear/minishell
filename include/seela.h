@@ -19,6 +19,8 @@ typedef struct s_ms
 	t_token	*tokens; //Tried to put this all here not to have problems with cleaning
 	t_block	*blocks;
 	t_cmd	*cmds;
+	char	*history[500];
+	char	history_num;
 } t_ms;
 
 //echo.c
