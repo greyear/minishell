@@ -16,16 +16,23 @@
 static void	read_from_history_file(int fd, t_ms *ms) //fill_history +
 {
 	char	*buf;
+	char	*trimmed;
 
 	while (1)
 	{
-		buf = ft_strtrim(get_next_line(fd), "\n");
+		buf = get_next_line(fd);
 		if (!buf)
 			return ;
-		add_history(buf);
-		//ms->history[i] = ft_strdup(buf);
-		fill_ms_history_line(buf, ms);
+		trimmed = ft_strtrim(buf, "\n");
+		if (!trimmed)
+		{
+			free(buf);
+			return ;
+		}
+		add_history(trimmed);
+		fill_ms_history_line(trimmed, ms);
 		free(buf);
+		free(trimmed);
 	}
 	//printf("read from history file\n");
 }
