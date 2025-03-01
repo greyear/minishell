@@ -37,16 +37,19 @@ static void	exit_shell(long long exit_nbr, int error, char **array, t_ms *ms)
 		ft_putstr_fd(": numeric argument required\n", 2);
 		clean_cmd_list(&(ms->cmds));
 		clean_struct(ms);
+		history_exit(ms); //here?
 		exit(2);
 	}
 	if (exit_nbr > 255 || exit_nbr < 0)
 	{
 		clean_cmd_list(&(ms->cmds));
 		clean_struct(ms);
+		history_exit(ms); //here?
 		exit(exit_nbr % 256);
 	}
 	clean_cmd_list(&(ms->cmds));
 	clean_struct(ms);
+	history_exit(ms); //here?
 	exit(exit_nbr);
 }
 
@@ -78,6 +81,7 @@ void	check_exit(char **array, t_ms *ms)
 	//free_struct(ms); Changed it as it gave a leak, i can explain!
 	clean_cmd_list(&(ms->cmds));
 	clean_struct(ms);
+	history_exit(ms); //here?
 	exit(exit_code);
 }
 
