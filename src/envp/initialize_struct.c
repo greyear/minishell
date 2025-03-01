@@ -64,6 +64,7 @@ void	clean_struct(t_ms *ms)
 		clean_token_list(&(ms->tokens));
 	if (ms->blocks)
 		clean_block_list(&(ms->blocks));
+	cleanup_heredocs(ms->heredoc_files);
 	/*if (ms->cmds)
 		clean_cmd_list(&(ms->cmds));*/
 	free(ms);
