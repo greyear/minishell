@@ -17,3 +17,5 @@ void	clean_arr(char ***arr)
 	free(*arr);
 	*arr = NULL;
 }
+
+

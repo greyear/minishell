@@ -80,8 +80,8 @@ void	check_exit(char **array, t_ms *ms)
 	exit_code = ms->exit_status;
 	//free_struct(ms); Changed it as it gave a leak, i can explain!
 	clean_cmd_list(&(ms->cmds));
-	clean_struct(ms);
 	history_exit(ms); //here?
+	clean_struct(ms);
 	exit(exit_code);
 }
 
