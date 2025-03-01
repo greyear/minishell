@@ -15,26 +15,19 @@
  */
 static void	read_from_history_file(int fd, t_ms *ms) //fill_history +
 {
-	int		i;
 	char	*buf;
 
-	i = 0;
-	while (i < HISTORY_SIZE)
+	while (1)
 	{
-		buf = get_next_line(fd);
+		buf = ft_strtrim(get_next_line(fd), "\n");
 		if (!buf)
 			return ;
 		add_history(buf);
-		ms->history[i] = ft_strdup(buf);
-		if (!ms->history[i])
-		{
-			free(buf); //do I need to clean all previously saved?
-			return ;
-		}
+		//ms->history[i] = ft_strdup(buf);
+		fill_ms_history_line(buf, ms);
 		free(buf);
-		i++;
 	}
-	printf("read from history file\n");
+	//printf("read from history file\n");
 }
 
 /**
@@ -50,7 +43,7 @@ static void	read_from_history_file(int fd, t_ms *ms) //fill_history +
  * 
  * @note If the file does not exist, it is created but remains empty.
  */
-t_bool	open_read_history_file(t_ms *ms) //fetch_history_file
+t_bool	open_read_history_file(t_ms *ms) //fetch_history_file +
 {
 	int	fd;
 
@@ -77,7 +70,7 @@ t_bool	open_read_history_file(t_ms *ms) //fetch_history_file
  * 
  * @note The function overwrites the existing history file.
  */
-void	write_to_history_file(t_ms *ms) //add_to_history_file
+void	write_to_history_file(t_ms *ms) //add_to_history_file +
 {
 	int	fd;
 	int	i;
