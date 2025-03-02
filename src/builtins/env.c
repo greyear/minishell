@@ -9,6 +9,7 @@ void    handle_env(char	**args, t_ms *ms)
 		return;
 	if (args[1])
 	{
+		ft_putstr_fd(OWN_ERR_MSG, 2);
 		ft_putstr_fd("env: '", 2);
 		ft_putstr_fd(args[1], 2);
 		ft_putstr_fd("': No such file or directory\n", 2);

@@ -14,6 +14,7 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <fcntl.h>
+# include <dirent.h> // Needed for opendir()
 
 # define ERR_MALLOC "memory allocation failed"
 # define ERR_FORK "fork function failed"
@@ -116,6 +117,10 @@ int		word_length(char *str);*/
 //Errors
 void			print_file_error(char *file, t_print reason);
 void			print_system_error(t_print reason);
+void            print_cmd_error(char *cmd, int c);
+void            print_unset_error(char **args, int i, t_ms *ms);
+void            print_export_error(t_ms *ms, char *arg);
+void            print_cd_error(char *target_dir);
 //void	args_number_error(void);
 /*void	execve_fail(char **path, char **cmd_split, t_pipex **p);
 void	cmd_error(char *reason, char *cmd, int exit_code, t_pipex **p);
@@ -129,7 +134,7 @@ void	check_second_file(t_pipex *p);*/
 
 //Cleaners
 void			clean_arr(char ***arr);
-void			ft_free_map(char **map);
+void            free_int_array(int **array);
 void			clean_struct(t_ms *ms);
 void			clean_struct_fields(t_ms *ms);
 

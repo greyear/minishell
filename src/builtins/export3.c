@@ -1,15 +1,6 @@
 
 #include "../../include/minishell.h"
 
-
-void	print_error3(t_ms *ms, char *arg)
-{
-	ms->exit_status = 1;
-	ft_putstr_fd("bash: export: '", 2);
-	ft_putstr_fd(arg, 2);
-	ft_putstr_fd("': not a valid identifier\n", 2);
-}
-
 static void print_var(char *var)
 {
     int x;
