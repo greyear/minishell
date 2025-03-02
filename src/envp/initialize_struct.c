@@ -119,6 +119,8 @@ void	clean_struct(t_ms *ms)
 		clean_arr(&(ms->envp));
 	if (ms->exported)
 		clean_arr(&(ms->exported));
+	if (ms->heredoc_files)
+		clean_arr(&(ms->heredoc_files));
 	if (ms->tokens)
 		clean_token_list(&(ms->tokens));
 	if (ms->blocks)
