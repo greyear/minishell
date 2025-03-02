@@ -92,8 +92,11 @@ void	append_literal_char(char **result, char c)
 {
 	char	*substr;
 	char	*temp;
+	char	str[2];
 
-	substr = ft_substr(&c, 0, 1);  // Convert char to string
+	str[0] = c;
+	str[1] = '\0';
+	substr = ft_substr(str, 0, 1);  // Convert char to string
 	temp = ft_strjoin(*result, substr);
 	free(substr);
 	free(*result);
