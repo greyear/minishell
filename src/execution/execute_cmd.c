@@ -107,19 +107,6 @@ void	execute_single_cmd(t_cmd *cmd, t_ms *ms) ///t_token *token?
 		ms->exit_status = WEXITSTATUS(status);
 }
 
-void	free_int_array(int **array)
-{
-	int	i;	
-
-	i = 0;
-	while (array[i])
-	{
-		free(array[i]);
-		i++;
-	}
-	free(array);
-}
-
 void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
 {
 	int		**pipe_fd;

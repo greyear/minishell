@@ -52,16 +52,13 @@ void	rm_from_env_ex(char ***env, char *name, int len, int flag);
 //helper_functions.c
 int	check_env(char *env, char *name, int len, int flag);
 char	**allocate_temp_env(char **env, int x);
+char	**copy_map(char **original_map); //COPYING **ARRAYS
+void    print_array(char **a); // PRINTING **ARRAYS
 
 //key_handling.c
 int		check_if_valid_key(char *name); 
 int		get_key_length(char *arg);
 char	*extract_key(char *arg, int len);
-
-//double_array_handling.c
-char	**copy_map(char **original_map); //COPYING **ARRAYS
-void	ft_free_map(char **map); // FREEING **ARRAYS
-void    print_array(char **a); // PRINTING **ARRAYS
 
 //cd.c
 void	handle_cd(char **args, t_ms *ms); //CD HANDLING
@@ -72,9 +69,6 @@ char	*build_relative_path(char *target, char *cwd);
 char	*get_parent_directory(t_ms *ms);
 char	*get_oldpwd_directory(t_ms *ms);
 char	*get_home_directory(t_ms *ms, int flag);
-
-//cd_error.c
-void	print_cd_error(char *target_dir);
 
 //pwd.c
 void	check_pwd(char **array, t_ms *ms);
@@ -95,13 +89,8 @@ char	*expand_key(char **envp, char *key, int len, t_ms *ms);
 t_ms    *initialize_struct(char **envp);
 char	**make_args(char *cmd, char *name);
 
-//cmd_errormsg_free.c  (FOR PIPE AND EXECUTION ERRORS)
-void	ft_print_err(char *cmd, int c);
-void	ft_free_array(char **array);
-void    print_array(char **m);
-
 //find_path_and_execute_command.c
-void	ft_command(char **envp, char **cmd);
+void	ft_mmand(char **envp, char **cmd);
 
 //execute_cmd.c
 void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms); //PIPE AND EXECVE HANDLING

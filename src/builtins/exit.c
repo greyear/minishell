@@ -22,17 +22,12 @@ edge cases / LLONG_MAX etc explained in google docs !!!
 
 #include "../../include/minishell.h"
 
-void	free_struct(t_ms *ms)
-{
-	ft_free_array(ms->envp);
-	ft_free_array(ms->exported);
-}
-
 static void	exit_shell(long long exit_nbr, int error, char **array, t_ms *ms)
 {
 	if (error == 1 && ms)
 	{
-		ft_putstr_fd("bash: exit: ", 2);
+		ft_putstr_fd(OWN_ERR_MSG, 2);
+		ft_putstr_fd("exit: ", 2);
 		ft_putstr_fd(array[1], 2);
 		ft_putstr_fd(": numeric argument required\n", 2);
 		clean_cmd_list(&(ms->cmds));
