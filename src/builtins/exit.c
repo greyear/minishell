@@ -68,7 +68,8 @@ void	check_exit(char **array, t_ms *ms)
 		}
 		if (array[2])
 		{
-			ft_putstr_fd("bash: exit: too many arguments\n", 2);
+			ft_putstr_fd(OWN_ERR_MSG, 2);
+			ft_putstr_fd("exit: too many arguments\n", 2);
 			ms->exit_status = 1;
 			return;
 		}
