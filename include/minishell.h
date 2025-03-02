@@ -7,7 +7,6 @@
 # include "../libft/include/libft.h"
 # include "../libft/include/ft_printf.h"
 # include "../libft/include/get_next_line.h"
-# include "seela.h" //fix!
 # include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -15,6 +14,9 @@
 # include <sys/wait.h>
 # include <fcntl.h>
 # include <dirent.h> // Needed for opendir()
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <errno.h>
 
 # define ERR_MALLOC "memory allocation failed"
 # define ERR_FORK "fork function failed"
@@ -38,6 +40,37 @@ char			*validate_cmd(char *str, int *err_flag);
 char			*validate_pipeline(char *str, int *err_flag);
 int				validate_input(char *str);
 int				ft_special(int c);
+
+//BUILTINS
+void	        handle_echo(char **args, t_ms *ms);
+void            handle_env(char **args, t_ms *ms);
+void            print_exported(t_ms *ms);
+void        	add_to_exported(char *key, t_ms *ms);
+void            sort_exported_alphaorder(t_ms *ms);
+void            handle_export(char **args, t_ms *ms);
+void            handle_unset(char **args, t_ms *ms);
+void	        rm_from_env_ex(char ***env, char *name, int len, int flag);
+int             check_env(char *env, char *name, int len, int flag);
+char	        **allocate_temp_env(char **env, int x);
+char	        **copy_map(char **original_map);
+void            print_array(char **a);
+int		        check_if_valid_key(char *name); 
+int		        get_key_length(char *arg);
+char	        *extract_key(char *arg, int len);
+void	        handle_cd(char **args, t_ms *ms);
+void	        update_env_var(t_ms *ms, char *key, char *new_value);
+char	        *build_relative_path(char *target, char *cwd);
+char	        *get_parent_directory(t_ms *ms);
+char	        *get_oldpwd_directory(t_ms *ms);
+char	        *get_home_directory(t_ms *ms, int flag);
+void	        check_pwd(char **array, t_ms *ms);
+char	        *get_env_value(char *key, char **envp);
+void	        check_exit(char	**array, t_ms *ms);
+long long	    ft_strtoll(char *str, int *error);
+char	        *handle_expansion(char *args, t_ms *ms);
+char	        *expand_key(char **envp, char *key, int len, t_ms *ms);
+void	        ft_command(char **envp, char **cmd);
+void	        execute_cmds(int num_cmds, t_cmd *cmds, t_ms *ms);
 
 //Lexer
 t_token			*tokenization(char *str, t_ms *ms);
@@ -77,7 +110,7 @@ t_block			*clean_block_list(t_block **first);
 int				is_builtin(t_cmd *cmd);
 void			handle_builtin(t_cmd *cmd, t_ms *ms, int in_child);
 int				if_children_needed(t_cmd *cmd);
-
+void            execute_single_cmd(t_cmd *cmd, t_ms *ms);
 
 //Envp
 int				check_list_for_expansions(t_token *first, t_ms *ms);
@@ -91,6 +124,9 @@ t_ms			*initialize_struct(char **envp);
 void			put_infile_fd(t_token *token, t_cmd *cmd);
 void			put_outfile_fd(t_token *token, t_cmd *cmd);
 void			check_access(char *filename, t_oper operation);
+char            *generate_heredoc_filename(int index);
+void	        put_heredoc_fd(t_token *token, t_cmd *cmd, t_ms *ms);
+int             handle_heredoc(t_ms *ms, char *limiter);
 
 //Reading + history
 t_bool			open_read_history_file(t_ms *ms);
@@ -137,5 +173,6 @@ void			clean_arr(char ***arr);
 void            free_int_array(int **array);
 void			clean_struct(t_ms *ms);
 void			clean_struct_fields(t_ms *ms);
+void            cleanup_heredocs(char **filenames);
 
 #endif
