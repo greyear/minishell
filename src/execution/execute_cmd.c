@@ -166,5 +166,9 @@ void make_one_child(t_cmd *cmd, t_ms *ms)
         execute_child(cmd, ms);
     waitpid(pid, &status, 0);
     if (WIFEXITED(status))
-        ms->exit_status = WEXITSTATUS(status);
+		ms->exit_status = WEXITSTATUS(status);
+	cleanup_heredocs(ms->heredoc_files);
+    ms->heredoc_files = malloc(sizeof(char *) * 100);
+    ft_memset(ms->heredoc_files, 0, sizeof(char *) * 100);
+    ms->heredoc_count = 0;
 }
