@@ -157,7 +157,8 @@ void make_one_child(t_cmd *cmd, t_ms *ms)
         ms->exit_status = 1;
         return;
     }
-    if ((pid = fork()) < 0)
+	pid = fork();
+    if (pid < 0)
     {
         ms->exit_status = 1;
         return;
