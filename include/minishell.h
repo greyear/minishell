@@ -69,8 +69,6 @@ void	        check_exit(char	**array, t_ms *ms);
 long long	    ft_strtoll(char *str, int *error);
 char	        *handle_expansion(char *args, t_ms *ms);
 char	        *expand_key(char **envp, char *key, int len, t_ms *ms);
-void	        ft_command(char **envp, char **cmd);
-void	        execute_cmds(int num_cmds, t_cmd *cmds, t_ms *ms);
 
 //Lexer
 t_token			*tokenization(char *str, t_ms *ms);
@@ -110,7 +108,9 @@ t_block			*clean_block_list(t_block **first);
 int				is_builtin(t_cmd *cmd);
 void			handle_builtin(t_cmd *cmd, t_ms *ms, int in_child);
 int				if_children_needed(t_cmd *cmd);
-void            execute_single_cmd(t_cmd *cmd, t_ms *ms);
+void            make_one_child(t_cmd *cmd, t_ms *ms);
+void	        execute_command(char **envp, char **cmd);
+void	        make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms);
 
 //Envp
 int				check_list_for_expansions(t_token *first, t_ms *ms);

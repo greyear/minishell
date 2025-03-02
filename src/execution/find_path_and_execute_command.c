@@ -160,7 +160,7 @@ static void	if_not_path(char **cmds)
 	exit(127);
 }
 
-void	ft_command(char **envp, char **cmd)
+void	execute_command(char **envp, char **cmd)
 {
 	char	*path;
 

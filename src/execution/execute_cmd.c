@@ -41,7 +41,7 @@ static void	pipe_and_redir(int infile, int outfile, int *prev_pipe, int *next_pi
 		close(prev_pipe[0]);
 		close(prev_pipe[1]);
 	}
-	if (infile != -2 && infile != -1) 
+	if (infile != NO_FD && infile != DEF)
 	{
 		if (dup2(infile, STDIN_FILENO) == -1) //It duplicates previous pipes read-end to stadard input
 		{
@@ -61,7 +61,7 @@ static void	pipe_and_redir(int infile, int outfile, int *prev_pipe, int *next_pi
 		close(next_pipe[0]);
 		close(next_pipe[1]);
 	}
-	if (outfile != -2 && outfile != -1)
+	if (outfile != NO_FD && outfile != DEF)
 	{
 		if (dup2(outfile, STDOUT_FILENO) == -1) //It duplicates the next pipes write-end to standard output
 		{
@@ -72,7 +72,7 @@ static void	pipe_and_redir(int infile, int outfile, int *prev_pipe, int *next_pi
 	}
 }
 
-void	execute_single_cmd(t_cmd *cmd, t_ms *ms) ///t_token *token?
+void	make_one_child(t_cmd *cmd, t_ms *ms)
 {
 	pid_t	pid;
 	int		status;
@@ -100,14 +100,18 @@ void	execute_single_cmd(t_cmd *cmd, t_ms *ms) ///t_token *token?
 			exit(ms->exit_status);
 		}
 		else
-			ft_command(ms->envp, cmd->args); // Execute command
+			execute_command(ms->envp, cmd->args); // Execute command
 	}
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		ms->exit_status = WEXITSTATUS(status);
+	cleanup_heredocs(ms->heredoc_files);
+	ms->heredoc_files = malloc(sizeof(char *) * 100); // Support 100 heredocs max
+	ft_memset(ms->heredoc_files, 0, sizeof(char *) * 100); // Set all entries to NULL
+	ms->heredoc_count = 0;
 }
 
-void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
+void	make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
 {
 	int		**pipe_fd;
 	int		i;
@@ -120,15 +124,6 @@ void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
 	i = 0;
 	last_pid = -1;
 	cur = cmds;
-	if (num_cmds == 1) // Handle single command case
-	{
-		execute_single_cmd(cmds, ms);
-		cleanup_heredocs(ms->heredoc_files);
-		ms->heredoc_files = malloc(sizeof(char *) * 100); // Support 100 heredocs max
-		ft_memset(ms->heredoc_files, 0, sizeof(char *) * 100); // Set all entries to NULL
-		ms->heredoc_count = 0;
-		return;
-	}
 	pipe_fd = malloc(sizeof(int *) * (num_cmds - 1));
 	if (!pipe_fd)
 		return;
@@ -177,7 +172,7 @@ void	execute_cmd(int num_cmds, t_cmd *cmds, t_ms *ms)
 				exit(ms->exit_status);
 			}
 			else
-				ft_command(ms->envp, cur->args); //execute command
+				execute_command(ms->envp, cur->args); //execute command
 		}
 		if (i > 0 && pipe_fd[i - 1] != NULL)
 		{
