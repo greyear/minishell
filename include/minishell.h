@@ -153,6 +153,8 @@ void			print_unset_error(char **args, int i, t_ms *ms);
 void			print_export_error(t_ms *ms, char *arg);
 void			print_cd_error(char *target_dir);
 void			print_syntax_error(char *text);
+void	        print_numeric_error(char **array);
+void	        print_too_many_args_error(void);
 //void	args_number_error(void);
 
 //Cleaners
