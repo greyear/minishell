@@ -90,3 +90,17 @@ void	print_cd_error(char *target_dir)
 		ft_putstr_fd(" ", 2);
 	ft_putstr_fd(": No such file or directory\n", 2);
 }
+
+void	print_numeric_error(char **array)
+{
+    ft_putstr_fd(OWN_ERR_MSG, 2);
+    ft_putstr_fd("exit: ", 2);
+    ft_putstr_fd(array[1], 2);
+    ft_putstr_fd(": numeric argument required\n", 2);
+}
+
+void	print_too_many_args_error(void)
+{
+    ft_putstr_fd(OWN_ERR_MSG, 2);
+    ft_putstr_fd("exit: too many arguments\n", 2);
+}
