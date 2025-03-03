@@ -69,6 +69,8 @@ void	        check_exit(char	**array, t_ms *ms);
 long long	    ft_strtoll(char *str, int *error);
 char	        *handle_expansion(char *args, t_ms *ms);
 char	        *expand_key(char **envp, char *key, int len, t_ms *ms);
+char	        *duplicate_or_replace(char *entry, char *arg, char *key, int *flag);
+char	        *return_target(t_ms *ms, char *target);
 
 //Lexer
 t_token			*tokenization(char *str, t_ms *ms);
@@ -153,6 +155,8 @@ void			print_unset_error(char **args, int i, t_ms *ms);
 void			print_export_error(t_ms *ms, char *arg);
 void			print_cd_error(char *target_dir);
 void			print_syntax_error(char *text);
+void	        print_numeric_error(char **array);
+void	        print_too_many_args_error(void);
 //void	args_number_error(void);
 
 //Cleaners
