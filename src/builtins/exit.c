@@ -64,8 +64,6 @@ void	check_exit(char **array, t_ms *ms)
 	error = 0;
 	if (array[1])
 	{
-		if (array[1][i] == '+' || array[1][i] == '-') // I added (anya)
-			i++;
 		while (array[1][i])
 		{
 			if (array[1][i] == '+' || array[1][i] == '-')
