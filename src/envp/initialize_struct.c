@@ -10,7 +10,7 @@
  * 
  * @return A pointer to the initialized `t_ms` structure, or NULL if allocation fails.
  */
-t_ms	*initialize_struct(char **envp)
+/*t_ms	*initialize_struct(char **envp)
 {
 	t_ms *ms;
 
@@ -28,7 +28,7 @@ t_ms	*initialize_struct(char **envp)
 	{
 		print_system_error(HIST_ERR);
 		ms->history_file = false;
-  }
+	}
 	ms->heredoc_count = 0;
 	ms->heredoc_files = malloc(sizeof(char *) * 100); // Support 100 heredocs max
 	ms->heredoc_files[0] = NULL;
@@ -39,6 +39,65 @@ t_ms	*initialize_struct(char **envp)
 		exit(1);
 
 	}
+	return (ms);
+}*/
+
+static t_ms	*allocate_struct(void)
+{
+	t_ms *ms;
+
+	ms = malloc(sizeof(t_ms));
+	if (!ms)
+	{
+		perror("malloc failed for t_ms");
+		return (NULL);
+	}
+	ms->exit_status = 0;
+	return (ms);
+}
+
+static void	initialize_envp(t_ms *ms, char **envp)
+{
+	ms->envp = copy_map(envp);
+	ms->exported = copy_map(envp);
+}
+
+static void	initialize_history(t_ms *ms)
+{
+	default_history(ms->history);
+	ms->history_num = 0;
+	if (open_read_history_file(ms) == 0)
+		ms->history_file = true;
+	else
+	{
+		print_system_error(HIST_ERR);
+		ms->history_file = false;
+	}
+}
+
+static void	initialize_heredoc(t_ms *ms)
+{
+	ms->heredoc_count = 0;
+	ms->heredoc_files = malloc(sizeof(char *) * 100); // Support 100 heredocs max
+	if (!ms->heredoc_files)
+	{
+		perror("heredoc: memory allocation failed");
+		exit(1);
+	}
+	ft_memset(ms->heredoc_files, 0, sizeof(char *) * 100); // Set all entries to NULL
+	ms->heredoc_files[0] = NULL;
+}
+
+t_ms	*initialize_struct(char **envp)
+{
+	t_ms *ms;
+
+	ms = allocate_struct();
+	if (!ms)
+		return (NULL);
+	initialize_envp(ms, envp);
+	initialize_history(ms);
+	initialize_heredoc(ms);
 	return (ms);
 }
 
@@ -60,6 +119,8 @@ void	clean_struct(t_ms *ms)
 		clean_arr(&(ms->envp));
 	if (ms->exported)
 		clean_arr(&(ms->exported));
+	if (ms->heredoc_files)
+		clean_arr(&(ms->heredoc_files));
 	if (ms->tokens)
 		clean_token_list(&(ms->tokens));
 	if (ms->blocks)
