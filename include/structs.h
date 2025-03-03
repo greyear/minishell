@@ -33,6 +33,21 @@ typedef struct s_block
 	struct s_block	*next;
 }	t_block;
 
+typedef struct s_ms
+{
+	int		exit_status; // Store the last exit status
+	char	**envp;     // Environment variables
+	char	**exported; // store exported variables
+	t_token	*tokens; //Tried to put this all here not to have problems with cleaning
+	t_block	*blocks;
+	t_cmd	*cmds;
+	t_bool	history_file; //yes (1) if save, no (0) if can't save in file
+	char	*history[500];
+	int		history_num;
+    char    **heredoc_files; // Store heredoc filenames
+    int     heredoc_count;   // Number of heredoc files
+} t_ms;
+
 typedef struct s_envp
 {
 	char			*name;
