@@ -25,22 +25,15 @@ static char	**copy_to_temp(char *arg, char ***env, char *key, int *flag)
 {
 	char	**temp;
 	int		i;
-	int		len;
 
 	i = 0;
-	len = get_key_length(arg);
 	temp = allocate_temp_env(*env, 2);
 	if (!temp)
 		return (NULL);
+
 	while ((*env)[i])
 	{
-		if (check_env((*env)[i], key, len, *flag)) //check if we replace the value
-		{
-			*flag = 2;
-			temp[i] = ft_strdup(arg);
-		}
-		else
-			temp[i] = ft_strdup((*env)[i]);
+		temp[i] = duplicate_or_replace((*env)[i], arg, key, flag);
 		if (!temp[i])
 		{
 			clean_arr(&temp);
@@ -96,7 +89,7 @@ static void    change_values_env_ex(char *arg, t_ms *ms)
 	free(key);
 }
 
-static void	handle_export2(char **args, t_ms *ms)
+static void	process_arguments(char **args, t_ms *ms)
 {
 	int		i;
 
@@ -132,5 +125,5 @@ void    handle_export(char **args, t_ms *ms) /// args are for exapmle args[0]="e
         print_exported(ms);
 		return;
     }
-	handle_export2(args, ms);
+	process_arguments(args, ms);
 }

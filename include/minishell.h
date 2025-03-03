@@ -69,6 +69,7 @@ void	        check_exit(char	**array, t_ms *ms);
 long long	    ft_strtoll(char *str, int *error);
 char	        *handle_expansion(char *args, t_ms *ms);
 char	        *expand_key(char **envp, char *key, int len, t_ms *ms);
+char	        *duplicate_or_replace(char *entry, char *arg, char *key, int *flag);
 
 //Lexer
 t_token			*tokenization(char *str, t_ms *ms);
