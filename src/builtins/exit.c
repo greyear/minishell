@@ -68,6 +68,8 @@ void	check_exit(char **array, t_ms *ms)
 			i++;
 		while (array[1][i])
 		{
+			if (array[1][i] == '+' || array[1][i] == '-')
+            	i++;
 			if (!ft_isdigit(array[1][i]))
 				exit_shell(2, 1, array, ms);
 			i++;
