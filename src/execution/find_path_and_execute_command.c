@@ -47,7 +47,7 @@ If execve fails, it frees resources and exits with failure.
 //#include "seela.h"
 #include "../../include/minishell.h"
 
-static char	*ft_find_path2(char **paths, char *full_path, char *cmd)
+static char	*make_full_path(char **paths, char *full_path, char *cmd)
 {
 	int		i;
 	char	*temp_path;
@@ -74,15 +74,15 @@ static char	*ft_find_path2(char **paths, char *full_path, char *cmd)
 	return (NULL);
 }
 
-#include <dirent.h> // Needed for opendir()
-
-void	check_dir(char **envp, char **cmds)
+void	check_if_dir(char **envp, char **cmds)
 {
-	DIR *dir = opendir(cmds[0]);
+	DIR *dir;
+	
+	dir = opendir(cmds[0]);
     if (dir) // If it's a directory
     {
         closedir(dir);
-        ft_putstr_fd("bash: ", 2);
+        ft_putstr_fd(OWN_ERR_MSG, 2);
         ft_putstr_fd(cmds[0], 2);
         ft_putstr_fd(": Is a directory\n", 2);
         exit(126);
@@ -93,19 +93,19 @@ void	check_dir(char **envp, char **cmds)
             execve(cmds[0], cmds, envp);
         else
         {
-            ft_putstr_fd("bash: ", 2);
+            ft_putstr_fd(OWN_ERR_MSG, 2);
             ft_putstr_fd(cmds[0], 2);
             ft_putstr_fd(": Permission denied\n", 2);
             exit(126);
         }
     }
-    ft_putstr_fd("bash: ", 2);
+    ft_putstr_fd(OWN_ERR_MSG, 2);
     ft_putstr_fd(cmds[0], 2);
     ft_putstr_fd(": No such file or directory\n", 2);
     exit(127);
 }
 
-static char	*ft_find_path(char **envp, char **cmds)
+static char	*find_path_from_envp(char **envp, char **cmds)
 {
 	int		i;
 	char	*path_var;
@@ -115,26 +115,23 @@ static char	*ft_find_path(char **envp, char **cmds)
 	i = 0;
 	full_path = NULL;
 	if (cmds[0][0] == '/' || cmds[0][0] == '.')
-	{
-		check_dir(envp, cmds);
-		// 	execve(cmds[0], cmds, envp);
-	}
+		check_if_dir(envp, cmds);
 	while (envp[i] && ft_strncmp(envp[i], "PATH=", 5) != 0)
 		i++;
 	if (!envp[i])
 	{
-		ft_print_err(cmds[0], 2);
-		ft_free_array(cmds);
+		print_cmd_error(cmds[0], 2);
+		clean_arr(&cmds);
 		exit(127);
 	}
 	path_var = envp[i] + 5;
 	paths = ft_split(path_var, ':');
-	full_path = ft_find_path2(paths, full_path, cmds[0]);
-	ft_free_array(paths);
+	full_path = make_full_path(paths, full_path, cmds[0]);
+	clean_arr(&paths);
 	return (full_path);
 }
 
-static void	ft_check_dir(char *cmd)
+static void	check_dir(char *cmd)
 {
 	int		len;
 
@@ -148,37 +145,35 @@ static void	ft_check_dir(char *cmd)
 	}
 }
 
-static void	ft_if_not_path(char **cmds)
+static void	if_not_path(char **cmds)
 {
 	int	x;
 
 	x = 0;
-	ft_check_dir(cmds[0]);
-	ft_print_err(cmds[0], 0);
+	check_dir(cmds[0]);
+	print_cmd_error(cmds[0], 0);
 	if (cmds[0][0] == '.')
 		x = 1;
-	ft_free_array(cmds);
+	clean_arr(&cmds);
 	if (x == 1)
 		exit(126);
 	exit(127);
 }
 
-void	ft_command(char **envp, char **cmd)
+void	execute_command(char **envp, char **cmd)
 {
-	//char	**cmds;
 	char	*path;
 
 	if (!cmd || !*cmd)
 	{
-		ft_print_err(cmd[0], 0);
+		print_cmd_error(cmd[0], 0);
 		exit(127);
 	}
-	path = ft_find_path(envp, cmd);
-	//printf("Path %s\n", path);
+	path = find_path_from_envp(envp, cmd);
 	if (!path)
-		ft_if_not_path(cmd);
+		if_not_path(cmd);
 	execve(path, cmd, envp);
 	free(path);
-	ft_free_array(cmd);
+	clean_arr(&cmd);
 	exit(EXIT_FAILURE);
 }

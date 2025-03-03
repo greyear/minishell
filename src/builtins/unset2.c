@@ -21,7 +21,7 @@ static char	**filter_env_entries(char **env, char *name, int len, int flag)
 		temp[x] = ft_strdup(env[i]);
 		if (!temp[x])
 		{
-			ft_free_map(temp);
+			clean_arr(&temp);
 			return (NULL);
 		}
 		x++;
@@ -40,6 +40,6 @@ void	rm_from_env_ex(char ***env, char *name, int len, int flag)
 	new_env = filter_env_entries(*env, name, len, flag);
 	if (!new_env)
 		return;
-	ft_free_map(*env);
+	clean_arr(env);
 	*env = new_env;
 }
