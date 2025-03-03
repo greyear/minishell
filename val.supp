@@ -1823,3 +1823,57 @@
    fun:main
 }
 
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:xmalloc
+   fun:alloc_history_entry
+   fun:add_history
+   fun:read_from_history_file
+   fun:open_read_history_file
+   fun:initialize_history
+   fun:initialize_struct
+   fun:main
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:xmalloc
+   fun:alloc_history_entry
+   fun:add_history
+   fun:read_from_history_file
+   fun:open_read_history_file
+   fun:initialize_history
+   fun:initialize_struct
+   fun:main
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:xmalloc
+   fun:add_history
+   fun:read_from_history_file
+   fun:open_read_history_file
+   fun:initialize_history
+   fun:initialize_struct
+   fun:main
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:xrealloc
+   fun:add_history
+   fun:add_line_to_history
+   fun:main
+}
