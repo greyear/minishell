@@ -96,6 +96,8 @@ t_ms	*initialize_struct(char **envp)
 	if (!ms)
 		return (NULL);
 	initialize_envp(ms, envp);
+	ms->tokens = NULL;
+	ms->blocks = NULL;
 	initialize_history(ms);
 	initialize_heredoc(ms);
 	return (ms);
@@ -125,7 +127,8 @@ void	clean_struct(t_ms *ms)
 		clean_token_list(&(ms->tokens));
 	if (ms->blocks)
 		clean_block_list(&(ms->blocks));
-	cleanup_heredocs(ms->heredoc_files);
+	if (ms->heredoc_files)
+		cleanup_heredocs(ms->heredoc_files);
 	/*if (ms->cmds)
 		clean_cmd_list(&(ms->cmds));*/
 	free(ms);

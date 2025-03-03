@@ -140,13 +140,6 @@ void			history_exit(t_ms *ms);
 
 
 /*
-//Pipex
-void	init_p(t_pipex	*p);
-char	**path_from_envp(t_pipex *p);
-char	*find_path(char **cmd_split, t_pipex *p);
-char	**split_cmd(char *cmd, t_pipex *p);
-void	handle_command(char *cmd, t_pipex *p);
-
 //Utils
 void	close_fds(int fd1, int fd2);
 int		length_inside(char *str, t_pipex *p, char *cmd);
@@ -155,26 +148,18 @@ int		word_length(char *str);*/
 //Errors
 void			print_file_error(char *file, t_print reason);
 void			print_system_error(t_print reason);
-void            print_cmd_error(char *cmd, int c);
-void            print_unset_error(char **args, int i, t_ms *ms);
-void            print_export_error(t_ms *ms, char *arg);
-void            print_cd_error(char *target_dir);
+void			print_cmd_error(char *cmd, int c);
+void			print_unset_error(char **args, int i, t_ms *ms);
+void			print_export_error(t_ms *ms, char *arg);
+void			print_cd_error(char *target_dir);
+void			print_syntax_error(char *text);
 //void	args_number_error(void);
-/*void	execve_fail(char **path, char **cmd_split, t_pipex **p);
-void	cmd_error(char *reason, char *cmd, int exit_code, t_pipex **p);
-void	error_exit_code(char *reason, int exit_code);
-void	error_clean_exit_code(char *reason, int exit_code, t_pipex **p);*/
-
-/*
-//Checks
-void	check_first_file(t_pipex *p);
-void	check_second_file(t_pipex *p);*/
 
 //Cleaners
 void			clean_arr(char ***arr);
-void            free_int_array(int **array);
+void			free_int_array(int **array);
 void			clean_struct(t_ms *ms);
 void			clean_struct_fields(t_ms *ms);
-void            cleanup_heredocs(char **filenames);
+void			cleanup_heredocs(char **filenames);
 
 #endif
