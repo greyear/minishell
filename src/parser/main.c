@@ -131,6 +131,7 @@ int main(int argc, char **argv, char **envp)
 
 		//FOR TESTER
 		/*if (isatty(fileno(stdin))) // If running interactively
+		/*if (isatty(fileno(stdin))) // If running interactively
 			input = readline("minishell> ");
 		else // If receiving input from another program
 		{
@@ -139,6 +140,7 @@ int main(int argc, char **argv, char **envp)
 				break;
 			input = ft_strtrim(line, "\n"); // Remove newline from input
 			free(line);
+		}*/
 		}*/
 		if (!input) // EOF check (Ctrl+D)
 		{
@@ -224,7 +226,10 @@ int main(int argc, char **argv, char **envp)
 		else
 		{
 			//printf("Here2\n");
-			execute_cmd(i, ms->cmds, ms);
+			if (i == 1)
+				make_one_child(ms->cmds, ms);
+			else
+				make_multiple_childs(i, ms->cmds, ms);
 		}
 			
 		//Cleaning before the next input

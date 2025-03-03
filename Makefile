@@ -77,6 +77,7 @@ BUILT_FILES		=	cd.c \
 EXEC_FILES		=	builtin_check.c \
 					cmd_exec.c \
 					execute_cmd.c \
+					execute_cmds_in_pipes.c \
 					find_path_and_execute_command.c \
 					pipex_bonus.c \
 					path_bonus.c \

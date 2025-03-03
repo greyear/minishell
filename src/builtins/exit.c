@@ -22,17 +22,12 @@ edge cases / LLONG_MAX etc explained in google docs !!!
 
 #include "../../include/minishell.h"
 
-void	free_struct(t_ms *ms)
-{
-	ft_free_array(ms->envp);
-	ft_free_array(ms->exported);
-}
-
 static void	exit_shell(long long exit_nbr, int error, char **array, t_ms *ms)
 {
 	if (error == 1 && ms)
 	{
-		ft_putstr_fd("bash: exit: ", 2);
+		ft_putstr_fd(OWN_ERR_MSG, 2);
+		ft_putstr_fd("exit: ", 2);
 		ft_putstr_fd(array[1], 2);
 		ft_putstr_fd(": numeric argument required\n", 2);
 		clean_cmd_list(&(ms->cmds));
@@ -58,22 +53,30 @@ void	check_exit(char **array, t_ms *ms)
 	long long	exit_nbr;
 	int			error;
 	int			exit_code;
+	int			i;
 
+	i = 0;
 	if (!array || !*array)
 		return;
 	if (ft_strcmp(array[0], "exit") != 0) //we already checked it in handle builtin?
 		return;
 	ft_putstr_fd("exit\n", STDOUT_FILENO);
+	error = 0;
 	if (array[1])
 	{
+		while (array[1][i])
+		{
+			if (!ft_isdigit(array[1][i]))
+				exit_shell(2, 1, array, ms);
+			i++;
+		}
 		if (array[2])
 		{
-			ft_putstr_fd("bash: exit: too many arguments\n", 2);
+			ft_putstr_fd(OWN_ERR_MSG, 2);
+			ft_putstr_fd("exit: too many arguments\n", 2);
 			ms->exit_status = 1;
 			return;
 		}
-		//free_struct(ms);
-		//clean_struct(ms);
 		exit_nbr = ft_strtoll(array[1], &error);	// If non-numeric or out of range, print error and exit(2)
 		exit_shell(exit_nbr, error, array, ms);
 	}
@@ -84,5 +87,6 @@ void	check_exit(char **array, t_ms *ms)
 	clean_struct(ms);
 	exit(exit_code);
 }
+
 
 //check more the case when I call 1- echo, 2-exit 42 - leaks in exit
