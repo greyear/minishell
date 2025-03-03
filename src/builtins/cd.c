@@ -108,7 +108,8 @@ static int	cd_error(char **args, t_ms *ms)
 		return (1);
 	if (args[2])
 	{
-		ft_putstr_fd("bash: cd: too many arguments\n", 2);
+		ft_putstr_fd(OWN_ERR_MSG, 2);
+		ft_putstr_fd("cd: too many arguments\n", 2);
 		ms->exit_status = 1;
 		return (1);
 	}

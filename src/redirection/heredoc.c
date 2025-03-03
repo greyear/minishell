@@ -1,23 +1,5 @@
 #include "../../include/minishell.h"
 
-void cleanup_heredocs(char **filenames)
-{
-    int	i;
-	
-	i = 0;
-    while (filenames[i])
-	{
-        if (unlink(filenames[i]) == -1)  // Remove file
-		{
-			perror("unlink fail\n");
-			return;
-		}
-		free(filenames[i]);    // Free the memory for the filename
-        i++;
-    }
-    free(filenames);  // Free the array of filenames
-}
-
 static int	open_heredoc_file(char *filename, int *fd)
 {
 	*fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
