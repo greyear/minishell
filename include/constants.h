@@ -71,6 +71,7 @@ typedef enum e_exit
 {
 	SUCCESS = 0,
 	ERROR = 1,
+	SYNTAX_ERR = 2,
 	CMD_EXEC = 126,
 	CMD_NF = 127,
 	MALLOC_ERR,

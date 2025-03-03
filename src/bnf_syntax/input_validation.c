@@ -23,8 +23,8 @@ int	validate_input(char *str)
 	next = validate_pipeline(str, &err_flag);
 	if (err_flag == 1 || *next != NULL_TERM) //line DOESN'T end with \0
 	{
-		//error message
-		return (1); // code?
+		print_syntax_error(next);
+		return (SYNTAX_ERR); // code?
 	}
 	return (0);
 }

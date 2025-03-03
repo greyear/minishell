@@ -1,39 +1,22 @@
 
 #include "../../include/minishell.h"
 
-/*void	execve_fail(char **path, char **cmd_split, t_pipex **p)
-{
-	perror(cmd_split[0]);
-	free(*path);
-	*path = NULL;
-	//clean, save error code and exit
-	if (p)
-		exit(CMD_EXEC);
-}*/
-
-/*void	cmd_error(char *reason, char *cmd, int exit_code, t_pipex **p)
-{
-	if (ft_printf(2, "%s %s\n", reason, cmd) == -1)
-	{
-		perror("write error");
-		exit(EXIT_FAILURE);
-	}
-	//clean, save error code and exit
-	if (p)
-		exit(exit_code);
-}*/
-/*
-void	error_exit_code(char *reason, int exit_code)
-{
-	perror(reason);
-	exit(exit_code);
-}*/
-
 void	print_system_error(t_print reason)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
 	if (reason == HIST_ERR)
 		ft_putendl_fd("Reading from history file failed", STDERR_FILENO);
+}
+
+void	print_syntax_error(char *text)
+{
+	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
+
+	if (*text == NULL_TERM)
+		text = "newline";
+	ft_putstr_fd(": syntax error near unexpected token `", STDERR_FILENO);
+	ft_putstr_fd(text, STDERR_FILENO);
+	ft_putendl_fd("'", STDERR_FILENO);
 }
 
 void	print_file_error(char *file, t_print reason)
