@@ -60,7 +60,7 @@ PARS_FILES		=	cmd_creation.c \
 					main.c
 BUILT_FILES		=	cd.c \
 					cd2.c \
-					cd_error.c \
+					cd3.c \
 					env.c \
 					export.c \
 					export2.c \
@@ -80,8 +80,7 @@ EXEC_FILES		=	builtin_check.c \
 					execute_cmds_in_pipes.c \
 					find_path_and_execute_command.c \
 					pipex_bonus.c \
-					path_bonus.c \
-					cmd_errormsg_free.c
+					path_bonus.c
 REDIR_FILES		=	open_bonus.c \
 					fds.c \
 					heredoc.c \
@@ -95,10 +94,9 @@ READING_FILES	=	history.c \
 					history_file.c
 #delete initialize_struct
 #SIGN_FILES		=	
-CLEAN_FILES		=	arr_cleaning.c \
-					double_array_handling.c
+CLEAN_FILES		=	arr_cleaning.c
 #put in one file?
-ERR_FILES		=	errors_bonus.c \
+ERR_FILES		=	errors_bonus.c
 
 SRC_FILES		=	$(addprefix $(BNF_DIR)/, $(BNF_FILES)) \
 					$(addprefix $(LEX_DIR)/, $(LEX_FILES)) \

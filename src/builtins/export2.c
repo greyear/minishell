@@ -1,5 +1,18 @@
 #include "../../include/minishell.h"
 
+char	*duplicate_or_replace(char *entry, char *arg, char *key, int *flag)
+{
+	int	len;
+
+	len = get_key_length(arg);
+	if (check_env(entry, key, len, *flag))
+	{
+		*flag = 2;
+		return (ft_strdup(arg));
+	}
+	return (ft_strdup(entry));
+}
+
 void    sort_exported_alphaorder(t_ms *ms)
 {
     int     i;
@@ -53,7 +66,6 @@ static void	copy_exported(char *key, char ***ex, char ***temp, int len)
 		(*temp)[i] = ft_strdup((*ex)[i]);
 		if (!(*temp)[i])
 		{
-			printf("error");
 			clean_arr(temp);
 			return;
 		}
@@ -70,6 +82,7 @@ void	add_to_exported(char *key, t_ms *ms)
 {
 	char	**temp;
 	int	len;
+	
 	if (check_if_valid_key(key))
 		return (print_export_error(ms, key));
 	len = ft_strlen(key);
