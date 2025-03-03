@@ -1,36 +1,5 @@
 #include "../../include/minishell.h"
 
-/*static char	**filter_env_entries(char **env, char *name, int len, int flag)
-{
-	char	**temp;
-	int		i;
-	int		x;
-
-	temp = allocate_temp_env(env, 1);
-	if (!temp)
-		return (NULL);
-	i = 0;
-	x = 0;
-	while (env[i])
-	{
-		if (check_env(env[i], name, len, flag))
-		{
-			i++;
-			continue;
-		}
-		temp[x] = ft_strdup(env[i]);
-		if (!temp[x])
-		{
-			clean_arr(&temp);
-			return (NULL);
-		}
-		x++;
-		i++;
-	}
-	temp[x] = NULL;
-	return (temp);
-}*/
-
 static int	should_filter_entry(char *entry, char *name, int len, int flag)
 {
 	if (check_env(entry, name, len, flag))
