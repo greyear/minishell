@@ -28,7 +28,7 @@ char	*get_home_directory(t_ms *ms, int flag)
 	return (ft_strdup(temp));
 }
 
-static char	*return_target(t_ms *ms, char *target)
+char	*return_target(t_ms *ms, char *target)
 {
 	 // Check if OLDPWD is a valid path before printing it
     if (access(target, F_OK) != 0)
@@ -39,41 +39,6 @@ static char	*return_target(t_ms *ms, char *target)
     }
     ft_putendl_fd(target, STDOUT_FILENO);
 	return (ft_strdup(target));
-}
-
-char	*get_oldpwd_directory(t_ms *ms)
-{
-	char	*target;
-	char	*current_pwd;
-	char	cwd[1024];
-
-	target = get_env_value("OLDPWD", ms->envp);
-	if (!target)
-	{
-		ft_putstr_fd("bash: cd: OLDPWD not set\n", 2);
-		ms->exit_status = 1;
-		return (NULL);
-	}
-	if (*target == '\0')
-    {
-        ft_putstr_fd("\n", STDOUT_FILENO);  // Print an empty line when OLDPWD is not set
-        current_pwd = get_env_value("PWD", ms->envp);
-        if (!current_pwd || *current_pwd == '\0')
-        {
-            if (getcwd(cwd, sizeof(cwd)))
-                update_env_var(ms, "PWD=", cwd);  // Make sure PWD is updated
-            return (NULL);
-		}
-        update_env_var(ms, "OLDPWD=", current_pwd);  // Set OLDPWD to PWD's value
-        target = ft_strdup(current_pwd);
-        if (!target)
-        {
-            ms->exit_status = 1;
-            return (NULL);
-        }
-        return (target);
-    }
-	return (return_target(ms, target));
 }
 
 char	*get_parent_directory(t_ms *ms)
