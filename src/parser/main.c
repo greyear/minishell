@@ -128,7 +128,6 @@ int main(int argc, char **argv, char **envp)
 		input = readline("minishell> ");
 
 
-
 		//FOR TESTER
 		/*if (isatty(fileno(stdin))) // If running interactively
 			input = readline("minishell> ");
