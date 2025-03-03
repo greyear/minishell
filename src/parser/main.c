@@ -126,9 +126,6 @@ int main(int argc, char **argv, char **envp)
 		
 		// FOR USUAL EXECUTION
 		input = readline("minishell> ");
-		//add_line_to_history(input, ms); //fix
-		//if (ms->history[ms->history_num])
-			//printf("history %s in line %d\n", ms->history[ms->history_num], ms->history_num);
 
 
 		//FOR TESTER
@@ -163,8 +160,12 @@ int main(int argc, char **argv, char **envp)
 			continue;
 		}
 
-		if (*input)
-			add_history(input);
+		/*if (*input)
+			add_history(input);*/
+
+		add_line_to_history(input, ms); //fix
+		/*if (ms->history[ms->history_num])
+			printf("history %s in line %d\n", ms->history[ms->history_num], ms->history_num);*/
 
 		// Parsing
 		ms->tokens = tokenization(input, ms);

@@ -19,8 +19,9 @@ static void	read_heredoc_input(int temp_fd, char *limiter)
 	{
 		write(STDOUT_FILENO, "heredoc> ", 9);
 		line = get_next_line(STDIN_FILENO);
-		if (!line)
+		if (!line) //clean_gnl?
 		{
+			
 			perror("heredoc: read error");
 			close(temp_fd);
 			exit(1);
