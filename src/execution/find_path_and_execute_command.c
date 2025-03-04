@@ -129,6 +129,11 @@ static char	*find_path_from_envp(char **envp, char **cmds)
 		exit(127);
 	}
 	path_var = envp[i] + 5;
+	if (envp[i][5] == '\0')
+	{
+		print_cmd_error(cmds[0], 1);
+		exit(126);
+	}
 	paths = ft_split(path_var, ':');
 	full_path = make_full_path(paths, full_path, cmds[0]);
 	clean_arr(&paths);
