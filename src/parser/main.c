@@ -91,12 +91,9 @@ static void	inout(int saved_stdin, int saved_stdout)
 int main(int argc, char **argv, char **envp)
 {
 	t_ms *ms;
-	/*t_token *tokens;
-	t_block *blocks;
-	t_cmd *cmds;*/
 	t_cmd	*cur;
 	char *input;
-	int err_flag;
+	int err_syntax;
 	int	i;
 
 	int saved_stdin = dup(STDIN_FILENO);
@@ -125,14 +122,11 @@ int main(int argc, char **argv, char **envp)
 		inout(saved_stdin, saved_stdout); // Restore STDIN and STDOUT
 		
 		// FOR USUAL EXECUTION
-		input = readline("minishell> ");
-		//add_line_to_history(input, ms); //fix
-		/*if (ms->history[ms->history_num])
-			printf("history %s in line %d\n", ms->history[ms->history_num], ms->history_num);*/
+		//input = readline("minishell> ");
 
 
 		//FOR TESTER
-		/*if (isatty(fileno(stdin))) // If running interactively
+		if (isatty(fileno(stdin))) // If running interactively
 			input = readline("minishell> ");
 		else // If receiving input from another program
 		{
@@ -141,7 +135,7 @@ int main(int argc, char **argv, char **envp)
 				break;
 			input = ft_strtrim(line, "\n"); // Remove newline from input
 			free(line);
-		}*/
+		}
 		if (!input) // EOF check (Ctrl+D)
 		{
 			printf("exit\n");
@@ -154,17 +148,20 @@ int main(int argc, char **argv, char **envp)
 		}
 
 		// BNF checking
-		err_flag = validate_input(input);
+		err_syntax = validate_input(input);
 		//printf("BNF validation result: %d\n", err_flag);
-		if (err_flag)
+		if (err_syntax)
 		{
-			printf("Error: invalid input format\n");
+			history_exit(ms); //here?
+			clean_struct(ms);
 			free(input);
-			continue;
+			exit(err_syntax);
+			//continue;
 		}
 
-		if (*input)
-			add_history(input);
+		add_line_to_history(input, ms); //fix
+		/*if (ms->history[ms->history_num])
+			printf("history %s in line %d\n", ms->history[ms->history_num], ms->history_num);*/
 
 		// Parsing
 		ms->tokens = tokenization(input, ms);
@@ -182,8 +179,8 @@ int main(int argc, char **argv, char **envp)
 		//printf("tokens again \n");
 		//print_tokens(tokens);
 
-		ms->blocks = create_blocks_list(ms->tokens, NULL, &err_flag);
-		if (err_flag)
+		ms->blocks = create_blocks_list(ms->tokens, NULL, &err_syntax);
+		if (err_syntax)
 		{
 			printf("Error: failed to create blocks\n");
 			clean_token_list(&(ms->tokens));
@@ -222,7 +219,10 @@ int main(int argc, char **argv, char **envp)
 		else
 		{
 			//printf("Here2\n");
-			execute_cmd(i, ms->cmds, ms);
+			if (i == 1)
+				make_one_child(ms->cmds, ms);
+			else
+				make_multiple_childs(i, ms->cmds, ms);
 		}
 			
 		//Cleaning before the next input
@@ -237,6 +237,8 @@ int main(int argc, char **argv, char **envp)
 	// Freeing struct
 	//free(ms);
 	//clean_struct(ms);
+	clean_cmd_list(&(ms->cmds));
 	history_exit(ms); //here?
+	clean_struct(ms);
 	return (0);
 }

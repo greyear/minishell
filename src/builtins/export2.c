@@ -1,5 +1,18 @@
 #include "../../include/minishell.h"
 
+char	*duplicate_or_replace(char *entry, char *arg, char *key, int *flag)
+{
+	int	len;
+
+	len = get_key_length(arg);
+	if (check_env(entry, key, len, *flag))
+	{
+		*flag = 2;
+		return (ft_strdup(arg));
+	}
+	return (ft_strdup(entry));
+}
+
 void    sort_exported_alphaorder(t_ms *ms)
 {
     int     i;
@@ -30,12 +43,12 @@ static void	add_to_end(char ***ex, char ***temp, char *key, int i)
 	(*temp)[i] = ft_strdup(key);
 	if (!(*temp)[i])
 	{
-		ft_free_map(*temp);
+		clean_arr(temp);
 		return;
 	}
 	i++;
 	(*temp)[i] = NULL;
-	ft_free_map(*ex);
+	clean_arr(ex);
 	*ex = *temp;
 }
 
@@ -53,8 +66,7 @@ static void	copy_exported(char *key, char ***ex, char ***temp, int len)
 		(*temp)[i] = ft_strdup((*ex)[i]);
 		if (!(*temp)[i])
 		{
-			printf("error");
-			ft_free_map(*temp);
+			clean_arr(temp);
 			return;
 		}
         i++;
@@ -62,7 +74,7 @@ static void	copy_exported(char *key, char ***ex, char ***temp, int len)
 	if (check == 0)
 		return (add_to_end(ex, temp, key, i));
 	(*temp)[i] = NULL;
-	ft_free_map(*ex);
+	clean_arr(ex);
 	*ex = *temp;
 }
 
@@ -70,8 +82,9 @@ void	add_to_exported(char *key, t_ms *ms)
 {
 	char	**temp;
 	int	len;
+	
 	if (check_if_valid_key(key))
-		return (print_error3(ms, key));
+		return (print_export_error(ms, key));
 	len = ft_strlen(key);
 	temp = allocate_temp_env(ms->exported, 2);
 	copy_exported(key, &ms->exported, &temp, len);

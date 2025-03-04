@@ -32,7 +32,7 @@ void	default_history(char **history) //zero_history
  * @param line The command line to be stored in history.
  * @param ms A pointer to the shell structure containing the history array.
  */
-static void	fill_ms_history_line(char *line, t_ms *ms) //add_to_history_array //fill in struct's field
+void	fill_ms_history_line(char *line, t_ms *ms) //add_to_history_array //fill in struct's field +
 {
 	if (ms->history[ms->history_num])
 		free(ms->history[ms->history_num]); //free this particular line
@@ -54,13 +54,13 @@ static void	fill_ms_history_line(char *line, t_ms *ms) //add_to_history_array //
  * @param line The command line to be added to history.
  * @param ms A pointer to the shell structure containing the history.
  */
-void	add_line_to_history(char *line, t_ms *ms) //add_to_history
+void	add_line_to_history(char *line, t_ms *ms) //add_to_history + in main
 {
 	if (line[0] != '\0')
 	{
 		add_history(line);
-		//check
-		fill_ms_history_line(line, ms);
+		if (ms->history_file == true)
+			fill_ms_history_line(line, ms);
 	}
 }
 
@@ -72,7 +72,7 @@ void	add_line_to_history(char *line, t_ms *ms) //add_to_history
  * 
  * @param ms A pointer to the shell structure containing the history.
  */
-void	clean_ms_history(t_ms *ms) //free_history
+void	clean_ms_history(t_ms *ms) //free_history +
 {
 	int	i;
 
