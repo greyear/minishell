@@ -49,52 +49,80 @@ char	*expand_key(char **envp, char *key, int len, t_ms *ms)
 	return (ft_strdup(""));
 }
 
+char	*extract_key_export(char *args, int *i)
+{
+	int		x;
+	char	*key;
+
+	x = 0;
+	if (ft_isdigit(args[*i]) || args[*i] == '?'
+		|| args[*i] == '$' || args[*i] == ' ')
+		x = 1;
+	else
+	{
+		while (args[*i + x] && (ft_isalnum(args[*i + x])
+			|| args[*i + x] == '_'))
+			x++;
+	}
+	key = ft_substr(args, *i, x);
+	*i += x; // Move i forward by the length of the key
+	return (key);
+}
+
+char	*expand_variable(t_ms *ms, char *key, int key_len)
+{
+	char	*expanded_value;
+
+	expanded_value = expand_key(ms->envp, key, key_len, ms);
+	free(key);
+	return (expanded_value);
+}
+
+void	append_to_result(char **result, char *new_part)
+{
+	char	*temp;
+
+	temp = ft_strjoin(*result, new_part);
+	free(*result);
+	*result = temp;
+	free(new_part);
+}
+
+void	append_literal_char(char **result, char c)
+{
+	char	*substr;
+	char	*temp;
+	char	str[2];
+
+	str[0] = c;
+	str[1] = '\0';
+	substr = ft_substr(str, 0, 1);  // Convert char to string
+	temp = ft_strjoin(*result, substr);
+	free(substr);
+	free(*result);
+	*result = temp;
+}
+
 char	*handle_expansion(char *args, t_ms *ms)
 {
 	int		i;
-	int		x;
-	char	*key = NULL;
-	char	*s;
-	char	*temp;
-	char	*string;
-	char	*substr;
+	char	*key;
+	char	*expanded;
+	char	*result;
 
-	string = ft_strdup("");;
+	result = ft_strdup("");
 	i = 0;
-	x = 0;
 	while (args[i])
 	{
 		if (args[i] == '$' && args[i + 1] && !ft_isspace(args[i + 1]))
 		{
-			i++;
-			x = 0;
-			if (ft_isdigit(args[i]) || args[i] == '?' || args[i] == '$' || args[i] == ' ') // Stop if it starts with a number
-				x = 1;
-			else
-			{
-				while (args[i + x] && (ft_isalnum(args[i + x]) || args[i + x] == '_'))
-					x++;
-			}
-			key = ft_substr(args, i, x);
-			s = expand_key(ms->envp, key, x, ms);
-			temp = ft_strjoin(string, s);
-			free(string);
-			string = temp;
-			free(s);
-			free(key);
-			i = i + x;
+			i++; // Move past '$'
+			key = extract_key_export(args, &i);
+			expanded = expand_variable(ms, key, ft_strlen(key));
+			append_to_result(&result, expanded);
 		}
 		else
-		{
-			substr = ft_substr(args, i, 1);
-			temp = ft_strjoin(string, substr);
-			//printf("temp: %s\n", temp);
-			free(substr); 
-			free(string);
-			string = temp;
-			i++;
-		}
+			append_literal_char(&result, args[i++]);
 	}
-	return (string);
+	return (result);
 }
-

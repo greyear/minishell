@@ -4,7 +4,7 @@
 *.out
 *.swp
 minishell
-minishell_tester
+minishell_tester/
 42_minishell_tester
 .build
 .vscode
@@ -21,4 +21,6 @@ input*
 output*
 .history.tmp
 .heredoc*
+tmp_err_bash
+tmp_err_minishell
 

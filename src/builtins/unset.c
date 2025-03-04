@@ -15,14 +15,6 @@ and the t_ms *ms is the struct which holds the envp and exported
 
 #include "../../include/minishell.h"
 
-static void	print_unset_error(char **args, int i, t_ms *ms)
-{
-	ft_putstr_fd("bash: unset: '", 2);
-	ft_putstr_fd(args[i], 2);
-	ft_putstr_fd("': not a valid indentifier\n", 2);
-	ms->exit_status = 1;
-}
-
 static void	process_unset_entry(char **args, int i, t_ms *ms, int len)
 {
 	char	*name;

@@ -28,3 +28,41 @@ char	**allocate_temp_env(char **env, int x)
 	return (temp);
 }
 
+void    print_array(char **a)
+{
+	int	i;
+
+	i = 0;
+	while (a[i])
+	{
+		printf("%s\n", a[i]);
+		i++;
+	}
+}
+
+char	**copy_map(char **original_map)
+{
+	char	**new_map;
+	int		i;
+
+	i = 0;
+	while (original_map[i])
+		i++;
+	new_map = malloc(sizeof(char *) * (i + 1));
+	if (!new_map)
+		return (NULL);
+	i = 0;
+	while (original_map[i])
+	{
+		new_map[i] = ft_strdup(original_map[i]);
+		if (!new_map[i])
+		{
+			//clean_arr(new_map);
+			clean_arr(&(new_map));
+			return (NULL);
+		}
+		i++;
+	}
+	new_map[i] = NULL;
+	return (new_map);
+}
