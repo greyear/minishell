@@ -167,26 +167,11 @@ static char	*find_path_from_envp(char **envp, char **cmds)
 	return (full_path);
 }
 
-static void	check_dir(char *cmd)
-{
-	int		len;
-
-	len = ft_strlen(cmd) - 1;
-	if (cmd[0] == '.' && cmd[len] == '/')
-	{
-		ft_putstr_fd("bash: ", 2);
-		ft_putstr_fd(cmd, 2);
-		ft_putstr_fd(": Is a directory\n", 2);
-		exit(126);
-	}
-}
-
 static void	if_not_path(char **cmds)
 {
 	int	x;
 
 	x = 0;
-	check_dir(cmds[0]);
 	print_cmd_error(cmds[0], 0);
 	if (cmds[0][0] == '.')
 		x = 1;
