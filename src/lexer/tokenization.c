@@ -48,27 +48,31 @@ t_token *tokenization(char *str, t_ms *ms) //store str in ms?
 	print_tokens(first);*/
 
 	flags_for_redirections(first);
+	
+	/*printf("inside tokenization before the expantion\n");
+	print_tokens(first);*/
+
+	if (check_list_for_expansions(first, ms) == 1) //changed the order with uniting
+	{
+		clean_token_list(&first); //what else to clean?
+		return (NULL); //maybe create a separate cleaner?
+	}
 
 	/*printf("inside tokenization before uniting\n");
 	print_tokens(first);*/
 
 	first = unite_two_word_tokens(first);
-	
-	/*printf("inside tokenization before the expantion\n");
+
+	/*printf("\ninside tokenization after uniting\n");
 	print_tokens(first);*/
 
-	if (check_list_for_expansions(first, ms) == 1)
-	{
-		clean_token_list(&first); //what else to clean?
-		return (NULL); //maybe create a separate cleaner?
-	}
 	if (check_list_for_tilde(first, ms) == 1)
 	{
-
 		clean_token_list(&first);
 		return (NULL);
 	}
-	//print_tokens(first);
+	/*printf("\ninside tokenization after everything\n");
+	print_tokens(first);*/
 	//print_tokens(first);
 	return (first);
 	//wildcards?

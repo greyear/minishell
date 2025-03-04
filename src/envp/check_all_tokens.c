@@ -46,8 +46,20 @@ int	check_list_for_expansions(t_token *first, t_ms *ms)
 		}
 		cur = cur->next;
 	}
-	first = delete_whitespace_tokens(first);
-	first = delete_empty_word_tokens(first);
+
+	/*printf("\nbefore deleting whitespaces\n");
+	print_tokens(first);*/
+
+	//first = delete_whitespace_tokens(first);
+
+	/*printf("\nafter deleting whitespaces\n");
+	print_tokens(first);*/
+
+	//first = delete_empty_word_tokens(first);
+
+	/*printf("\nafter deleting empty\n");
+	print_tokens(first);*/
+
 	return (0);
 }
 
