@@ -46,6 +46,7 @@ If execve fails, it frees resources and exits with failure.
 
 //#include "seela.h"
 #include "../../include/minishell.h"
+#include "../../include/minishell.h"
 
 static char	*make_full_path(char **paths, char *full_path, char *cmd)
 {
@@ -67,10 +68,14 @@ static char	*make_full_path(char **paths, char *full_path, char *cmd)
 		new_full_path = ft_strjoin(temp_path, cmd);
 		free(temp_path);
 		if (access(new_full_path, X_OK) == 0)
+		{
+			free(full_path);
 			return (new_full_path);
+		}
 		free(new_full_path);
 		i++;
 	}
+	free(full_path);
 	return (NULL);
 }
 
@@ -121,7 +126,6 @@ static char	*find_path_from_envp(char **envp, char **cmds)
 	if (!envp[i])
 	{
 		print_cmd_error(cmds[0], 2);
-		clean_arr(&cmds);
 		exit(127);
 	}
 	path_var = envp[i] + 5;
@@ -154,7 +158,6 @@ static void	if_not_path(char **cmds)
 	print_cmd_error(cmds[0], 0);
 	if (cmds[0][0] == '.')
 		x = 1;
-	clean_arr(&cmds);
 	if (x == 1)
 		exit(126);
 	exit(127);
@@ -166,7 +169,7 @@ void	execute_command(char **envp, char **cmd)
 
 	if (!cmd || !*cmd)
 	{
-		print_cmd_error(cmd[0], 0);
+		print_cmd_error(NULL, 0);
 		exit(127);
 	}
 	path = find_path_from_envp(envp, cmd);
@@ -174,6 +177,5 @@ void	execute_command(char **envp, char **cmd)
 		if_not_path(cmd);
 	execve(path, cmd, envp);
 	free(path);
-	clean_arr(&cmd);
 	exit(EXIT_FAILURE);
 }
