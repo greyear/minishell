@@ -240,5 +240,5 @@ int main(int argc, char **argv, char **envp)
 	clean_cmd_list(&(ms->cmds));
 	history_exit(ms); //here?
 	clean_struct(ms);
-	return (0);
+	return (ms->exit_status);
 }
