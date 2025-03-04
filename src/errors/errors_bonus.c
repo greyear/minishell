@@ -10,10 +10,24 @@ void	print_system_error(t_print reason)
 
 void	print_syntax_error(char *text)
 {
-	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
+	int	cut;
 
+	cut = 0;
+	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
 	if (*text == NULL_TERM)
 		text = "newline";
+	else if (ft_strncmp(text, "||", 2) == 0 || ft_strncmp(text, "&&", 2) == 0
+		|| ft_strncmp(text, ">>", 2) == 0 || ft_strncmp(text, "<<", 2) == 0)
+		cut = 2;
+	else if (*text == VERTICAL || *text == L_PARENT || *text == R_PARENT
+		|| *text == L_REDIR || *text == R_REDIR || *text == AND)
+		cut = 1;
+	else if (ft_isalnum(*text) == 1 || *text == SG_QUOT || *text == DB_QUOT)
+		while (ft_isalnum(text[cut]) == 1 || text[cut] == SG_QUOT || text[cut] == DB_QUOT)
+			cut++;
+	//do I need to handle symbols for printing err msg that I don't handle in real parsing??
+	if (cut != 0)
+		text[cut] = NULL_TERM;
 	ft_putstr_fd(": syntax error near unexpected token `", STDERR_FILENO);
 	ft_putstr_fd(text, STDERR_FILENO);
 	ft_putendl_fd("'", STDERR_FILENO);

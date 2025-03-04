@@ -7,7 +7,7 @@
 #include <readline/history.h>
 
 
-/*void print_tokens(t_token *token_list)
+void print_tokens(t_token *token_list)
 {
 	t_token *cur = token_list;
 
@@ -17,7 +17,7 @@
 		printf("Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->type, cur->data, cur->quote, cur->specific_redir, cur->ambiguous, cur->file);
 		cur = cur->next;
 	}
-}*/
+}
 /*
 static void print_blocks(t_block *block_list)
 {
@@ -239,6 +239,7 @@ int main(int argc, char **argv, char **envp)
 	//clean_struct(ms);
 	clean_cmd_list(&(ms->cmds));
 	history_exit(ms); //here?
+	int exit = ms->exit_status;
 	clean_struct(ms);
-	return (ms->exit_status);
+	return (exit);
 }
