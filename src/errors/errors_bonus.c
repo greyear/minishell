@@ -56,7 +56,7 @@ void	print_cmd_error(char *cmd, int c)
 	ft_putstr_fd(cmd, 2);
 	if (cmd[0] == '/' || c == 2)
 		ft_putstr_fd(": No such file or directory\n", 2);
-	else if (cmd[0] == '.')
+	else if (cmd[0] == '.' || c == 1)
 		ft_putstr_fd(": Permission denied\n", 2);
 	else
 		ft_putstr_fd(": command not found\n", 2);
