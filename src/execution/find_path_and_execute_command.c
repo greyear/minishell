@@ -46,7 +46,6 @@ If execve fails, it frees resources and exits with failure.
 
 //#include "seela.h"
 #include "../../include/minishell.h"
-#include "../../include/minishell.h"
 
 static char	*make_full_path(char **paths, char *full_path, char *cmd)
 {
@@ -67,10 +66,21 @@ static char	*make_full_path(char **paths, char *full_path, char *cmd)
 		}
 		new_full_path = ft_strjoin(temp_path, cmd);
 		free(temp_path);
-		if (access(new_full_path, X_OK) == 0)
+		if (access(new_full_path, F_OK) == 0)
 		{
-			free(full_path);
-			return (new_full_path);
+			if (access(new_full_path, X_OK) == 0)
+			{
+				free(full_path);
+				return (new_full_path);
+			}
+			else
+			{
+				ft_putstr_fd(OWN_ERR_MSG, 2);
+				ft_putstr_fd(new_full_path, 2);
+				ft_putstr_fd(": Permission denied\n", 2);
+				free(new_full_path);
+				exit(126);
+			}
 		}
 		free(new_full_path);
 		i++;
@@ -110,6 +120,34 @@ void	check_if_dir(char **envp, char **cmds)
     exit(127);
 }
 
+void	check_if_dir2(char **envp, char **cmds)
+{
+	DIR *dir;
+	
+	dir = opendir(cmds[0]);
+    if (dir) // If it's a directory
+    {
+        closedir(dir);
+        ft_putstr_fd(OWN_ERR_MSG, 2);
+        ft_putstr_fd(cmds[0], 2);
+        ft_putstr_fd(": Is a directory\n", 2);
+        exit(126);
+    }
+    if (access(cmds[0], F_OK) == 0) // File exists
+    {
+        if (access(cmds[0], X_OK) == 0) // File is executable
+            execve(cmds[0], cmds, envp);
+        else
+        {
+            ft_putstr_fd(OWN_ERR_MSG, 2);
+			ft_putstr_fd("./", 2);
+            ft_putstr_fd(cmds[0], 2);
+            ft_putstr_fd(": Permission denied\n", 2);
+            exit(126);
+        }
+    }
+}
+
 static char	*find_path_from_envp(char **envp, char **cmds)
 {
 	int		i;
@@ -129,6 +167,7 @@ static char	*find_path_from_envp(char **envp, char **cmds)
 		exit(127);
 	}
 	path_var = envp[i] + 5;
+	//printf("path_var is %s\n", path_var);
 	if (envp[i][5] == '\0')
 	{
 		print_cmd_error(cmds[0], 1);
@@ -136,6 +175,7 @@ static char	*find_path_from_envp(char **envp, char **cmds)
 	}
 	paths = ft_split(path_var, ':');
 	full_path = make_full_path(paths, full_path, cmds[0]);
+	//printf("full path is %s\n", full_path);
 	clean_arr(&paths);
 	return (full_path);
 }
@@ -179,7 +219,10 @@ void	execute_command(char **envp, char **cmd)
 	}
 	path = find_path_from_envp(envp, cmd);
 	if (!path)
+	{
+		check_if_dir2(envp, cmd);
 		if_not_path(cmd);
+	}
 	execve(path, cmd, envp);
 	free(path);
 	exit(EXIT_FAILURE);
