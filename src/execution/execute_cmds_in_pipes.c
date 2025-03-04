@@ -2,15 +2,22 @@
 
 void    create_pipes(int num_cmds, int ***pipe_fd)
 {
-    int i = 0;
+    int     i;
     
+    i = 0;
     *pipe_fd = malloc(sizeof(int *) * (num_cmds - 1));
     if (!*pipe_fd)
         return;
     while (i < num_cmds - 1)
     {
         (*pipe_fd)[i] = malloc(sizeof(int) * 2);
-        if (!(*pipe_fd)[i] || pipe((*pipe_fd)[i]) == -1)
+        if (!(*pipe_fd)[i])
+        {
+            free_int_array(*pipe_fd);
+            *pipe_fd = NULL;
+            return;
+        }
+        if (pipe((*pipe_fd)[i]) == -1)
         {
             free_int_array(*pipe_fd);
             *pipe_fd = NULL;
@@ -22,8 +29,9 @@ void    create_pipes(int num_cmds, int ***pipe_fd)
 
 void    close_pipes(int num_cmds, int **pipe_fd)
 {
-    int i = 0;
+    int     i;
 
+    i = 0;
     while (i < num_cmds - 1)
     {
         if (pipe_fd[i])
@@ -34,15 +42,17 @@ void    close_pipes(int num_cmds, int **pipe_fd)
         }
         i++;
     }
-    free(pipe_fd);
+    if (pipe_fd)
+        free(pipe_fd);
 }
 
 void    wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms)
 {
-    int i = 0;
-    int status;
-    pid_t wpid;
+    int     i;
+    int     status;
+    pid_t   wpid;
 
+    i = 0;
     while (i < num_cmds)
     {
         wpid = wait(&status);

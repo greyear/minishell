@@ -66,11 +66,26 @@ static char	*make_full_path(char **paths, char *full_path, char *cmd)
 		}
 		new_full_path = ft_strjoin(temp_path, cmd);
 		free(temp_path);
-		if (access(new_full_path, X_OK) == 0)
-			return (new_full_path);
+		if (access(new_full_path, F_OK) == 0)
+		{
+			if (access(new_full_path, X_OK) == 0)
+			{
+				free(full_path);
+				return (new_full_path);
+			}
+			else
+			{
+				ft_putstr_fd(OWN_ERR_MSG, 2);
+				ft_putstr_fd(new_full_path, 2);
+				ft_putstr_fd(": Permission denied\n", 2);
+				free(new_full_path);
+				exit(126);
+			}
+		}
 		free(new_full_path);
 		i++;
 	}
+	free(full_path);
 	return (NULL);
 }
 
@@ -105,6 +120,23 @@ void	check_if_dir(char **envp, char **cmds)
     exit(127);
 }
 
+void	check_if_file(char **envp, char **cmds)
+{
+    if (access(cmds[0], F_OK) == 0) // File exists
+    {
+        if (access(cmds[0], X_OK) == 0) // File is executable
+            execve(cmds[0], cmds, envp);
+        else
+        {
+            ft_putstr_fd(OWN_ERR_MSG, 2);
+			ft_putstr_fd("./", 2);
+            ft_putstr_fd(cmds[0], 2);
+            ft_putstr_fd(": Permission denied\n", 2);
+            exit(126);
+        }
+    }
+}
+
 static char	*find_path_from_envp(char **envp, char **cmds)
 {
 	int		i;
@@ -121,28 +153,18 @@ static char	*find_path_from_envp(char **envp, char **cmds)
 	if (!envp[i])
 	{
 		print_cmd_error(cmds[0], 2);
-		clean_arr(&cmds);
 		exit(127);
 	}
 	path_var = envp[i] + 5;
+	if (envp[i][5] == '\0')
+	{
+		print_cmd_error(cmds[0], 1);
+		exit(126);
+	}
 	paths = ft_split(path_var, ':');
 	full_path = make_full_path(paths, full_path, cmds[0]);
 	clean_arr(&paths);
 	return (full_path);
-}
-
-static void	check_dir(char *cmd)
-{
-	int		len;
-
-	len = ft_strlen(cmd) - 1;
-	if (cmd[0] == '.' && cmd[len] == '/')
-	{
-		ft_putstr_fd("bash: ", 2);
-		ft_putstr_fd(cmd, 2);
-		ft_putstr_fd(": Is a directory\n", 2);
-		exit(126);
-	}
 }
 
 static void	if_not_path(char **cmds)
@@ -150,11 +172,9 @@ static void	if_not_path(char **cmds)
 	int	x;
 
 	x = 0;
-	check_dir(cmds[0]);
 	print_cmd_error(cmds[0], 0);
 	if (cmds[0][0] == '.')
 		x = 1;
-	clean_arr(&cmds);
 	if (x == 1)
 		exit(126);
 	exit(127);
@@ -166,14 +186,16 @@ void	execute_command(char **envp, char **cmd)
 
 	if (!cmd || !*cmd)
 	{
-		print_cmd_error(cmd[0], 0);
+		print_cmd_error(NULL, 0);
 		exit(127);
 	}
 	path = find_path_from_envp(envp, cmd);
 	if (!path)
+	{
+		check_if_file(envp, cmd);
 		if_not_path(cmd);
+	}
 	execve(path, cmd, envp);
 	free(path);
-	clean_arr(&cmd);
 	exit(EXIT_FAILURE);
 }
