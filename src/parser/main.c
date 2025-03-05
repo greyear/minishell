@@ -174,7 +174,8 @@ int main(int argc, char **argv, char **envp)
 		}
 
 		/*printf("after tokenization\n");
-		print_tokens(tokens);*/
+		print_tokens(ms->tokens);*/
+
 		put_files_for_redirections(ms->tokens);
 		//printf("tokens again \n");
 		//print_tokens(tokens);

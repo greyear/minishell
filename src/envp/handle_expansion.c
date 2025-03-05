@@ -26,6 +26,7 @@ char	*expand_key(char **envp, char *key, int len, t_ms *ms)
 {
 	int		i;
 	char	*check;
+	char	*res;
 
 	i = 0;
 	if (key[0] == '?')
@@ -42,11 +43,18 @@ char	*expand_key(char **envp, char *key, int len, t_ms *ms)
 		if (ft_strncmp(envp[i], key, len) == 0)
 		{
 			if (envp[i][len] == '=')
-				return (ft_strdup(envp[i] + len + 1));
+			{
+				res = ft_strdup(envp[i] + len + 1); //fixed a bit bc of a leak
+				free(key);
+				return (res);
+			}
+				
 		}
 		i++;
 	}
-	return (ft_strdup(""));
+	res = ft_strdup("");
+	free(key);
+	return (res);
 }
 
 char	*extract_key_export(char *args, int *i)

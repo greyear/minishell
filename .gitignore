@@ -5,6 +5,7 @@
 *.swp
 minishell
 minishell_tester/
+test_files/
 42_minishell_tester
 .build
 .vscode
