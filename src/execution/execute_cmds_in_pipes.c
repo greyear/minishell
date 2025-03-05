@@ -75,64 +75,6 @@ void    pipe_or_redir(t_cmd *cur, int **pipe_fd, int i, int num_cmds)
     redirect_process(cur->infile, cur->outfile);
 }
 
-/*void    make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
-{
-    int     **pipe_fd;
-    pid_t   last_pid;
-    pid_t   pid;
-    t_cmd   *cur;
-    int     i;
-
-    i = 0;
-    last_pid = -1;
-    create_pipes(num_cmds, &pipe_fd);
-    if (!pipe_fd)
-    {
-        ms->exit_status = 1;
-        return;
-    }
-    cur = cmds;
-    while (i < num_cmds && cur)
-    {
-        if (!cur->args || !cur->args[0])
-        {
-            ms->exit_status = 0;
-            cur = cur->next;
-            i++;
-            continue;
-        }
-        pid = fork();
-        if (pid < 0)
-        {
-            ms->exit_status = 1;
-            return;
-        }
-        if (pid == 0)
-        {
-            pipe_or_redir(cur, pipe_fd, i, num_cmds);
-            if (is_builtin(cur))
-            {
-                handle_builtin(cur, ms, 1);
-                exit(ms->exit_status);
-            }
-            else
-                execute_command(ms->envp, cur->args); //execute command
-        }
-        if (i > 0 && pipe_fd[i - 1])
-        {
-            close(pipe_fd[i - 1][0]);
-            close(pipe_fd[i - 1][1]);
-        }
-        last_pid = pid;
-        cur = cur->next;
-        i++;
-    }
-    close_pipes(num_cmds, pipe_fd);
-    cleanup_heredocs(ms->heredoc_files);
-    reset_heredocs(ms);
-    wait_for_children(num_cmds, last_pid, ms);
-}*/
-
 void setup_pipes(t_exec_data *data)
 {
     create_pipes(data->num_cmds, &data->pipe_fd);
