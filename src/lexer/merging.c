@@ -49,7 +49,10 @@ t_token	*unite_two_word_tokens(t_token *first)
 		if (cur->next && cur->type == WORD && \
 				cur->next->type == WORD)
 		{
-			joined = ft_strjoin(cur->data, cur->next->data);
+			if (cur->data[0] == '$')
+				joined = ft_strdup(cur->next->data);
+			else
+				joined = ft_strjoin(cur->data, cur->next->data);
 			if (!joined)
 				return (NULL);
 			free(cur->data);
