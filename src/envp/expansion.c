@@ -15,7 +15,10 @@ edge case if KEY is $$, replace the KEy with pid
 
 #include "../../include/minishell.h"
 
-static char	*verify_key(char *key)
+
+//These functions are not needed, new version in handle_expansion
+
+/*static char	*verify_key(char *key)
 {
 	if (ft_isdigit(key[0])) // If the key starts with a digit, it's invalid
 		return (NULL);
@@ -49,9 +52,9 @@ char	*expand_key(char **envp, char *key, int len, t_ms *ms)
 		i++;
 	}
 	return (ft_strdup(""));
-}
+}*/
 
-char	*handle_expansion(char *args, t_ms *ms)
+/*char	*handle_expansion(char *args, t_ms *ms)
 {
 	int		i;
 	int		x;
@@ -94,5 +97,5 @@ char	*handle_expansion(char *args, t_ms *ms)
 		}
 	}
 	return (string);
-}
+}*/
 
