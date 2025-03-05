@@ -84,6 +84,10 @@ typedef enum e_oper
 }	t_oper;
 
 # define OWN_ERR_MSG "ms error: "
+# define PERM_DEN 1
+# define NO_FILE_OR_DIR 2
+# define IS_DIR 3
+# define NO_CMD 4
 # define HISTORY_FILE ".history.tmp"
 # define HISTORY_SIZE 500
 

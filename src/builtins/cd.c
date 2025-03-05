@@ -100,7 +100,7 @@ void	update_env_var(t_ms *ms, char *key, char *new_value)
 	}
 }
 
-static int	cd_error(char **args)
+static int	cd_error(char **args, t_ms *ms)
 {
 	if (!args || !*args)
 		return (1);	
@@ -108,6 +108,13 @@ static int	cd_error(char **args)
 		return (1);
 	if (!args[1])
 		return (0);
+	if (args[2])
+	{
+		ft_putstr_fd(OWN_ERR_MSG, 2);
+		ft_putstr_fd("cd: too many arguments\n", 2);
+		ms->exit_status = 1;
+		return (1);
+	}
 	return (0);
 }
 
@@ -117,7 +124,7 @@ void	handle_cd(char **args, t_ms *ms)
 	char	cwd[1024];
 
 	ms->exit_status = 0;
-	if (cd_error(args))
+	if (cd_error(args, ms))
 		return;
 	target_dir = get_cd_target(ms, args);
 	if (ms->exit_status == 1 || !target_dir)
