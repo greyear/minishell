@@ -79,7 +79,7 @@ static void	check_if_dir_or_file(char **envp, char **cmds)
     if (dir)
     {
         closedir(dir);
-        print_cmd_error(cmds[0], 3);
+        print_cmd_error(cmds[0], IS_DIR);
         exit(126);
     }
     if (access(cmds[0], F_OK) == 0)
@@ -88,11 +88,11 @@ static void	check_if_dir_or_file(char **envp, char **cmds)
             execve(cmds[0], cmds, envp);
         else
         {
-			print_cmd_error(cmds[0], 1);
+			print_cmd_error(cmds[0], PERM_DEN);
             exit(126);
         }
     }
-	print_cmd_error(cmds[0], 2);
+	print_cmd_error(cmds[0], NO_FILE_OR_DIR);
     exit(127);
 }
 
@@ -124,6 +124,21 @@ static char *find_path_from_envp(char **envp, char **cmds)
     return (full_path);
 }
 
+void    check_if_file(char **envp, char **cmds)
+{
+    if (access(cmds[0], F_OK) == 0)
+    {
+        if (access(cmds[0], X_OK) == 0)
+            execve(cmds[0], cmds, envp);
+        else
+        {
+			print_cmd_error(cmds[0], PERM_DEN);
+            exit(126);
+        }
+    }
+    print_cmd_error(cmds[0], NO_CMD);
+    exit(127);
+}
 void	execute_command(char **envp, char **cmd)
 {
 	char	*path;
@@ -138,5 +153,5 @@ void	execute_command(char **envp, char **cmd)
         execve(path, cmd, envp);
         free(path);
     }
-    check_if_dir_or_file(envp, cmd);
+    check_if_file(envp, cmd);
 }
