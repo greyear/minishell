@@ -120,11 +120,11 @@ int main(int argc, char **argv, char **envp)
 		inout(saved_stdin, saved_stdout); // Restore STDIN and STDOUT
 		
 		// FOR USUAL EXECUTION
-		//input = readline("minishell> ");
+		input = readline("minishell> ");
 
 
 		//FOR TESTER
-		if (isatty(fileno(stdin))) // If running interactively
+		/*if (isatty(fileno(stdin))) // If running interactively
 			input = readline("minishell> ");
 		else // If receiving input from another program
 		{
@@ -133,7 +133,7 @@ int main(int argc, char **argv, char **envp)
 				break;
 			input = ft_strtrim(line, "\n"); // Remove newline from input
 			free(line);
-		}
+		}*/
 		if (!input) // EOF check (Ctrl+D)
 		{
 			printf("exit\n");
@@ -201,8 +201,8 @@ int main(int argc, char **argv, char **envp)
 				make_one_child(ms->cmds, ms);
 			else
 				make_multiple_childs(i, ms->cmds, ms);
-			close_fds(ms->cmds);
 		}
+		close_fds(ms->cmds);
 		clean_token_list(&(ms->tokens));
 		clean_block_list(&(ms->blocks));
 		clean_cmd_list(&(ms->cmds));
