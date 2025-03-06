@@ -66,7 +66,7 @@ t_token	*unite_two_word_tokens(t_token *first)
 			cur = cur->next;
 	}
 
-	/*printf("\n inside uniting: before deleting whitespaces\n");
+	/*printf("\n inside uniting: after uniting and before deleting whitespaces\n");
 	print_tokens(first);*/
 
 	first = delete_whitespace_tokens(first);
