@@ -49,7 +49,7 @@ t_token	*unite_two_word_tokens(t_token *first)
 		if (cur->next && cur->type == WORD && \
 				cur->next->type == WORD)
 		{
-			if (cur->data[0] == '$')
+			if (cur->data[0] == '$' && cur->quote == 0)
 				joined = ft_strdup(cur->next->data);
 			else
 				joined = ft_strjoin(cur->data, cur->next->data);
@@ -66,17 +66,17 @@ t_token	*unite_two_word_tokens(t_token *first)
 			cur = cur->next;
 	}
 
-	/*printf("before deleting whitespaces\n");
+	/*printf("\n inside uniting: after uniting and before deleting whitespaces\n");
 	print_tokens(first);*/
 
 	first = delete_whitespace_tokens(first);
 	
-	/*printf("after deleting whitespaces\n");
+	/*printf("\n inside uniting: after deleting whitespaces\n");
 	print_tokens(first);*/
 
 	first = delete_empty_word_tokens(first);
 	
-	/*printf("after deleting empty\n");
+	/*printf("\n inside uniting: after deleting empty\n");
 	print_tokens(first);*/
 
 	return (first);
