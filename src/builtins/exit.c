@@ -85,7 +85,8 @@ void check_exit(char **array, t_ms *ms)
         return;
     if (ft_strcmp(array[0], "exit") != 0)
         return;
-    ft_putstr_fd("exit\n", STDOUT_FILENO);
+    if (isatty(STDIN_FILENO)) //interactive or not
+        ft_putstr_fd("exit\n", STDOUT_FILENO);
     handle_exit_argument(array, ms);
 }
 
