@@ -133,6 +133,7 @@ void			check_access(char *filename, t_oper operation);
 char            *generate_heredoc_filename(int index);
 void	        put_heredoc_fd(t_token *token, t_cmd *cmd, t_ms *ms);
 int             handle_heredoc(t_ms *ms, char *limiter);
+void	        close_fds(t_cmd *cmd);
 
 //Reading + history
 t_bool			open_read_history_file(t_ms *ms);

@@ -169,7 +169,7 @@ int main(int argc, char **argv, char **envp)
 		}
 
 		/*printf("after tokenization\n");
-		print_tokens(ms->tokens);*/0
+		print_tokens(ms->tokens);*/
 		put_files_for_redirections(ms->tokens);
 		ms->blocks = create_blocks_list(ms->tokens, NULL, &err_syntax);
 		if (err_syntax)
@@ -201,6 +201,7 @@ int main(int argc, char **argv, char **envp)
 				make_one_child(ms->cmds, ms);
 			else
 				make_multiple_childs(i, ms->cmds, ms);
+			close_fds(ms->cmds);
 		}
 		clean_token_list(&(ms->tokens));
 		clean_block_list(&(ms->blocks));
