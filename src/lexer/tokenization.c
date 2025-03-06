@@ -44,12 +44,12 @@ t_token *tokenization(char *str, t_ms *ms) //store str in ms?
 		}
 		cur = cur->next;
 	}
-	/*printf("inside tokenization before the redirections\n");
+	/*printf("\ninside tokenization before the redirections\n");
 	print_tokens(first);*/
 
 	flags_for_redirections(first);
 	
-	/*printf("inside tokenization before the expantion\n");
+	/*printf("\ninside tokenization before the expantion\n");
 	print_tokens(first);*/
 
 	if (check_list_for_expansions(first, ms) == 1) //changed the order with uniting
@@ -58,7 +58,7 @@ t_token *tokenization(char *str, t_ms *ms) //store str in ms?
 		return (NULL); //maybe create a separate cleaner?
 	}
 
-	/*printf("inside tokenization before uniting\n");
+	/*printf("\ninside tokenization before uniting\n");
 	print_tokens(first);*/
 
 	first = unite_two_word_tokens(first);
