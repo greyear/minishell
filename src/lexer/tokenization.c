@@ -58,7 +58,7 @@ t_token *tokenization(char *str, t_ms *ms) //store str in ms?
 		return (NULL); //maybe create a separate cleaner?
 	}
 
-	/*printf("\ninside tokenization before uniting\n");
+	/*printf("\ninside tokenization after expansion before uniting\n");
 	print_tokens(first);*/
 
 	first = unite_two_word_tokens(first);
