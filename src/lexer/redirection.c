@@ -86,11 +86,14 @@ void	put_files_for_redirections(t_token *cur)
 	{
 		if (is_redirect(cur->type) && cur->next && cur->next->type == WORD)
 		{
+			//printf("CUR: Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->type, cur->data, cur->quote, cur->specific_redir, cur->ambiguous, cur->file);
+			//printf("NEXT: Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->next->type, cur->next->data, cur->next->quote, cur->next->specific_redir, cur->next->ambiguous, cur->next->file);
 			deleted = cur->next;
 			cur->ambiguous = cur->next->ambiguous;
 			if (!cur->ambiguous)
 			{
 				cur->file = ft_strdup(cur->next->data);
+				free(deleted->data);
 				//printf("new cur->file: %s\n", cur->file);
 				if (deleted->file)
 					free(deleted->file);
@@ -105,7 +108,7 @@ void	put_files_for_redirections(t_token *cur)
 			cur->next = cur->next->next;
 			free(deleted); //we have the node itself and 2 allocated fields
 		} //and we free 2 of them which we don't need
-		//printf("Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->type, cur->data, cur->quote, cur->specific_redir, cur->ambiguous, cur->file);
+		//printf("LEFT: Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->type, cur->data, cur->quote, cur->specific_redir, cur->ambiguous, cur->file);
 		cur = cur->next;
 	}
 }
