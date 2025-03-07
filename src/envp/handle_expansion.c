@@ -200,6 +200,7 @@ void	append_literal_char(char **result, char c)
 	*result = temp;
 }
 
+
 /**
  * @brief Expands environment variables and special symbols within a string.
  * 

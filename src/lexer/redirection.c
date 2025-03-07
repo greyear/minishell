@@ -91,12 +91,14 @@ void	put_files_for_redirections(t_token *cur)
 			if (!cur->ambiguous)
 			{
 				cur->file = ft_strdup(cur->next->data);
+				//printf("new cur->file: %s\n", cur->file);
 				if (deleted->file)
 					free(deleted->file);
 			}
 			else
 			{
 				cur->file = cur->next->file; //check it's created
+				//printf("new cur->file: %s\n", cur->file);
 				free(deleted->data);
 			}
 			cur->quote = cur->next->quote;
