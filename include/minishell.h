@@ -125,6 +125,7 @@ t_envp			*envp_from_list(t_envp *list, char *name);
 t_bool			is_envp_symbol(int c);
 t_bool			is_envp_first_symbol(int c);
 t_ms			*initialize_struct(char **envp);
+void            check_shlvl(t_ms *ms);
 
 //Redirections
 void			put_infile_fd(t_token *token, t_cmd *cmd);

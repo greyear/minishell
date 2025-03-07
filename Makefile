@@ -89,7 +89,8 @@ ENVP_FILES		=	check_all_tokens.c \
 					handle_expansion.c \
 					initialize_struct.c \
 					list.c \
-					letters.c
+					letters.c \
+					update_shlvl.c
 READING_FILES	=	history.c \
 					history_file.c
 #delete initialize_struct
