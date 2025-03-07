@@ -9,7 +9,11 @@ int	expand_in_token(t_token *cur, t_ms *ms)
 	data_copy = ft_strdup(cur->data);
 	if (!data_copy)
 		return (1); //error msg?
-	expanded = handle_expansion(cur->data, ms);
+
+	if (ft_strcmp(cur->data, "$") == 0 && cur->next && cur->next->quote)
+		expanded = ft_strdup("");
+	else
+		expanded = handle_expansion(cur->data, ms);
 	//printf("expanded: %s\n", expanded);
 	if (!expanded)
 	{

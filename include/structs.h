@@ -2,6 +2,8 @@
 #ifndef STRUCTS_H
 # define STRUCTS_H
 
+# include <sys/types.h> 
+
 typedef struct s_token
 {
 	//index?
@@ -55,5 +57,12 @@ typedef struct s_envp
 	struct s_envp	*next;
 }	t_envp;
 
+typedef struct s_exec_data
+{
+    int     **pipe_fd;
+    int     num_cmds;
+    pid_t   last_pid;
+    t_ms    *ms;
+}   t_exec_data;
 
 #endif
