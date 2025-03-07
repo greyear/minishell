@@ -1,79 +1,19 @@
-/* 
-Idea is to replicate the functionality of Unix pipes,
-where commands are chained together with |, passing the output of one command as input to the next
-execute_cmd function takes command amount, commands as **array and envp as arguments
-EXAMPLE:if you need it to work like ls -l | grep "Error" | sort
-send these as arguments to ft_pipe
-int num_cmds = 3;
-char **cmds = cmds[0]="ls -l", cmds[1] ="grep Error", cmds[2] ="sort", cmds[3]=NULL
-char **envp = environmental variables
-
-FUNCTIONALITY:
-Creates pipes and forks child processes for each command.
-If only single command, executes it 
-Fork splits the process to child and parent process, child processes execute the commands,
-The parent process waits for all the child processes to complete.
-Pipe makes the pipe.
-Pipe allows fle descriptors to communicate.
-A process writes data to the pipe_fd's write-end (pipe_fd[1]),
-which can then be read by another process from the pipe_fd's read-end (pipe_fd[0].
-In a typical shell pipeline (e.g., cmd1 | cmd2):
-The output of cmd1 is sent to cmd2 through a pipe.
-cmd1 writes its output to the write end of the pipe.
-cmd2 reads from the read end of the pipe.
-
-ALSO WORKS WITH SINGLE COMMAND EXECUTION SO CALL THIS WHENEVER YOU NEED TO EXECUTE!!!
-*/
-
 #include "../../include/minishell.h"
 
-void	pipe_process(int *prev_pipe, int *next_pipe)
-{
-	if (prev_pipe)
-	{
-		if (dup2(prev_pipe[0], STDIN_FILENO) == -1) //It duplicates previous pipes read-end to stadard input
-		{
-			close(prev_pipe[0]);
-			close(prev_pipe[1]);
-			exit(1);
-		}	
-		close(prev_pipe[0]);
-		close(prev_pipe[1]);
-	}
-	if (next_pipe)
-	{
-		if (dup2(next_pipe[1], STDOUT_FILENO) == -1) //It duplicates the next pipes write-end to standard output
-		{
-			close(next_pipe[0]);
-			close(next_pipe[1]);
-			exit(1);
-		}	
-		close(next_pipe[0]);
-		close(next_pipe[1]);
-	}
-}
-
-void	redirect_process(int infile, int outfile)
-{
-	if (infile != NO_FD && infile != DEF)
-	{
-		if (dup2(infile, STDIN_FILENO) == -1) //It duplicates previous pipes read-end to stadard input
-		{
-			close(infile);
-			exit(1);
-		}
-		close(infile);
-	}
-	if (outfile != NO_FD && outfile != DEF)
-	{
-		if (dup2(outfile, STDOUT_FILENO) == -1) //It duplicates the next pipes write-end to standard output
-		{
-			close (outfile);
-			exit(1);
-		}
-		close(outfile);
-	}
-}
+/**
+ * @brief Executes a command in a child process, handling redirection and built-in commands.
+ * 
+ * This function redirects input and output files for the current command using `redirect_process`. Then, it checks
+ * if the command is a built-in. If it is, it handles the built-in command with `handle_builtin` and exits the child
+ * process with the corresponding exit status. If the command is not a built-in, it is executed using `execute_command`.
+ * 
+ * @param cmd A pointer to the `t_cmd` structure containing the command details, including the command arguments,
+ *            input file, and output file for redirection.
+ * @param ms A pointer to the `t_ms` structure that holds the global execution state, such as exit status.
+ * 
+ * @return This function does not return; it either executes the command or exits the child process after handling
+ *         the built-in or executing the command.
+ */
 
 void	execute_child(t_cmd *cmd, t_ms *ms)
 {
@@ -87,12 +27,41 @@ void	execute_child(t_cmd *cmd, t_ms *ms)
         execute_command(ms->envp, cmd->args);
 }
 
+/**
+ * @brief Resets the heredoc files and count for the current execution state.
+ * 
+ * This function allocates memory for the `heredoc_files` array, setting it to hold 100 pointers to strings, and
+ * initializes the array to zero using `ft_memset`. It also resets the `heredoc_count` to 0, indicating no heredocs
+ * are currently being tracked. This is useful for clearing the heredoc state before starting a new execution cycle.
+ * 
+ * @param ms A pointer to the `t_ms` structure that holds the global execution state, including the heredoc files
+ *           and count.
+ * 
+ * @return This function does not return; it modifies the `ms` structure to reset the heredoc state.
+ */
+
 void	reset_heredocs(t_ms *ms)
 {
 	ms->heredoc_files = malloc(sizeof(char *) * 100);
     ft_memset(ms->heredoc_files, 0, sizeof(char *) * 100);
     ms->heredoc_count = 0;
 }
+
+/**
+ * @brief Creates a child process to execute a single command, handling file redirection and heredocs.
+ * 
+ * This function first checks if valid arguments and file descriptors are provided for the command. It then forks a
+ * child process to execute the command using `execute_child`. After the child process completes, the parent process
+ * waits for the child to exit using `waitpid`, and updates the global exit status based on the child's exit status.
+ * Finally, the function cleans up any heredoc files and resets the heredoc state.
+ * 
+ * @param cmd A pointer to the `t_cmd` structure containing the command details, including arguments, input file,
+ *            and output file for redirection.
+ * @param ms A pointer to the `t_ms` structure that holds the global execution state, including the exit status.
+ * 
+ * @return This function does not return; it either forks and executes the command in a child process or handles
+ *         errors such as invalid file descriptors.
+ */
 
 void	make_one_child(t_cmd *cmd, t_ms *ms)
 {

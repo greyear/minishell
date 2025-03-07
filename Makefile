@@ -76,9 +76,10 @@ BUILT_FILES		=	cd.c \
 #rename many of them!
 EXEC_FILES		=	builtin_check.c \
 					cmd_exec.c \
-					execute_cmd.c \
-					execute_cmds_in_pipes.c \
-					find_path_and_execute_command.c \
+					one_child.c \
+					multiple_childs.c \
+					find_path_and_execve.c \
+					pipes.c \
 					pipex_bonus.c \
 					path_bonus.c
 REDIR_FILES		=	open_bonus.c \

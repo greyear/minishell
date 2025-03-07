@@ -1,50 +1,18 @@
 #include "../../include/minishell.h"
 
-void    create_pipes(int num_cmds, int ***pipe_fd)
-{
-    int     i;
-    
-    i = 0;
-    *pipe_fd = malloc(sizeof(int *) * (num_cmds - 1));
-    if (!*pipe_fd)
-        return;
-    while (i < num_cmds - 1)
-    {
-        (*pipe_fd)[i] = malloc(sizeof(int) * 2);
-        if (!(*pipe_fd)[i])
-        {
-            free_int_array(*pipe_fd);
-            *pipe_fd = NULL;
-            return;
-        }
-        if (pipe((*pipe_fd)[i]) == -1)
-        {
-            free_int_array(*pipe_fd);
-            *pipe_fd = NULL;
-            return;
-        }
-        i++;
-    }
-}
-
-void    close_pipes(int num_cmds, int **pipe_fd)
-{
-    int     i;
-
-    i = 0;
-    while (i < num_cmds - 1)
-    {
-        if (pipe_fd[i])
-        {
-            close(pipe_fd[i][0]);
-            close(pipe_fd[i][1]);
-            free(pipe_fd[i]);
-        }
-        i++;
-    }
-    if (pipe_fd)
-        free(pipe_fd);
-}
+/**
+ * @brief Waits for all child processes to finish and updates the exit status of the last child process.
+ * 
+ * This function waits for a number of child processes to finish based on the `num_cmds` argument. It checks the status
+ * of each child process, and if the last child process (identified by `last_pid`) has exited successfully, it updates
+ * the `exit_status` in the `ms` structure with the exit status of that process.
+ * 
+ * @param num_cmds The total number of child processes to wait for.
+ * @param last_pid The process ID of the last child process. The exit status of this process is recorded.
+ * @param ms A pointer to the `t_ms` structure where the exit status of the last child process is stored.
+ * 
+ * @return This function does not return; it waits for the specified child processes and updates the `exit_status`.
+ */
 
 void    wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms)
 {
@@ -62,27 +30,24 @@ void    wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms)
     }
 }
 
-void    pipe_or_redir(t_cmd *cur, int **pipe_fd, int i, int num_cmds)
-{
-    if (cur->infile == NO_FD || cur->outfile == NO_FD)
-        exit(1);
-    if (i == 0)
-        pipe_process(NULL, pipe_fd[i]);
-    else if (i == num_cmds - 1)
-        pipe_process(pipe_fd[i-1], NULL);
-    else
-        pipe_process(pipe_fd[i-1], pipe_fd[i]);
-    redirect_process(cur->infile, cur->outfile);
-}
+/**
+ * @brief Creates a child process to execute a command, handling pipes, redirections, and built-ins.
+ * 
+ * This function forks the process to create a child. In the child process, it first sets up the necessary pipes
+ * or redirections using `pipe_or_redir`, then checks if the command is a built-in. If it is a built-in, the
+ * appropriate handler is called, and the child process exits with the corresponding exit status. If the command
+ * is not a built-in, the command is executed using `execute_command`. In the parent process, it closes the pipe
+ * file descriptors for previous commands (if any) and updates the `last_pid` to the child process ID.
+ * 
+ * @param cur A pointer to the `t_cmd` structure representing the current command to be executed.
+ * @param i The index of the current command, used to manage pipes and redirections.
+ * @param data A pointer to the `t_exec_data` structure that holds the execution data, including pipes,
+ *             environment variables, and the last process ID.
+ * 
+ * @return This function does not return; it either forks a new process to execute the command or handles errors.
+ */
 
-void setup_pipes(t_exec_data *data)
-{
-    create_pipes(data->num_cmds, &data->pipe_fd);
-    if (!data->pipe_fd)
-        data->ms->exit_status = 1;
-}
-
-void	fork_and_execute(t_cmd *cur, int i, t_exec_data *data)
+static void fork_and_execute(t_cmd *cur, int i, t_exec_data *data)
 {
     pid_t pid;
 
@@ -111,15 +76,20 @@ void	fork_and_execute(t_cmd *cur, int i, t_exec_data *data)
     data->last_pid = pid;
 }
 
-void	cleanup_after_execution(t_exec_data *data)
-{
-	close_pipes(data->num_cmds, data->pipe_fd);
-    wait_for_children(data->num_cmds, data->last_pid, data->ms);
-    cleanup_heredocs(data->ms->heredoc_files);
-    data->ms->heredoc_files = malloc(sizeof(char *) * 100);
-    ft_memset(data->ms->heredoc_files, 0, sizeof(char *) * 100);
-    data->ms->heredoc_count = 0;
-}
+/**
+ * @brief Creates multiple child processes to execute a series of commands, handling pipes and execution flow.
+ * 
+ * This function creates multiple child processes to execute a series of commands (represented by `cmds`), handling
+ * pipes between commands, and ensuring proper execution flow. For each command, it checks if there are valid arguments,
+ * then forks a child process to execute the command using `fork_and_execute`. The function also sets up pipes for inter-process
+ * communication using `setup_pipes` and performs necessary cleanup after execution using `cleanup_after_execution`.
+ * 
+ * @param num_cmds The number of commands to be executed, dictating how many child processes will be created.
+ * @param cmds A pointer to the first `t_cmd` structure in the list of commands to be executed.
+ * @param ms A pointer to the `t_ms` structure that holds the global execution state, such as exit status.
+ * 
+ * @return This function does not return; it manages the creation and execution of multiple child processes.
+ */
 
 void    make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
 {

@@ -1,50 +1,19 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   find_path_and_execute_command.c                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/15 15:38:13 by ssalorin          #+#    #+#             */
-/*   Updated: 2025/02/21 18:51:11 by ssalorin         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-/*
-ALWAYS CALL FT_PIPE FIRST EVEN WITH SINGLE COMMAND; SO IT FORKS THE PROCESS AND THEN TRIES TO EXECUTE
-
-
-FT_FIND_PATH_2 FUNCTION:
-Purpose: This function tries to find the full path of a command
-by appending the command to each directory in the PATH environment variable.
-It iterates through each directory path in paths[].
-It constructs the full path by concatenating the directory with the command name.
-It checks if the command exists and is executable using access(new_full_path, X_OK).
-If found, it returns the full path of the command. Otherwise, it continues the search.
-
-FT_FIND_PATH FUNCTION:
-It first checks if the command starts with a /, meaning it is an absolute path.
-If so, it checks if the file exists and is executable.
-Then it searches the envp[] array for the PATH variable.
-If PATH is found, it splits the directories in PATH (using ft_split) and calls ft_find_path2 to try to locate the command.
-If the command is not found, it handles the error by printing an error message and exiting.
-
-FT_CHECK_DIR FUNCTION:
-Purpose: This function checks if the command refers to a directory (e.g., ./some_dir/) and handles it.
-
-FT_IF_NOT_PATH FUNCTION:
-Purpose: This function handles the case where the command cannot be found.
-
-FT_COMMAND FUNCTON:
-It checks if the command is empty or consists only of spaces, in which case it prints an error and exits.
-It splits the command string into individual arguments using ft_split.
-It then finds the full path of the command using ft_find_path.
-If the command is not found, it calls ft_if_not_path.
-It uses execve to execute the command at the found path with the given arguments (cmds).
-If execve fails, it frees resources and exits with failure.
-*/
-
 #include "../../include/minishell.h"
+
+/**
+ * @brief Constructs the full path of a command by checking each directory in the PATH.
+ * 
+ * This function iterates over the directories in the `paths` array, attempting to join each
+ * directory with the provided command (`cmd`). It checks if the resulting path exists and
+ * is executable. If so, the full path to the command is returned.
+ * 
+ * @param paths An array of strings representing directories in the system's PATH environment.
+ *              Each element in the array is a directory to search for the command.
+ * @param cmd A string representing the command name to search for in the directories.
+ * 
+ * @return The full path to the command if found and executable, or `NULL` if the command is not
+ *         found or not executable in any of the directories.
+ */
 
 static char	*make_full_path(char **paths, char *cmd)
 {
@@ -64,12 +33,28 @@ static char	*make_full_path(char **paths, char *cmd)
             return (NULL);
         if (access(full_cmd_path, F_OK) == 0
 			&& access(full_cmd_path, X_OK) == 0)
-            return full_cmd_path;
+            return (full_cmd_path);
         free(full_cmd_path);
         i++;
     }
     return (NULL);
 }
+
+/**
+ * @brief Checks whether the command is a directory or a file and attempts to execute it.
+ * 
+ * This function first checks if the provided command is a directory. If it is, an error is printed
+ * and the process exits with status 126. If the command is a file, it checks if the file exists and
+ * is executable. If both conditions are met, the command is executed using `execve`. If the file is
+ * not executable, a permission error is printed, and the process exits with status 126. If the file
+ * does not exist, an error message is printed, and the process exits with status 127.
+ * 
+ * @param envp An array of environment variables used for the `execve` function.
+ * @param cmds An array of strings where `cmds[0]` is the command to be checked and executed.
+ * 
+ * @return This function does not return; it either executes the command or exits the process with
+ *         an appropriate error status.
+ */
 
 static void	check_if_dir_or_file(char **envp, char **cmds)
 {
@@ -95,6 +80,21 @@ static void	check_if_dir_or_file(char **envp, char **cmds)
 	print_cmd_error(cmds[0], NO_FILE_OR_DIR);
     exit(127);
 }
+
+/**
+ * @brief Finds the full path of a command by checking the directories listed in the PATH environment variable.
+ * 
+ * This function looks for the "PATH" variable in the environment variables (`envp`). Once found, it splits
+ * the value of "PATH=" into individual directories and attempts to find the full path of the command (`cmds[0]`)
+ * in these directories using `make_full_path`. If the command starts with `/` or `.`, it directly checks if
+ * it is a directory or file using the `check_if_dir_or_file` function.
+ * 
+ * @param envp An array of environment variables.
+ * @param cmds An array of strings, where `cmds[0]` is the command name whose path needs to be determined.
+ * 
+ * @return The full path to the command if found, or `NULL` if the command is not found in any directory listed
+ *         in the PATH or if the command is an invalid directory/file.
+ */
 
 static char *find_path_from_envp(char **envp, char **cmds)
 {
@@ -124,6 +124,22 @@ static char *find_path_from_envp(char **envp, char **cmds)
     return (full_path);
 }
 
+/**
+ * @brief Checks if a file exists and is executable, then attempts to execute it.
+ * 
+ * This function checks if the provided command (`cmds[0]`) exists and is executable using `access`. If the
+ * command exists and is executable, it is executed with `execve`. If the file exists but is not executable,
+ * a permission denied error is printed, and the process exits with status 126. If the file does not exist,
+ * an error indicating that the command was not found is printed, and the process exits with status 127.
+ * 
+ * @param envp An array of environment variables used for the `execve` function.
+ * @param cmds An array of strings where `cmds[0]` is the command to be checked and executed.
+ * 
+ * @return This function does not return; it either executes the command or exits the process with an appropriate
+ *         error status.
+ */
+
+
 void    check_if_file(char **envp, char **cmds)
 {
     if (access(cmds[0], F_OK) == 0)
@@ -139,6 +155,21 @@ void    check_if_file(char **envp, char **cmds)
     print_cmd_error(cmds[0], NO_CMD);
     exit(127);
 }
+
+/**
+ * @brief Finds and executes the command, either by resolving its full path or directly executing the file.
+ * 
+ * This function checks if a valid command is provided in the `cmd` array. If the command is invalid, it prints an
+ * error and exits the process with status 127. It then attempts to find the command's full path using the `find_path_from_envp`
+ * function. If the path is found, the command is executed using `execve`. If the path is not found, the function checks if the
+ * command is a valid file using `check_if_file`. If the command is not found or not executable, an appropriate error is printed.
+ * 
+ * @param envp An array of environment variables used for the `execve` function.
+ * @param cmd An array of strings, where `cmd[0]` is the command to be executed.
+ * 
+ * @return This function does not return; it either executes the command or exits the process with an appropriate error status.
+ */
+
 void	execute_command(char **envp, char **cmd)
 {
 	char	*path;
