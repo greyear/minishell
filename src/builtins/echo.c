@@ -1,6 +1,3 @@
-//JUST A SIMPLE VERSION CREATED
-//EXPLANATON IN DOCS
-
 #include "../../include/minishell.h"
 
 static int	is_valid_n_flag(char *arg)
@@ -12,7 +9,7 @@ static int	is_valid_n_flag(char *arg)
 	i = 1;
 	while (arg[i] == 'n')
 		i++;
-	return (arg[i] == '\0'); // Only valid if it contains only 'n's after '-'
+	return (arg[i] == '\0');
 }
 
 static int	handle_n_flags(char **args, int *i)

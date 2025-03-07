@@ -35,7 +35,8 @@ void    print_array(char **a)
 	i = 0;
 	while (a[i])
 	{
-		printf("%s\n", a[i]);
+		ft_putstr_fd(a[i], STDOUT_FILENO);
+		ft_putstr_fd("\n", STDOUT_FILENO);
 		i++;
 	}
 }

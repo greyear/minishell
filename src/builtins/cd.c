@@ -1,32 +1,3 @@
-/*
- * STILL MODIFYNG; THAT WHY SO LONGGGG*
- * *STILL TESTING***
-	Handles cd
-	cd = goes to home
-	cd .. = goes to one directory up
-	cd - = goes to the oldpwd directory so the one where we were before
-	cd dir = goes to dir if it exists
-
-	handle_cd(t_ms *ms, char **args)
-	takes the struct as argument and
-	args that are for example
-	args[0]="cd", args[1]="-", args[2]=NULL
-
-	SOME CASES
-	if export HOME=hey and cd
-	bash: cd: hey: No such file or directory
-	if export HOME= and cd
-	does nothing
-	if unset HOME and cd
-	bash: cd: HOME not set
-	if export OLDPWD= and cd -
-	print newline and then change OLDPWD value to same as PWD’s value
-	if export OLDPWD=, export PWD=, and cd ..
-	print newline and change PWD value to the actual directory path we are in
-	if cd .. is used again, prints a newline, now when PWD has a value it changes OLDPWD value to same as PWD’s value
-
-*/
-
 #include "../../include/minishell.h"
 
 static char	*get_cd_target(t_ms *ms, char **args)
@@ -61,9 +32,6 @@ static void	update_cd_env(t_ms *ms, char *pwd_before)
 		ms->exit_status = 1;
 		return;
 	}
-	// fetch the current pwd value to the oldpwd's value
-	// if PWD is unset, then use the actual drectory we were in (pwd_now), before we changed the
-	// directory with chdir n prevous function
 	current_pwd = get_env_value("PWD", ms->envp);
 	if (!current_pwd)
 		current_pwd = "";
@@ -71,7 +39,6 @@ static void	update_cd_env(t_ms *ms, char *pwd_before)
 		update_env_var(ms, "OLDPWD=", current_pwd);
 	else
 		update_env_var(ms, "OLDPWD=", pwd_before);
-	// If PWD is empty or not set, consider current directory as the new PWD
 	update_env_var(ms, "PWD=", cwd);
 }
 

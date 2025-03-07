@@ -9,19 +9,18 @@ static void print_var(char *var)
 	while (var[x])
     {
         if (var[x] != '=')
-        {
-            printf("%c", var[x]);
-        }
+            ft_putchar_fd(var[x], STDOUT_FILENO);
         else
         {
-            printf("%c\"", var[x]);
+            ft_putchar_fd(var[x], STDOUT_FILENO);
+            ft_putchar_fd('"', STDOUT_FILENO);
             x++;
             while (var[x])
             {
-                printf("%c", var[x]);
+                ft_putchar_fd(var[x], STDOUT_FILENO);
                 x++;
             }
-            printf("\"");
+            ft_putchar_fd('"', STDOUT_FILENO);
             break;
         }
         x++;
@@ -35,9 +34,9 @@ void print_exported(t_ms *ms)
 	i = 0;
     while (ms->exported[i])
     {
-        printf("declare -x ");
+        ft_putstr_fd("declare -x ", STDOUT_FILENO);
         print_var(ms->exported[i]);  // Printing the variable
-        printf("\n");
+        ft_putchar_fd('\n', STDOUT_FILENO);
         i++;
     }
 }

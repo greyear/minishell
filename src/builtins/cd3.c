@@ -13,15 +13,15 @@ static char	*handle_empty_oldpwd(t_ms *ms)
 	char	*current_pwd;
 	char	cwd[1024];
 
-	ft_putstr_fd("\n", STDOUT_FILENO);  // Print an empty line for an empty OLDPWD
+	ft_putstr_fd("\n", STDOUT_FILENO);
 	current_pwd = get_env_value("PWD", ms->envp);
 	if (!current_pwd || *current_pwd == '\0')
 	{
 		if (getcwd(cwd, sizeof(cwd)))
-			update_env_var(ms, "PWD=", cwd);  // Ensure PWD is updated
+			update_env_var(ms, "PWD=", cwd);
 		return (NULL);
 	}
-	update_env_var(ms, "OLDPWD=", current_pwd);  // Set OLDPWD to PWD
+	update_env_var(ms, "OLDPWD=", current_pwd);
 	return (ft_strdup(current_pwd));
 }
 
@@ -36,4 +36,3 @@ char	*get_oldpwd_directory(t_ms *ms)
 		return (handle_empty_oldpwd(ms));
 	return (return_target(ms, target));
 }
-

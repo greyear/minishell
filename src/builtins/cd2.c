@@ -10,7 +10,7 @@ char	*get_home_directory(t_ms *ms, int flag)
 	{
 		if (flag == 1)
 			return (ft_strdup(getenv("HOME")));
-		ft_putstr_fd("bash: cd: HOME not set\n", 2);
+		ft_putstr_fd("bash: cd: HOME not set\n", STDERR_FILENO);
         ms->exit_status = 1;
         return (NULL);
 	}
@@ -30,7 +30,6 @@ char	*get_home_directory(t_ms *ms, int flag)
 
 char	*return_target(t_ms *ms, char *target)
 {
-	 // Check if OLDPWD is a valid path before printing it
     if (access(target, F_OK) != 0)
 	{
         print_cd_error(target);

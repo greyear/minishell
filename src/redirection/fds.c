@@ -1,40 +1,3 @@
-/*
-HANDLNG REDIRECTIONS:
-
-HEREDOC/<< :
-Works like this: << LIMITER (writes to temp_fd until LIMITER is written to terminal, then temp_fd becomes STDIN)
-Function that handles this: handle_heredoc(char *limiter) takes the limiter as parameter
-stops writing to file when the LIMITER is written to terminal
-
-< :
-Works like this: < infile (infile BECOMES STDIN)
-Function that handles this: redirection_infile(char *file)
-takes the file that we want to change to STDIN as parameter
-
-> :
-Works like this: > outfile (outfile becomes STDOUT)
-Function that handles this: redirection_outfile_emptied(char *file)
-Takes the file that we want to change to STDIN as parameter. 
-Empties the file if it exists, else creates one with correct permissions
-
->> : 
-Works like this: >> outfile (outfile becomes STDOUT)
-Function that handles this: redirection_outfile_append(char *file)
-Takes the file that we want to change to STDIN as parameter. 
-Writes to the endoffile,if file does not exist, creates one with correct permissions
-
-****FOR EXAMPLE****
-> infile cat | "ls -la" | "grep error" >> outfile
-
-BASICALLY IDEA IS (what i think we should maybe do, if im correct)
-1. FIRST CALL FOR REDIRECTION_INFILE() WITH INFILE
-2. SECOND CALL REDIRECTION_OUTFILE_APPEND() WITH INFILE
-3. THEN CALL FOR FT_PIPE() WITH (3=cmd_amount, CMD_ARRAY, ENVP)
-CMD_ARRAY[0] = "CAT", CMD_ARRAY[1] = "LS -LA", CMD_ARRAY[2] = "GREP ERROR", CMD_ARRAY[3] = NULL;
-
-*/
-
-//#include "seela.h"
 #include "../../include/minishell.h"
 
 void	check_access(char *filename, t_oper operation)
@@ -107,6 +70,42 @@ void	put_infile_fd(t_token *token, t_cmd *cmd)
 	}
 }
 
+/**
+ * @brief Redirects input and output streams for a process.
+ * 
+ * This function duplicates the file descriptors for input and output. If the `infile` is not set to `NO_FD` or
+ * `DEF`, it redirects the standard input (`STDIN_FILENO`) to the file descriptor specified by `infile`. Similarly, if
+ * the `outfile` is not `NO_FD` or `DEF`, it redirects the standard output (`STDOUT_FILENO`) to the file descriptor
+ * specified by `outfile`. If any `dup2` operation fails, the corresponding file descriptor is closed, and the program
+ * exits with a status of `1`.
+ * 
+ * @param infile The input file descriptor to be redirected to `STDIN_FILENO`. If it is `NO_FD` or `DEF`, no redirection occurs.
+ * @param outfile The output file descriptor to be redirected to `STDOUT_FILENO`. If it is `NO_FD` or `DEF`, no redirection occurs.
+ * 
+ * @return This function does not return; it modifies the process's input and output streams based on the provided file descriptors.
+ */
+
+void	redirect_process(int infile, int outfile)
+{
+	if (infile != NO_FD && infile != DEF)
+	{
+		if (dup2(infile, STDIN_FILENO) == -1) //It duplicates previous pipes read-end to stadard input
+		{
+			close(infile);
+			exit(1);
+		}
+		close(infile);
+	}
+	if (outfile != NO_FD && outfile != DEF)
+	{
+		if (dup2(outfile, STDOUT_FILENO) == -1) //It duplicates the next pipes write-end to standard output
+		{
+			close (outfile);
+			exit(1);
+		}
+		close(outfile);
+	}
+}
 
 /*
 echo "Hello" > file1 > file2  # Только file2 получит "Hello"

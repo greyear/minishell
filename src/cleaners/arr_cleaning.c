@@ -57,13 +57,83 @@ void	close_fds(t_cmd *cmd)
 	while (cur)
 	{
 		if (cur->infile != DEF && cur->infile != NO_FD)
-		{
 			close(cur->infile);
-		}
 		if (cur->outfile != DEF && cur->outfile != NO_FD)
-		{
 			close(cur->outfile);
-		}
 		cur = cur->next;
 	}
 }
+
+void	cleanup_after_execution(t_exec_data *data)
+{
+	close_pipes(data->num_cmds, data->pipe_fd);
+    wait_for_children(data->num_cmds, data->last_pid, data->ms);
+    cleanup_heredocs(data->ms->heredoc_files);
+    data->ms->heredoc_files = malloc(sizeof(char *) * 100);
+    ft_memset(data->ms->heredoc_files, 0, sizeof(char *) * 100);
+    data->ms->heredoc_count = 0;
+}
+
+void    close_pipes(int num_cmds, int **pipe_fd)
+{
+    int     i;
+
+    i = 0;
+    while (i < num_cmds - 1)
+    {
+        if (pipe_fd[i])
+        {
+            close(pipe_fd[i][0]);
+            close(pipe_fd[i][1]);
+            free(pipe_fd[i]);
+        }
+        i++;
+    }
+    if (pipe_fd)
+        free(pipe_fd);
+}
+
+/**
+ * @brief Frees all allocated memory in ms structure.
+ * 
+ * This function cleans up and deallocates all dynamically allocated resources 
+ * within the `t_ms` structure, including environment variables, token lists, 
+ * blocks, and other. Finally, it frees the `t_ms` structure itself.
+ * 
+ * @param ms A pointer to the `t_ms` structure to be cleaned. If `ms` is NULL, 
+ *        the function does nothing.
+ */
+ void	clean_struct(t_ms *ms)
+ {
+	 if (!ms)
+		 return ;
+	 if (ms->envp)
+		 clean_arr(&(ms->envp));
+	 if (ms->exported)
+		 clean_arr(&(ms->exported));
+	 if (ms->heredoc_files)
+		 clean_arr(&(ms->heredoc_files));
+	 if (ms->tokens)
+		 clean_token_list(&(ms->tokens));
+	 if (ms->blocks)
+		 clean_block_list(&(ms->blocks));
+	 if (ms->heredoc_files)
+		 cleanup_heredocs(ms->heredoc_files);
+	 /*if (ms->cmds)
+		 clean_cmd_list(&(ms->cmds));*/
+	 free(ms);
+ }
+ 
+ void	clean_struct_fields(t_ms *ms)
+ {
+	 if (!ms)
+		 return ;
+	 if (ms->envp)
+	 {
+		 clean_arr(&(ms->envp));
+	 }
+	 if (ms->exported)
+	 {
+		 clean_arr(&(ms->exported));
+	 }
+ }
