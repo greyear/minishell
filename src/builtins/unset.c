@@ -1,18 +1,3 @@
-/*
-unset
-
-works like this unset KEY
-KEY is made of alphabets, numbers and _, number cannot be the first character
-rms the KEY and its value from envp and export
-if you send unset KEY= or unset KEY=VALUE, prnts ut error message and changes exit status accordingly
-
-handle_unset(char **args, t_ms *ms)
-gve args which are unset and all the KEYS needed to be removed.
-for example args[0]="unset", args[1]="USER" args[2]="LOGNAME" args[3]=NULL
-if one KEY s invalid like "USER=", it will cahnge exit status to 1 but still would remove the LOGNAME
-and the t_ms *ms is the struct which holds the envp and exported
-*/
-
 #include "../../include/minishell.h"
 
 static void	process_unset_entry(char **args, int i, t_ms *ms, int len)

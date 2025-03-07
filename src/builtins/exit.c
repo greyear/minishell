@@ -1,25 +1,3 @@
-/*
- can change later but now just takes an array like array0] = "exit", array[1] = 1, array[2] = NULL
-
-Handles the exit command, including support for:
-No argument (defaults to exit 127). (exit)
-Valid numeric argument (exits with that code). (exit 1)
-if exit is bigger than 255, exits with %module 256
-for example exit 300 would exit with 44
-
-Too many arguments (prints an error). (exit 1 1)
-Non-numeric argument (prints an error). (exit 1x)
-
-edge cases / LLONG_MAX etc explained in google docs !!!
-*/
-
-/*
- SHOULD ADD THIS ,SYNTAX ERROR THINGS
- if
- exit (1)
- The error bash: syntax error near unexpected token '1' happens because of the wrong syntax.
- */
-
 #include "../../include/minishell.h"
 
 static void clean_up_and_exit(int exit_status, t_ms *ms)
@@ -72,12 +50,11 @@ static void handle_exit_argument(char **array, t_ms *ms)
             ms->exit_status = 1;
             return;
         }
-        exit_nbr = ft_strtoll(array[1], &error);  // Handle non-numeric or out of range
+        exit_nbr = ft_strtoll(array[1], &error);
         handle_exit_code(exit_nbr, error, array, ms);
     }
     clean_up_and_exit(ms->exit_status, ms);
 }
-
 
 void check_exit(char **array, t_ms *ms)
 {
@@ -85,10 +62,7 @@ void check_exit(char **array, t_ms *ms)
         return;
     if (ft_strcmp(array[0], "exit") != 0)
         return;
-    if (isatty(STDIN_FILENO)) //interactive or not
+    if (isatty(STDIN_FILENO))
         ft_putstr_fd("exit\n", STDOUT_FILENO);
     handle_exit_argument(array, ms);
 }
-
-
-//check more the case when I call 1- echo, 2-exit 42 - leaks in exit
