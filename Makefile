@@ -155,4 +155,9 @@ fclean:				clean
 			
 re:					fclean all
 
-.PHONY:				all clean fclean re
+valgrind:
+					valgrind --leak-check=full --show-reachable=yes --show-leak-kinds=all \
+					--track-origins=yes --track-fds=yes --trace-children=yes \
+					--suppressions=val.supp ./minishell
+
+.PHONY:				all clean fclean re valgrind

@@ -100,5 +100,7 @@ t_ms	*initialize_struct(char **envp)
 	ms->blocks = NULL;
 	initialize_history(ms);
 	initialize_heredoc(ms);
+	ms->saved_stdin = dup(STDIN_FILENO);
+	ms->saved_stdout = dup(STDOUT_FILENO);
 	return (ms);
 }

@@ -105,23 +105,27 @@ void    close_pipes(int num_cmds, int **pipe_fd)
  */
  void	clean_struct(t_ms *ms)
  {
-	 if (!ms)
-		 return ;
-	 if (ms->envp)
-		 clean_arr(&(ms->envp));
-	 if (ms->exported)
-		 clean_arr(&(ms->exported));
-	 if (ms->heredoc_files)
-		 clean_arr(&(ms->heredoc_files));
-	 if (ms->tokens)
-		 clean_token_list(&(ms->tokens));
-	 if (ms->blocks)
-		 clean_block_list(&(ms->blocks));
-	 if (ms->heredoc_files)
-		 cleanup_heredocs(ms->heredoc_files);
+	if (!ms)
+		return ;
+	if (ms->envp)
+		clean_arr(&(ms->envp));
+	if (ms->exported)
+		clean_arr(&(ms->exported));
+	if (ms->heredoc_files)
+		clean_arr(&(ms->heredoc_files));
+	if (ms->tokens)
+		clean_token_list(&(ms->tokens));
+	if (ms->blocks)
+		clean_block_list(&(ms->blocks));
+	if (ms->heredoc_files)
+		cleanup_heredocs(ms->heredoc_files);
+	if (ms->saved_stdin != NO_FD)
+		close(ms->saved_stdin);
+	if (ms->saved_stdout != NO_FD)
+		close(ms->saved_stdout);
 	 /*if (ms->cmds)
 		 clean_cmd_list(&(ms->cmds));*/
-	 free(ms);
+	free(ms);
  }
  
  void	clean_struct_fields(t_ms *ms)
