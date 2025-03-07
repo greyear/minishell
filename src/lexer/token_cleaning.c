@@ -15,12 +15,13 @@ void	clean_token(t_token *token)
 		return ; //?
 	if (token->data)
 	{
+		//printf("cleaned token->data: %s\n", token->data);
 		free(token->data);
 		token->data = NULL;
-		//printf("cleaned token->data\n");
 	}
 	if (token->file)
 	{
+		//printf("cleaned token->file: %s\n", token->file);
 		free(token->file);
 		token->file = NULL;
 	}
