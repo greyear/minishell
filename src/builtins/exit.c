@@ -4,6 +4,8 @@ static void clean_up_and_exit(int exit_status, t_ms *ms)
 {
     clean_cmd_list(&(ms->cmds));
     history_exit(ms);
+    /*close(ms->saved_stdin);
+	close(ms->saved_stdout);*/
     clean_struct(ms);
     exit(exit_status);
 }
