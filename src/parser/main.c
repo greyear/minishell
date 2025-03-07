@@ -107,6 +107,7 @@ int main(int argc, char **argv, char **envp)
 		return (1);
 	}
 	ms = initialize_struct(envp);
+	check_shlvl(ms);
 	if (!ms)
 	{
 		printf("Error: failed to initialize shell structure\n");
