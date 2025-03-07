@@ -3,8 +3,20 @@
 static char	*increase_shlvl(char *shlvl_value)
 {
     int		level;
+	int		i;
 	
+	i = 0;
 	level = ft_atoi(shlvl_value);
+	while (shlvl_value[i])
+	{
+		if (shlvl_value[0] != '-' && !ft_isdigit(shlvl_value[0]))
+			return (ft_itoa(1));
+		if (i != 0 && !ft_isdigit(shlvl_value[i]))
+			return (ft_itoa(1));
+		i++;
+	}
+	if (level < 0)
+        return ft_itoa(0);
 	return (ft_itoa(level + 1));
 }
 
