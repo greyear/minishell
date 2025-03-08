@@ -146,13 +146,6 @@ void			fill_ms_history_line(char *line, t_ms *ms);
 void			clean_ms_history(t_ms *ms);
 void			history_exit(t_ms *ms);
 
-
-/*
-//Utils
-void	close_fds(int fd1, int fd2);
-int		length_inside(char *str, t_pipex *p, char *cmd);
-int		word_length(char *str);*/
-
 //Errors
 void			print_file_error(char *file, t_print reason);
 void			print_system_error(t_print reason);
@@ -164,7 +157,6 @@ void			print_syntax_error(char *text);
 void	        print_numeric_error(char **array);
 void	        print_too_many_args_error(void);
 void	        print_env_error(char **args);
-//void	args_number_error(void);
 
 //Cleaners
 void			clean_arr(char ***arr);
