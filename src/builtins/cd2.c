@@ -1,5 +1,18 @@
-
 #include "../../include/minishell.h"
+
+/**
+ * @brief Retrieves the home directory path.
+ * 
+ * This function attempts to get the home directory from the environment variable `HOME`. 
+ * If `HOME` is not set, it optionally falls back to `getenv("HOME")` based on the `flag`.
+ * If the directory is empty or does not exist, an error is printed, and the shell's 
+ * exit status is updated.
+ * 
+ * @param ms A pointer to the shell structure containing execution state.
+ * @param flag If set to 1, attempts to use `getenv("HOME")` as a fallback.
+ * 
+ * @return A newly allocated string containing the home directory path, or NULL on failure.
+ */
 
 char	*get_home_directory(t_ms *ms, int flag)
 {
@@ -28,22 +41,24 @@ char	*get_home_directory(t_ms *ms, int flag)
 	return (ft_strdup(temp));
 }
 
-char	*return_target(t_ms *ms, char *target)
-{
-    if (access(target, F_OK) != 0)
-	{
-        print_cd_error(target);
-        ms->exit_status = 1;
-        return (NULL);
-    }
-    ft_putendl_fd(target, STDOUT_FILENO);
-	return (ft_strdup(target));
-}
+/**
+ * @brief Retrieves the parent directory of the current working directory.
+ * 
+ * This function uses `getcwd` to obtain the current directory and then 
+ * determines the parent directory by locating the last `/` separator.
+ * If the parent directory exists and is not the root, it is extracted; 
+ * otherwise, `/` is returned as the parent.
+ * 
+ * @param ms A pointer to the shell structure containing execution state.
+ * 
+ * @return A newly allocated string containing the parent directory path, 
+ *         or NULL if `getcwd` fails.
+ */
 
 char	*get_parent_directory(t_ms *ms)
 {
-	char cwd[1024];
-	char *parent_dir;
+	char	cwd[1024];
+	char	*parent_dir;
 
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
@@ -60,10 +75,23 @@ char	*get_parent_directory(t_ms *ms)
 	return (ft_strdup("/"));
 }
 
+/**
+ * @brief Constructs a relative path by appending the target to the current directory.
+ * 
+ * This function concatenates the current working directory (`cwd`) with a given 
+ * `target` directory or file, ensuring a proper path format with a `/` separator.
+ * 
+ * @param target The relative target path to append to `cwd`.
+ * @param cwd The current working directory.
+ * 
+ * @return A newly allocated string containing the full relative path, or NULL 
+ *         if memory allocation fails.
+ */
+
 char	*build_relative_path(char *target, char *cwd)
 {
-	char *temp;
-	char *full_path;
+	char	*temp;
+	char	*full_path;
 
 	temp = ft_strjoin(cwd, "/");
 	if (!temp)
