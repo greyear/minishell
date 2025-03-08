@@ -86,7 +86,10 @@ int expand_tilde(t_token *cur, t_ms *ms)
 	else if (cur->data[1] == '/') // If `~/something`
 		new_data = ft_strjoin(home, &cur->data[1]);
 	else
+	{
+		free(home);
 		return (0); // If `~` is part of a word like `hello~`, don't expand
+	}
 	free(home);
 	if (!new_data)
 		return (1); // Memory allocation error
