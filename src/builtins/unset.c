@@ -9,7 +9,8 @@ static void	process_unset_entry(char **args, int i, t_ms *ms, int len)
 		return;
 	if (check_if_valid_key(name) == 1)
 	{
-		print_unset_error(args, i, ms);
+		ms->exit_status = 0;
+		//print_unset_error(args, i, ms);
 		free(name);
 		return;
 	}
@@ -34,7 +35,8 @@ void	handle_unset(char **args, t_ms *ms)
 		len = get_key_length(args[i]);
 		if (len == 0 || ft_strchr(args[i], '=')
 			|| args[i][0] == '=')
-			print_unset_error(args, i, ms);
+			ms->exit_status = 0;
+			//print_unset_error(args, i, ms);
 		else
 			process_unset_entry(args, i, ms, len);
 		i++;
