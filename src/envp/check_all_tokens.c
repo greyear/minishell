@@ -71,46 +71,46 @@ int	check_list_for_expansions(t_token *first, t_ms *ms)
 
 int expand_tilde(t_token *cur, t_ms *ms)
 {
-    char *home;
-    char *new_data;
+	char *home;
+	char *new_data;
 
-    if (!cur->data || cur->data[0] != '~') // Ensure `~` is at the start
-        return (0);
+	if (!cur->data || cur->data[0] != '~') // Ensure `~` is at the start
+		return (0);
 
-    home = get_home_directory(ms, 1);
-    if (!home)
-        return (0);
+	home = get_home_directory(ms, 1);
+	if (!home)
+		return (0);
 
-    if (cur->data[1] == '\0') // If `~` is alone
-        new_data = ft_strdup(home);
-    else if (cur->data[1] == '/') // If `~/something`
-        new_data = ft_strjoin(home, &cur->data[1]);
-    else
-        return (0); // If `~` is part of a word like `hello~`, don't expand
+	if (cur->data[1] == '\0') // If `~` is alone
+		new_data = ft_strdup(home);
+	else if (cur->data[1] == '/') // If `~/something`
+		new_data = ft_strjoin(home, &cur->data[1]);
+	else
+		return (0); // If `~` is part of a word like `hello~`, don't expand
+	free(home);
+	if (!new_data)
+		return (1); // Memory allocation error
 
-    if (!new_data)
-        return (1); // Memory allocation error
-
-    free(cur->data);
-    cur->data = new_data;
-    return (0);
+	free(cur->data);
+	cur->data = new_data;
+	return (0);
 }
 
 int check_list_for_tilde(t_token *first, t_ms *ms)
 {
-    t_token *cur = first;
+	t_token *cur = first;
 
-    while (cur)
-    {
-        if (cur->type == WORD && cur->quote != SG_QUOT && cur->quote != DB_QUOT
-            && cur->data[0] == '~') // Ensuring `~` is at the start
-        {
-            if (expand_tilde(cur, ms) == 1)
-                return (1);
-        }
-        cur = cur->next;
-    }
-    return (0);
+	while (cur)
+	{
+		if (cur->type == WORD && cur->quote != SG_QUOT && cur->quote != DB_QUOT
+			&& cur->data[0] == '~') // Ensuring `~` is at the start
+		{
+			if (expand_tilde(cur, ms) == 1)
+				return (1);
+		}
+		cur = cur->next;
+	}
+	return (0);
 }
 
 
