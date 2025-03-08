@@ -95,17 +95,14 @@ int main(int argc, char **argv, char **envp)
 	char *input;
 	int err_syntax;
 	int		i;
-	int		saved_stdin;
-	int		saved_stdout;
 
-	saved_stdin = dup(STDIN_FILENO);
-	saved_stdout = dup(STDOUT_FILENO);
 	// Args check
 	if (argc != 1 && argv)
 	{
 		printf("Usage: ./minishell\n");
 		return (1);
 	}
+
 	ms = initialize_struct(envp);
 	check_shlvl(ms);
 	if (!ms)
@@ -118,7 +115,7 @@ int main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		// Reading the input
-		inout(saved_stdin, saved_stdout); // Restore STDIN and STDOUT
+		inout(ms->saved_stdin, ms->saved_stdout); // Restore STDIN and STDOUT
 		
 		// FOR USUAL EXECUTION
 		//input = readline("minishell> ");
@@ -211,8 +208,6 @@ int main(int argc, char **argv, char **envp)
 	clean_cmd_list(&(ms->cmds));
 	history_exit(ms); //here?
 	int exit = ms->exit_status;
-	close(saved_stdin);
-	close(saved_stdout);
 	clean_struct(ms);
 	return (exit);
 }
