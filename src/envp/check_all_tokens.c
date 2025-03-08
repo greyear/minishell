@@ -14,7 +14,6 @@ int	expand_in_token(t_token *cur, t_ms *ms)
 		expanded = ft_strdup("");
 	else
 		expanded = handle_expansion(cur->data, ms);
-	//printf("expanded: %s\n", expanded);
 	if (!expanded)
 	{
 		free(data_copy);
@@ -22,11 +21,13 @@ int	expand_in_token(t_token *cur, t_ms *ms)
 	}
 	free(cur->data);
 	cur->data = expanded;
+	//printf("new cur->data: %s\n", cur->data);
 	if (cur->specific_redir && !cur->quote && \
 			data_copy[0] && !cur->data[0])
 	{
 		cur->ambiguous = true;
 		cur->file = data_copy;
+		//printf("new cur->file: %s\n", cur->file);
 	}
 	//what if after expanding it became empty?
 	else
