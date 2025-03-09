@@ -83,9 +83,9 @@ int	expand_tilde(t_token *cur, t_ms *ms)
         new_data = ft_strjoin(home, &cur->data[1]);
     else
         return (0);
+	free(home);
     if (!new_data)
 		return (1);
-	free(home);
     free(cur->data);
     cur->data = new_data;
     return (0);
