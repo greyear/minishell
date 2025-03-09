@@ -74,6 +74,8 @@ int	expand_tilde(t_token *cur, t_ms *ms)
     char	*home;
     char	*new_data;
 
+	if (!cur->data || cur->data[0] != '~') // Ensure `~` is at the start
+        return (0);
     home = get_home_directory(ms, 1);
     if (!home)
         return (0);
@@ -81,10 +83,13 @@ int	expand_tilde(t_token *cur, t_ms *ms)
         new_data = ft_strdup(home);
     else if (cur->data[1] == '/')
         new_data = ft_strjoin(home, &cur->data[1]);
-    else
-        return (0);
+	else
+	{
+		free(home);
+		return (0);
+	}
 	free(home);
-    if (!new_data)
+	if (!new_data)
 		return (1);
     free(cur->data);
     cur->data = new_data;

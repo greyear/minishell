@@ -85,7 +85,6 @@
     check = verify_key(key);
     if (!check)
         return (ft_strdup(""));
-    free(key);
     key = check;
     res = find_env_value(envp, key, len);
     free(key);

@@ -17,8 +17,8 @@ void	append_to_result(char **result, char *new_part)
 	char	*temp;
 
 	temp = ft_strjoin(*result, new_part);
-	if (!temp)
-		return;
+	//if (!temp)
+	//	return;
 	free(*result);
 	*result = temp;
 	free(new_part);
@@ -46,14 +46,14 @@ void	append_literal_char(char **result, char c)
 	str[0] = c;
 	str[1] = '\0';
 	substr = ft_substr(str, 0, 1);
-	if (!substr)
-		return;
+	//if (!substr)
+		//return;
 	temp = ft_strjoin(*result, substr);
-	if (!temp)
+	/*if (!temp)
 	{
 		free(substr);
 		return;
-	}
+	}*/
 	free(substr);
 	free(*result);
 	*result = temp;
@@ -74,26 +74,26 @@ void	append_literal_char(char **result, char c)
   * @return A newly allocated string containing the extracted key. If no key is found, an empty string is returned.
   */
  
-  char	*extract_key_export(char *args, int *i)
-  {
-	  int		x;
-	  char	*key;
+char	*extract_key_export(char *args, int *i)
+{
+	int		x;
+	char	*key;
   
-	  x = 0;
-	  if (ft_isdigit(args[*i]) || args[*i] == '?'
-		  || args[*i] == '$' || args[*i] == ' ')
-		  x = 1;
-	  else
-	  {
-		  while (args[*i + x] && (ft_isalnum(args[*i + x])
-			  || args[*i + x] == '_'))
-			  x++;
-	  }
-	  key = ft_substr(args, *i, x);
-	  if (!key)
-		  return (NULL);
-	  *i += x;
-	  return (key);
+	x = 0;
+	if (ft_isdigit(args[*i]) || args[*i] == '?'
+		|| args[*i] == '$' || args[*i] == ' ')
+		x = 1;
+	else
+	{
+		while (args[*i + x] && (ft_isalnum(args[*i + x])
+			|| args[*i + x] == '_'))
+			x++;
+	}
+	key = ft_substr(args, *i, x);
+	if (!key)
+		return (NULL);
+	*i += x;
+	return (key);
   }
 
 /**
