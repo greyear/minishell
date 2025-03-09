@@ -69,34 +69,29 @@ int	check_list_for_expansions(t_token *first, t_ms *ms)
 }
 
 
-int expand_tilde(t_token *cur, t_ms *ms)
+int	expand_tilde(t_token *cur, t_ms *ms)
 {
-    char *home;
-    char *new_data;
-
-    if (!cur->data || cur->data[0] != '~') // Ensure `~` is at the start
-        return (0);
+    char	*home;
+    char	*new_data;
 
     home = get_home_directory(ms, 1);
     if (!home)
         return (0);
-
-    if (cur->data[1] == '\0') // If `~` is alone
+    if (cur->data[1] == '\0')
         new_data = ft_strdup(home);
-    else if (cur->data[1] == '/') // If `~/something`
+    else if (cur->data[1] == '/')
         new_data = ft_strjoin(home, &cur->data[1]);
     else
-        return (0); // If `~` is part of a word like `hello~`, don't expand
-
+        return (0);
     if (!new_data)
-        return (1); // Memory allocation error
-
+		return (1);
+	free(home);
     free(cur->data);
     cur->data = new_data;
     return (0);
 }
 
-int check_list_for_tilde(t_token *first, t_ms *ms)
+int	check_list_for_tilde(t_token *first, t_ms *ms)
 {
     t_token *cur = first;
 
