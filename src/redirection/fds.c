@@ -29,7 +29,7 @@ void	put_heredoc_fd(t_token *token, t_cmd *cmd, t_ms *ms)
 	}
 	else
 	{
-		cmd->infile = handle_heredoc(ms, token->file);
+		cmd->infile = handle_heredoc(ms, token->file, token);
 	}
 }
 

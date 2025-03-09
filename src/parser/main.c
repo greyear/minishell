@@ -164,7 +164,6 @@ int main(int argc, char **argv, char **envp)
 			printf("Error: tokenization failed\n");
 			continue;
 		}
-
 		/*printf("after tokenization\n");
 		print_tokens(ms->tokens);*/
 		put_files_for_redirections(ms->tokens);
@@ -208,5 +207,6 @@ int main(int argc, char **argv, char **envp)
 	history_exit(ms);
 	int exit = ms->exit_status;
 	clean_struct(ms);
+	rl_clear_history();
 	return (exit);
 }

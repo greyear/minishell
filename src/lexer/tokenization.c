@@ -48,7 +48,6 @@ t_token *tokenization(char *str, t_ms *ms) //store str in ms?
 	
 	/*printf("\ninside tokenization before the expantion\n");
 	print_tokens(first);*/
-
 	if (check_list_for_expansions(first, ms) == 1) //changed the order with uniting
 	{
 		clean_token_list(&first); //what else to clean?

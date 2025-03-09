@@ -58,18 +58,18 @@ PARS_FILES		=	cmd_creation.c \
 					cmd_cleaning.c \
 					main.c
 BUILT_FILES		=	cd.c \
-					cd2.c \
-					cd3.c \
+					cd_utils.c \
+					cd_utils2.c \
 					env.c \
 					export.c \
-					export2.c \
-					export3.c \
+					export_utils.c \
+					export_utils2.c \
 					echo.c \
 					exit.c \
-					exit2.c \
+					exit_utils.c \
 					pwd.c \
 					unset.c \
-					unset2.c \
+					unset_utils.c \
 					key_handling.c \
 					helper_functions.c
 #rename many of them!
@@ -87,6 +87,7 @@ REDIR_FILES		=	open_bonus.c \
 					generate_filename.c
 ENVP_FILES		=	check_all_tokens.c \
 					handle_expansion.c \
+					expansion_utils.c \
 					initialize_struct.c \
 					list.c \
 					letters.c \
