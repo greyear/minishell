@@ -43,8 +43,8 @@ int	check_list_for_expansions(t_token *first, t_ms *ms)
 	//check r
 	while (cur) //heredoc?
 	{
-		if (cur->type == WORD && cur->quote != SG_QUOT && \
-				cur->specific_redir != HEREDOC) //sg quoted '$HOME' shouldn't be expanded, word after << symbol also shouldn't
+		if (cur->type == WORD && cur->quote != SG_QUOT
+			&& cur->specific_redir != HEREDOC) //sg quoted '$HOME' shouldn't be expanded, word after << symbol also shouldn't
 		{
 			if (expand_in_token(cur, ms) == 1)
 				return (1);
