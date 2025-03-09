@@ -111,7 +111,6 @@ int main(int argc, char **argv, char **envp)
 		return (1);
 	}
 
-	// Main loop
 	while (1)
 	{
 		// Reading the input
@@ -139,8 +138,8 @@ int main(int argc, char **argv, char **envp)
 		}
 		if (input[0] == '\0') // Ignore empty input (Enter)
 		{
-    		free(input);
-    		continue;
+			free(input);
+			continue;
 		}
 
 		// BNF checking
@@ -206,7 +205,7 @@ int main(int argc, char **argv, char **envp)
 		clean_cmd_list(&(ms->cmds));
 	}
 	clean_cmd_list(&(ms->cmds));
-	history_exit(ms); //here?
+	history_exit(ms);
 	int exit = ms->exit_status;
 	clean_struct(ms);
 	return (exit);

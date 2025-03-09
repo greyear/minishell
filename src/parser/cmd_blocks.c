@@ -34,7 +34,24 @@ int	check_block(t_token *start, t_token *end, int *err_flag) //check without
 	return (0);
 }
 
-//creates new cmd_block and puts to the end of list of blocks starting from block
+/**
+ * @brief Creates a new command block from a sequence of tokens.
+ * 
+ * This function allocates and initializes a new `t_block` structure representing a block of tokens 
+ * between `start` and `end`. If the block validation fails, the function returns the original 
+ * block list without modification. If memory allocation fails, the error flag is set.
+ * 
+ * @param start A pointer to the first token of the block.
+ * @param end A pointer to the last token of the block.
+ * @param first_block A pointer to the head of the block list.
+ * @param err_flag A pointer to an integer flag used to indicate errors. If memory allocation 
+ *                 fails, this flag is set to `1`.
+ * 
+ * @return A pointer to the updated list of blocks, with the new block appended if successful.
+ *         If an error occurs, the original block list is returned.
+ * 
+ * @note If `first_block` is NULL, the new block becomes the first in the list.
+ */
 t_block	*create_block(t_token *start, t_token *end, t_block *first_block, int *err_flag)
 {
 	t_block	*new;
@@ -60,9 +77,23 @@ t_block	*create_block(t_token *start, t_token *end, t_block *first_block, int *e
 	return (first_block);
 }
 
-//check r!
-
-t_block	*create_blocks_list(t_token *start, t_token *end, int *err_flag)
+/**
+ * @brief Splits a sequence of tokens into command blocks.
+ * 
+ * This function iterates through the token list from `start` to `end` and creates a new command block 
+ * whenever a PIPE token is encountered. Each block represents a segment of the command separated 
+ * by pipes. The final block is created after the last PIPE or at the end of the sequence.
+ * 
+ * @param start A pointer to the first token in the sequence.
+ * @param end A pointer to the last token in the sequence.
+ * @param err_flag A pointer to an integer flag used to indicate errors. If an error occurs during 
+ *                 block creation, the function returns `NULL` after freeing any allocated blocks.
+ * 
+ * @return A pointer to the first block in the created block list. If an error occurs, returns `NULL`.
+ * 
+ * @note If the input contains no PIPE tokens, the function creates a single block containing all tokens.
+ */
+t_block	*create_blocks_list(t_token *start, t_token *end, int *err_flag) //check r!
 {
 	t_token	*cur_token;
 	t_block	*first_block;
@@ -84,37 +115,3 @@ t_block	*create_blocks_list(t_token *start, t_token *end, int *err_flag)
 	first_block = create_block(start, cur_token->next, first_block, err_flag);
 	return (first_block);
 }
-
-
-/*
-struct t_command (cmd_name, cmd_ar, red_in, red_out, index, next)
-struct t_pipeline (t_token *start, t_token *end, next)
-struct t_heredoc (index, filename, next)
-struct t_ast (t_pipeline *, t_command *, token_type, t_ast *up/right/left, ...)
-
-count_words: counts the number of word tokens in list between A and B
-fill_command_array: checks all tokens between A and B and if the type of the token is word 
-					then puts the copy of content of it into the array
-set_values:: sets default values to t_command *new
-form_command: counts number of words (between pipes?), allocates memory for the command struct,
-			  sets default values, allocates memory for the arguments (field of cmd), fills
-			  the array of arguments, separately puts cmd name in specific field
-			  handles redirections
-form_command_list: creates a linked list of commands (calls form_command), if function call
-				   returns an error, cleans the whole list
-incorrect_token_in_pipeline: checks all tokens between A and B and if they are 
-							 NOT words and NOT redirections, returns an error
-form_pipeline_node: calls token check between A and B and then
-					creates t_pipeline node which points to A and B tokens between pipes
-					and adds it at the end of t_pipeline list!
-check_last_segment: //////////////////////////////////
-form_pipeline: goed through token_list, finds pipes and forms pipeline list
-
-make_command_node: creates AST node
-remove_braces: auxilary for branch_out
-find_logic_token: finds &&, || or parenthes
-branch_out: decides which node should be added
-form_tree: builds AST tree
-
-
-*/

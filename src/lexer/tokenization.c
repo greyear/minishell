@@ -1,8 +1,6 @@
 
 #include "../../include/minishell.h"
 
-//str is an input
-
 /**
  * @brief Tokenizes an input string into a linked list of tokens.
  * 
@@ -28,8 +26,7 @@ t_token *tokenization(char *str, t_ms *ms) //store str in ms?
 
 	//where's the check for \0 str?
 	i = 0;
-	first = create_new_token(NULL, &i, DUMMY); //we're passing NULL instead of str cause:
-	//it's just a dummy node and I wanna stress that it's not logically connected
+	first = create_new_token(NULL, &i, DUMMY);
 	if (!first)
 		return (NULL);
 	cur = first;
@@ -73,7 +70,5 @@ t_token *tokenization(char *str, t_ms *ms) //store str in ms?
 	}
 	/*printf("\ninside tokenization after everything\n");
 	print_tokens(first);*/
-	//print_tokens(first);
 	return (first);
-	//wildcards?
 }
