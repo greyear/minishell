@@ -123,6 +123,7 @@ void            wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms);
 //Envp
 int				check_list_for_expansions(t_token *first, t_ms *ms);
 int				expand_in_token(t_token *cur, t_ms *ms);
+char	        *expand_variable(t_ms *ms, char *key, int key_len);
 t_envp			*envp_from_list(t_envp *list, char *name);
 t_bool			is_envp_symbol(int c);
 t_bool			is_envp_first_symbol(int c);

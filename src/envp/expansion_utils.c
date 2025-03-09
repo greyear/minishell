@@ -1,6 +1,5 @@
 #include "../../include/minishell.h"
 
-
 /**
  * @brief Verifies if a given key is valid based on its first character.
  * 
@@ -42,7 +41,7 @@
   * @return A string containing the value associated with the environment variable, or an empty string if not found.
   */
  
- char	*find_env_value(char **envp, char *key, int len)
+ static char	*find_env_value(char **envp, char *key, int len)
  {
      int	i;
  
