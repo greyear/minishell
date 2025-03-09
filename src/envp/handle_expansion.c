@@ -122,6 +122,8 @@ char	*extract_key_export(char *args, int *i)
 			x++;
 	}
 	key = ft_substr(args, *i, x);
+	if (!key)
+		return (NULL);
 	*i += x;
 	return (key);
 }
@@ -167,6 +169,8 @@ void	append_to_result(char **result, char *new_part)
 	char	*temp;
 
 	temp = ft_strjoin(*result, new_part);
+	if (!temp)
+		return;
 	free(*result);
 	*result = temp;
 	free(new_part);
@@ -194,7 +198,14 @@ void	append_literal_char(char **result, char c)
 	str[0] = c;
 	str[1] = '\0';
 	substr = ft_substr(str, 0, 1);
+	if (!substr)
+		return;
 	temp = ft_strjoin(*result, substr);
+	if (!temp)
+	{
+		free(substr);
+		return;
+	}
 	free(substr);
 	free(*result);
 	*result = temp;
