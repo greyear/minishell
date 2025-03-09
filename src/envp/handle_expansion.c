@@ -16,6 +16,8 @@ void	append_to_result(char **result, char *new_part)
 {
 	char	*temp;
 
+	if (!new_part || !new_part)
+		return;
 	temp = ft_strjoin(*result, new_part);
 	if (!temp)
 		return;
