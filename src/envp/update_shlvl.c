@@ -48,6 +48,7 @@ static int	update_shlvl(char ***env)
 {
     int		i;
 	char	*new_value;
+	char	*temp;
 	
 	i = 0;
     while ((*env)[i])
@@ -55,13 +56,15 @@ static int	update_shlvl(char ***env)
         if (ft_strncmp((*env)[i], "SHLVL=", 6) == 0)
         {
            	new_value = increase_shlvl((*env)[i] + 6);
-            if (new_value)
-            {
-                free((*env)[i]);
-                (*env)[i] = ft_strjoin("SHLVL=", new_value);
-                free(new_value);
-            }
-            return(1);
+            if (!new_value)
+				return (0);
+			temp = ft_strjoin("SHLVL=", new_value);
+			free(new_value);
+			if (!temp)
+				return(0);
+			free((*env)[i]);
+			(*env)[i] = temp;
+			return (1);
         }
         i++;
     }
