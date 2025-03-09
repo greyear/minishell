@@ -1,6 +1,23 @@
 #include "../../include/minishell.h"
 
 /**
+ * @brief Sets an error flag and returns an error status.
+ *
+ * This function updates the provided error variable to indicate an error 
+ * and returns `1` as a general error status.
+ *
+ * @param error Pointer to an integer that will be set to `1` to signal an error.
+ *
+ * @return Always returns `1`, indicating an error condition.
+ */
+
+static int	error_found(int *error)
+{
+	*error = 1;
+	return (1);
+}
+
+/**
  * @brief Checks for overflow during the conversion of a string to a long long integer.
  * 
  * This function ensures that adding the next digit to `result` does not exceed the limits 
@@ -59,10 +76,7 @@ static long long	parse_number(char *str, int sign, int *has_digit, int *error)
 			result = result * 10 + digit;
 		}
 		else
-		{
-			*error = 1;
-			return (1);
-		}
+			return (error_found(error));
 		str++;
 	}
 	return (sign * result);
