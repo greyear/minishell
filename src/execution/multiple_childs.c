@@ -55,13 +55,15 @@ static void	close_fds2(int fd1, int fd2)
 		close(fd2);
 }
 
-static void fork_and_execute(t_cmd *cur, t_pipe *p)
+static void fork_and_execute(t_cmd *cur, t_pipe *p, t_ms *ms)
 {
     //pid_t pid;
 
     //pid = fork();
     if (pipe(p->fd) == -1)
         exit(20);
+    /*printf("\nfd[0]: %d\n", p->fd[0]);
+    printf("\nfd[1]: %d\n", p->fd[1]);*/
     p->pids[p->cmd_num] = fork(); 
     if (p->pids[p->cmd_num] < 0)
     {
@@ -70,9 +72,16 @@ static void fork_and_execute(t_cmd *cur, t_pipe *p)
     }
     if (p->pids[p->cmd_num] == 0)
     {
-        if (p->cmd_num == 0)
-		    close(p->fd[0]);
+
         pipe_or_redir(cur, p->fd, p->cmd_num, p->num_cmds, p->cur_fd);
+        close(p->fd[0]);
+        if (p->cur_fd != -1)
+            close(p->cur_fd);
+        close(p->fd[1]);
+        /*if (p->cmd_num == 0)
+		    close(p->fd[0]);*/
+        close(ms->saved_stdin);
+        close(ms->saved_stdout);
         if (is_builtin(cur))
         {
             handle_builtin(cur, p->ms, 1);
@@ -82,9 +91,10 @@ static void fork_and_execute(t_cmd *cur, t_pipe *p)
             execute_command(p->ms->envp, cur->args);
     }
     /*if (p->cmd_num == 0)
-		close(p->fd[0]);*/
+	close(p->fd[0]);*/
     close_fds2(p->cur_fd, p->fd[1]);
     p->cur_fd = p->fd[0];
+    //printf("\ncur_fd: %d\n", p->cur_fd);
     p->last_pid = p->pids[p->cmd_num];
 }
 
@@ -117,7 +127,7 @@ void    make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
     p.last_pid = -1;
     p.cmd_num = 0;
     p.cur_fd = -1;
-    p.pids = (pid_t *)malloc((p.num_cmds - 1) * sizeof(pid_t));
+    p.pids = (pid_t *)malloc((p.num_cmds) * sizeof(pid_t));
     //setup_pipes(&p);
     /*if (!p.pipe_fd)
         return;*/
@@ -130,9 +140,10 @@ void    make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
             p.cmd_num++;
             continue;
         }
-        fork_and_execute(cur, &p);
+        fork_and_execute(cur, &p, ms);
         cur = cur->next;
         p.cmd_num++;
     }
+    close(p.cur_fd);
     cleanup_after_execution(&p);
 }

@@ -25,7 +25,7 @@ void	pipe_process(int prev_pipe, int next_pipe)
 			close(prev_pipe);
 			exit(1);
 		}	
-		close(prev_pipe);
+		//close(prev_pipe);
 	}
 	if (next_pipe > 0)
 	{
@@ -34,7 +34,7 @@ void	pipe_process(int prev_pipe, int next_pipe)
 			close(next_pipe);
 			exit(1);
 		}	
-		close(next_pipe);
+		//close(next_pipe);
 	}
 }
 
@@ -64,6 +64,9 @@ void    pipe_or_redir(t_cmd *cur, int *pipe_fd, int i, int num_cmds, int cur_fd)
         pipe_process(cur_fd, 0);
     else
         pipe_process(cur_fd, pipe_fd[1]);
+    //if (cur_fd != -1)
+    //    close(cur_fd);
+    //close(pipe_fd[1]);
     redirect_process(cur->infile, cur->outfile);
 }
 
