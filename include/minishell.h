@@ -119,6 +119,10 @@ void	        reset_heredocs(t_ms *ms);
 void	        setup_pipes(t_exec_data *data);
 void            pipe_or_redir(t_cmd *cur, int **pipe_fd, int i, int num_cmds);
 void            wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms);
+void	        check_if_dir_or_file(char **envp, char **cmds);
+void            check_if_dot(char **cmds);
+void            check_if_file(char **envp, char **cmds);
+
 
 //Envp
 int				check_list_for_expansions(t_token *first, t_ms *ms);
