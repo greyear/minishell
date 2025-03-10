@@ -1634,6 +1634,172 @@
    fun:main
 }
 
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:xmalloc
+   fun:rl_maybe_save_line
+   fun:rl_get_previous_history
+   fun:_rl_dispatch_subseq
+   fun:_rl_dispatch_subseq
+   fun:_rl_dispatch_subseq
+   fun:readline_internal_char
+   fun:readline
+   fun:main
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:xmalloc
+   fun:rl_maybe_save_line
+   fun:rl_get_previous_history
+   fun:_rl_dispatch_subseq
+   fun:_rl_dispatch_subseq
+   fun:_rl_dispatch_subseq
+   fun:readline_internal_char
+   fun:readline
+   fun:main
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib/x86_64-linux-gnu/libtinfo.so.6.4
+   fun:_nc_tiparm
+   fun:tgoto
+   obj:/usr/lib/x86_64-linux-gnu/libreadline.so.8.2
+   fun:rl_redisplay
+   fun:_rl_internal_char_cleanup
+   fun:readline_internal_char
+   fun:readline
+   fun:main
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:_nc_doalloc
+   fun:_nc_tiparm
+   fun:tgoto
+   obj:/usr/lib/x86_64-linux-gnu/libreadline.so.8.2
+   fun:rl_redisplay
+   fun:_rl_internal_char_cleanup
+   fun:readline_internal_char
+   fun:readline
+   fun:main
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:tsearch
+   obj:/usr/lib/x86_64-linux-gnu/libtinfo.so.6.4
+   fun:_nc_tiparm
+   fun:tgoto
+   obj:/usr/lib/x86_64-linux-gnu/libreadline.so.8.2
+   fun:rl_redisplay
+   fun:_rl_internal_char_cleanup
+   fun:readline_internal_char
+   fun:readline
+   fun:main
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   obj:/usr/lib/x86_64-linux-gnu/libtinfo.so.6.4
+   fun:_nc_tiparm
+   fun:tgoto
+   obj:/usr/lib/x86_64-linux-gnu/libreadline.so.8.2
+   fun:rl_redisplay
+   fun:_rl_internal_char_cleanup
+   fun:readline_internal_char
+   fun:readline
+   fun:main
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:xmalloc
+   fun:replace_history_entry
+   fun:readline_internal_teardown
+   fun:readline
+   fun:main
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:xmalloc
+   fun:replace_history_entry
+   fun:readline_internal_teardown
+   fun:readline
+   fun:main
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:xmalloc
+   fun:replace_history_entry
+   fun:readline_internal_teardown
+   fun:readline
+   fun:main
+}
+
+
+
+
+
+
+
+
+
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/bin/grep
+   fun:(below main)
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/bin/grep
+   obj:/usr/bin/grep
+   obj:/usr/bin/grep
+   obj:/usr/bin/grep
+   obj:/usr/bin/grep
+   fun:(below main)
+}
+
+
 
 
 
@@ -1909,3 +2075,18 @@
    fun:add_line_to_history
    fun:main
 }
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:xrealloc
+   fun:add_history
+   fun:read_from_history_file
+   fun:open_read_history_file
+   fun:initialize_history
+   fun:initialize_struct
+   fun:main
+}
+
