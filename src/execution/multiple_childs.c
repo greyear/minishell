@@ -47,6 +47,14 @@ void    wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms)
  * @return This function does not return; it either forks a new process to execute the command or handles errors.
  */
 
+static void	close_fds2(int fd1, int fd2)
+{
+	if (fd1 != -1)
+		close(fd1);
+	if (fd2 != -1)
+		close(fd2);
+}
+
 static void fork_and_execute(t_cmd *cur, t_pipe *p)
 {
     //pid_t pid;
@@ -62,7 +70,9 @@ static void fork_and_execute(t_cmd *cur, t_pipe *p)
     }
     if (p->pids[p->cmd_num] == 0)
     {
-        pipe_or_redir(cur, p->fd, p->cmd_num, p->num_cmds);
+        if (p->cmd_num == 0)
+		    close(p->fd[0]);
+        pipe_or_redir(cur, p->fd, p->cmd_num, p->num_cmds, p->cur_fd);
         if (is_builtin(cur))
         {
             handle_builtin(cur, p->ms, 1);
@@ -71,12 +81,10 @@ static void fork_and_execute(t_cmd *cur, t_pipe *p)
         else
             execute_command(p->ms->envp, cur->args);
     }
+    /*if (p->cmd_num == 0)
+		close(p->fd[0]);*/
+    close_fds2(p->cur_fd, p->fd[1]);
     p->cur_fd = p->fd[0];
-    /*if (i > 0 && p->pipe_fd[i - 1])
-    {
-        close(p->pipe_fd[i - 1][0]);
-        close(p->pipe_fd[i - 1][1]);
-    }*/
     p->last_pid = p->pids[p->cmd_num];
 }
 

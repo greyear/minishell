@@ -54,16 +54,16 @@ void	pipe_process(int prev_pipe, int next_pipe)
  * @return This function does not return; it modifies the process’s input/output redirection and sets up pipes if necessary.
  */
 
-void    pipe_or_redir(t_cmd *cur, int *pipe_fd, int i, int num_cmds)
+void    pipe_or_redir(t_cmd *cur, int *pipe_fd, int i, int num_cmds, int cur_fd)
 {
     if (cur->infile == NO_FD || cur->outfile == NO_FD)
         exit(1);
     if (i == 0)
         pipe_process(0, pipe_fd[1]);
     else if (i == num_cmds - 1)
-        pipe_process(pipe_fd[0], 0);
+        pipe_process(cur_fd, 0);
     else
-        pipe_process(pipe_fd[0], pipe_fd[1]);
+        pipe_process(cur_fd, pipe_fd[1]);
     redirect_process(cur->infile, cur->outfile);
 }
 
