@@ -66,7 +66,7 @@ char	        *get_home_directory(t_ms *ms, int flag);
 void	        check_pwd(char **array, t_ms *ms);
 char	        *get_env_value(char *key, char **envp);
 void	        check_exit(char	**array, t_ms *ms);
-long long	    ft_strtoll(char *str, int *error);
+long long	    convert_to_ll(char *str, int *error);
 char	        *handle_expansion(char *args, t_ms *ms);
 char	        *expand_key(char **envp, char *key, int len, t_ms *ms);
 char	        *duplicate_or_replace(char *entry, char *arg, char *key, int *flag);
@@ -123,6 +123,7 @@ void            wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms);
 //Envp
 int				check_list_for_expansions(t_token *first, t_ms *ms);
 int				expand_in_token(t_token *cur, t_ms *ms);
+char	        *expand_variable(t_ms *ms, char *key, int key_len);
 t_envp			*envp_from_list(t_envp *list, char *name);
 t_bool			is_envp_symbol(int c);
 t_bool			is_envp_first_symbol(int c);
@@ -135,7 +136,8 @@ void			put_outfile_fd(t_token *token, t_cmd *cmd);
 void			check_access(char *filename, t_oper operation);
 char            *generate_heredoc_filename(int index);
 void	        put_heredoc_fd(t_token *token, t_cmd *cmd, t_ms *ms);
-int             handle_heredoc(t_ms *ms, char *limiter);
+//int             handle_heredoc(t_ms *ms, char *limiter);
+int             handle_heredoc(t_ms *ms, char *limiter, t_token *token);
 
 //Reading + history
 t_bool			open_read_history_file(t_ms *ms);
