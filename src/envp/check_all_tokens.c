@@ -75,8 +75,6 @@ int	expand_tilde(t_token *cur, t_ms *ms)
 {
 	char *home;
 	char *new_data;
-    char	*home;
-    char	*new_data;
 
 	if (!cur->data || cur->data[0] != '~') // Ensure `~` is at the start
 		return (0);

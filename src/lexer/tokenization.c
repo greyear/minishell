@@ -41,26 +41,26 @@ t_token *tokenization(char *str, t_ms *ms) //store str in ms?
 		}
 		cur = cur->next;
 	}
-	/*printf("\ninside tokenization before the redirections\n");
-	print_tokens(first);*/
+	printf("\ninside tokenization before the redirections\n");
+	print_tokens(first);
 
 	flags_for_redirections(first);
 	
-	/*printf("\ninside tokenization before the expantion\n");
-	print_tokens(first);*/
+	printf("\ninside tokenization before the expantion\n");
+	print_tokens(first);
 	if (check_list_for_expansions(first, ms) == 1) //changed the order with uniting
 	{
 		clean_token_list(&first); //what else to clean?
 		return (NULL); //maybe create a separate cleaner?
 	}
 
-	/*printf("\ninside tokenization after expansion before uniting\n");
-	print_tokens(first);*/
+	printf("\ninside tokenization after expansion before uniting\n");
+	print_tokens(first);
 
 	first = unite_two_word_tokens(first);
 
-	/*printf("\ninside tokenization after uniting\n");
-	print_tokens(first);*/
+	printf("\ninside tokenization after uniting\n");
+	print_tokens(first);
 
 	if (check_list_for_tilde(first, ms) == 1)
 	{
