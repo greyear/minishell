@@ -1,8 +1,6 @@
 
 #include "../../include/minishell.h"
 
-//str is an input
-
 /**
  * @brief Tokenizes an input string into a linked list of tokens.
  * 
@@ -28,8 +26,7 @@ t_token *tokenization(char *str, t_ms *ms) //store str in ms?
 
 	//where's the check for \0 str?
 	i = 0;
-	first = create_new_token(NULL, &i, DUMMY); //we're passing NULL instead of str cause:
-	//it's just a dummy node and I wanna stress that it's not logically connected
+	first = create_new_token(NULL, &i, DUMMY);
 	if (!first)
 		return (NULL);
 	cur = first;
@@ -44,26 +41,26 @@ t_token *tokenization(char *str, t_ms *ms) //store str in ms?
 		}
 		cur = cur->next;
 	}
-	/*printf("\ninside tokenization before the redirections\n");
-	print_tokens(first);*/
+	printf("\ninside tokenization before the redirections\n");
+	print_tokens(first);
 
 	flags_for_redirections(first);
 	
-	/*printf("\ninside tokenization before the expantion\n");
-	print_tokens(first);*/
+	printf("\ninside tokenization before the expantion\n");
+	print_tokens(first);
 	if (check_list_for_expansions(first, ms) == 1) //changed the order with uniting
 	{
 		clean_token_list(&first); //what else to clean?
 		return (NULL); //maybe create a separate cleaner?
 	}
 
-	/*printf("\ninside tokenization after expansion before uniting\n");
-	print_tokens(first);*/
+	printf("\ninside tokenization after expansion before uniting\n");
+	print_tokens(first);
 
 	first = unite_two_word_tokens(first);
 
-	/*printf("\ninside tokenization after uniting\n");
-	print_tokens(first);*/
+	printf("\ninside tokenization after uniting\n");
+	print_tokens(first);
 
 	if (check_list_for_tilde(first, ms) == 1)
 	{
@@ -72,7 +69,5 @@ t_token *tokenization(char *str, t_ms *ms) //store str in ms?
 	}
 	/*printf("\ninside tokenization after everything\n");
 	print_tokens(first);*/
-	//print_tokens(first);
 	return (first);
-	//wildcards?
 }
