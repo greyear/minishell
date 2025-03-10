@@ -1,32 +1,6 @@
 #include "../../include/minishell.h"
 
 /**
- * @brief Appends a new part to an existing string, reallocating memory as needed.
- * 
- * This function takes an existing string (`result`) and appends a new string (`new_part`) to it.
- * The new string is joined with the existing string, and the memory for the previous `result`
- * is freed after the operation. The `new_part` string is also freed after it is appended.
- * 
- * @param result A pointer to the string that will receive the appended value. It will be updated 
- *               with the new combined string.
- * @param new_part The string to append to `result`. This string will be freed after the operation.
- */
-
-void	append_to_result(char **result, char *new_part)
-{
-	char	*temp;
-
-	if (!new_part || !new_part)
-		return;
-	temp = ft_strjoin(*result, new_part);
-	if (!temp)
-		return;
-	free(*result);
-	*result = temp;
-	free(new_part);
-}
-
-/**
  * @brief Appends a single character to an existing string.
  * 
  * This function takes a character (`c`) and appends it to the existing string (`result`). 
@@ -39,7 +13,7 @@ void	append_to_result(char **result, char *new_part)
  * @param c The character to append to the string.
  */
 
-void	append_literal_char(char **result, char c)
+static void	append_literal_char(char **result, char c)
 {
 	char	*substr;
 	char	*temp;
@@ -76,7 +50,7 @@ void	append_literal_char(char **result, char c)
   * @return A newly allocated string containing the extracted key. If no key is found, an empty string is returned.
   */
  
-char	*extract_key_export(char *args, int *i)
+static char	*extract_key_export(char *args, int *i)
 {
 	int		x;
 	char	*key;
@@ -95,32 +69,65 @@ char	*extract_key_export(char *args, int *i)
 		return (NULL);
 	*i += x;
 	return (key);
-  }
+}
 
 /**
- * @brief Expands environment variables and special symbols within a string.
+ * @brief Processes a variable expansion starting with `$` and appends its value to the result.
+ *
+ * This function extracts the variable key following a `$`, resolves its value (e.g., from environment 
+ * variables or special cases), and appends the expanded value to the result string. After the expansion, 
+ * it updates the index to point to the character after the expanded variable.
  * 
- * This function processes a string (`args`) and expands any environment variables 
- * or special symbols (such as `$` followed by a variable) in the string. It traverses 
- * the string, identifies the variables or special symbols, and appends the expanded 
- * values to a result string. If a part of the string is not a variable, it is added 
- * to the result string as a literal character.
+ * The key is extracted using `extract_key_export()` and the value is expanded with `expand_variable()`.
+ *
+ * @param result A pointer to the string where the expanded value will be appended.
+ * @param args The original string containing the variable to expand.
+ * @param i A pointer to the current index in the `args` string. It is updated after processing the variable.
+ * @param ms A pointer to the main shell structure containing `exit_status` and `envp`.
+ *
+ * @return 0 if the expansion was successful, or 1 if an error occurred (e.g., memory allocation failure).
  * 
- * @param args The input string that may contain environment variables or special symbols 
- *             (such as `$` for variables or `?` and `$` for special symbols).
- * @param ms A pointer to the `t_ms` structure, which contains the environment variables 
- *           and other necessary data.
- * 
- * @return A new string with environment variables and special symbols expanded. 
- *         If memory allocation fails, returns `NULL`. The caller is responsible 
- *         for freeing the returned string.
  */
+
+
+static int	handle_dollar_expansion(char **result, char *args, int *i, t_ms *ms)
+{
+	char	*key;
+
+	(*i)++;
+	key = extract_key_export(args, i);
+	if (!key)
+		return (1);
+	expand_variable(ms, key, ft_strlen(key), result);
+	free(key);
+	return (0);
+}
+
+/**
+ * @brief Expands variables in a string by resolving `$` references and appending 
+ *        their values to the result.
+ *
+ * This function processes a string, looking for variables marked by the `$` symbol, 
+ * and expands them by looking up their values. The process continues until all 
+ * variables are resolved or the string is fully traversed.
+ * 
+ * If a `$` is followed by a valid key, its value is expanded using `handle_dollar_expansion()`. 
+ * If the `$` is followed by anything else (including a space or invalid character), the function
+ * appends the literal character to the result.
+ *
+ * The function returns the final expanded string.
+ *
+ * @param args The string to expand, which may contain variable references starting with `$`.
+ * @param ms Pointer to the main shell structure containing `exit_status` and `envp`.
+ *
+ * @return A newly allocated string containing the expanded variables. 
+ *         If an error occurs during expansion, `NULL` is returned.
+ */
+
 
 char	*handle_expansion(char *args, t_ms *ms)
 {
 	int		i;
-	char	*key;
-	char	*expanded;
 	char	*result;
 
 	result = ft_strdup("");
@@ -132,13 +139,11 @@ char	*handle_expansion(char *args, t_ms *ms)
 		if (args[i] == '$' && args[i + 1] && args[i + 1] != '$'
 			&& !ft_isspace(args[i + 1]))
 		{
-			i++;
-			key = extract_key_export(args, &i);
-			if (!key)
-    			return (NULL);
-			expanded = expand_variable(ms, key, ft_strlen(key));
-			append_to_result(&result, expanded);
-			free(key);
+			if (handle_dollar_expansion(&result, args, &i, ms))
+			{
+				free (result);
+				return (NULL);
+			}
 		}
 		else
 			append_literal_char(&result, args[i++]);
