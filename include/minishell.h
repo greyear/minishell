@@ -113,11 +113,11 @@ int				if_children_needed(t_cmd *cmd);
 void            make_one_child(t_cmd *cmd, t_ms *ms);
 void	        execute_command(char **envp, char **cmd);
 void	        make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms);
-void            pipe_process(int *prev_pipe, int *next_pipe);
+void            pipe_process(int prev_pipe, int next_pipe);
 void            redirect_process(int infile, int outfile);
 void	        reset_heredocs(t_ms *ms);
-void	        setup_pipes(t_exec_data *data);
-void            pipe_or_redir(t_cmd *cur, int **pipe_fd, int i, int num_cmds);
+void	        setup_pipes(t_pipe *p);
+void            pipe_or_redir(t_cmd *cur, int *pipe_fd, int i, int num_cmds);
 void            wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms);
 
 //Envp
@@ -167,7 +167,7 @@ void			clean_struct(t_ms *ms);
 void			clean_struct_fields(t_ms *ms);
 void			cleanup_heredocs(char **filenames);
 void            close_pipes(int num_cmds, int **pipe_fd);
-void            cleanup_after_execution(t_exec_data *data);
+void            cleanup_after_execution(t_pipe *p);
 void	        close_fds(t_cmd *cmd);
 
 #endif
