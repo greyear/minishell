@@ -7,7 +7,7 @@
 #include <readline/history.h>
 
 
-/*void print_tokens(t_token *token_list)
+void print_tokens(t_token *token_list)
 {
 	t_token *cur = token_list;
 
@@ -17,7 +17,7 @@
 		printf("Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->type, cur->data, cur->quote, cur->specific_redir, cur->ambiguous, cur->file);
 		cur = cur->next;
 	}
-}*/
+}
 /*
 static void print_blocks(t_block *block_list)
 {
@@ -153,8 +153,6 @@ int main(int argc, char **argv, char **envp)
 		}
 
 		add_line_to_history(input, ms); //fix
-		/*if (ms->history[ms->history_num])
-			printf("history %s in line %d\n", ms->history[ms->history_num], ms->history_num);*/
 
 		// Parsing
 		ms->tokens = tokenization(input, ms);
