@@ -163,6 +163,7 @@ void			print_syntax_error(char *text);
 void	        print_numeric_error(char **array);
 void	        print_too_many_args_error(void);
 void	        print_env_error(char **args);
+void	        print_flag_error(char **args);
 
 //Cleaners
 void			clean_arr(char ***arr);
