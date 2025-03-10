@@ -134,8 +134,11 @@ char	*handle_expansion(char *args, t_ms *ms)
 		{
 			i++;
 			key = extract_key_export(args, &i);
+			if (!key)
+    			return (NULL);
 			expanded = expand_variable(ms, key, ft_strlen(key));
 			append_to_result(&result, expanded);
+			free(key);
 		}
 		else
 			append_literal_char(&result, args[i++]);

@@ -47,7 +47,6 @@ static char	*find_env_value(char **envp, char *key, int len)
  *         the key starts with a digit, or `NULL` if no match is found.
  *         The caller is responsible for freeing the returned string.
  *
- * @note The function frees the `key` argument before returning.
  */
  
 char	*expand_variable(t_ms *ms, char *key, int key_len)
@@ -61,6 +60,5 @@ char	*expand_variable(t_ms *ms, char *key, int key_len)
     if (ft_isdigit(key[0]))
         return (ft_strdup(""));
     expanded_value = find_env_value(ms->envp, key, key_len);
-    free(key);
     return (expanded_value);
 }
