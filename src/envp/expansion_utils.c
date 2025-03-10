@@ -32,6 +32,7 @@ static void	append_to_result(char **result, char *new_part)
 	free(new_part);
 }
 
+
  /**
   * @brief Searches for the value of a given environment variable in the environment.
   * 
