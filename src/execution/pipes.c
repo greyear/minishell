@@ -16,29 +16,25 @@
  * @return This function does not return; it modifies the process’s standard input and output as needed.
  */
 
-void	pipe_process(int *prev_pipe, int *next_pipe)
+void	pipe_process(int prev_pipe, int next_pipe)
 {
-	if (prev_pipe)
+	if (prev_pipe > 0)
 	{
-		if (dup2(prev_pipe[0], STDIN_FILENO) == -1) //It duplicates previous pipes read-end to stadard input
+		if (dup2(prev_pipe, STDIN_FILENO) == -1) //It duplicates previous pipes read-end to stadard input
 		{
-			close(prev_pipe[0]);
-			close(prev_pipe[1]);
+			close(prev_pipe);
 			exit(1);
 		}	
-		close(prev_pipe[0]);
-		close(prev_pipe[1]);
+		close(prev_pipe);
 	}
-	if (next_pipe)
+	if (next_pipe > 0)
 	{
-		if (dup2(next_pipe[1], STDOUT_FILENO) == -1) //It duplicates the next pipes write-end to standard output
+		if (dup2(next_pipe, STDOUT_FILENO) == -1) //It duplicates the next pipes write-end to standard output
 		{
-			close(next_pipe[0]);
-			close(next_pipe[1]);
+			close(next_pipe);
 			exit(1);
 		}	
-		close(next_pipe[0]);
-		close(next_pipe[1]);
+		close(next_pipe);
 	}
 }
 
@@ -58,16 +54,16 @@ void	pipe_process(int *prev_pipe, int *next_pipe)
  * @return This function does not return; it modifies the process’s input/output redirection and sets up pipes if necessary.
  */
 
-void    pipe_or_redir(t_cmd *cur, int **pipe_fd, int i, int num_cmds)
+void    pipe_or_redir(t_cmd *cur, int *pipe_fd, int i, int num_cmds)
 {
     if (cur->infile == NO_FD || cur->outfile == NO_FD)
         exit(1);
     if (i == 0)
-        pipe_process(NULL, pipe_fd[i]);
+        pipe_process(0, pipe_fd[1]);
     else if (i == num_cmds - 1)
-        pipe_process(pipe_fd[i-1], NULL);
+        pipe_process(pipe_fd[0], 0);
     else
-        pipe_process(pipe_fd[i-1], pipe_fd[i]);
+        pipe_process(pipe_fd[0], pipe_fd[1]);
     redirect_process(cur->infile, cur->outfile);
 }
 
@@ -84,7 +80,7 @@ void    pipe_or_redir(t_cmd *cur, int **pipe_fd, int i, int num_cmds)
  * @return This function does not return; it modifies the `pipe_fd` array by allocating and setting up the pipes.
  */
 
-static void    create_pipes(int num_cmds, int ***pipe_fd)
+/*static void    create_pipes(int num_cmds, int ***pipe_fd)
 {
     int     i;
 
@@ -109,7 +105,7 @@ static void    create_pipes(int num_cmds, int ***pipe_fd)
         }
         i++;
     }
-}
+}*/
 
 /**
  * @brief Sets up pipes for inter-process communication in a pipeline.
@@ -125,9 +121,9 @@ static void    create_pipes(int num_cmds, int ***pipe_fd)
  * @return This function does not return; it modifies the `pipe_fd` array and the global exit status as necessary.
  */
 
-void	setup_pipes(t_exec_data *data)
+/*void	setup_pipes(t_pipe *p)
 {
-    create_pipes(data->num_cmds, &data->pipe_fd);
-    if (!data->pipe_fd)
-        data->ms->exit_status = 1;
-}
+    create_pipes(p->num_cmds, &p->fd);
+    if (!p->fd)
+        p->ms->exit_status = 1;
+}*/

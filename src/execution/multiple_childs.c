@@ -41,39 +41,43 @@ void    wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms)
  * 
  * @param cur A pointer to the `t_cmd` structure representing the current command to be executed.
  * @param i The index of the current command, used to manage pipes and redirections.
- * @param data A pointer to the `t_exec_data` structure that holds the execution data, including pipes,
+ * @param p A pointer to the `t_exec_data` structure that holds the execution p, including pipes,
  *             environment variables, and the last process ID.
  * 
  * @return This function does not return; it either forks a new process to execute the command or handles errors.
  */
 
-static void fork_and_execute(t_cmd *cur, int i, t_exec_data *data)
+static void fork_and_execute(t_cmd *cur, t_pipe *p)
 {
-    pid_t pid;
+    //pid_t pid;
 
-    pid = fork();
-    if (pid < 0)
+    //pid = fork();
+    if (pipe(p->fd) == -1)
+        exit(20);
+    p->pids[p->cmd_num] = fork(); 
+    if (p->pids[p->cmd_num] < 0)
     {
-        data->ms->exit_status = 1;
+        p->ms->exit_status = 1;
         return;
     }
-    if (pid == 0)
+    if (p->pids[p->cmd_num] == 0)
     {
-        pipe_or_redir(cur, data->pipe_fd, i, data->num_cmds);
+        pipe_or_redir(cur, p->fd, p->cmd_num, p->num_cmds);
         if (is_builtin(cur))
         {
-            handle_builtin(cur, data->ms, 1);
-            exit(data->ms->exit_status);
+            handle_builtin(cur, p->ms, 1);
+            exit(p->ms->exit_status);
         }
         else
-            execute_command(data->ms->envp, cur->args);
+            execute_command(p->ms->envp, cur->args);
     }
-    if (i > 0 && data->pipe_fd[i - 1])
+    p->cur_fd = p->fd[0];
+    /*if (i > 0 && p->pipe_fd[i - 1])
     {
-        close(data->pipe_fd[i - 1][0]);
-        close(data->pipe_fd[i - 1][1]);
-    }
-    data->last_pid = pid;
+        close(p->pipe_fd[i - 1][0]);
+        close(p->pipe_fd[i - 1][1]);
+    }*/
+    p->last_pid = p->pids[p->cmd_num];
 }
 
 /**
@@ -93,31 +97,34 @@ static void fork_and_execute(t_cmd *cur, int i, t_exec_data *data)
 
 void    make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
 {
-    t_exec_data data;
+    t_pipe  p;
     t_cmd   *cur;
     int     i;
 
     i = 0;
     cur = cmds;
-    data.num_cmds = num_cmds;
-    data.ms = ms;
-    data.pipe_fd = NULL;
-    data.last_pid = -1;
-    setup_pipes(&data);
-    if (!data.pipe_fd)
-        return;
-    while (i < num_cmds && cur)
+    p.num_cmds = num_cmds;
+    p.ms = ms;
+    //p.pipe_fd = NULL;
+    p.last_pid = -1;
+    p.cmd_num = 0;
+    p.cur_fd = -1;
+    p.pids = (pid_t *)malloc((p.num_cmds - 1) * sizeof(pid_t));
+    //setup_pipes(&p);
+    /*if (!p.pipe_fd)
+        return;*/
+    while (p.cmd_num < num_cmds && cur)
     {
         if (!cur->args || !cur->args[0])
         {
-            data.ms->exit_status = 0;
+            p.ms->exit_status = 0;
             cur = cur->next;
-            i++;
+            p.cmd_num++;
             continue;
         }
-        fork_and_execute(cur, i, &data);
+        fork_and_execute(cur, &p);
         cur = cur->next;
-        i++;
+        p.cmd_num++;
     }
-    cleanup_after_execution(&data);
+    cleanup_after_execution(&p);
 }
