@@ -60,6 +60,14 @@ void	handle_unset(char **args, t_ms *ms)
 	if (ft_strcmp(args[0], "unset") != 0)
 		return;
 	ms->exit_status = 0;
+	if (!args[1])
+		return;
+	if (args[1][0] && args[1][0] == '-')
+	{
+		print_flag_error(args);
+		ms->exit_status = 2;
+		return;
+	}
 	while (args[i])
 	{
 		len = get_key_length(args[i]);

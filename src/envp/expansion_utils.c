@@ -1,5 +1,38 @@
 #include "../../include/minishell.h"
- 
+
+/**
+ * @brief Appends a new string segment to the result string.
+ *
+ * This function concatenates `new_part` to `*result`, updating the pointer
+ * to the newly allocated string. It ensures proper memory management by
+ * freeing the previous `*result` and `new_part` after joining.
+ *
+ * @param result Pointer to the existing result string. It will be updated
+ *        to point to the new concatenated string.
+ * @param new_part The string segment to be appended. It will be freed after use.
+ *
+ * @note If memory allocation for the new string fails, `new_part` is freed,
+ *       but `*result` remains unchanged.
+ */
+
+static void	append_to_result(char **result, char *new_part)
+{
+	char	*temp;
+
+	if (!new_part)
+		return;
+	temp = ft_strjoin(*result, new_part);
+	if (!temp)
+    {
+        free(new_part);
+        return;
+    }
+	free(*result);
+	*result = temp;
+	free(new_part);
+}
+
+
  /**
   * @brief Searches for the value of a given environment variable in the environment.
   * 
@@ -23,7 +56,7 @@ static char	*find_env_value(char **envp, char *key, int len)
     {
         if (ft_strncmp(envp[i], key, len) == 0)
         {
-            if (envp[i][len] == '=')
+            if (envp[i][len] && envp[i][len] == '=')
                 return (ft_strdup(envp[i] + len + 1));
         }
         i++;
@@ -32,35 +65,33 @@ static char	*find_env_value(char **envp, char *key, int len)
 }
 
 /**
- * @brief Expands an environment variable key to its corresponding value.
+ * @brief Expands an environment variable key and appends its value to the result.
  *
- * This function retrieves the value of an environment variable given its key. 
- * If the key is `"?"`, it returns a string representation of `ms->exit_status`.
- * If the key starts with a digit, an empty string is returned. Otherwise, 
- * it searches for the key in the environment variables.
+ * This function resolves an environment variable key to its corresponding value.
+ * - If the key is `"?"`, it converts `ms->exit_status` to a string.
+ * - If the key starts with a digit, it appends an empty string.
+ * - Otherwise, it searches for the key in the environment variables.
+ * 
+ * The expanded value is appended to `result` using `append_to_result()`.
  *
  * @param ms Pointer to the main shell structure containing `exit_status` and `envp`.
- * @param key The environment variable key (dynamically allocated).
+ * @param key The environment variable key.
  * @param key_len The length of the key.
+ * @param result Pointer to the string where the expanded value will be appended.
  *
- * @return A newly allocated string containing the variable's value, an empty string if 
- *         the key starts with a digit, or `NULL` if no match is found.
- *         The caller is responsible for freeing the returned string.
- *
- * @note The function frees the `key` argument before returning.
  */
- 
-char	*expand_variable(t_ms *ms, char *key, int key_len)
+
+void    expand_variable(t_ms *ms, char *key, int key_len, char **result)
 {
-    char	*expanded_value;
- 
+    char    *expanded;
+
     if (!key || !*key)
-        return (NULL);
+        return;
     if (key[0] == '?')
-        return ft_itoa(ms->exit_status);
-    if (ft_isdigit(key[0]))
-        return (ft_strdup(""));
-    expanded_value = find_env_value(ms->envp, key, key_len);
-    free(key);
-    return (expanded_value);
+        expanded = ft_itoa(ms->exit_status);
+    else if (ft_isdigit(key[0]))
+        expanded = ft_strdup("");
+    else
+        expanded = find_env_value(ms->envp, key, key_len);
+    append_to_result(result, expanded);
 }

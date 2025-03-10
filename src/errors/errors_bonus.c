@@ -105,6 +105,27 @@ void	print_unset_error(char **args, int i, t_ms *ms)
 }
 
 /**
+ * @brief Prints an error message indicating that flags are not supported.
+ *
+ * This function handles the printing of an error message when flags are passed as arguments in a command.
+ * It outputs a custom error message to `stderr`, including the name of the command (from `args[0]`) and a specific
+ * message indicating that flags are not supported in the shell.
+ * 
+ * @param args A pointer to the array of arguments, where `args[0]` is the command that invoked the error.
+ *
+ * @return None. The function does not return any value. It prints an error message to `stderr`.
+ *
+ */
+
+
+void	print_flag_error(char **args)
+{
+	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
+	ft_putstr_fd(args[0], STDERR_FILENO);
+	ft_putstr_fd(": flags are not supported in minishell\n", STDERR_FILENO);
+}
+
+/**
  * @brief Prints an error message when an invalid identifier is passed to the `export` command.
  * 
  * This function prints an error message to `stderr` when the user tries to export an environment
