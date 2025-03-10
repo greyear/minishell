@@ -56,7 +56,6 @@ LEX_FILES		=	tokenization.c \
 PARS_FILES		=	cmd_creation.c \
 					cmd_blocks.c \
 					cmd_cleaning.c \
-					split_bonus.c \
 					main.c
 BUILT_FILES		=	cd.c \
 					cd_utils.c \
