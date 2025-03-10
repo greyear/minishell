@@ -15,7 +15,11 @@ static char	*get_cd_target(t_ms *ms, char **args)
 	if (args[1][0] != '/')
 	{
 		if (getcwd(cwd, sizeof(cwd)) == NULL)
+		{
+			ms->exit_status = 1;
+			perror("cd: getcwd failed");
 			return (NULL);
+		}
 		return (build_relative_path(args[1], cwd));
 	}
 	return (ft_strdup(args[1]));
@@ -77,8 +81,8 @@ static int	cd_error(char **args, t_ms *ms)
 		return (0);
 	if (args[2])
 	{
-		ft_putstr_fd(OWN_ERR_MSG, 2);
-		ft_putstr_fd("cd: too many arguments\n", 2);
+		ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
+		ft_putstr_fd("cd: too many arguments\n", STDERR_FILENO);
 		ms->exit_status = 1;
 		return (1);
 	}
@@ -99,6 +103,7 @@ void	handle_cd(char **args, t_ms *ms)
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
 		free(target_dir);
+		perror("cd: getcwd failed");
 		ms->exit_status = 1;
 		return;
 	}
