@@ -78,6 +78,7 @@ EXEC_FILES		=	builtin_check.c \
 					one_child.c \
 					multiple_childs.c \
 					find_path_and_execve.c \
+					cmd_checks.c \
 					pipes.c \
 					pipex_bonus.c \
 					path_bonus.c
