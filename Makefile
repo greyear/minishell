@@ -79,9 +79,9 @@ EXEC_FILES		=	builtin_check.c \
 					multiple_childs.c \
 					find_path_and_execve.c \
 					cmd_checks.c \
-					pipes.c \
-					pipex_bonus.c
-REDIR_FILES		=	fds.c \
+					pipes.c
+REDIR_FILES		=	open_bonus.c \
+					fds.c \
 					heredoc.c \
 					generate_filename.c
 ENVP_FILES		=	check_all_tokens.c \
@@ -95,9 +95,12 @@ READING_FILES	=	history.c \
 					history_file.c
 #delete initialize_struct
 #SIGN_FILES		=	
-CLEAN_FILES		=	arr_cleaning.c
-#put in one file?
-ERR_FILES		=	errors_bonus.c
+CLEAN_FILES		=	arr_cleaning.c \
+					clean_struct.c \
+					close_fds.c
+ERR_FILES		=	errors_bonus.c \
+					builtin_error.c \
+					exit_error.c
 
 SRC_FILES		=	$(addprefix $(BNF_DIR)/, $(BNF_FILES)) \
 					$(addprefix $(LEX_DIR)/, $(LEX_FILES)) \
