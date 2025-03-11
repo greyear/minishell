@@ -46,7 +46,7 @@ t_token *tokenization(char *str, t_ms *ms) //store str in ms?
 
 	flags_for_redirections(first);
 	
-	/*printf("\ninside tokenization before the expantion\n");
+	/*printf("\ninside tokenization before the expansion\n");
 	print_tokens(first);*/
 	if (check_list_for_expansions(first, ms) == 1) //changed the order with uniting
 	{
