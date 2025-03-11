@@ -48,7 +48,7 @@ static void	initialize_history(t_ms *ms)
 static void	initialize_heredoc(t_ms *ms)
 {
 	ms->heredoc_count = 0;
-	ms->heredoc_files = malloc(sizeof(char *) * 100); // Support 100 heredocs max
+	/*ms->heredoc_files = malloc(sizeof(char *) * 100); // Support 100 heredocs max
 	if (!ms->heredoc_files)
 	{
 		perror("heredoc: memory allocation failed");
@@ -56,7 +56,8 @@ static void	initialize_heredoc(t_ms *ms)
 		exit(1);
 	}
 	ft_memset(ms->heredoc_files, 0, sizeof(char *) * 100); // Set all entries to NULL
-	ms->heredoc_files[0] = NULL;
+	ms->heredoc_files[0] = NULL;*/
+	ms->heredoc_files = NULL;
 }
 
 static void	initialize_fds(t_ms *ms)

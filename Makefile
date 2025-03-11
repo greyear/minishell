@@ -96,7 +96,8 @@ READING_FILES	=	history.c \
 #delete initialize_struct
 #SIGN_FILES		=	
 CLEAN_FILES		=	arr_cleaning.c \
-					clean_struct.c
+					clean_struct.c \
+					close_fds.c
 ERR_FILES		=	errors_bonus.c \
 					builtin_error.c \
 					exit_error.c

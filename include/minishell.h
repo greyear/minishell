@@ -115,7 +115,6 @@ void	        execute_command(char **envp, char **cmd);
 void	        make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms);
 void            pipe_process(int prev_pipe, int next_pipe);
 void            redirect_process(int infile, int outfile);
-void	        reset_heredocs(t_ms *ms);
 void            pipe_or_redir(t_cmd *cur, int *pipe_fd, int i, int num_cmds, int cur_fd);
 void	        check_if_dir_or_file(char **envp, char **cmds);
 void            check_if_dot(char **cmds);
@@ -139,8 +138,8 @@ void			put_outfile_fd(t_token *token, t_cmd *cmd);
 void			check_access(char *filename, t_oper operation);
 char            *generate_heredoc_filename(int index);
 void	        put_heredoc_fd(t_token *token, t_cmd *cmd, t_ms *ms);
-//int             handle_heredoc(t_ms *ms, char *limiter);
 int             handle_heredoc(t_ms *ms, char *limiter, t_token *token);
+void	        reset_heredocs(t_ms *ms);
 
 //Reading + history
 t_bool			open_read_history_file(t_ms *ms);
@@ -173,5 +172,8 @@ void			cleanup_heredocs(char **filenames);
 void            close_pipes(int num_cmds, int **pipe_fd);
 void            cleanup_after_execution(t_pipe *p);
 void	        close_fds(t_cmd *cmd);
+void            close_all_fds(t_pipe *p, t_ms *ms);
+void            close_file(int file);
+void            close_fds2(int fd1, int fd2);
 
 #endif

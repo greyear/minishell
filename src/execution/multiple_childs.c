@@ -30,33 +30,27 @@ void    wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms)
     }
 }
 
-static void	close_fds2(int fd1, int fd2)
+static void child_process(t_cmd *cur, t_pipe *p)
 {
-	if (fd1 != -1)
-		close(fd1);
-	if (fd2 != -1)
-		close(fd2);
+    setup_pipes(p->fd, p->cmd_num, p->num_cmds, p->cur_fd);
+    redirect_process(cur->infile, cur->outfile);
+    close_all_fds(p, p->ms);
+    if (is_builtin(cur))
+    {
+        handle_builtin(cur, p->ms, 1);
+        exit(p->ms->exit_status);
+    }
+    else
+        execute_command(p->ms->envp, cur->args);
 }
 
-static void close_file(int file)
-{
-    if (file != -1)
-        close(file);
-}
-
-static void close_all_fds(t_pipe *p, t_ms *ms)
-{
-    close_file(p->fd[0]);
-    close_file(p->fd[1]);
-    close(p->cur_fd);
-    close(ms->saved_stdin);
-    close(ms->saved_stdout);
-}
-
-static void fork_and_execute(t_cmd *cur, t_pipe *p, t_ms *ms)
+static void fork_and_execute(t_cmd *cur, t_pipe *p)
 {
     if (pipe(p->fd) == -1)
-        exit(20);
+    {
+        perror("pipe failed");
+        exit(1);
+    }
     p->pids[p->cmd_num] = fork(); 
     if (p->pids[p->cmd_num] < 0)
     {
@@ -64,18 +58,7 @@ static void fork_and_execute(t_cmd *cur, t_pipe *p, t_ms *ms)
         return;
     }
     if (p->pids[p->cmd_num] == 0)
-    {
-        setup_pipes(p->fd, p->cmd_num, p->num_cmds, p->cur_fd);
-        redirect_process(cur->infile, cur->outfile);
-        close_all_fds(p, ms);
-        if (is_builtin(cur))
-        {
-            handle_builtin(cur, p->ms, 1);
-            exit(p->ms->exit_status);
-        }
-        else
-            execute_command(p->ms->envp, cur->args);
-    }
+        child_process(cur, p);
     close_fds2(p->cur_fd, p->fd[1]);
     p->cur_fd = p->fd[0];
     p->last_pid = p->pids[p->cmd_num];
@@ -109,7 +92,7 @@ void    make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
             p.cmd_num++;
             continue;
         }
-        fork_and_execute(cur, &p, ms);
+        fork_and_execute(cur, &p);
         cur = cur->next;
         p.cmd_num++;
     }

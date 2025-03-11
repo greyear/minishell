@@ -1,6 +1,25 @@
 #include "../../include/minishell.h"
 
 /**
+ * @brief Resets the heredoc files and count for the current execution state.
+ * 
+ * This function allocates memory for the `heredoc_files` array, setting it to hold 100 pointers to strings, and
+ * initializes the array to zero using `ft_memset`. It also resets the `heredoc_count` to 0, indicating no heredocs
+ * are currently being tracked. This is useful for clearing the heredoc state before starting a new execution cycle.
+ * 
+ * @param ms A pointer to the `t_ms` structure that holds the global execution state, including the heredoc files
+ *           and count.
+ * 
+ * @return This function does not return; it modifies the `ms` structure to reset the heredoc state.
+ */
+
+ void	reset_heredocs(t_ms *ms)
+ {
+	 ms->heredoc_count = 0;
+	 ms->heredoc_files = NULL;
+ }
+
+/**
  * @brief Opens a file for a heredoc and returns its file descriptor.
  * 
  * This function attempts to open a file specified by `filename` for writing. If the file does not exist, it is created.

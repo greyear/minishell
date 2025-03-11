@@ -35,6 +35,8 @@ void	cleanup_heredocs(char **filenames)
     int		i;
 	
 	i = 0;
+	if (!filenames)
+		return;
     while (filenames[i])
 	{
         if (unlink(filenames[i]) == -1)
@@ -71,7 +73,8 @@ void	cleanup_after_execution(t_pipe *p)
 		p->pids = NULL;
 	}
     cleanup_heredocs(p->ms->heredoc_files);
-    p->ms->heredoc_files = malloc(sizeof(char *) * 100);
-    ft_memset(p->ms->heredoc_files, 0, sizeof(char *) * 100);
+    //p->ms->heredoc_files = malloc(sizeof(char *) * 100);
+    //ft_memset(p->ms->heredoc_files, 0, sizeof(char *) * 100);
     p->ms->heredoc_count = 0;
+	p->ms->heredoc_files = NULL;
 }
