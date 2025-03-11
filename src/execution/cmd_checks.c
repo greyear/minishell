@@ -69,35 +69,3 @@ void    check_if_dot(char **cmds)
         exit(127);
     }
 }
-
-/**
- * @brief Checks if a file exists and is executable, then attempts to execute it.
- * 
- * This function checks if the provided command (`cmds[0]`) exists and is executable using `access`. If the
- * command exists and is executable, it is executed with `execve`. If the file exists but is not executable,
- * a permission denied error is printed, and the process exits with status 126. If the file does not exist,
- * an error indicating that the command was not found is printed, and the process exits with status 127.
- * 
- * @param envp An array of environment variables used for the `execve` function.
- * @param cmds An array of strings where `cmds[0]` is the command to be checked and executed.
- * 
- * @return This function does not return; it either executes the command or exits the process with an appropriate
- *         error status.
- */
-
-
-void    check_if_file(char **envp, char **cmds)
-{
-    if (access(cmds[0], F_OK) == 0)
-    {
-        if (access(cmds[0], X_OK) == 0)
-            execve(cmds[0], cmds, envp);
-        else
-        {
-			print_cmd_error(cmds[0], PERM_DEN);
-            exit(126);
-        }
-    }
-    print_cmd_error(cmds[0], NO_CMD);
-    exit(127);
-}

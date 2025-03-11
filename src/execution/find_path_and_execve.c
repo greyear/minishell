@@ -1,18 +1,17 @@
 #include "../../include/minishell.h"
 
 /**
- * @brief Constructs the full path of a command by checking each directory in the PATH.
+ * @brief Constructs the full path of the command by combining directories from the `PATH` variable and the command name.
  * 
- * This function iterates over the directories in the `paths` array, attempting to join each
- * directory with the provided command (`cmd`). It checks if the resulting path exists and
- * is executable. If so, the full path to the command is returned.
+ * This function iterates over each directory in the `paths` array (extracted from the `PATH` environment variable) and 
+ * attempts to combine it with the command name (`cmd`) to create a potential full path. It checks if the constructed 
+ * full path exists using `access()`. If it finds an existing file at that path, it returns the full path. If no valid path 
+ * is found after checking all directories, it returns `NULL`.
  * 
- * @param paths An array of strings representing directories in the system's PATH environment.
- *              Each element in the array is a directory to search for the command.
- * @param cmd A string representing the command name to search for in the directories.
+ * @param paths An array of directory paths from the `PATH` environment variable.
+ * @param cmd The command name to search for within the directories in `paths`.
  * 
- * @return The full path to the command if found and executable, or `NULL` if the command is not
- *         found or not executable in any of the directories.
+ * @return Returns the full path to the command if it exists, otherwise returns `NULL`.
  */
 
 static char	*make_full_path(char **paths, char *cmd)
@@ -31,8 +30,7 @@ static char	*make_full_path(char **paths, char *cmd)
         free(new_full_path);
         if (!full_cmd_path)
             return (NULL);
-        if (access(full_cmd_path, F_OK) == 0
-			&& access(full_cmd_path, X_OK) == 0)
+        if (access(full_cmd_path, F_OK) == 0)
             return (full_cmd_path);
         free(full_cmd_path);
         i++;
@@ -41,18 +39,17 @@ static char	*make_full_path(char **paths, char *cmd)
 }
 
 /**
- * @brief Finds the full path of a command by checking the directories listed in the PATH environment variable.
+ * @brief Searches the `PATH` environment variable for the specified command.
  * 
- * This function looks for the "PATH" variable in the environment variables (`envp`). Once found, it splits
- * the value of "PATH=" into individual directories and attempts to find the full path of the command (`cmds[0]`)
- * in these directories using `make_full_path`. If the command starts with `/` or `.`, it directly checks if
- * it is a directory or file using the `check_if_dir_or_file` function.
+ * This function iterates through the environment variables to find the `PATH` variable, which contains a colon-separated 
+ * list of directories. It then attempts to find the command specified in `cmds[0]` by searching through the directories 
+ * listed in `PATH`. If the command is found, it returns the full path to the command. If the command is not found or 
+ * `PATH` is not set, it returns `NULL`.
  * 
- * @param envp An array of environment variables.
- * @param cmds An array of strings, where `cmds[0]` is the command name whose path needs to be determined.
+ * @param envp An array of environment variables, including the `PATH` variable.
+ * @param cmds An array of command arguments, where `cmds[0]` is the command name to search for.
  * 
- * @return The full path to the command if found, or `NULL` if the command is not found in any directory listed
- *         in the PATH or if the command is an invalid directory/file.
+ * @return Returns the full path to the command if found, otherwise returns `NULL`.
  */
 
 static char *find_path_from_envp(char **envp, char **cmds)
@@ -64,9 +61,6 @@ static char *find_path_from_envp(char **envp, char **cmds)
 
 	i = 0;
 	full_path = NULL;
-    check_if_dot(cmds);
-	if (cmds[0][0] == '/' || cmds[0][0] == '.')
-        check_if_dir_or_file(envp, cmds);
     while (envp[i])
     {
         if (ft_strncmp(envp[i], "PATH=", 5) == 0)
@@ -85,33 +79,100 @@ static char *find_path_from_envp(char **envp, char **cmds)
 }
 
 /**
- * @brief Finds and executes the command, either by resolving its full path or directly executing the file.
+ * @brief Handles the execution of commands with absolute or relative paths.
  * 
- * This function checks if a valid command is provided in the `cmd` array. If the command is invalid, it prints an
- * error and exits the process with status 127. It then attempts to find the command's full path using the `find_path_from_envp`
- * function. If the path is found, the command is executed using `execve`. If the path is not found, the function checks if the
- * command is a valid file using `check_if_file`. If the command is not found or not executable, an appropriate error is printed.
+ * This function checks if the command specified by `cmd[0]` (which is a path) exists and is executable. If the 
+ * command exists and has execute permissions, it calls `execve` to execute the command. If the command exists but 
+ * does not have execute permissions, it prints a "permission denied" error and exits with status 126. If the 
+ * command does not exist, the function does nothing and control returns to the caller.
  * 
- * @param envp An array of environment variables used for the `execve` function.
- * @param cmd An array of strings, where `cmd[0]` is the command to be executed.
+ * @param envp An array of environment variables, which is passed to `execve`.
+ * @param cmd An array of command arguments, where `cmd[0]` is the absolute or relative path to the command.
  * 
- * @return This function does not return; it either executes the command or exits the process with an appropriate error status.
+ * @return This function does not return. If the command is not found or is not executable, the program exits 
+ *         with status 126 for permission denied.
  */
 
-void	execute_command(char **envp, char **cmd)
+void handle_absolute_or_relative_path(char **envp, char **cmd)
 {
-	char	*path;
+    if (access(cmd[0], F_OK) == 0)
+    {
+        if (access(cmd[0], X_OK) == 0)
+            execve(cmd[0], cmd, envp);
+        print_cmd_error(cmd[0], PERM_DEN);
+        exit(126);
+    }
+}
+
+/**
+ * @brief Handles the case when the `PATH` environment variable is not set and attempts to execute a command directly.
+ * 
+ * This function checks if the command provided as the first argument (`cmd[0]`) exists and is executable. If the 
+ * command exists and has execute permissions, it calls `execve` to run the command. If the command exists but does not 
+ * have execute permissions, it prints a permission denied error and exits with status 126. If the command does not 
+ * exist, it prints a "command not found" error and exits with status 127.
+ * 
+ * @param envp An array of environment variables, which is passed to `execve`.
+ * @param cmd An array of command arguments, where `cmd[0]` is the command to be executed.
+ * 
+ * @return This function does not return. If the command is not found or executable, the program exits with 
+ *         an appropriate status code (127 for command not found, 126 for permission denied).
+ */
+
+void    handle_no_path_variable(char **envp, char **cmd)
+{
+    if (access(cmd[0], F_OK) == 0)
+    {
+        if (access(cmd[0], X_OK) == 0)
+            execve(cmd[0], cmd, envp);
+        print_cmd_error(cmd[0], PERM_DEN);
+        exit(126);
+    }
+    print_cmd_error(cmd[0], NO_CMD);
+    exit(127);
+}
+
+/**
+ * @brief Executes a command by finding the correct executable path and invoking `execve`.
+ * 
+ * This function is responsible for executing a command in a child process. It checks if the command is valid and 
+ * if the `PATH` environment variable is set. If the command is an absolute or relative path, it directly attempts to 
+ * execute it. If the `PATH` variable is not set, it looks for the command in directories specified by the `PATH` 
+ * variable. If the command cannot be executed or found, an error is printed and the program exits.
+ * 
+ * @param envp An array of environment variables, including the `PATH` variable, used to locate the command.
+ * @param cmd An array of command arguments, where `cmd[0]` is the command to be executed.
+ * 
+ * @return This function does not return if the command is executed successfully. If the command cannot be executed,
+ *         an error is printed, and the program exits with an appropriate status code (127 for command not found, 
+ *         126 for permission denied).
+ */
+
+void    execute_command(char **envp, char **cmd)
+{
+    char    *path;
 
     if (!cmd || !*cmd)
     {
         print_cmd_error(NULL, 0);
         exit(127);
     }
+    check_if_dot(cmd);
+    if (cmd[0][0] == '/' || cmd[0][0] == '.')
+        handle_absolute_or_relative_path(envp, cmd);
+    if (!get_env_value("PATH", envp))
+        handle_no_path_variable(envp, cmd);
+
+    if (cmd[0][0] == '/' || cmd[0][0] == '.')
+        check_if_dir_or_file(envp, cmd);
     path = find_path_from_envp(envp, cmd);
-    if (path)
+    if (!path)
     {
-        execve(path, cmd, envp);
-        free(path);
+        print_cmd_error(cmd[0], NO_CMD);
+        exit(127);
     }
-    check_if_file(envp, cmd);
+    execve(path, cmd, envp);
+    print_cmd_error(path, PERM_DEN);
+    free(path);
+    exit(126);
 }
