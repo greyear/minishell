@@ -7,7 +7,7 @@
 #include <readline/history.h>
 
 
-void print_tokens(t_token *token_list)
+/*void print_tokens(t_token *token_list)
 {
 	t_token *cur = token_list;
 
@@ -17,7 +17,7 @@ void print_tokens(t_token *token_list)
 		printf("Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->type, cur->data, cur->quote, cur->specific_redir, cur->ambiguous, cur->file);
 		cur = cur->next;
 	}
-}
+}*/
 /*
 static void print_blocks(t_block *block_list)
 {
@@ -96,32 +96,24 @@ int main(int argc, char **argv, char **envp)
 	int err_syntax;
 	int		i;
 
-	// Args check
 	if (argc != 1 && argv)
 	{
 		printf("Usage: ./minishell\n");
 		return (1);
 	}
-
 	ms = initialize_struct(envp);
 	check_shlvl(ms);
-	if (!ms)
-	{
-		printf("Error: failed to initialize shell structure\n");
-		return (1);
-	}
-
 	while (1)
 	{
 		// Reading the input
 		inout(ms->saved_stdin, ms->saved_stdout); // Restore STDIN and STDOUT
-		
+
 		// FOR USUAL EXECUTION
-		//input = readline("minishell> ");
+		input = readline("minishell> ");
 
 
 		//FOR TESTER
-		if (isatty(fileno(stdin))) // If running interactively
+		/*if (isatty(fileno(stdin))) // If running interactively
 			input = readline("minishell> ");
 		else // If receiving input from another program
 		{
@@ -130,7 +122,7 @@ int main(int argc, char **argv, char **envp)
 				break;
 			input = ft_strtrim(line, "\n"); // Remove newline from input
 			free(line);
-		}
+		}*/
 		if (!input) // EOF check (Ctrl+D)
 		{
 			printf("exit\n");
@@ -197,6 +189,8 @@ int main(int argc, char **argv, char **envp)
 				make_multiple_childs(i, ms->cmds, ms);
 		}
 		close_fds(ms->cmds);
+		close(ms->saved_stdin);
+		close(ms->saved_stdout);
 		clean_token_list(&(ms->tokens));
 		clean_block_list(&(ms->blocks));
 		clean_cmd_list(&(ms->cmds));

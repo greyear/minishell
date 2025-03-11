@@ -30,23 +30,6 @@ void    wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms)
     }
 }
 
-/**
- * @brief Creates a child process to execute a command, handling pipes, redirections, and built-ins.
- * 
- * This function forks the process to create a child. In the child process, it first sets up the necessary pipes
- * or redirections using `pipe_or_redir`, then checks if the command is a built-in. If it is a built-in, the
- * appropriate handler is called, and the child process exits with the corresponding exit status. If the command
- * is not a built-in, the command is executed using `execute_command`. In the parent process, it closes the pipe
- * file descriptors for previous commands (if any) and updates the `last_pid` to the child process ID.
- * 
- * @param cur A pointer to the `t_cmd` structure representing the current command to be executed.
- * @param i The index of the current command, used to manage pipes and redirections.
- * @param p A pointer to the `t_exec_data` structure that holds the execution p, including pipes,
- *             environment variables, and the last process ID.
- * 
- * @return This function does not return; it either forks a new process to execute the command or handles errors.
- */
-
 static void	close_fds2(int fd1, int fd2)
 {
 	if (fd1 != -1)
@@ -55,15 +38,25 @@ static void	close_fds2(int fd1, int fd2)
 		close(fd2);
 }
 
+static void close_file(int file)
+{
+    if (file != -1)
+        close(file);
+}
+
+static void close_all_fds(t_pipe *p, t_ms *ms)
+{
+    close_file(p->fd[0]);
+    close_file(p->fd[1]);
+    close(p->cur_fd);
+    close(ms->saved_stdin);
+    close(ms->saved_stdout);
+}
+
 static void fork_and_execute(t_cmd *cur, t_pipe *p, t_ms *ms)
 {
-    //pid_t pid;
-
-    //pid = fork();
     if (pipe(p->fd) == -1)
         exit(20);
-    /*printf("\nfd[0]: %d\n", p->fd[0]);
-    printf("\nfd[1]: %d\n", p->fd[1]);*/
     p->pids[p->cmd_num] = fork(); 
     if (p->pids[p->cmd_num] < 0)
     {
@@ -72,16 +65,9 @@ static void fork_and_execute(t_cmd *cur, t_pipe *p, t_ms *ms)
     }
     if (p->pids[p->cmd_num] == 0)
     {
-
-        pipe_or_redir(cur, p->fd, p->cmd_num, p->num_cmds, p->cur_fd);
-        close(p->fd[0]);
-        if (p->cur_fd != -1)
-            close(p->cur_fd);
-        close(p->fd[1]);
-        /*if (p->cmd_num == 0)
-		    close(p->fd[0]);*/
-        close(ms->saved_stdin);
-        close(ms->saved_stdout);
+        setup_pipes(p->fd, p->cmd_num, p->num_cmds, p->cur_fd);
+        redirect_process(cur->infile, cur->outfile);
+        close_all_fds(p, ms);
         if (is_builtin(cur))
         {
             handle_builtin(cur, p->ms, 1);
@@ -90,48 +76,31 @@ static void fork_and_execute(t_cmd *cur, t_pipe *p, t_ms *ms)
         else
             execute_command(p->ms->envp, cur->args);
     }
-    /*if (p->cmd_num == 0)
-	close(p->fd[0]);*/
     close_fds2(p->cur_fd, p->fd[1]);
     p->cur_fd = p->fd[0];
-    //printf("\ncur_fd: %d\n", p->cur_fd);
     p->last_pid = p->pids[p->cmd_num];
 }
 
-/**
- * @brief Creates multiple child processes to execute a series of commands, handling pipes and execution flow.
- * 
- * This function creates multiple child processes to execute a series of commands (represented by `cmds`), handling
- * pipes between commands, and ensuring proper execution flow. For each command, it checks if there are valid arguments,
- * then forks a child process to execute the command using `fork_and_execute`. The function also sets up pipes for inter-process
- * communication using `setup_pipes` and performs necessary cleanup after execution using `cleanup_after_execution`.
- * 
- * @param num_cmds The number of commands to be executed, dictating how many child processes will be created.
- * @param cmds A pointer to the first `t_cmd` structure in the list of commands to be executed.
- * @param ms A pointer to the `t_ms` structure that holds the global execution state, such as exit status.
- * 
- * @return This function does not return; it manages the creation and execution of multiple child processes.
- */
+void    initialize_p(t_pipe *p, int num_cmds, t_ms *ms)
+{
+    p->num_cmds = num_cmds;
+    p->ms = ms;
+    p->last_pid = -1;
+    p->cmd_num = 0;
+    p->cur_fd = -1;
+    p->pids = (pid_t *)malloc((p->num_cmds) * sizeof(pid_t));
+}
 
 void    make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
 {
     t_pipe  p;
     t_cmd   *cur;
-    int     i;
 
-    i = 0;
     cur = cmds;
-    p.num_cmds = num_cmds;
-    p.ms = ms;
-    //p.pipe_fd = NULL;
-    p.last_pid = -1;
-    p.cmd_num = 0;
-    p.cur_fd = -1;
-    p.pids = (pid_t *)malloc((p.num_cmds) * sizeof(pid_t));
-    //setup_pipes(&p);
-    /*if (!p.pipe_fd)
-        return;*/
-    while (p.cmd_num < num_cmds && cur)
+    initialize_p(&p, num_cmds, ms);
+    if (!p.pids)
+        return;
+    while (p.cmd_num < p.num_cmds && cur)
     {
         if (!cur->args || !cur->args[0])
         {
@@ -144,6 +113,7 @@ void    make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
         cur = cur->next;
         p.cmd_num++;
     }
-    close(p.cur_fd);
+    close_all_fds(&p, ms);
+    wait_for_children(p.num_cmds, p.last_pid, p.ms);
     cleanup_after_execution(&p);
 }

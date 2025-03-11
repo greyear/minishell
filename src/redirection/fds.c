@@ -87,7 +87,15 @@ void	put_infile_fd(t_token *token, t_cmd *cmd)
 
 void	redirect_process(int infile, int outfile)
 {
-	if (infile != NO_FD && infile != DEF)
+	if (infile == NO_FD || outfile == NO_FD)
+	{
+		if (outfile != NO_FD)
+			close(outfile);
+		if (infile != NO_FD)
+			close(infile);
+		exit(1);
+	}
+	if (infile != DEF)
 	{
 		if (dup2(infile, STDIN_FILENO) == -1) //It duplicates previous pipes read-end to stadard input
 		{
@@ -96,7 +104,7 @@ void	redirect_process(int infile, int outfile)
 		}
 		close(infile);
 	}
-	if (outfile != NO_FD && outfile != DEF)
+	if (outfile != DEF)
 	{
 		if (dup2(outfile, STDOUT_FILENO) == -1) //It duplicates the next pipes write-end to standard output
 		{
