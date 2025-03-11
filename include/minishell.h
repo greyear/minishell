@@ -113,17 +113,22 @@ int				if_children_needed(t_cmd *cmd);
 void            make_one_child(t_cmd *cmd, t_ms *ms);
 void	        execute_command(char **envp, char **cmd);
 void	        make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms);
-void            pipe_process(int *prev_pipe, int *next_pipe);
+void            pipe_process(int prev_pipe, int next_pipe);
 void            redirect_process(int infile, int outfile);
 void	        reset_heredocs(t_ms *ms);
-void	        setup_pipes(t_exec_data *data);
-void            pipe_or_redir(t_cmd *cur, int **pipe_fd, int i, int num_cmds);
+void	        setup_pipes(t_pipe *p);
+//void            pipe_or_redir(t_cmd *cur, int *pipe_fd, int i, int num_cmds);
+void    pipe_or_redir(t_cmd *cur, int *pipe_fd, int i, int num_cmds, int cur_fd);
 void            wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms);
+void	        check_if_dir_or_file(char **envp, char **cmds);
+void            check_if_dot(char **cmds);
+void            check_if_file(char **envp, char **cmds);
+
 
 //Envp
 int				check_list_for_expansions(t_token *first, t_ms *ms);
 int				expand_in_token(t_token *cur, t_ms *ms);
-char	        *expand_variable(t_ms *ms, char *key, int key_len);
+void            expand_variable(t_ms *ms, char *key, int key_len, char **result);
 t_envp			*envp_from_list(t_envp *list, char *name);
 t_bool			is_envp_symbol(int c);
 t_bool			is_envp_first_symbol(int c);
@@ -159,6 +164,7 @@ void			print_syntax_error(char *text);
 void	        print_numeric_error(char **array);
 void	        print_too_many_args_error(void);
 void	        print_env_error(char **args);
+void	        print_flag_error(char **args);
 
 //Cleaners
 void			clean_arr(char ***arr);
@@ -167,7 +173,7 @@ void			clean_struct(t_ms *ms);
 void			clean_struct_fields(t_ms *ms);
 void			cleanup_heredocs(char **filenames);
 void            close_pipes(int num_cmds, int **pipe_fd);
-void            cleanup_after_execution(t_exec_data *data);
+void            cleanup_after_execution(t_pipe *p);
 void	        close_fds(t_cmd *cmd);
 
 #endif
