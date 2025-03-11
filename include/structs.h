@@ -58,12 +58,16 @@ typedef struct s_envp
 	struct s_envp	*next;
 }	t_envp;
 
-typedef struct s_exec_data
+typedef struct s_pipe
 {
-    int     **pipe_fd;
+    //int     **pipe_fd;
     int     num_cmds;
+	int		cmd_num;
     pid_t   last_pid;
+	pid_t	*pids;
+	int		fd[2];
+	int		cur_fd;
     t_ms    *ms;
-}   t_exec_data;
+}   t_pipe;
 
 #endif
