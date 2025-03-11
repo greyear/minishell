@@ -1,4 +1,3 @@
-
 #include "../../include/minishell.h"
 
 void	clean_arr(char ***arr)
@@ -31,22 +30,24 @@ void	free_int_array(int **array)
 	free(array);
 }
 
-void cleanup_heredocs(char **filenames)
+void	cleanup_heredocs(char **filenames)
 {
-    int	i;
+    int		i;
 	
 	i = 0;
+	if (!filenames)
+		return;
     while (filenames[i])
 	{
-        if (unlink(filenames[i]) == -1)  // Remove file
+        if (unlink(filenames[i]) == -1)
 		{
 			perror("unlink fail\n");
-			return;
+			exit(1);
 		}
-		free(filenames[i]);    // Free the memory for the filename
+		free(filenames[i]);
         i++;
     }
-    free(filenames);  // Free the array of filenames
+    free(filenames);
 }
 
 void	close_fds(t_cmd *cmd)
@@ -64,85 +65,11 @@ void	close_fds(t_cmd *cmd)
 	}
 }
 
-void	cleanup_after_execution(t_pipe *p)
+void	free_pids(t_pipe *p)
 {
-	//close_pipes(p->num_cmds, p->fd);
-    wait_for_children(p->num_cmds, p->last_pid, p->ms);
 	if (p->pids)
 	{
 		free(p->pids);
 		p->pids = NULL;
 	}
-    cleanup_heredocs(p->ms->heredoc_files);
-    p->ms->heredoc_files = malloc(sizeof(char *) * 100);
-    ft_memset(p->ms->heredoc_files, 0, sizeof(char *) * 100);
-    p->ms->heredoc_count = 0;
 }
-
-void    close_pipes(int num_cmds, int **pipe_fd)
-{
-    int     i;
-
-    i = 0;
-    while (i < num_cmds - 1)
-    {
-        if (pipe_fd[i])
-        {
-            close(pipe_fd[i][0]);
-            close(pipe_fd[i][1]);
-            free(pipe_fd[i]);
-        }
-        i++;
-    }
-    if (pipe_fd)
-        free(pipe_fd);
-}
-
-/**
- * @brief Frees all allocated memory in ms structure.
- * 
- * This function cleans up and deallocates all dynamically allocated resources 
- * within the `t_ms` structure, including environment variables, token lists, 
- * blocks, and other. Finally, it frees the `t_ms` structure itself.
- * 
- * @param ms A pointer to the `t_ms` structure to be cleaned. If `ms` is NULL, 
- *        the function does nothing.
- */
- void	clean_struct(t_ms *ms)
- {
-	if (!ms)
-		return ;
-	if (ms->envp)
-		clean_arr(&(ms->envp));
-	if (ms->exported)
-		clean_arr(&(ms->exported));
-	if (ms->heredoc_files)
-		clean_arr(&(ms->heredoc_files));
-	if (ms->tokens)
-		clean_token_list(&(ms->tokens));
-	if (ms->blocks)
-		clean_block_list(&(ms->blocks));
-	if (ms->heredoc_files)
-		cleanup_heredocs(ms->heredoc_files);
-	if (ms->saved_stdin != NO_FD)
-		close(ms->saved_stdin);
-	if (ms->saved_stdout != NO_FD)
-		close(ms->saved_stdout);
-	 /*if (ms->cmds)
-		 clean_cmd_list(&(ms->cmds));*/
-	free(ms);
- }
- 
- void	clean_struct_fields(t_ms *ms)
- {
-	 if (!ms)
-		 return ;
-	 if (ms->envp)
-	 {
-		 clean_arr(&(ms->envp));
-	 }
-	 if (ms->exported)
-	 {
-		 clean_arr(&(ms->exported));
-	 }
- }

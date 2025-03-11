@@ -15,6 +15,12 @@ void	check_access(char *filename, t_oper operation)
 			print_file_error(filename, NO_FILE);
 		else if (access(filename, W_OK) == -1)
 			print_file_error(filename, PERM_DEN);
+		else
+		{
+			ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
+			ft_putstr_fd(filename, STDERR_FILENO);
+			ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+		}
 	}
 }
 
@@ -71,23 +77,36 @@ void	put_infile_fd(t_token *token, t_cmd *cmd)
 }
 
 /**
- * @brief Redirects input and output streams for a process.
+ * @brief Redirects input and output file descriptors for a process.
  * 
- * This function duplicates the file descriptors for input and output. If the `infile` is not set to `NO_FD` or
- * `DEF`, it redirects the standard input (`STDIN_FILENO`) to the file descriptor specified by `infile`. Similarly, if
- * the `outfile` is not `NO_FD` or `DEF`, it redirects the standard output (`STDOUT_FILENO`) to the file descriptor
- * specified by `outfile`. If any `dup2` operation fails, the corresponding file descriptor is closed, and the program
- * exits with a status of `1`.
+ * This function handles the redirection of standard input (STDIN) and standard 
+ * output (STDOUT) for the process based on the provided file descriptors.
  * 
- * @param infile The input file descriptor to be redirected to `STDIN_FILENO`. If it is `NO_FD` or `DEF`, no redirection occurs.
- * @param outfile The output file descriptor to be redirected to `STDOUT_FILENO`. If it is `NO_FD` or `DEF`, no redirection occurs.
+ * If the `infile` or `outfile` are valid (not equal to `NO_FD`), the function
+ * duplicates the respective file descriptor to the corresponding standard input 
+ * or output. It closes the original file descriptors after redirection to avoid 
+ * resource leakage.
  * 
- * @return This function does not return; it modifies the process's input and output streams based on the provided file descriptors.
+ * If either `infile` or `outfile` is set to `NO_FD`, the function closes both 
+ * file descriptors and exits with an error code.
+ * 
+ * @param infile The file descriptor for standard input, or `NO_FD` to avoid redirection.
+ * @param outfile The file descriptor for standard output, or `NO_FD` to avoid redirection.
+ * 
+ * @return This function does not return; it exits the process if an error occurs during redirection.
  */
 
 void	redirect_process(int infile, int outfile)
 {
-	if (infile != NO_FD && infile != DEF)
+	if (infile == NO_FD || outfile == NO_FD)
+	{
+		if (outfile != NO_FD)
+			close(outfile);
+		if (infile != NO_FD)
+			close(infile);
+		exit(1);
+	}
+	if (infile != DEF)
 	{
 		if (dup2(infile, STDIN_FILENO) == -1) //It duplicates previous pipes read-end to stadard input
 		{
@@ -96,7 +115,7 @@ void	redirect_process(int infile, int outfile)
 		}
 		close(infile);
 	}
-	if (outfile != NO_FD && outfile != DEF)
+	if (outfile != DEF)
 	{
 		if (dup2(outfile, STDOUT_FILENO) == -1) //It duplicates the next pipes write-end to standard output
 		{
