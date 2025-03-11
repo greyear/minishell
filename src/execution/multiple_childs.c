@@ -160,5 +160,5 @@ void    make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
     }
     close_all_fds(&p, ms);
     wait_for_children(p.num_cmds, p.last_pid, p.ms);
-    cleanup_after_execution(&p);
+    free_pids(&p);
 }

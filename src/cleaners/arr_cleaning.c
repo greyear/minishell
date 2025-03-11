@@ -65,13 +65,11 @@ void	close_fds(t_cmd *cmd)
 	}
 }
 
-void	cleanup_after_execution(t_pipe *p)
+void	free_pids(t_pipe *p)
 {
 	if (p->pids)
 	{
 		free(p->pids);
 		p->pids = NULL;
 	}
-    p->ms->heredoc_count = 0;
-	p->ms->heredoc_files = NULL;
 }

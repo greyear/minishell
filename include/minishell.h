@@ -170,7 +170,7 @@ void			clean_struct(t_ms *ms);
 void			clean_struct_fields(t_ms *ms);
 void			cleanup_heredocs(char **filenames);
 void            close_pipes(int num_cmds, int **pipe_fd);
-void            cleanup_after_execution(t_pipe *p);
+void	        free_pids(t_pipe *p);
 void	        close_fds(t_cmd *cmd);
 void            close_all_fds(t_pipe *p, t_ms *ms);
 void            close_file(int file);
