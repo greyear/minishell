@@ -18,6 +18,8 @@
 void	execute_child(t_cmd *cmd, t_ms *ms)
 {
 	redirect_process(cmd->infile, cmd->outfile);
+    close(ms->saved_stdin);
+    close(ms->saved_stdout);
     if (is_builtin(cmd))
     {
         handle_builtin(cmd, ms, 1);
@@ -68,15 +70,9 @@ void	make_one_child(t_cmd *cmd, t_ms *ms)
     pid_t	pid;
     int		status;
 
-    ms->exit_status = 0;
     if (!cmd->args || !cmd->args[0])
         return;
-    if (cmd->infile == NO_FD || cmd->outfile == NO_FD)
-    {
-        ms->exit_status = 1;
-        return;
-    }
-	pid = fork();
+    pid = fork();
     if (pid < 0)
     {
         ms->exit_status = 1;
