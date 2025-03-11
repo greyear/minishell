@@ -15,6 +15,12 @@ void	check_access(char *filename, t_oper operation)
 			print_file_error(filename, NO_FILE);
 		else if (access(filename, W_OK) == -1)
 			print_file_error(filename, PERM_DEN);
+		else
+		{
+			ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
+			ft_putstr_fd(filename, STDERR_FILENO);
+			ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+		}
 	}
 }
 

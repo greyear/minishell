@@ -72,9 +72,6 @@ void	cleanup_after_execution(t_pipe *p)
 		free(p->pids);
 		p->pids = NULL;
 	}
-    cleanup_heredocs(p->ms->heredoc_files);
-    //p->ms->heredoc_files = malloc(sizeof(char *) * 100);
-    //ft_memset(p->ms->heredoc_files, 0, sizeof(char *) * 100);
     p->ms->heredoc_count = 0;
 	p->ms->heredoc_files = NULL;
 }
