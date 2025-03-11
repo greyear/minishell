@@ -102,6 +102,7 @@ void	put_files_for_redirections(t_token *cur)
 			{
 				cur->file = cur->next->file; //check it's created
 				//printf("new cur->file: %s\n", cur->file);
+				//printf("new cur->file: %s\n", cur->file);
 				free(deleted->data);
 			}
 			cur->quote = cur->next->quote;

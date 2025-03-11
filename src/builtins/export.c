@@ -126,6 +126,12 @@ static void	process_arguments(char **args, t_ms *ms)
 	int		i;
 
 	i = 1;
+	if (args[1][0] && args[1][0] == '-')
+	{
+		print_flag_error(args);
+		ms->exit_status = 2;
+		return;
+	}
 	while (args[i])
 	{
 		if (ft_strchr(args[i], '='))
@@ -157,8 +163,6 @@ void    handle_export(char **args, t_ms *ms)
 
     ms->exit_status = 0;
     arg_count = 0;
-	if (!ms)
-		return;
     if (!args || !*args)
 		return;
 	if (ft_strcmp(args[0], "export") != 0)
