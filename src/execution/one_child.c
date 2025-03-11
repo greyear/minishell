@@ -35,7 +35,6 @@ void	execute_child(t_cmd *cmd, t_ms *ms)
  * This function first checks if valid arguments and file descriptors are provided for the command. It then forks a
  * child process to execute the command using `execute_child`. After the child process completes, the parent process
  * waits for the child to exit using `waitpid`, and updates the global exit status based on the child's exit status.
- * Finally, the function cleans up any heredoc files and resets the heredoc state.
  * 
  * @param cmd A pointer to the `t_cmd` structure containing the command details, including arguments, input file,
  *            and output file for redirection.

@@ -1,5 +1,15 @@
 #include "../../include/minishell.h"
 
+/**
+ * @brief Allocates memory for a new `t_ms` structure and initializes it.
+ * 
+ * This function allocates memory for a `t_ms` structure and initializes the 
+ * `exit_status` field to 0. If memory allocation fails, it prints an error 
+ * message and exits the program.
+ * 
+ * @return A pointer to the newly allocated `t_ms` structure.
+ */
+
 static t_ms	*allocate_struct(void)
 {
 	t_ms *ms;
@@ -13,6 +23,20 @@ static t_ms	*allocate_struct(void)
 	ms->exit_status = 0;
 	return (ms);
 }
+
+/**
+ * @brief Initializes the environment variables in the `t_ms` structure.
+ * 
+ * This function copies the environment variables from `envp` into the 
+ * `ms->envp` and `ms->exported` arrays in the `t_ms` structure.
+ * 
+ * If memory allocation for either `ms->envp` or `ms->exported` fails, 
+ * the function prints an error message, cleans up the `t_ms` structure, 
+ * and exits the program with a failure status.
+ * 
+ * @param ms Pointer to the `t_ms` structure where the environment variables will be stored.
+ * @param envp The environment variables passed to the program.
+ */
 
 static void	initialize_envp(t_ms *ms, char **envp)
 {
@@ -45,20 +69,17 @@ static void	initialize_history(t_ms *ms)
 	}
 }
 
-static void	initialize_heredoc(t_ms *ms)
-{
-	ms->heredoc_count = 0;
-	/*ms->heredoc_files = malloc(sizeof(char *) * 100); // Support 100 heredocs max
-	if (!ms->heredoc_files)
-	{
-		perror("heredoc: memory allocation failed");
-		clean_struct(ms);
-		exit(1);
-	}
-	ft_memset(ms->heredoc_files, 0, sizeof(char *) * 100); // Set all entries to NULL
-	ms->heredoc_files[0] = NULL;*/
-	ms->heredoc_files = NULL;
-}
+/**
+ * @brief Saves the original standard input and output file descriptors.
+ * 
+ * This function duplicates `STDIN_FILENO` and `STDOUT_FILENO` to store 
+ * their original values in `ms->saved_stdin` and `ms->saved_stdout`.
+ * 
+ * If `dup()` fails, it prints an error message, cleans up the `t_ms` structure, 
+ * and exits the program with a failure status.
+ * 
+ * @param ms Pointer to the `t_ms` structure where the file descriptors are stored.
+ */
 
 static void	initialize_fds(t_ms *ms)
 {
@@ -78,6 +99,22 @@ static void	initialize_fds(t_ms *ms)
 	}
 }
 
+/**
+ * @brief Initializes and allocates memory for the main shell structure.
+ * 
+ * This function:
+ * - Allocates memory for a `t_ms` structure.
+ * - Initializes environment variables (`envp`).
+ * - Sets up tokens and command blocks.
+ * - Initializes command history.
+ * - Prepares file descriptors and heredoc-related data.
+ * 
+ * @param envp The environment variables inherited from the parent process.
+ * 
+ * @return A pointer to the initialized `t_ms` structure, or `NULL` if allocation fails.
+ * 
+ */
+
 t_ms	*initialize_struct(char **envp)
 {
 	t_ms *ms;
@@ -89,7 +126,8 @@ t_ms	*initialize_struct(char **envp)
 	ms->tokens = NULL;
 	ms->blocks = NULL;
 	initialize_history(ms);
-	initialize_heredoc(ms);
+	ms->heredoc_count = 0;
+	ms->heredoc_files = NULL;
 	initialize_fds(ms);
 	return (ms);
 }
