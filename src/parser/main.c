@@ -5,9 +5,11 @@
 #include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <bits/types.h>
 
+volatile sig_atomic_t	g_sgnl;
 
-/*void print_tokens(t_token *token_list)
+void print_tokens(t_token *token_list)
 {
 	t_token *cur = token_list;
 
@@ -17,7 +19,7 @@
 		printf("Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->type, cur->data, cur->quote, cur->specific_redir, cur->ambiguous, cur->file);
 		cur = cur->next;
 	}
-}*/
+}
 /*
 static void print_blocks(t_block *block_list)
 {
@@ -198,7 +200,17 @@ static int	process_input(char **input, t_ms *ms)
 	if ((*input)[0] == '\0') // Ignore empty input (Enter)
 	{
 		free(*input);
+		if (g_sgnl == SIGINT)
+		{
+			ms->exit_status = 130;
+			g_sgnl = 0;
+		}
 		return (0);
+	}
+	if (g_sgnl == SIGINT)
+	{
+		ms->exit_status = 130;
+		g_sgnl = 0;
 	}
 	err_syntax = validate_input(*input);
 	if (err_syntax)
@@ -210,6 +222,27 @@ static int	process_input(char **input, t_ms *ms)
 	}
 	add_line_to_history(*input, ms);
 	return (1);
+}
+int	init_terminal_signals(void)
+{
+	struct termios	term;
+
+	if (isatty(STDIN_FILENO))
+	{
+		if (tcgetattr(STDIN_FILENO, &term) == -1)
+		{
+			perror("tcgetattr failed");
+			return (1);
+		}
+		term.c_lflag &= ~ECHOCTL;
+		if (tcsetattr(STDIN_FILENO, TCSANOW, &term) == -1)
+		{
+			perror("tcsetattr failed");
+			return (1);
+		}
+	}
+	//signals
+	return (0);
 }
 
 int main(int argc, char **argv, char **envp)
@@ -223,13 +256,16 @@ int main(int argc, char **argv, char **envp)
 		ft_putstr_fd("Usage: ./minishell\n", STDERR_FILENO);
 		return (1);
 	}
+	init_terminal_signals();
 	ms = initialize_struct(envp);
 	while (1)
 	{
 		// Reading the input
 		inout(ms->saved_stdin, ms->saved_stdout); // Restore STDIN and STDOUT
 		// FOR USUAL EXECUTION
-		//input = readline("minishell> ");
+		/*signal_mode(INTERACTIVE);
+		input = readline("minishell> ");
+		signal_mode(IGNORE);*/
 		//FOR TESTER
 		if (isatty(fileno(stdin))) // If running interactively
 			input = readline("minishell> ");

@@ -70,4 +70,10 @@ typedef struct s_pipe
     t_ms    *ms;
 }   t_pipe;
 
+/*typedef struct s_terminal
+{
+	struct termios	new;
+	struct termios	old;
+}	t_terminal;*/
+
 #endif
