@@ -80,8 +80,7 @@ EXEC_FILES		=	builtin_check.c \
 					find_path_and_execve.c \
 					cmd_handling.c \
 					pipes.c
-REDIR_FILES		=	open_bonus.c \
-					fds.c \
+REDIR_FILES		=	fds.c \
 					heredoc.c \
 					generate_filename.c
 ENVP_FILES		=	check_all_tokens.c \
