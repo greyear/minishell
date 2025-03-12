@@ -49,7 +49,9 @@ static void	append_to_result(char **result, char *new_part)
  
 static char	*find_env_value(char **envp, char *key, int len)
 {
-	int     i;
+	int		i;
+	char	*copy;
+	char	*without_spaces;
  
 	i = 0;
 	while (envp[i])
@@ -57,12 +59,25 @@ static char	*find_env_value(char **envp, char *key, int len)
 		if (ft_strncmp(envp[i], key, len) == 0)
 		{
 			if (envp[i][len] && envp[i][len] == '=')
-				return (ft_strdup(envp[i] + len + 1));
+			{
+				copy = ft_strdup(envp[i] + len + 1);
+				if (!copy)
+					return (NULL); //malloc error
+				without_spaces = remove_extra_spaces(copy);
+				free(copy);
+				return (without_spaces);
+			}
 		}
 		i++;
 	}
 	return (ft_strdup(""));
 }
+
+	/*onespaceonly = remove_extra_spaces(result);
+	free(result);
+	if (!onespaceonly)
+		return (NULL); //malloc error
+	return (onespaceonly);*/
 
 /**
  * @brief Expands an environment variable key and appends its value to the result.
@@ -111,7 +126,7 @@ char	*remove_extra_spaces(char *str)
 		return (NULL);
 	i = 0;
 	j = 0;
-	space = 1; //met space
+	space = 0; //1 if met space
 	while (str[i])
 	{
 		if (ft_isspace(str[i]))
@@ -129,8 +144,6 @@ char	*remove_extra_spaces(char *str)
 		}
 		i++;
 	}
-	if (j > 0 && new[j - 1] == ' ')
-		j--;
 	new[j] = '\0';
 	return (new);
 }

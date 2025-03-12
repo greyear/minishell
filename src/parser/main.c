@@ -7,6 +7,7 @@
 #include <readline/history.h>
 #include <bits/types.h>
 #include <bits/types.h>
+//#include <asm-generic/termbits.h> //delete for school computers
 
 volatile sig_atomic_t	g_sgnl;
 volatile sig_atomic_t	g_sgnl;
@@ -256,27 +257,6 @@ int	init_terminal_signals(void)
 	//signals
 	return (0);
 }
-int	init_terminal_signals(void)
-{
-	struct termios	term;
-
-	if (isatty(STDIN_FILENO))
-	{
-		if (tcgetattr(STDIN_FILENO, &term) == -1)
-		{
-			perror("tcgetattr failed");
-			return (1);
-		}
-		term.c_lflag &= ~ECHOCTL;
-		if (tcsetattr(STDIN_FILENO, TCSANOW, &term) == -1)
-		{
-			perror("tcsetattr failed");
-			return (1);
-		}
-	}
-	//signals
-	return (0);
-}
 
 int main(int argc, char **argv, char **envp)
 {
@@ -297,11 +277,11 @@ int main(int argc, char **argv, char **envp)
 		// Reading the input
 		inout(ms->saved_stdin, ms->saved_stdout); // Restore STDIN and STDOUT
 		// FOR USUAL EXECUTION
-		signal_mode(INTERACTIVE);
+		/*signal_mode(INTERACTIVE);
 		input = readline("minishell> ");
-		signal_mode(IGNORE);
+		signal_mode(IGNORE);*/
 		//FOR TESTER
-		/*if (isatty(fileno(stdin))) // If running interactively
+		if (isatty(fileno(stdin))) // If running interactively
 			input = readline("minishell> ");
 		else // If receiving input from another program
 		{
@@ -310,7 +290,7 @@ int main(int argc, char **argv, char **envp)
 				break;
 			input = ft_strtrim(line, "\n"); // Remove newline from input
 			free(line);
-		}*/
+		}
 		if (!input) // EOF check (Ctrl+D)
 		{
 			printf("exit\n");
