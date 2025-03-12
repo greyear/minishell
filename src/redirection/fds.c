@@ -1,5 +1,29 @@
 #include "../../include/minishell.h"
 
+/*static int	check_if_dir(char *path)
+{
+	DIR *dir;
+	
+	dir = opendir(path);
+	if (dir)
+	{
+		closedir(dir);
+		return (1);
+	}
+	return (0);
+}*/
+
+/**
+ * @brief Checks file accessibility for reading or writing.
+ * 
+ * This function verifies whether the specified file exists and whether 
+ * the necessary permissions are granted for the requested operation 
+ * (read or write). If the file does not exist or the required 
+ * permissions are missing, an appropriate error message is printed.
+ * 
+ * @param filename The name of the file to check.
+ * @param operation The operation type (RD for reading, WR for writing).
+ */
 void	check_access(char *filename, t_oper operation)
 {
 	if (operation == RD)
@@ -15,9 +39,29 @@ void	check_access(char *filename, t_oper operation)
 			print_file_error(filename, NO_FILE);
 		else if (access(filename, W_OK) == -1)
 			print_file_error(filename, PERM_DEN);
+		else
+		{
+			ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
+			ft_putstr_fd(filename, STDERR_FILENO);
+			ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+		}
 	}
 }
 
+/**
+ * @brief Sets up the input file descriptor for a heredoc.
+ * 
+ * This function handles input redirection from a heredoc by processing 
+ * the specified delimiter. If an input file descriptor is already open, 
+ * it is closed first. In case of an ambiguous redirection, an error is 
+ * printed, and the input descriptor is set to an invalid state. Otherwise, 
+ * the heredoc content is processed and assigned to the command's input.
+ * 
+ * @param token A pointer to the token containing heredoc information.
+ * @param cmd A pointer to the command structure where the input 
+ * descriptor is stored.
+ * @param ms A pointer to the shell structure.
+ */
 void	put_heredoc_fd(t_token *token, t_cmd *cmd, t_ms *ms)
 {
 	if (cmd->infile > 0)
@@ -33,10 +77,31 @@ void	put_heredoc_fd(t_token *token, t_cmd *cmd, t_ms *ms)
 	}
 }
 
+/**
+ * @brief Opens and sets the output file descriptor for a command.
+ * 
+ * This function manages the output redirection for a command. If an 
+ * output file is already open, it is closed first. Then, based on the 
+ * token type, the function either truncates or appends to the specified 
+ * file. In case of an ambiguous redirection, an error is printed, and 
+ * the output descriptor is set to an invalid state.
+ * 
+ * @param token A pointer to the token containing file information.
+ * @param cmd A pointer to the command structure where the output 
+ * descriptor is stored.
+ */
 void	put_outfile_fd(t_token *token, t_cmd *cmd)
 {
 	if (cmd->outfile > 0)
 		close(cmd->outfile);
+
+	/*if (check_if_dir(token->file))
+	{
+		cmd->outfile = NO_FD;
+		print_file_error(token->file, DIRECT);
+		return ;
+	}*/
+
 	if (token->ambiguous)
 	{
 		cmd->outfile = NO_FD;
@@ -53,6 +118,18 @@ void	put_outfile_fd(t_token *token, t_cmd *cmd)
 	}
 }
 
+/**
+ * @brief Opens and sets the input file descriptor for a command.
+ * 
+ * This function handles input redirection by opening the specified file 
+ * in read-only mode. If an input file descriptor is already open, it is 
+ * closed first. In case of an ambiguous redirection, an error is printed, 
+ * and the input descriptor is set to an invalid state.
+ * 
+ * @param token A pointer to the token containing file information.
+ * @param cmd A pointer to the command structure where the input 
+ * descriptor is stored.
+ */
 void	put_infile_fd(t_token *token, t_cmd *cmd)
 {
 	if (cmd->infile > 0)
@@ -71,23 +148,36 @@ void	put_infile_fd(t_token *token, t_cmd *cmd)
 }
 
 /**
- * @brief Redirects input and output streams for a process.
+ * @brief Redirects input and output file descriptors for a process.
  * 
- * This function duplicates the file descriptors for input and output. If the `infile` is not set to `NO_FD` or
- * `DEF`, it redirects the standard input (`STDIN_FILENO`) to the file descriptor specified by `infile`. Similarly, if
- * the `outfile` is not `NO_FD` or `DEF`, it redirects the standard output (`STDOUT_FILENO`) to the file descriptor
- * specified by `outfile`. If any `dup2` operation fails, the corresponding file descriptor is closed, and the program
- * exits with a status of `1`.
+ * This function handles the redirection of standard input (STDIN) and standard 
+ * output (STDOUT) for the process based on the provided file descriptors.
  * 
- * @param infile The input file descriptor to be redirected to `STDIN_FILENO`. If it is `NO_FD` or `DEF`, no redirection occurs.
- * @param outfile The output file descriptor to be redirected to `STDOUT_FILENO`. If it is `NO_FD` or `DEF`, no redirection occurs.
+ * If the `infile` or `outfile` are valid (not equal to `NO_FD`), the function
+ * duplicates the respective file descriptor to the corresponding standard input 
+ * or output. It closes the original file descriptors after redirection to avoid 
+ * resource leakage.
  * 
- * @return This function does not return; it modifies the process's input and output streams based on the provided file descriptors.
+ * If either `infile` or `outfile` is set to `NO_FD`, the function closes both 
+ * file descriptors and exits with an error code.
+ * 
+ * @param infile The file descriptor for standard input, or `NO_FD` to avoid redirection.
+ * @param outfile The file descriptor for standard output, or `NO_FD` to avoid redirection.
+ * 
+ * @return This function does not return; it exits the process if an error occurs during redirection.
  */
 
 void	redirect_process(int infile, int outfile)
 {
-	if (infile != NO_FD && infile != DEF)
+	if (infile == NO_FD || outfile == NO_FD)
+	{
+		if (outfile != NO_FD)
+			close(outfile);
+		if (infile != NO_FD)
+			close(infile);
+		exit(1);
+	}
+	if (infile != DEF)
 	{
 		if (dup2(infile, STDIN_FILENO) == -1) //It duplicates previous pipes read-end to stadard input
 		{
@@ -96,7 +186,7 @@ void	redirect_process(int infile, int outfile)
 		}
 		close(infile);
 	}
-	if (outfile != NO_FD && outfile != DEF)
+	if (outfile != DEF)
 	{
 		if (dup2(outfile, STDOUT_FILENO) == -1) //It duplicates the next pipes write-end to standard output
 		{
@@ -106,28 +196,3 @@ void	redirect_process(int infile, int outfile)
 		close(outfile);
 	}
 }
-
-/*
-echo "Hello" > file1 > file2  # Только file2 получит "Hello"
-
-< input.txt grep "word" > output.txt 
-и
-grep "word" < input.txt > output.txt
-работают одинаково
-
-cat < input.txt | grep "error" >> log.txt 2> errors.txt << EOF
-error: something went wrong
-all good
-EOF
-сработает
-
-Редиректы выполняются слева направо, 
-но heredoc (<<) всегда обрабатывается первым.
-
-ambiguity:
-
-$ echo hello > ${NONEXISTENT}: 
-	bash: ${NONEXISTENT}: ambiguous redirect
-
-
-*/
