@@ -78,7 +78,7 @@ EXEC_FILES		=	builtin_check.c \
 					one_child.c \
 					multiple_childs.c \
 					find_path_and_execve.c \
-					cmd_checks.c \
+					cmd_handling.c \
 					pipes.c
 REDIR_FILES		=	open_bonus.c \
 					fds.c \

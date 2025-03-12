@@ -79,73 +79,21 @@ static char *find_path_from_envp(char **envp, char **cmds)
 }
 
 /**
- * @brief Handles the execution of commands with absolute or relative paths.
+ * @brief Executes a command by searching for its path and running it with `execve()`.
  * 
- * This function checks if the command specified by `cmd[0]` (which is a path) exists and is executable. If the 
- * command exists and has execute permissions, it calls `execve` to execute the command. If the command exists but 
- * does not have execute permissions, it prints a "permission denied" error and exits with status 126. If the 
- * command does not exist, the function does nothing and control returns to the caller.
+ * This function processes and executes a given command by checking its validity, 
+ * resolving its path, and executing it. If the command is an absolute or relative path, 
+ * it is validated using `handle_absolute_or_relatve_path()`. If no `PATH` variable is found, 
+ * it handles execution using `handle_no_path_variable()`. Otherwise, the function 
+ * searches for the command in the system's `PATH`, executes it if found, or 
+ * prints an error if it cannot be executed.
  * 
- * @param envp An array of environment variables, which is passed to `execve`.
- * @param cmd An array of command arguments, where `cmd[0]` is the absolute or relative path to the command.
+ * @param envp The environment variables.
+ * @param cmd An array of strings representing the command and its arguments.
  * 
- * @return This function does not return. If the command is not found or is not executable, the program exits 
- *         with status 126 for permission denied.
- */
-
-void handle_absolute_or_relative_path(char **envp, char **cmd)
-{
-    if (access(cmd[0], F_OK) == 0)
-    {
-        if (access(cmd[0], X_OK) == 0)
-            execve(cmd[0], cmd, envp);
-        print_cmd_error(cmd[0], PERM_DEN);
-        exit(126);
-    }
-}
-
-/**
- * @brief Handles the case when the `PATH` environment variable is not set and attempts to execute a command directly.
- * 
- * This function checks if the command provided as the first argument (`cmd[0]`) exists and is executable. If the 
- * command exists and has execute permissions, it calls `execve` to run the command. If the command exists but does not 
- * have execute permissions, it prints a permission denied error and exits with status 126. If the command does not 
- * exist, it prints a "command not found" error and exits with status 127.
- * 
- * @param envp An array of environment variables, which is passed to `execve`.
- * @param cmd An array of command arguments, where `cmd[0]` is the command to be executed.
- * 
- * @return This function does not return. If the command is not found or executable, the program exits with 
- *         an appropriate status code (127 for command not found, 126 for permission denied).
- */
-
-void    handle_no_path_variable(char **envp, char **cmd)
-{
-    if (access(cmd[0], F_OK) == 0)
-    {
-        if (access(cmd[0], X_OK) == 0)
-            execve(cmd[0], cmd, envp);
-        print_cmd_error(cmd[0], PERM_DEN);
-        exit(126);
-    }
-    print_cmd_error(cmd[0], NO_CMD);
-    exit(127);
-}
-
-/**
- * @brief Executes a command by finding the correct executable path and invoking `execve`.
- * 
- * This function is responsible for executing a command in a child process. It checks if the command is valid and 
- * if the `PATH` environment variable is set. If the command is an absolute or relative path, it directly attempts to 
- * execute it. If the `PATH` variable is not set, it looks for the command in directories specified by the `PATH` 
- * variable. If the command cannot be executed or found, an error is printed and the program exits.
- * 
- * @param envp An array of environment variables, including the `PATH` variable, used to locate the command.
- * @param cmd An array of command arguments, where `cmd[0]` is the command to be executed.
- * 
- * @return This function does not return if the command is executed successfully. If the command cannot be executed,
- *         an error is printed, and the program exits with an appropriate status code (127 for command not found, 
- *         126 for permission denied).
+ * @return This function does not return; it either executes the command or exits the process with:
+ *         - `127` if the command is not found.
+ *         - `126` if the command exists but lacks execution permission.
  */
 
 void    execute_command(char **envp, char **cmd)
@@ -162,9 +110,6 @@ void    execute_command(char **envp, char **cmd)
         handle_absolute_or_relative_path(envp, cmd);
     if (!get_env_value("PATH", envp))
         handle_no_path_variable(envp, cmd);
-
-    if (cmd[0][0] == '/' || cmd[0][0] == '.')
-        check_if_dir_or_file(envp, cmd);
     path = find_path_from_envp(envp, cmd);
     if (!path)
     {

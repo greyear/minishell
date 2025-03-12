@@ -116,9 +116,9 @@ void	        make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms);
 void            pipe_process(int prev_pipe, int next_pipe);
 void            redirect_process(int infile, int outfile);
 void            pipe_or_redir(t_cmd *cur, int *pipe_fd, int i, int num_cmds, int cur_fd);
-void	        check_if_dir_or_file(char **envp, char **cmds);
+void	        handle_absolute_or_relative_path(char **envp, char **cmds);
+void            handle_no_path_variable(char **envp, char **cmd);
 void            check_if_dot(char **cmds);
-void            check_if_file(char **envp, char **cmds);
 void            setup_pipes(int *pipe_fd, int i, int num_cmds, int cur_fd);
 
 
