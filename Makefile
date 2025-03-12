@@ -78,7 +78,7 @@ EXEC_FILES		=	builtin_check.c \
 					one_child.c \
 					multiple_childs.c \
 					find_path_and_execve.c \
-					cmd_checks.c \
+					cmd_handling.c \
 					pipes.c
 REDIR_FILES		=	fds.c \
 					heredoc.c \
@@ -93,7 +93,7 @@ ENVP_FILES		=	check_all_tokens.c \
 READING_FILES	=	history.c \
 					history_file.c
 #delete initialize_struct
-#SIGN_FILES		=	
+SIGN_FILES		=	handler.c
 CLEAN_FILES		=	arr_cleaning.c \
 					clean_struct.c \
 					close_fds.c

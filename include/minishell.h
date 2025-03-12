@@ -11,12 +11,20 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/types.h>
+# include <sys/stat.h>
 # include <sys/wait.h>
 # include <fcntl.h>
 # include <dirent.h> // Needed for opendir()
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <errno.h>
+# include <signal.h>
+//# include <bits/types.h>
+# include <sys/ioctl.h>
+# include <termios.h>
+
+extern volatile sig_atomic_t	g_sgnl;
+
 
 # define ERR_MALLOC "memory allocation failed"
 # define ERR_FORK "fork function failed"
@@ -116,9 +124,9 @@ void	        make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms);
 void            pipe_process(int prev_pipe, int next_pipe);
 void            redirect_process(int infile, int outfile);
 void            pipe_or_redir(t_cmd *cur, int *pipe_fd, int i, int num_cmds, int cur_fd);
-void	        check_if_dir_or_file(char **envp, char **cmds);
+void	        handle_absolute_or_relative_path(char **envp, char **cmds);
+void            handle_no_path_variable(char **envp, char **cmd);
 void            check_if_dot(char **cmds);
-void            check_if_file(char **envp, char **cmds);
 void            setup_pipes(int *pipe_fd, int i, int num_cmds, int cur_fd);
 
 
@@ -149,6 +157,9 @@ void			default_history(char **history);
 void			fill_ms_history_line(char *line, t_ms *ms);
 void			clean_ms_history(t_ms *ms);
 void			history_exit(t_ms *ms);
+
+//Signals
+void			signal_mode(t_mode mode);
 
 //Errors
 void			print_file_error(char *file, t_print reason);

@@ -16,18 +16,18 @@
 
 void    wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms)
 {
-    int     i;
-    int     status;
-    pid_t   wpid;
+	int     i;
+	int     status;
+	pid_t   wpid;
 
-    i = 0;
-    while (i < num_cmds)
-    {
-        wpid = wait(&status);
-        if (wpid == last_pid && WIFEXITED(status))
-            ms->exit_status = WEXITSTATUS(status);
-        i++;
-    }
+	i = 0;
+	while (i < num_cmds)
+	{
+		wpid = wait(&status);
+		if (wpid == last_pid && WIFEXITED(status))
+			ms->exit_status = WEXITSTATUS(status);
+		i++;
+	}
 }
 
 /**
@@ -49,16 +49,21 @@ void    wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms)
 
 static void child_process(t_cmd *cur, t_pipe *p)
 {
-    setup_pipes(p->fd, p->cmd_num, p->num_cmds, p->cur_fd);
-    redirect_process(cur->infile, cur->outfile);
-    close_all_fds(p, p->ms);
-    if (is_builtin(cur))
-    {
-        handle_builtin(cur, p->ms, 1);
-        exit(p->ms->exit_status);
-    }
-    else
-        execute_command(p->ms->envp, cur->args);
+	setup_pipes(p->fd, p->cmd_num, p->num_cmds, p->cur_fd);
+	redirect_process(cur->infile, cur->outfile);
+	close_all_fds(p, p->ms);
+	if (is_builtin(cur))
+	{
+		handle_builtin(cur, p->ms, 1);
+		exit(p->ms->exit_status);
+	}
+	else
+	{
+		//we are not sure if we need to put it for ALL child processes or only for externals
+		signal_mode(DEFAULT);
+		execute_command(p->ms->envp, cur->args);
+	}
+		
 }
 
 /**
@@ -79,22 +84,22 @@ static void child_process(t_cmd *cur, t_pipe *p)
 
 static void fork_and_execute(t_cmd *cur, t_pipe *p)
 {
-    if (pipe(p->fd) == -1)
-    {
-        perror("pipe failed");
-        exit(1);
-    }
-    p->pids[p->cmd_num] = fork(); 
-    if (p->pids[p->cmd_num] < 0)
-    {
-        p->ms->exit_status = 1;
-        return;
-    }
-    if (p->pids[p->cmd_num] == 0)
-        child_process(cur, p);
-    close_fds2(p->cur_fd, p->fd[1]);
-    p->cur_fd = p->fd[0];
-    p->last_pid = p->pids[p->cmd_num];
+	if (pipe(p->fd) == -1)
+	{
+		perror("pipe failed");
+		exit(1);
+	}
+	p->pids[p->cmd_num] = fork(); 
+	if (p->pids[p->cmd_num] < 0)
+	{
+		p->ms->exit_status = 1;
+		return;
+	}
+	if (p->pids[p->cmd_num] == 0)
+		child_process(cur, p);
+	close_fds2(p->cur_fd, p->fd[1]);
+	p->cur_fd = p->fd[0];
+	p->last_pid = p->pids[p->cmd_num];
 }
 
 /**
@@ -113,12 +118,12 @@ static void fork_and_execute(t_cmd *cur, t_pipe *p)
 
 void    initialize_p(t_pipe *p, int num_cmds, t_ms *ms)
 {
-    p->num_cmds = num_cmds;
-    p->ms = ms;
-    p->last_pid = -1;
-    p->cmd_num = 0;
-    p->cur_fd = -1;
-    p->pids = (pid_t *)malloc((p->num_cmds) * sizeof(pid_t));
+	p->num_cmds = num_cmds;
+	p->ms = ms;
+	p->last_pid = -1;
+	p->cmd_num = 0;
+	p->cur_fd = -1;
+	p->pids = (pid_t *)malloc((p->num_cmds) * sizeof(pid_t));
 }
 
 /**
@@ -138,27 +143,27 @@ void    initialize_p(t_pipe *p, int num_cmds, t_ms *ms)
 
 void    make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
 {
-    t_pipe  p;
-    t_cmd   *cur;
+	t_pipe  p;
+	t_cmd   *cur;
 
-    cur = cmds;
-    initialize_p(&p, num_cmds, ms);
-    if (!p.pids)
-        return;
-    while (p.cmd_num < p.num_cmds && cur)
-    {
-        if (!cur->args || !cur->args[0])
-        {
-            p.ms->exit_status = 0;
-            cur = cur->next;
-            p.cmd_num++;
-            continue;
-        }
-        fork_and_execute(cur, &p);
-        cur = cur->next;
-        p.cmd_num++;
-    }
-    close_all_fds(&p, ms);
-    wait_for_children(p.num_cmds, p.last_pid, p.ms);
-    free_pids(&p);
+	cur = cmds;
+	initialize_p(&p, num_cmds, ms);
+	if (!p.pids)
+		return;
+	while (p.cmd_num < p.num_cmds && cur)
+	{
+		if (!cur->args || !cur->args[0])
+		{
+			p.ms->exit_status = 0;
+			cur = cur->next;
+			p.cmd_num++;
+			continue;
+		}
+		fork_and_execute(cur, &p);
+		cur = cur->next;
+		p.cmd_num++;
+	}
+	close_all_fds(&p, ms);
+	wait_for_children(p.num_cmds, p.last_pid, p.ms);
+	free_pids(&p);
 }
