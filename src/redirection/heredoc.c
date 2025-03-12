@@ -59,6 +59,8 @@ static char	*read_heredoc_line(int temp_fd)
  
 	write(STDOUT_FILENO, "heredoc> ", 9);
 	line = get_next_line(STDIN_FILENO);
+	//line = readline("heredoc> ");
+
 	if (!line)
 	{
 		perror("heredoc: read error");
