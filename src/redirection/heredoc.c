@@ -60,6 +60,7 @@ static char	*read_heredoc_line(int temp_fd)
 	write(STDOUT_FILENO, "heredoc> ", 9);
 	line = get_next_line(STDIN_FILENO);
 	//line = readline("heredoc> ");
+
 	if (!line)
 	{
 		perror("heredoc: read error");
@@ -89,7 +90,7 @@ static int process_heredoc_line(char **line, char *limiter, t_token *token, t_ms
 	char	*expanded;
  
 	if (ft_strncmp(*line, limiter, ft_strlen(limiter)) == 0
-		&& (ft_strlen(limiter) == ft_strlen(*line) || (*line)[ft_strlen(limiter)] == '\n'))
+		&& (*line)[ft_strlen(limiter)] == '\n')
 	{
 		free(*line);
 		return (1);
@@ -131,7 +132,6 @@ static void read_heredoc_input(int temp_fd, char *limiter, t_token *token, t_ms 
 		if (process_heredoc_line(&line, limiter, token, ms))
 			break;
 		write(temp_fd, line, ft_strlen(line));
-		//ft_putendl_fd(line, temp_fd);
 		free(line);
 	}
 	close(temp_fd);
