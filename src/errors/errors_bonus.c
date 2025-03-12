@@ -7,6 +7,16 @@ void	print_system_error(t_print reason)
 		ft_putendl_fd("Reading from history file failed", STDERR_FILENO);
 }
 
+/**
+ * @brief Prints a syntax error message for unexpected tokens.
+ * 
+ * This function formats and displays an error message when a syntax 
+ * error is encountered. It identifies unexpected tokens, such as
+ * operators or special characters, and ensures proper formatting 
+ * of the error message. If the token is empty, "newline" is used instead.
+ * 
+ * @param text The unexpected token causing the syntax error.
+ */
 void	print_syntax_error(char *text)
 {
 	int	cut;
@@ -43,6 +53,8 @@ void	print_file_error(char *file, t_print reason)
 		ft_putstr_fd(file, STDERR_FILENO);
 	if (reason == NO_FILE)
 		ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+	if (reason == DIRECT)
+		ft_putendl_fd(": Is a directory", STDERR_FILENO);
 	if (reason == PERM_DEN)
 		ft_putendl_fd(": Permission denied", STDERR_FILENO);
 	if (reason == AMBIG)
