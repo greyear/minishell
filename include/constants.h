@@ -84,6 +84,16 @@ typedef enum e_oper
 	WR,
 }	t_oper;
 
+typedef enum e_mode
+{
+	DEFAULT,
+	INTERACTIVE,
+	HEREDOC_MODE,
+	IGNORE,
+	EXPLICIT,
+	IMPLICIT
+}	t_mode;
+
 # define OWN_ERR_MSG "ms error: "
 # define PERM_DEN 1
 # define NO_FILE_OR_DIR 2
