@@ -23,10 +23,10 @@ static void	append_to_result(char **result, char *new_part)
 		return;
 	temp = ft_strjoin(*result, new_part);
 	if (!temp)
-    {
-        free(new_part);
-        return;
-    }
+	{
+		free(new_part);
+		return;
+	}
 	free(*result);
 	*result = temp;
 	free(new_part);
@@ -49,19 +49,19 @@ static void	append_to_result(char **result, char *new_part)
  
 static char	*find_env_value(char **envp, char *key, int len)
 {
-    int     i;
+	int     i;
  
-    i = 0;
-    while (envp[i])
-    {
-        if (ft_strncmp(envp[i], key, len) == 0)
-        {
-            if (envp[i][len] && envp[i][len] == '=')
-                return (ft_strdup(envp[i] + len + 1));
-        }
-        i++;
-    }
-    return (ft_strdup(""));
+	i = 0;
+	while (envp[i])
+	{
+		if (ft_strncmp(envp[i], key, len) == 0)
+		{
+			if (envp[i][len] && envp[i][len] == '=')
+				return (ft_strdup(envp[i] + len + 1));
+		}
+		i++;
+	}
+	return (ft_strdup(""));
 }
 
 /**
@@ -83,15 +83,54 @@ static char	*find_env_value(char **envp, char *key, int len)
 
 void    expand_variable(t_ms *ms, char *key, int key_len, char **result)
 {
-    char    *expanded;
+	char    *expanded;
 
-    if (!key || !*key)
-        return;
-    if (key[0] == '?')
-        expanded = ft_itoa(ms->exit_status);
-    else if (ft_isdigit(key[0]))
-        expanded = ft_strdup("");
-    else
-        expanded = find_env_value(ms->envp, key, key_len);
-    append_to_result(result, expanded);
+	if (!key || !*key)
+		return;
+	if (key[0] == '?')
+		expanded = ft_itoa(ms->exit_status);
+	else if (ft_isdigit(key[0]))
+		expanded = ft_strdup("");
+	else
+		expanded = find_env_value(ms->envp, key, key_len);
+	append_to_result(result, expanded);
+}
+
+char	*remove_extra_spaces(char *str)
+{
+	char	*new;
+	int		i;
+	int		j;
+	int		space;
+
+	if (!str)
+		return (NULL);
+	int len = ft_strlen(str);
+	new = ft_calloc(len + 1, sizeof(char));
+	if (!new)
+		return (NULL);
+	i = 0;
+	j = 0;
+	space = 1; //met space
+	while (str[i])
+	{
+		if (ft_isspace(str[i]))
+		{
+			if (!space)
+			{
+				new[j++] = ' ';
+				space = 1;
+			}
+		}
+		else
+		{
+			new[j++] = str[i];
+			space = 0; //met non space, reset
+		}
+		i++;
+	}
+	if (j > 0 && new[j - 1] == ' ')
+		j--;
+	new[j] = '\0';
+	return (new);
 }
