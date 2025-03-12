@@ -63,6 +63,7 @@ typedef enum e_print
 	AMBIG,
 	PERM_DEN,
 	NO_FILE,
+	DIRECT,
 	HERED_ERR,
 	HIST_ERR,
 }	t_print;

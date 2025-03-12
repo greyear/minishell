@@ -88,6 +88,15 @@ void	clean_ms_history(t_ms *ms) //free_history +
 	}
 }
 
+/**
+ * @brief Handles the exit process for the shell's history.
+ * 
+ * This function ensures that the command history is properly saved 
+ * before the shell exits. It writes the current history to a file 
+ * and then clears the in-memory history to free resources.
+ * 
+ * @param ms A pointer to the shell structure containing the history.
+ */
 void	history_exit(t_ms *ms)
 {
 	//add smth
