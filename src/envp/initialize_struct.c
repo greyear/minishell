@@ -131,5 +131,6 @@ t_ms	*initialize_struct(char **envp)
 	ms->heredoc_files = NULL;
 	initialize_fds(ms);
 	check_shlvl(ms);
+	g_sgnl = 0;
 	return (ms);
 }

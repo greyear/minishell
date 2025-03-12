@@ -26,7 +26,11 @@ void	execute_child(t_cmd *cmd, t_ms *ms)
         exit(ms->exit_status);
     }
     else
-        execute_command(ms->envp, cmd->args);
+	{
+		//we are not sure if we need to put it for ALL child processes or only for externals
+		signal_mode(DEFAULT);
+		execute_command(ms->envp, cmd->args);
+	}
 }
 
 /**
@@ -49,6 +53,7 @@ void	make_one_child(t_cmd *cmd, t_ms *ms)
     pid_t	pid;
     int		status;
 
+    //printf("hey\n");
     if (!cmd->args || !cmd->args[0])
         return;
     pid = fork();
