@@ -10,7 +10,7 @@ int	expand_in_token(t_token *cur, t_ms *ms)
 	if (!data_copy)
 		return (1); //error msg?
 
-	if (ft_strcmp(cur->data, "$") == 0 && cur->next && cur->next->quote)
+	if (ft_strcmp(cur->data, "$") == 0 && !cur->quote && cur->next && cur->next->quote)
 		expanded = ft_strdup("");
 	else
 		expanded = handle_expansion(cur->data, ms);
@@ -21,14 +21,12 @@ int	expand_in_token(t_token *cur, t_ms *ms)
 	}
 	free(cur->data);
 	cur->data = expanded;
-	//printf("new cur->data: %s\n", cur->data);
-	//printf("new cur->data: %s\n", cur->data);
+
 	if (cur->specific_redir && !cur->quote && \
 			data_copy[0] && !cur->data[0])
 	{
 		cur->ambiguous = true;
 		cur->file = data_copy;
-		//printf("new cur->file: %s\n", cur->file);
 		//printf("new cur->file: %s\n", cur->file);
 	}
 	//what if after expanding it became empty?
@@ -53,20 +51,6 @@ int	check_list_for_expansions(t_token *first, t_ms *ms)
 		}
 		cur = cur->next;
 	}
-
-	/*printf("\nbefore deleting whitespaces\n");
-	print_tokens(first);*/
-
-	//first = delete_whitespace_tokens(first);
-
-	/*printf("\nafter deleting whitespaces\n");
-	print_tokens(first);*/
-
-	//first = delete_empty_word_tokens(first);
-
-	/*printf("\nafter deleting empty\n");
-	print_tokens(first);*/
-
 	return (0);
 }
 

@@ -133,7 +133,7 @@ char	*handle_expansion(char *args, t_ms *ms)
 	while (args[i])
 	{
 		if (args[i] == '$' && args[i + 1] && args[i + 1] != '$'
-			&& !ft_isspace(args[i + 1]))
+			&& !ft_isspace(args[i + 1]) && args[i + 1] != '/') //new slash to fix 303&307 parsing hell
 		{
 			if (handle_dollar_expansion(&result, args, &i, ms))
 			{
@@ -144,5 +144,6 @@ char	*handle_expansion(char *args, t_ms *ms)
 		else
 			append_literal_char(&result, args[i++]);
 	}
+	//printf("res of exp: %s\n", result);
 	return (result);
 }
