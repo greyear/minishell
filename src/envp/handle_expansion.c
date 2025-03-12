@@ -146,10 +146,5 @@ char	*handle_expansion(char *args, t_ms *ms)
 			append_literal_char(&result, args[i++]);
 	}
 	//printf("res of exp: %s\n", result);
-	/*onespaceonly = remove_extra_spaces(result);
-	free(result);
-	if (!onespaceonly)
-		return (NULL); //malloc error
-	return (onespaceonly);*/
 	return (result);
 }
