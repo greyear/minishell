@@ -82,6 +82,42 @@ static void	input_output(t_cmd *cmd)
 	}
 }*/
 
+static void	cleanup_after_execution(t_ms *ms)
+{
+	close(ms->saved_stdin);
+	close(ms->saved_stdout);
+	if (ms->heredoc_files)
+		cleanup_heredocs(ms->heredoc_files);
+	reset_heredocs(ms);
+	clean_token_list(&(ms->tokens));
+	clean_block_list(&(ms->blocks));
+	clean_cmd_list(&(ms->cmds));
+}
+
+static void	execute_commands(t_ms *ms)
+{
+	t_cmd	*cur;
+	int		i;
+	
+	cur = ms->cmds;
+	i = 0;
+	while (cur)
+	{
+		cur = cur->next;
+		i++;
+	}
+	if (is_builtin(ms->cmds) && if_children_needed(ms->cmds) == false && i == 1)
+		handle_builtin(ms->cmds, ms, 0);
+	else
+	{
+		if (i == 1)
+			make_one_child(ms->cmds, ms);
+		else
+			make_multiple_childs(i, ms->cmds, ms);
+	}
+	close_fds(ms->cmds);
+}
+
 static void	malloc_heredocs(t_ms *ms, t_token *token)
 {
 	t_token	*cur;
@@ -111,13 +147,76 @@ static void	inout(int saved_stdin, int saved_stdout)
 	dup2(saved_stdout, STDOUT_FILENO);
 }
 
+static int	tokenize_input(char **input, t_ms *ms)
+{
+	ms->tokens = tokenization(*input, ms);
+	free(*input);
+	if (!ms->tokens)
+	{
+		ft_putstr_fd("Error: tokenization failed\n", STDERR_FILENO);
+		return (0);
+	}
+	malloc_heredocs(ms, ms->tokens);
+	if (!ms->heredoc_files)
+	{
+		perror("heredoc memory allocaton failed");
+		clean_token_list(&(ms->tokens));
+		return (0);
+	}
+	put_files_for_redirections(ms->tokens);
+	return (1);
+}
+
+static int	create_blocks_and_cmds_lists(t_ms *ms)
+{
+	int		err_syntax;
+
+	err_syntax = 0;
+	ms->blocks = create_blocks_list(ms->tokens, NULL, &err_syntax);
+	if (err_syntax)
+	{
+		ft_putstr_fd("Error: failed to create blocks\n", STDERR_FILENO);
+		clean_token_list(&(ms->tokens));
+		return (0);
+	}
+	ms->cmds = create_cmd_list(ms->blocks, ms);
+	if (!ms->cmds)
+	{
+		ft_putstr_fd("Error: failed to create commands\n", STDERR_FILENO);
+		clean_token_list(&(ms->tokens));
+		clean_block_list(&(ms->blocks));
+		return (0);
+	}
+	return (1);
+}
+
+static int	process_input(char **input, t_ms *ms)
+{
+	int		err_syntax;
+
+	err_syntax = 0;
+	if ((*input)[0] == '\0') // Ignore empty input (Enter)
+	{
+		free(*input);
+		return (0);
+	}
+	err_syntax = validate_input(*input);
+	if (err_syntax)
+	{
+		history_exit(ms);
+		clean_struct(ms);
+		free(*input);
+		exit(err_syntax);
+	}
+	add_line_to_history(*input, ms);
+	return (1);
+}
+
 int main(int argc, char **argv, char **envp)
 {
-	t_ms *ms;
-	t_cmd	*cur;
-	char *input;
-	int err_syntax;
-	int		i;
+	t_ms	*ms;
+	char	*input;
+	int		exit_code;
 
 	if (argc != 1 && argv)
 	{
@@ -125,16 +224,12 @@ int main(int argc, char **argv, char **envp)
 		return (1);
 	}
 	ms = initialize_struct(envp);
-	check_shlvl(ms);
 	while (1)
 	{
 		// Reading the input
 		inout(ms->saved_stdin, ms->saved_stdout); // Restore STDIN and STDOUT
-
 		// FOR USUAL EXECUTION
 		//input = readline("minishell> ");
-
-
 		//FOR TESTER
 		if (isatty(fileno(stdin))) // If running interactively
 			input = readline("minishell> ");
@@ -151,92 +246,19 @@ int main(int argc, char **argv, char **envp)
 			printf("exit\n");
 			break;
 		}
-		if (input[0] == '\0') // Ignore empty input (Enter)
-		{
-			free(input);
+		if (!process_input(&input, ms))
+			continue; 
+		if (!tokenize_input(&input, ms))
 			continue;
-		}
-
-		// BNF checking
-		err_syntax = validate_input(input);
-		if (err_syntax)
-		{
-			history_exit(ms); //here?
-			clean_struct(ms);
-			free(input);
-			exit(err_syntax);
-		}
-
-		add_line_to_history(input, ms); //fix
-
-		// Parsing
-		ms->tokens = tokenization(input, ms);
-		free(input); // Освобождаем readline-буфер
-		if (!ms->tokens)
-		{
-			ft_putstr_fd("Error: tokenization failed\n", STDERR_FILENO);
+		if (!create_blocks_and_cmds_lists(ms))
 			continue;
-		}
-		/*printf("after tokenization\n");
-		print_tokens(ms->tokens);*/
-		/*if (ms->heredoc_files)
-		{
-			cleanup_heredocs(ms->heredoc_files);
-			ms->heredoc_count = 0;
-		}*/
-		malloc_heredocs(ms, ms->tokens);
-		if (!ms->heredoc_files)
-		{
-			perror("heredoc memory allocaton failed");
-			clean_token_list(&(ms->tokens));
-			continue;
-		}
-		put_files_for_redirections(ms->tokens);
-		ms->blocks = create_blocks_list(ms->tokens, NULL, &err_syntax);
-		if (err_syntax)
-		{
-			ft_putstr_fd("Error: failed to create blocks\n", STDERR_FILENO);
-			clean_token_list(&(ms->tokens));
-			continue;
-		}
-		ms->cmds = create_cmd_list(ms->blocks, ms);
-		if (!ms->cmds)
-		{
-			ft_putstr_fd("Error: failed to create commands\n", STDERR_FILENO);
-			clean_token_list(&(ms->tokens));
-			clean_block_list(&(ms->blocks));
-			continue;
-		}
-		i = 0;
-		cur = ms->cmds;
-		while (cur)
-		{
-			cur = cur->next;
-			i++;
-		}
-		if (is_builtin(ms->cmds) && if_children_needed(ms->cmds) == false && i == 1)
-			handle_builtin(ms->cmds, ms, 0);
-		else
-		{
-			if (i == 1)
-				make_one_child(ms->cmds, ms);
-			else
-				make_multiple_childs(i, ms->cmds, ms);
-		}
-		close_fds(ms->cmds);
-		close(ms->saved_stdin);
-		close(ms->saved_stdout);
-		if (ms->heredoc_files)
-	    	cleanup_heredocs(ms->heredoc_files);
-		reset_heredocs(ms);
-		clean_token_list(&(ms->tokens));
-		clean_block_list(&(ms->blocks));
-		clean_cmd_list(&(ms->cmds));
+		execute_commands(ms);
+		cleanup_after_execution(ms);
 	}
 	clean_cmd_list(&(ms->cmds));
 	history_exit(ms);
-	int exit = ms->exit_status;
+	exit_code = ms->exit_status;
 	clean_struct(ms);
 	rl_clear_history();
-	return (exit);
+	return (exit_code);
 }
