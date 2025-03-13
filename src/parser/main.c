@@ -143,6 +143,7 @@ static void	malloc_heredocs(t_ms *ms, t_token *token)
 		exit(1);
 	}
 	ft_memset(ms->heredoc_files, 0, sizeof(char *) * (heredoc_count + 1)); // Set all entries to NULL
+	ms->heredoc_files[0] = NULL;
 }
 
 static void	inout(int saved_stdin, int saved_stdout)

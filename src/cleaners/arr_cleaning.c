@@ -47,7 +47,8 @@ void	cleanup_heredocs(char **filenames)
 		free(filenames[i]);
         i++;
     }
-    free(filenames);
+	if (filenames)
+    	free(filenames);
 }
 
 void	close_fds(t_cmd *cmd)
