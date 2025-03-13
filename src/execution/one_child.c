@@ -53,7 +53,6 @@ void	make_one_child(t_cmd *cmd, t_ms *ms)
     pid_t	pid;
     int		status;
 
-    //printf("hey\n");
     if (!cmd->args || !cmd->args[0])
         return;
     pid = fork();

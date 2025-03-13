@@ -113,7 +113,9 @@ static void	execute_commands(t_ms *ms)
 	else
 	{
 		if (i == 1)
+		{
 			make_one_child(ms->cmds, ms);
+		}
 		else
 			make_multiple_childs(i, ms->cmds, ms);
 	}
@@ -223,6 +225,7 @@ static int	process_input(char **input, t_ms *ms)
 	add_line_to_history(*input, ms);
 	return (1);
 }
+
 int	init_terminal_signals(void)
 {
 	struct termios	term;
@@ -263,11 +266,11 @@ int main(int argc, char **argv, char **envp)
 		// Reading the input
 		inout(ms->saved_stdin, ms->saved_stdout); // Restore STDIN and STDOUT
 		// FOR USUAL EXECUTION
-		/*signal_mode(INTERACTIVE);
+		signal_mode(INTERACTIVE);
 		input = readline("minishell> ");
-		signal_mode(IGNORE);*/
+		signal_mode(IGNORE);
 		//FOR TESTER
-		if (isatty(fileno(stdin))) // If running interactively
+		/*if (isatty(fileno(stdin))) // If running interactively
 			input = readline("minishell> ");
 		else // If receiving input from another program
 		{
@@ -276,7 +279,7 @@ int main(int argc, char **argv, char **envp)
 				break;
 			input = ft_strtrim(line, "\n"); // Remove newline from input
 			free(line);
-		}
+		}*/
 		if (!input) // EOF check (Ctrl+D)
 		{
 			printf("exit\n");
@@ -285,24 +288,25 @@ int main(int argc, char **argv, char **envp)
 		if (!process_input(&input, ms))
 			continue; 
 		if (!tokenize_input(&input, ms))
-		if (!process_input(&input, ms))
-			continue; 
-		if (!tokenize_input(&input, ms))
 			continue;
 		if (!create_blocks_and_cmds_lists(ms))
-		if (!create_blocks_and_cmds_lists(ms))
 			continue;
-		execute_commands(ms);
-		cleanup_after_execution(ms);
+		if (g_sgnl == SIGINT)
+		{
+			clean_token_list(&(ms->tokens));
+			clean_block_list(&(ms->blocks));
+			clean_cmd_list(&(ms->cmds));
+			cleanup_heredocs(ms->heredoc_files);
+			g_sgnl = 0;
+			continue;
+		}
 		execute_commands(ms);
 		cleanup_after_execution(ms);
 	}
 	clean_cmd_list(&(ms->cmds));
 	history_exit(ms);
 	exit_code = ms->exit_status;
-	exit_code = ms->exit_status;
 	clean_struct(ms);
 	rl_clear_history();
-	return (exit_code);
 	return (exit_code);
 }
