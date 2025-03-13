@@ -43,7 +43,7 @@ void	signal_mode(t_mode mode)
 	if (mode == DEFAULT) //when we run cat
 		mode_init(SIG_DFL, SIG_DFL);
 	if (mode == INTERACTIVE) //when we have a prompt
-		mode_init(ctrlc_interactive, SIG_DFL);
+		mode_init(ctrlc_interactive, SIG_IGN);
 	if (mode == HEREDOC_MODE) //inside the heredoc before limiter
 		mode_init(SIG_DFL, SIG_IGN);
 	if (mode == IGNORE) //the 1st (maybe heredoc??)

@@ -116,6 +116,7 @@ void    execute_command(char **envp, char **cmd)
         print_cmd_error(cmd[0], NO_CMD);
         exit(127);
     }
+    printf("signal before execve %d\n ", g_sgnl);
     execve(path, cmd, envp);
     print_cmd_error(path, PERM_DEN);
     free(path);

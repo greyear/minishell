@@ -65,5 +65,12 @@ void	make_one_child(t_cmd *cmd, t_ms *ms)
         execute_child(cmd, ms);
     waitpid(pid, &status, 0);
     if (WIFEXITED(status))
+    {
+        printf("gsignal in parent %d\n", g_sgnl);
+        if (WTERMSIG(status) == SIGINT)
+            ms->exit_status = 130;
+        if (WTERMSIG(status) == SIGQUIT)
+            ms->exit_status = 131;
 		ms->exit_status = WEXITSTATUS(status);
+    }
 }
