@@ -131,7 +131,7 @@ void	redir_in_block(t_block *block, t_cmd *cmd, t_ms *ms)
 				ms->exit_status = 1; //error?
 				return ;
 			} //if smth failed here we save exit value for the process
-			if (cmd->infile == -3)
+			if (g_sgnl == SIGINT)
 			{
 				ms->exit_status = 130;
 				return;

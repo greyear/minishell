@@ -66,15 +66,15 @@ static void	print_heredoc_ctrl_d(char *limiter)
 
 static char	*read_heredoc_line(int temp_fd, char *limiter)
 {
-	//char	*line;
-	char	*temp;
+	char	*line;
+	//char	*temp;
  
 	//write(STDOUT_FILENO, "heredoc> ", 9);
 	//signal_mode(HEREDOC_MODE);
 	//line = get_next_line(STDIN_FILENO);
-	temp = readline("> ");
+	line = readline("> ");
 	//signal_mode(IGNORE);
-	if (!temp)
+	if (!line)
 	{
 		print_heredoc_ctrl_d(limiter);
 		//perror("readline error");
@@ -90,7 +90,7 @@ static char	*read_heredoc_line(int temp_fd, char *limiter)
 		close(temp_fd);
 		exit (2);
 	}*/
-	return (temp);
+	return (line);
  }
  
 /**
@@ -189,7 +189,7 @@ int	handle_heredoc(t_ms *ms, char *limiter, t_token *token)
 	pid_t	pid;
 	int		status;
  
- 	printf("this is signal before heredocing %d\n", g_sgnl);
+ 	//printf("this is signal before heredocing %d\n", g_sgnl);
 	filename = generate_heredoc_filename(ms->heredoc_count);
 	ms->heredoc_files[ms->heredoc_count++] = filename;
 	pid = fork();
@@ -213,9 +213,9 @@ int	handle_heredoc(t_ms *ms, char *limiter, t_token *token)
 		signal_mode(DEFAULT);
 		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT) // If child was killed by SIGINT
 		{
-			printf("this is signal after heredocing %d\n", g_sgnl);
+			//printf("this is signal after heredocing %d\n", g_sgnl);
 			g_sgnl = SIGINT;
-			printf("this is signal after cchangonh %d\n", g_sgnl);
+			//printf("this is signal after cchangonh %d\n", g_sgnl);
 			ms->exit_status = 130;
 			//unlink(filename); // Remove the temporary file
 			return (-3);
