@@ -16,26 +16,26 @@
 
 static char	*make_full_path(char **paths, char *cmd)
 {
-    int		i;
-    char	*new_full_path;
+	int		i;
+	char	*new_full_path;
 	char	*full_cmd_path;
 
-    i = 0;
-    while (paths[i])
-    {
-        new_full_path = ft_strjoin(paths[i], "/");
-        if (!new_full_path)
-            return (NULL);
-        full_cmd_path = ft_strjoin(new_full_path, cmd);
-        free(new_full_path);
-        if (!full_cmd_path)
-            return (NULL);
-        if (access(full_cmd_path, F_OK) == 0)
-            return (full_cmd_path);
-        free(full_cmd_path);
-        i++;
-    }
-    return (NULL);
+	i = 0;
+	while (paths[i])
+	{
+		new_full_path = ft_strjoin(paths[i], "/");
+		if (!new_full_path)
+			return (NULL);
+		full_cmd_path = ft_strjoin(new_full_path, cmd);
+		free(new_full_path);
+		if (!full_cmd_path)
+			return (NULL);
+		if (access(full_cmd_path, F_OK) == 0)
+			return (full_cmd_path);
+		free(full_cmd_path);
+		i++;
+	}
+	return (NULL);
 }
 
 /**
@@ -56,26 +56,26 @@ static char *find_path_from_envp(char **envp, char **cmds)
 {
 	int		i;
 	char	*path_var;
-    char	**paths;
-    char	*full_path;
+	char	**paths;
+	char	*full_path;
 
 	i = 0;
 	full_path = NULL;
-    while (envp[i])
-    {
-        if (ft_strncmp(envp[i], "PATH=", 5) == 0)
-        {
-            path_var = envp[i] + 5;
-            if (path_var[0] == '\0')
-                return (NULL);
-            paths = ft_split(path_var, ':');
-            full_path = make_full_path(paths, cmds[0]);
-            clean_arr(&paths);
-            break;
-        }
+	while (envp[i])
+	{
+		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
+		{
+			path_var = envp[i] + 5;
+			if (path_var[0] == '\0')
+				return (NULL);
+			paths = ft_split(path_var, ':');
+			full_path = make_full_path(paths, cmds[0]);
+			clean_arr(&paths);
+			break;
+		}
 		i++;
-    }
-    return (full_path);
+	}
+	return (full_path);
 }
 
 /**
@@ -98,27 +98,27 @@ static char *find_path_from_envp(char **envp, char **cmds)
 
 void    execute_command(char **envp, char **cmd)
 {
-    char    *path;
+	char	*path;
 
-    if (!cmd || !*cmd)
-    {
-        print_cmd_error(NULL, 0);
-        exit(127);
-    }
-    check_if_dot(cmd);
-    if (cmd[0][0] == '/' || cmd[0][0] == '.')
-        handle_absolute_or_relative_path(envp, cmd);
-    if (!get_env_value("PATH", envp))
-        handle_no_path_variable(envp, cmd);
-    path = find_path_from_envp(envp, cmd);
-    if (!path)
-    {
-        print_cmd_error(cmd[0], NO_CMD);
-        exit(127);
-    }
-    //printf("signal before execve %d\n ", g_sgnl);
-    execve(path, cmd, envp);
-    print_cmd_error(path, PERM_DEN);
-    free(path);
-    exit(126);
+	if (!cmd || !*cmd)
+	{
+		print_cmd_error(NULL, 0);
+		exit(127);
+	}
+	check_if_dot(cmd);
+	if (cmd[0][0] == '/' || cmd[0][0] == '.')
+		handle_absolute_or_relative_path(envp, cmd);
+	if (!get_env_value("PATH", envp))
+		handle_no_path_variable(envp, cmd);
+	path = find_path_from_envp(envp, cmd);
+	if (!path)
+	{
+		print_cmd_error(cmd[0], NO_CMD);
+		exit(127);
+	}
+	//printf("signal before execve %d\n ", g_sgnl);
+	execve(path, cmd, envp);
+	print_cmd_error(path, PERM_DEN);
+	free(path);
+	exit(126);
 }
