@@ -70,10 +70,10 @@ static char	*read_heredoc_line(int temp_fd, char *limiter)
 	//char	*temp;
  
 	//write(STDOUT_FILENO, "heredoc> ", 9);
-	//signal_mode(HEREDOC_MODE);
+	signal_mode(HEREDOC_MODE);
 	//line = get_next_line(STDIN_FILENO);
 	line = readline("> ");
-	//signal_mode(IGNORE);
+	signal_mode(IGNORE);
 	if (!line)
 	{
 		print_heredoc_ctrl_d(limiter);
@@ -189,7 +189,6 @@ int	handle_heredoc(t_ms *ms, char *limiter, t_token *token)
 	pid_t	pid;
 	int		status;
  
- 	//printf("this is signal before heredocing %d\n", g_sgnl);
 	filename = generate_heredoc_filename(ms->heredoc_count);
 	ms->heredoc_files[ms->heredoc_count++] = filename;
 	pid = fork();
@@ -211,14 +210,14 @@ int	handle_heredoc(t_ms *ms, char *limiter, t_token *token)
 		signal_mode(IGNORE);
 		waitpid(pid, &status, 0);
 		signal_mode(DEFAULT);
-		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT) // If child was killed by SIGINT
+		if (WIFEXITED(status))
 		{
-			//printf("this is signal after heredocing %d\n", g_sgnl);
-			g_sgnl = SIGINT;
-			//printf("this is signal after cchangonh %d\n", g_sgnl);
-			ms->exit_status = 130;
-			//unlink(filename); // Remove the temporary file
-			return (-3);
+			ms->exit_status = WEXITSTATUS(status);
+			if (ms->exit_status == 130)
+			{
+				g_sgnl = SIGINT;
+				return (SIGNAL_HEREDOC);
+			}
 		}
 	}
 	fd = open(filename, O_RDONLY);

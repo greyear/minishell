@@ -75,6 +75,7 @@ typedef enum e_exit
 	SYNTAX_ERR = 2,
 	CMD_EXEC = 126,
 	CMD_NF = 127,
+	SIGNAL_HEREDOC = -3,
 	MALLOC_ERR,
 }	t_exit;
 

@@ -26,6 +26,13 @@ void    wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms)
 		wpid = wait(&status);
 		if (wpid == last_pid && WIFEXITED(status))
 			ms->exit_status = WEXITSTATUS(status);
+		if (wpid == last_pid && WIFSIGNALED(status))
+    	{
+        	if (WTERMSIG(status) == SIGINT)
+            	ms->exit_status = 130;
+        	if (WTERMSIG(status) == SIGQUIT)
+            	ms->exit_status = 131;
+    	}
 		i++;
 	}
 }
@@ -163,6 +170,7 @@ void    make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
 		cur = cur->next;
 		p.cmd_num++;
 	}
+
 	close_all_fds(&p, ms);
 	wait_for_children(p.num_cmds, p.last_pid, p.ms);
 	free_pids(&p);

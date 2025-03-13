@@ -21,6 +21,17 @@ void	ctrlc_interactive(int sig)
 	}
 }
 
+void	ctrlc_heredoc(int sig)
+{
+	if (sig == SIGINT)
+	{
+		write(STDERR_FILENO, "\n", 1);
+		close(STDIN_FILENO); // Close stdin to force readline() to return NULL
+		//g_sgnl = SIGINT; // Update global signal variable
+		exit(130);
+	}
+}
+
 static void	mode_init(void (*ctrlc)(int), void (*ctrlbackslash)(int))
 {
 	struct sigaction cc;
@@ -45,7 +56,7 @@ void	signal_mode(t_mode mode)
 	if (mode == INTERACTIVE) //when we have a prompt
 		mode_init(ctrlc_interactive, SIG_IGN);
 	if (mode == HEREDOC_MODE) //inside the heredoc before limiter
-		mode_init(SIG_DFL, SIG_IGN);
+		mode_init(ctrlc_heredoc, SIG_IGN);
 	if (mode == IGNORE) //the 1st (maybe heredoc??)
 		mode_init(SIG_IGN, SIG_IGN);
 }

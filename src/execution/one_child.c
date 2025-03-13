@@ -68,13 +68,11 @@ void	make_one_child(t_cmd *cmd, t_ms *ms)
     {
 		ms->exit_status = WEXITSTATUS(status);
     }
-    else if (WIFSIGNALED(status))
+    if (WIFSIGNALED(status))
     {
         if (WTERMSIG(status) == SIGINT)
             ms->exit_status = 130;
         if (WTERMSIG(status) == SIGQUIT)
             ms->exit_status = 131;
     }
-    //else
-      //  ms->exit_status = EXIT_FAILURE;
 }
