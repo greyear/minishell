@@ -89,7 +89,7 @@ static char	*extract_key_export(char *args, int *i)
  * 
  */
 
-static int	handle_dollar_expansion(char **result, char *args, int *i, t_ms *ms)
+static int	handle_dollar_expansion(char **result, char *args, int *i, t_ms *ms, t_char quote) //temporary
 {
 	char	*key;
 
@@ -97,7 +97,7 @@ static int	handle_dollar_expansion(char **result, char *args, int *i, t_ms *ms)
 	key = extract_key_export(args, i);
 	if (!key)
 		return (1);
-	expand_variable(ms, key, ft_strlen(key), result);
+	expand_variable(ms, key, ft_strlen(key), result, quote);
 	free(key);
 	return (0);
 }
@@ -121,7 +121,7 @@ static int	handle_dollar_expansion(char **result, char *args, int *i, t_ms *ms)
  *         for freeing the returned string.
  */
 
-char	*handle_expansion(char *args, t_ms *ms)
+char	*handle_expansion(char *args, t_ms *ms, t_char quote)
 {
 	int		i;
 	char	*result;
@@ -136,7 +136,7 @@ char	*handle_expansion(char *args, t_ms *ms)
 		if (args[i] == '$' && args[i + 1] && args[i + 1] != '$'
 			&& !ft_isspace(args[i + 1]) && args[i + 1] != '/') //new slash to fix 303&307 parsing hell
 		{
-			if (handle_dollar_expansion(&result, args, &i, ms))
+			if (handle_dollar_expansion(&result, args, &i, ms, quote))
 			{
 				free (result);
 				return (NULL);

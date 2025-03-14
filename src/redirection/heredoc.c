@@ -94,9 +94,9 @@ static int process_heredoc_line(char **line, char *limiter, t_token *token, t_ms
 		free(*line);
 		return (1);
 	}
-	if (token->quote != SG_QUOT && token->quote != DB_QUOT)
+	if (token->quote != SG_QUOT && token->quote != DB_QUOT) //why db quote? can you pls explain?
 	{
-		expanded = handle_expansion(*line, ms);
+		expanded = handle_expansion(*line, ms, 0);
 		free(*line);
 		*line = expanded;
 	}

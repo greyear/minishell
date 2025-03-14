@@ -13,7 +13,7 @@ int	expand_in_token(t_token *cur, t_ms *ms)
 	if (ft_strcmp(cur->data, "$") == 0 && !cur->quote && cur->next && cur->next->quote)
 		expanded = ft_strdup("");
 	else
-		expanded = handle_expansion(cur->data, ms);
+		expanded = handle_expansion(cur->data, ms, cur->quote); //add a field here
 	if (!expanded)
 	{
 		free(data_copy);
