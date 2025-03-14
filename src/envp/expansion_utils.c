@@ -47,7 +47,7 @@ static void	append_to_result(char **result, char *new_part)
   * @return A string containing the value associated with the environment variable, or an empty string if not found.
   */
  
-static char	*find_env_value(char **envp, char *key, int len)
+static char	*find_env_value(char **envp, char *key, int len, t_char quote)
 {
 	int		i;
 	char	*copy;
@@ -63,9 +63,14 @@ static char	*find_env_value(char **envp, char *key, int len)
 				copy = ft_strdup(envp[i] + len + 1);
 				if (!copy)
 					return (NULL); //malloc error
-				without_spaces = remove_extra_spaces(copy);
-				free(copy);
-				return (without_spaces);
+				if (quote == 0)
+				{
+					without_spaces = remove_extra_spaces(copy);
+					free(copy);
+					return (without_spaces);
+				}
+				else
+					return (copy);
 			}
 		}
 		i++;
@@ -96,9 +101,9 @@ static char	*find_env_value(char **envp, char *key, int len)
  *
  */
 
-void    expand_variable(t_ms *ms, char *key, int key_len, char **result)
+void	expand_variable(t_ms *ms, char *key, int key_len, char **result, t_char quote)
 {
-	char    *expanded;
+	char	*expanded;
 
 	if (!key || !*key)
 		return;
@@ -107,7 +112,7 @@ void    expand_variable(t_ms *ms, char *key, int key_len, char **result)
 	else if (ft_isdigit(key[0]))
 		expanded = ft_strdup("");
 	else
-		expanded = find_env_value(ms->envp, key, key_len);
+		expanded = find_env_value(ms->envp, key, key_len, quote);
 	append_to_result(result, expanded);
 }
 
