@@ -43,7 +43,6 @@ static int	open_heredoc_file(char *filename, int *fd)
 	return (*fd);
 }
 
-
 static void	print_heredoc_ctrl_d(char *limiter)
 {
 	ft_putstr_fd("minishell: warning: here-document at " \
@@ -202,7 +201,7 @@ int	handle_heredoc(t_ms *ms, char *limiter, t_token *token)
 		signal_mode(HEREDOC_MODE);
 		open_heredoc_file(filename, &temp_fd);
 		read_heredoc_input(temp_fd, limiter, token, ms);
-		close(temp_fd);
+		//close(temp_fd);
 		exit(0);
 	}
 	else

@@ -127,6 +127,8 @@ void	check_shlvl(t_ms *ms)
 {
 	char	**export;
 
+	if (!ms->envp)
+		return;
 	make_args(&export, ms);
 	if (!export)
 		return;

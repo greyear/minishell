@@ -40,6 +40,12 @@ static t_ms	*allocate_struct(void)
 
 static void	initialize_envp(t_ms *ms, char **envp)
 {
+	if (!envp)
+	{
+		ms->envp = NULL;
+		ms->exported = NULL;
+		return;
+	}
 	ms->envp = copy_map(envp);
 	if (!ms->envp)
 	{

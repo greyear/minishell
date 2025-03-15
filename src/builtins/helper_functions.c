@@ -49,6 +49,8 @@ char	*get_env_value(char *key, char **envp)
     int		i;
     size_t	len;
 
+	if (!envp)
+        return (NULL);
 	i = 0;
 	len = ft_strlen(key);
     while (envp[i])
@@ -81,6 +83,8 @@ char	**allocate_temp_env(char **env, int x)
 	int	i;
 
 	i = 0;
+	if (!env)
+		return (NULL);
 	while (env[i])
 		i++;
 	if (i == 0)
@@ -132,6 +136,8 @@ char	**copy_map(char **original_map)
 	int		i;
 
 	i = 0;
+	if (!original_map)
+		return (NULL);
 	while (original_map[i])
 		i++;
 	new_map = malloc(sizeof(char *) * (i + 1));
