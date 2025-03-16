@@ -23,10 +23,10 @@ static void	append_to_result(char **result, char *new_part)
 		return;
 	temp = ft_strjoin(*result, new_part);
 	if (!temp)
-    {
-        free(new_part);
-        return;
-    }
+	{
+		free(new_part);
+		return;
+	}
 	free(*result);
 	*result = temp;
 	free(new_part);
@@ -49,19 +49,19 @@ static void	append_to_result(char **result, char *new_part)
  
 static char	*find_env_value(char **envp, char *key, int len)
 {
-    int     i;
+	int	i;
  
-    i = 0;
-    while (envp[i])
-    {
-        if (ft_strncmp(envp[i], key, len) == 0)
-        {
-            if (envp[i][len] && envp[i][len] == '=')
-                return (ft_strdup(envp[i] + len + 1));
-        }
-        i++;
-    }
-    return (ft_strdup(""));
+	i = 0;
+	while (envp[i])
+	{
+		if (ft_strncmp(envp[i], key, len) == 0)
+		{
+			if (envp[i][len] && envp[i][len] == '=')
+				return (ft_strdup(envp[i] + len + 1));
+		}
+		i++;
+	}
+	return (ft_strdup(""));
 }
 
 /**
@@ -81,17 +81,17 @@ static char	*find_env_value(char **envp, char *key, int len)
  *
  */
 
-void    expand_variable(t_ms *ms, char *key, int key_len, char **result)
+void	expand_variable(t_ms *ms, char *key, int key_len, char **result)
 {
-    char    *expanded;
+	char	*expanded;
 
-    if (!key || !*key)
-        return;
-    if (key[0] == '?')
-        expanded = ft_itoa(ms->exit_status);
-    else if (ft_isdigit(key[0]))
-        expanded = ft_strdup("");
-    else
-        expanded = find_env_value(ms->envp, key, key_len);
-    append_to_result(result, expanded);
+	if (!key || !*key)
+		return;
+	if (key[0] == '?')
+		expanded = ft_itoa(ms->exit_status);
+	else if (ft_isdigit(key[0]))
+		expanded = ft_strdup("");
+	else
+		expanded = find_env_value(ms->envp, key, key_len);
+	append_to_result(result, expanded);
 }

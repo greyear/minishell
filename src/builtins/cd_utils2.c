@@ -45,9 +45,13 @@ static char	*handle_empty_oldpwd(t_ms *ms)
 	current_pwd = get_env_value("PWD", ms->envp);
 	if (!current_pwd || *current_pwd == '\0')
 	{
-		if (getcwd(cwd, sizeof(cwd)))
-			update_env_var(ms, "PWD=", cwd);
-		return (NULL);
+		if (getcwd(cwd, sizeof(cwd)) == NULL)
+		{
+			perror("getcwd failed\n");
+			ms->exit_status = 1;
+			return (NULL);
+		}
+		update_env_var(ms, "PWD=", cwd);
 	}
 	update_env_var(ms, "OLDPWD=", current_pwd);
 	return (ft_strdup(current_pwd));

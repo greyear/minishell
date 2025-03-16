@@ -66,6 +66,10 @@ typedef enum e_print
 	DIRECT,
 	HERED_ERR,
 	HIST_ERR,
+	NO_FILE_OR_DIR,
+	IS_DIR,
+	NO_CMD,
+
 }	t_print;
 
 typedef enum e_exit
@@ -91,15 +95,21 @@ typedef enum e_mode
 	INTERACTIVE,
 	HEREDOC_MODE,
 	IGNORE,
-	EXPLICIT,
-	IMPLICIT
 }	t_mode;
 
+/*typedef enum e_cmd_err
+{
+	PERM_DENIED,
+	NO_FILE_OR_DIR,
+	IS_DIR,
+	NO_CMD,
+}	t_cmd_err;*/
+
 # define OWN_ERR_MSG "ms error: "
-# define PERM_DEN 1
-# define NO_FILE_OR_DIR 2
-# define IS_DIR 3
-# define NO_CMD 4
+//# define PERM_DEN 1
+//# define NO_FILE_OR_DIR 2
+//# define IS_DIR 3
+//# define NO_CMD 4
 # define HISTORY_FILE ".history.tmp"
 # define HISTORY_SIZE 500
 

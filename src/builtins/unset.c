@@ -24,7 +24,10 @@ static void	process_unset_entry(char **args, int i, t_ms *ms, int len)
 
 	name = extract_key(args[i], len);
 	if (!name)
+	{
+		ms->exit_status = 1;
 		return;
+	}
 	if (check_if_valid_key(name) == 1)
 	{
 		free(name);

@@ -14,7 +14,7 @@
 
 static char	*increase_shlvl(char *shlvl_value)
 {
-    int		level;
+	int		level;
 	int		i;
 	
 	i = 0;
@@ -28,7 +28,7 @@ static char	*increase_shlvl(char *shlvl_value)
 		i++;
 	}
 	if (level < 0)
-        return ft_itoa(0);
+		return ft_itoa(0);
 	return (ft_itoa(level + 1));
 }
 
@@ -46,17 +46,17 @@ static char	*increase_shlvl(char *shlvl_value)
 
 static int	update_shlvl(char ***env)
 {
-    int		i;
+	int		i;
 	char	*new_value;
 	char	*temp;
 	
 	i = 0;
-    while ((*env)[i])
-    {
-        if (ft_strncmp((*env)[i], "SHLVL=", 6) == 0)
-        {
-           	new_value = increase_shlvl((*env)[i] + 6);
-            if (!new_value)
+	while ((*env)[i])
+	{
+		if (ft_strncmp((*env)[i], "SHLVL=", 6) == 0)
+		{
+		   	new_value = increase_shlvl((*env)[i] + 6);
+			if (!new_value)
 				return (0);
 			temp = ft_strjoin("SHLVL=", new_value);
 			free(new_value);
@@ -65,9 +65,9 @@ static int	update_shlvl(char ***env)
 			free((*env)[i]);
 			(*env)[i] = temp;
 			return (1);
-        }
-        i++;
-    }
+		}
+		i++;
+	}
 	return (0);
 }
 

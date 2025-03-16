@@ -12,7 +12,7 @@
 
 static t_ms	*allocate_struct(void)
 {
-	t_ms *ms;
+	t_ms	*ms;
 
 	ms = malloc(sizeof(t_ms));
 	if (!ms)
@@ -56,7 +56,7 @@ static void	initialize_envp(t_ms *ms, char **envp)
 	ms->exported = copy_map(envp);
 	if (!ms->exported)
 	{
-		perror("ms->exported: memory allocation failed");
+		print_error(ERR_MALLOC);
 		clean_struct(ms);
 		exit(1);
 	}
@@ -92,14 +92,14 @@ static void	initialize_fds(t_ms *ms)
 	ms->saved_stdin = dup(STDIN_FILENO);
 	if (ms->saved_stdin == -1)
 	{
-		perror("dup stdin failed");
+		perror("dup failed\n");
 		clean_struct(ms);
 		exit(1);
 	}
 	ms->saved_stdout = dup(STDOUT_FILENO);
 	if (ms->saved_stdout == -1)
 	{
-		perror("dup stdout failed");
+		perror("dup failed\n");
 		clean_struct(ms);
 		exit(1);
 	}

@@ -18,7 +18,7 @@
 static char	**copy_to_temp(char *arg, char ***env, char *key, int *flag)
 {
 	char	**temp;
-	int		i;
+	int	i;
 
 	i = 0;
 	temp = allocate_temp_env(*env, 2);
@@ -67,6 +67,7 @@ static void	change_values(char *arg, char ***env, char *key, int flag)
 		temp[i] = ft_strdup(arg);
 		if (!temp[i])
 		{
+			print_error(ERR_MALLOC);
 			clean_arr(&temp);
 			return;
 		}
@@ -88,21 +89,26 @@ static void	change_values(char *arg, char ***env, char *key, int flag)
  * @param ms A pointer to the shell's main structure containing environment variables and state.
  */
 
-static void    change_values_env_ex(char *arg, t_ms *ms)
+static void	change_values_env_ex(char *arg, t_ms *ms)
 {
-    int     len;
-    char    *key;
+	int	len;
+	char	*key;
 
 	len = get_key_length(arg);
 	key = extract_key(arg, len);
+	if (!key)
+	{
+		ms->exit_status = 1;
+		return;
+	}
 	if (check_if_valid_key(key) == 1)
 	{
 		free(key);
 		print_export_error(ms, arg);
 		return;
 	}
-    change_values(arg, &ms->exported, key, 1);
-    change_values(arg, &ms->envp, key, 0);
+	change_values(arg, &ms->exported, key, 1);
+	change_values(arg, &ms->envp, key, 0);
 	free(key);
 }
 
@@ -123,7 +129,7 @@ static void    change_values_env_ex(char *arg, t_ms *ms)
 
 static void	process_arguments(char **args, t_ms *ms)
 {
-	int		i;
+	int	i;
 
 	i = 1;
 	if (args[1][0] && args[1][0] == '-')
@@ -138,7 +144,9 @@ static void	process_arguments(char **args, t_ms *ms)
 			change_values_env_ex(args[i], ms);
 		else
 			add_to_exported(args[i], ms);
-        sort_exported_alphaorder(ms);
+		if (ms->exit_status == 1)
+			return;
+		sort_exported_alphaorder(ms);
 		i++;
 	}
 }
@@ -157,23 +165,23 @@ static void	process_arguments(char **args, t_ms *ms)
  * @param ms A pointer to the shell's main structure containing environment variables and state.
  */
 
-void    handle_export(char **args, t_ms *ms)
+void	handle_export(char **args, t_ms *ms)
 {
-    int     arg_count;
+	int	arg_count;
 
-    ms->exit_status = 0;
-    arg_count = 0;
-    if (!args || !*args)
+	arg_count = 0;
+	if (!args || !*args)
 		return;
 	if (ft_strcmp(args[0], "export") != 0)
 		return;
-    while (args[arg_count])
-        arg_count++;
-    if (arg_count == 1)
-    {
-        sort_exported_alphaorder(ms);
-        print_exported(ms);
+	ms->exit_status = 0;
+	while (args[arg_count])
+		arg_count++;
+	if (arg_count == 1)
+	{
+		sort_exported_alphaorder(ms);
+		print_exported(ms);
 		return;
-    }
+	}
 	process_arguments(args, ms);
 }

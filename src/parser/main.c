@@ -112,9 +112,7 @@ static void	execute_commands(t_ms *ms)
 	else
 	{
 		if (i == 1)
-		{
 			make_one_child(ms->cmds, ms);
-		}
 		else
 			make_multiple_childs(i, ms->cmds, ms);
 	}
@@ -144,7 +142,7 @@ static void	malloc_heredocs(t_ms *ms, t_token *token)
 	ms->heredoc_files = malloc(sizeof(char *) * (heredoc_count + 1)); // Support 100 heredocs max
 	if (!ms->heredoc_files)
 	{
-		perror("heredoc: memory allocation failed");
+		print_error(ERR_MALLOC);
 		clean_struct(ms);
 		exit(1);
 	}
@@ -152,10 +150,33 @@ static void	malloc_heredocs(t_ms *ms, t_token *token)
 	ms->heredoc_files[0] = NULL;
 }
 
-static void	inout(int saved_stdin, int saved_stdout)
+/*static int	inout(t_ms *ms)
 {
-	dup2(saved_stdin, STDIN_FILENO);
-	dup2(saved_stdout, STDOUT_FILENO);
+	if (dup2(ms->saved_stdin, STDIN_FILENO) == -1)
+	{
+		close(ms->saved_stdin);
+		close(ms->saved_stdout);
+		perror("dup2 failed\n");
+		ms->exit_status = 1;
+		return (0);
+	}
+	close(ms->saved_stdin);
+	if (dup2(ms->saved_stdout, STDOUT_FILENO) == -1)
+	{
+		close(ms->saved_stdout);
+		perror("dup2 failed\n");
+		ms->exit_status = 1;
+		return (0);
+	}
+	close(ms->saved_stdout);
+	return (1);
+}*/
+
+static int	inout(t_ms *ms)
+{
+	dup2(ms->saved_stdin, STDIN_FILENO);
+	dup2(ms->saved_stdout, STDOUT_FILENO);
+	return (1);
 }
 
 static int	tokenize_input(char **input, t_ms *ms)
@@ -170,7 +191,7 @@ static int	tokenize_input(char **input, t_ms *ms)
 	malloc_heredocs(ms, ms->tokens);
 	if (!ms->heredoc_files)
 	{
-		perror("heredoc memory allocaton failed");
+		print_error(ERR_MALLOC);
 		clean_token_list(&(ms->tokens));
 		return (0);
 	}
@@ -237,20 +258,19 @@ int	init_terminal_signals(void)
 		if (tcgetattr(STDIN_FILENO, &term) == -1)
 		{
 			perror("tcgetattr failed");
-			return (1);
+			return (0);
 		}
 		term.c_lflag &= ~ECHOCTL;
 		if (tcsetattr(STDIN_FILENO, TCSANOW, &term) == -1)
 		{
 			perror("tcsetattr failed");
-			return (1);
+			return (0);
 		}
 	}
-	//signals
-	return (0);
+	return (1);
 }
 
-int main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
 	t_ms	*ms;
 	char	*input;
@@ -261,18 +281,20 @@ int main(int argc, char **argv, char **envp)
 		ft_putstr_fd("Usage: ./minishell\n", STDERR_FILENO);
 		return (1);
 	}
-	init_terminal_signals();
+	if (!init_terminal_signals())
+		return (1);
 	ms = initialize_struct(envp);
 	while (1)
 	{
 		// Reading the input
-		inout(ms->saved_stdin, ms->saved_stdout); // Restore STDIN and STDOUT
+		if (!inout(ms))
+			break; // Restore STDIN and STDOUT
 		// FOR USUAL EXECUTION
-		/*signal_mode(INTERACTIVE);
+		signal_mode(INTERACTIVE);
 		input = readline("minishell> ");
-		signal_mode(IGNORE);*/
+		signal_mode(IGNORE);
 		//FOR TESTER
-		if (isatty(fileno(stdin))) // If running interactively
+		/*if (isatty(fileno(stdin))) // If running interactively
 			input = readline("minishell> ");
 		else // If receiving input from another program
 		{
@@ -281,7 +303,7 @@ int main(int argc, char **argv, char **envp)
 				break;
 			input = ft_strtrim(line, "\n"); // Remove newline from input
 			free(line);
-		}
+		}*/
 		if (!input) // EOF check (Ctrl+D)
 		{
 			printf("exit\n");

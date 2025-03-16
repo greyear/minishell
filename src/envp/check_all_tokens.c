@@ -57,8 +57,8 @@ int	check_list_for_expansions(t_token *first, t_ms *ms)
 
 int	expand_tilde(t_token *cur, t_ms *ms)
 {
-	char *home;
-	char *new_data;
+	char	*home;
+	char	*new_data;
 
 	if (!cur->data || cur->data[0] != '~') // Ensure `~` is at the start
 		return (0);
@@ -84,8 +84,9 @@ int	expand_tilde(t_token *cur, t_ms *ms)
 
 int	check_list_for_tilde(t_token *first, t_ms *ms)
 {
-	t_token *cur = first;
+	t_token	*cur;
 
+	cur = first;
 	while (cur)
 	{
 		if (cur->type == WORD && cur->quote != SG_QUOT && cur->quote != DB_QUOT

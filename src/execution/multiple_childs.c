@@ -14,11 +14,11 @@
  * @return This function does not return; it waits for the specified child processes and updates the `exit_status`.
  */
 
-void    wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms)
+void	wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms)
 {
-	int     i;
-	int     status;
-	pid_t   wpid;
+	int	i;
+	int	status;
+	pid_t	wpid;
 
 	i = 0;
 	while (i < num_cmds)
@@ -27,12 +27,12 @@ void    wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms)
 		if (wpid == last_pid && WIFEXITED(status))
 			ms->exit_status = WEXITSTATUS(status);
 		if (wpid == last_pid && WIFSIGNALED(status))
-    	{
-        	if (WTERMSIG(status) == SIGINT)
-            	ms->exit_status = 130;
-        	if (WTERMSIG(status) == SIGQUIT)
-            	ms->exit_status = 131;
-    	}
+		{
+			if (WTERMSIG(status) == SIGINT)
+				ms->exit_status = 130;
+			if (WTERMSIG(status) == SIGQUIT)
+				ms->exit_status = 131;
+		}
 		i++;
 	}
 }
@@ -54,7 +54,7 @@ void    wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms)
  * @note This function does not return; it either executes a command or exits the child process.
  */
 
-static void child_process(t_cmd *cur, t_pipe *p)
+static void	child_process(t_cmd *cur, t_pipe *p)
 {
 	setup_pipes(p->fd, p->cmd_num, p->num_cmds, p->cur_fd);
 	redirect_process(cur->infile, cur->outfile);
@@ -70,7 +70,6 @@ static void child_process(t_cmd *cur, t_pipe *p)
 		signal_mode(DEFAULT);
 		execute_command(p->ms->envp, cur->args);
 	}
-		
 }
 
 /**
@@ -89,16 +88,18 @@ static void child_process(t_cmd *cur, t_pipe *p)
  * @note If `fork()` fails, the function sets `p->ms->exit_status` to 1 and returns without executing the command.
  */
 
-static void fork_and_execute(t_cmd *cur, t_pipe *p)
+static void	fork_and_execute(t_cmd *cur, t_pipe *p)
 {
 	if (pipe(p->fd) == -1)
 	{
-		perror("pipe failed");
-		exit(1);
+		perror("pipe failed\n");
+		p->ms->exit_status = 1;
+		return;
 	}
 	p->pids[p->cmd_num] = fork(); 
 	if (p->pids[p->cmd_num] < 0)
 	{
+		perror("fork failed\n");
 		p->ms->exit_status = 1;
 		return;
 	}
@@ -123,7 +124,7 @@ static void fork_and_execute(t_cmd *cur, t_pipe *p)
  * @param ms A pointer to the `t_ms` structure that holds shell-related information.
  */
 
-void    initialize_p(t_pipe *p, int num_cmds, t_ms *ms)
+void	initialize_p(t_pipe *p, int num_cmds, t_ms *ms)
 {
 	p->num_cmds = num_cmds;
 	p->ms = ms;
@@ -131,6 +132,8 @@ void    initialize_p(t_pipe *p, int num_cmds, t_ms *ms)
 	p->cmd_num = 0;
 	p->cur_fd = -1;
 	p->pids = (pid_t *)malloc((p->num_cmds) * sizeof(pid_t));
+	if (!p->pids)
+		print_error(ERR_MALLOC);
 }
 
 /**
@@ -148,10 +151,10 @@ void    initialize_p(t_pipe *p, int num_cmds, t_ms *ms)
  * @param ms A pointer to the `t_ms` structure containing shell-related data.
  */
 
-void    make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
+void	make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
 {
-	t_pipe  p;
-	t_cmd   *cur;
+	t_pipe	p;
+	t_cmd	*cur;
 
 	cur = cmds;
 	initialize_p(&p, num_cmds, ms);
@@ -170,7 +173,6 @@ void    make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
 		cur = cur->next;
 		p.cmd_num++;
 	}
-
 	close_all_fds(&p, ms);
 	wait_for_children(p.num_cmds, p.last_pid, p.ms);
 	free_pids(&p);
