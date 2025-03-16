@@ -134,6 +134,13 @@ static void	malloc_heredocs(t_ms *ms, t_token *token)
 			heredoc_count++;
 		cur = cur->next;
 	}
+	if (heredoc_count > 16)
+	{
+		ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
+		ft_putstr_fd("maximum here-document count exceeded\n", STDERR_FILENO);
+		clean_struct(ms);
+		exit(2);
+	}
 	ms->heredoc_files = malloc(sizeof(char *) * (heredoc_count + 1)); // Support 100 heredocs max
 	if (!ms->heredoc_files)
 	{
@@ -199,20 +206,15 @@ static int	process_input(char **input, t_ms *ms)
 	int		err_syntax;
 
 	err_syntax = 0;
-	if ((*input)[0] == '\0') // Ignore empty input (Enter)
-	{
-		free(*input);
-		if (g_sgnl == SIGINT)
-		{
-			ms->exit_status = 130;
-			g_sgnl = 0;
-		}
-		return (0);
-	}
 	if (g_sgnl == SIGINT)
 	{
 		ms->exit_status = 130;
 		g_sgnl = 0;
+	}
+	if ((*input)[0] == '\0') // Ignore empty input (Enter)
+	{
+		free(*input);
+		return (0);
 	}
 	err_syntax = validate_input(*input);
 	if (err_syntax)
