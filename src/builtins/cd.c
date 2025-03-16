@@ -6,15 +6,10 @@ static char	*get_cd_target(t_ms *ms, char **args)
 
 	if (!args[1])
 		return (get_home_directory(ms, 0));
-	if (ms->envp)
-	{
-		if (ft_strcmp(args[1], "~") == 0)
-			return (get_home_directory(ms, 1));
-		if (ft_strcmp(args[1], "-") == 0)
-			return (get_oldpwd_directory(ms));
-		if (ft_strcmp(args[1], "..") == 0)
-			return (get_parent_directory(ms));
-	}
+	if (ft_strcmp(args[1], "-") == 0)
+		return (get_oldpwd_directory(ms));
+	if (ft_strcmp(args[1], "..") == 0)
+		return (get_parent_directory(ms));
 	if (args[1][0] != '/')
 	{
 		if (getcwd(cwd, sizeof(cwd)) == NULL)
