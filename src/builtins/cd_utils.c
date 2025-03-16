@@ -16,12 +16,12 @@
 
 char	*get_home_directory(t_ms *ms, int flag)
 {
-	char *temp;
+	char	*temp;
 
 	temp = get_env_value("HOME", ms->envp);
 	if (!temp)
 	{
-		if (flag == 1)
+		if (flag == 1 && ms->envp)
 			return (ft_strdup(getenv("HOME")));
 		ft_putstr_fd("bash: cd: HOME not set\n", STDERR_FILENO);
         ms->exit_status = 1;
