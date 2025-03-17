@@ -1,7 +1,8 @@
 
 #include "../../include/minishell.h"
 
-int	expand_in_token(t_token *cur, t_ms *ms)
+//cur-data, quote, if first flag
+int	expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str)
 {
 	char	*data_copy;
 	char	*expanded;
@@ -13,7 +14,7 @@ int	expand_in_token(t_token *cur, t_ms *ms)
 	if (ft_strcmp(cur->data, "$") == 0 && !cur->quote && cur->next && cur->next->quote)
 		expanded = ft_strdup("");
 	else
-		expanded = handle_expansion(cur->data, ms, cur->quote);
+		expanded = handle_expansion(cur->data, ms, cur->quote, first_in_str);
 	if (!expanded)
 	{
 		free(data_copy);
@@ -38,17 +39,25 @@ int	expand_in_token(t_token *cur, t_ms *ms)
 int	check_list_for_expansions(t_token *first, t_ms *ms)
 {
 	t_token	*cur;
+	t_bool	first_in_str;
 
 	cur = first;
 	//check r
+	first_in_str = 1;
 	while (cur) //heredoc?
 	{
 		if (cur->type == WORD && cur->quote != SG_QUOT
 			&& cur->specific_redir != HEREDOC) //sg quoted '$HOME' shouldn't be expanded, word after << symbol also shouldn't
 		{
-			if (expand_in_token(cur, ms) == 1)
+			//printf("before expanding, %s\n", cur->data);
+			if (expand_in_token(cur, ms, first_in_str) == 1)
 				return (1);
+			//first_in_str = 0;
 		}
+		if (cur->type == WORD)
+			first_in_str = 0;
+		if (cur->type != WORD)
+			first_in_str = 1;
 		cur = cur->next;
 	}
 	return (0);
