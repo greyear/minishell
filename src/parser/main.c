@@ -1,14 +1,11 @@
 #include "../../include/minishell.h"
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <bits/types.h>
-#include <bits/types.h>
 //#include <asm-generic/termbits.h> //delete for school computers
 
-volatile sig_atomic_t	g_sgnl;
 volatile sig_atomic_t	g_sgnl;
 
 /*void print_tokens(t_token *token_list)

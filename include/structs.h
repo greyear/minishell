@@ -51,6 +51,14 @@ typedef struct s_ms
 	int		saved_stdout;
 } t_ms;
 
+typedef struct s_expand
+{
+	char	*key;
+	int		len;
+	t_char	quote;
+	t_bool	if_first;
+}	t_expand;
+
 typedef struct s_envp
 {
 	char			*name;
