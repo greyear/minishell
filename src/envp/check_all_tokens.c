@@ -1,6 +1,7 @@
 
 #include "../../include/minishell.h"
 
+//cur-data, quote, if first flag
 int	expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str)
 {
 	char	*data_copy;
