@@ -13,30 +13,30 @@
  * @param var The string representing the variable in the format `key=value`.
  */
 
-static void print_var(char *var)
+static void	print_var(char *var)
 {
-    int     x;
+	int	x;
 
-    x = 0;
+	x = 0;
 	while (var[x])
-    {
-        if (var[x] != '=')
-            ft_putchar_fd(var[x], STDOUT_FILENO);
-        else
-        {
-            ft_putchar_fd(var[x], STDOUT_FILENO);
-            ft_putchar_fd('"', STDOUT_FILENO);
-            x++;
-            while (var[x])
-            {
-                ft_putchar_fd(var[x], STDOUT_FILENO);
-                x++;
-            }
-            ft_putchar_fd('"', STDOUT_FILENO);
-            break;
-        }
-        x++;
-    }
+	{
+		if (var[x] != '=')
+			ft_putchar_fd(var[x], STDOUT_FILENO);
+		else
+		{
+			ft_putchar_fd(var[x], STDOUT_FILENO);
+			ft_putchar_fd('"', STDOUT_FILENO);
+			x++;
+			while (var[x])
+			{
+				ft_putchar_fd(var[x], STDOUT_FILENO);
+				x++;
+			}
+			ft_putchar_fd('"', STDOUT_FILENO);
+			break;
+		}
+		x++;
+	}
 }
 
 /**
@@ -50,16 +50,16 @@ static void print_var(char *var)
  * @param ms The shell's main structure containing the list of exported environment variables.
  */
 
-void    print_exported(t_ms *ms)
+void	print_exported(t_ms *ms)
 {
-    int     i;
+	int	i;
 
 	i = 0;
-    while (ms->exported[i])
-    {
-        ft_putstr_fd("declare -x ", STDOUT_FILENO);
-        print_var(ms->exported[i]);  // Printing the variable
-        ft_putchar_fd('\n', STDOUT_FILENO);
-        i++;
-    }
+	while (ms->exported[i])
+	{
+		ft_putstr_fd("declare -x ", STDOUT_FILENO);
+		print_var(ms->exported[i]);  // Printing the variable
+		ft_putchar_fd('\n', STDOUT_FILENO);
+		i++;
+	}
 }

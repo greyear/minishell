@@ -13,13 +13,13 @@
  * @return This function does not return a value. It directly prints an error message to `stderr`.
  */
 
- void	print_numeric_error(char **array)
- {
-     ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
-     ft_putstr_fd("exit: ", STDERR_FILENO);
-     ft_putstr_fd(array[1], STDERR_FILENO);
-     ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
- }
+void	print_numeric_error(char **array)
+{
+	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
+	ft_putstr_fd("exit: ", STDERR_FILENO);
+	ft_putstr_fd(array[1], STDERR_FILENO);
+	ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
+}
  
  /**
   * @brief Prints an error message when the `exit` command is called with too many arguments.
@@ -31,8 +31,8 @@
   * @return This function does not return a value. It directly prints an error message to `stderr`.
   */
  
- void	print_too_many_args_error(void)
- {
-     ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
-     ft_putstr_fd("exit: too many arguments\n", STDERR_FILENO);
- }
+void	print_too_many_args_error(void)
+{
+	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
+	ft_putstr_fd("exit: too many arguments\n", STDERR_FILENO);
+}

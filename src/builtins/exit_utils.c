@@ -61,7 +61,7 @@ static void	check_overflow(long long result, int digit, int sign, int *error)
 static long long	parse_number(char *str, int sign, int *has_digit, int *error)
 {
 	long long	result;
-	int			digit;
+	int	digit;
 
 	result = 0;
 	while (*str)
@@ -101,8 +101,8 @@ static long long	parse_number(char *str, int sign, int *has_digit, int *error)
 long long	convert_to_ll(char *str, int *error)
 {
 	long long	nbr;
-	int			sign;
-	int			has_digit;
+	int	sign;
+	int	has_digit;
 
 	has_digit = 0;
 	while (*str == ' ' || (*str >= 9 && *str <= 13))

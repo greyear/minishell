@@ -12,7 +12,7 @@
 
 static int	is_valid_n_flag(char *arg)
 {
-	int		i;
+	int	i;
 
 	if (arg[0] != '-' || arg[1] != 'n')
 		return (0);
@@ -38,7 +38,7 @@ static int	is_valid_n_flag(char *arg)
 
 static int	handle_n_flags(char **args, int *i)
 {
-	int		check;
+	int	check;
 
 	check = 0;
 	while (args[*i] && is_valid_n_flag(args[*i]))
@@ -62,8 +62,8 @@ static int	handle_n_flags(char **args, int *i)
 
 void	handle_echo(char **args, t_ms *ms)
 {
-	int		i;
-	int		check;
+	int	i;
+	int	check;
 
 	if (!args || !*args || ft_strcmp(args[0], "echo") != 0)
 		return;

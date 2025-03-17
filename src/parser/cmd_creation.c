@@ -127,6 +127,7 @@ void	redir_in_block(t_block *block, t_cmd *cmd, t_ms *ms)
 				put_heredoc_fd(cur, cmd, ms);
 			if (cmd->infile == NO_FD || cmd->outfile == NO_FD)
 			{
+				//printf("1\n");
 				ms->exit_status = 1; //error?
 				return ;
 			} //if smth failed here we save exit value for the process

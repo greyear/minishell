@@ -40,29 +40,29 @@ char	*duplicate_or_replace(char *entry, char *arg, char *key, int *flag)
  *           The array is sorted in-place, modifying the `exported` field.
  */
 
-void    sort_exported_alphaorder(t_ms *ms)
+void	sort_exported_alphaorder(t_ms *ms)
 {
-    int     i;
-    int     j;
-    char    *temp;
+	int	i;
+	int	j;
+	char	*temp;
 
-    i = 0;
-    j = 0;
-    while (ms->exported[i])
-    {
-        j = i + 1;
-        while (ms->exported[j])
-        {
-            if (ft_strcmp(ms->exported[i], ms->exported[j]) > 0)
-            {
-                temp = ms->exported[i];
-                ms->exported[i] = ms->exported[j];
-                ms->exported[j] = temp;
-            }
-            j++;
-        }
-        i++;
-    }
+	i = 0;
+	j = 0;
+	while (ms->exported[i])
+	{
+		j = i + 1;
+		while (ms->exported[j])
+		{
+			if (ft_strcmp(ms->exported[i], ms->exported[j]) > 0)
+			{
+				temp = ms->exported[i];
+				ms->exported[i] = ms->exported[j];
+				ms->exported[j] = temp;
+			}
+			j++;
+		}
+		i++;
+	}
 }
 
 /**
@@ -114,8 +114,8 @@ static void	add_to_end(char ***ex, char ***temp, char *key, int i)
 
 static void	copy_exported(char *key, char ***ex, char ***temp, int len)
 {
-	int		i;
-	int		check;
+	int	i;
+	int	check;
 
 	i = 0;
 	check = 0;
@@ -129,7 +129,7 @@ static void	copy_exported(char *key, char ***ex, char ***temp, int len)
 			clean_arr(temp);
 			return;
 		}
-        i++;
+		i++;
 	}
 	if (check == 0)
 		return (add_to_end(ex, temp, key, i));
@@ -155,7 +155,7 @@ static void	copy_exported(char *key, char ***ex, char ***temp, int len)
 void	add_to_exported(char *key, t_ms *ms)
 {
 	char	**temp;
-	int		len;
+	int	len;
 	
 	if (check_if_valid_key(key))
 		return (print_export_error(ms, key));
