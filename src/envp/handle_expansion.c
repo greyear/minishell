@@ -89,7 +89,7 @@ static char	*extract_key_export(char *args, int *i)
  * 
  */
 
-static int	handle_dollar_expansion(char **result, char *args, int *i, t_ms *ms, t_char quote) //temporary
+static int	handle_dollar_expansion(char **result, char *args, int *i, t_ms *ms, t_char quote, t_bool first_in_str) //temporary
 {
 	char	*key;
 
@@ -97,7 +97,7 @@ static int	handle_dollar_expansion(char **result, char *args, int *i, t_ms *ms, 
 	key = extract_key_export(args, i);
 	if (!key)
 		return (1);
-	expand_variable(ms, key, ft_strlen(key), result, quote);
+	expand_variable(ms, key, ft_strlen(key), result, quote, first_in_str);
 	free(key);
 	return (0);
 }
@@ -125,18 +125,19 @@ char	*handle_expansion(char *args, t_ms *ms, t_char quote)
 {
 	int		i;
 	char	*result;
-	//char	*onespaceonly;
+	t_bool	first_in_str;
 
 	result = ft_strdup("");
 	if (!result)
 		return (NULL);
 	i = 0;
+	first_in_str = 1;
 	while (args[i])
 	{
 		if (args[i] == '$' && args[i + 1] && args[i + 1] != '$'
 			&& !ft_isspace(args[i + 1]) && args[i + 1] != '/') //new slash to fix 303&307 parsing hell
 		{
-			if (handle_dollar_expansion(&result, args, &i, ms, quote))
+			if (handle_dollar_expansion(&result, args, &i, ms, quote, first_in_str))
 			{
 				free (result);
 				return (NULL);
@@ -144,6 +145,7 @@ char	*handle_expansion(char *args, t_ms *ms, t_char quote)
 		}
 		else
 			append_literal_char(&result, args[i++]);
+		first_in_str = 0;
 	}
 	//printf("res of exp: %s\n", result);
 	return (result);

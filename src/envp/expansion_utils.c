@@ -47,11 +47,12 @@ static void	append_to_result(char **result, char *new_part)
   * @return A string containing the value associated with the environment variable, or an empty string if not found.
   */
  
-static char	*find_env_value(char **envp, char *key, int len, t_char quote)
+static char	*find_env_value(char **envp, char *key, int len, t_char quote, t_bool first_in_str)
 {
 	int		i;
 	char	*copy;
 	char	*without_spaces;
+	char	*without_first;
  
 	i = 0;
 	while (envp[i])
@@ -66,7 +67,13 @@ static char	*find_env_value(char **envp, char *key, int len, t_char quote)
 				if (quote == 0)
 				{
 					without_spaces = remove_extra_spaces(copy);
-					free(copy);
+					//free(copy);
+					if (first_in_str && without_spaces[0] == ' ')
+					{
+						without_first = remove_first_space(without_spaces);
+						//free(without_spaces);
+						return (without_first);
+					}
 					return (without_spaces);
 				}
 				else
@@ -77,12 +84,6 @@ static char	*find_env_value(char **envp, char *key, int len, t_char quote)
 	}
 	return (ft_strdup(""));
 }
-
-	/*onespaceonly = remove_extra_spaces(result);
-	free(result);
-	if (!onespaceonly)
-		return (NULL); //malloc error
-	return (onespaceonly);*/
 
 /**
  * @brief Expands an environment variable key and appends its value to the result.
@@ -101,7 +102,7 @@ static char	*find_env_value(char **envp, char *key, int len, t_char quote)
  *
  */
 
-void	expand_variable(t_ms *ms, char *key, int key_len, char **result, t_char quote)
+void	expand_variable(t_ms *ms, char *key, int key_len, char **result, t_char quote, t_bool first_in_str)
 {
 	char	*expanded;
 
@@ -112,7 +113,7 @@ void	expand_variable(t_ms *ms, char *key, int key_len, char **result, t_char quo
 	else if (ft_isdigit(key[0]))
 		expanded = ft_strdup("");
 	else
-		expanded = find_env_value(ms->envp, key, key_len, quote);
+		expanded = find_env_value(ms->envp, key, key_len, quote, first_in_str);
 	append_to_result(result, expanded);
 }
 
@@ -122,10 +123,11 @@ char	*remove_extra_spaces(char *str)
 	int		i;
 	int		j;
 	int		space;
+	int len;
 
 	if (!str)
 		return (NULL);
-	int len = ft_strlen(str);
+	len = ft_strlen(str);
 	new = ft_calloc(len + 1, sizeof(char));
 	if (!new)
 		return (NULL);
@@ -150,5 +152,21 @@ char	*remove_extra_spaces(char *str)
 		i++;
 	}
 	new[j] = '\0';
+	free(str);
+	return (new);
+}
+
+char	*remove_first_space(char *str)
+{
+	char	*new;
+	int		i;
+
+	if (!str || str[0] != ' ')
+		return (str);
+	i = 1;
+	new = ft_strdup(str + i);
+	if (!new)
+		return (NULL);
+	free(str);
 	return (new);
 }
