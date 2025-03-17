@@ -22,6 +22,6 @@ input*
 output*
 .history.tmp
 .heredoc*
-tmp_err_bash
-tmp_err_minishell
+tmp_err_bash*
+tmp_err_minishell*
 
