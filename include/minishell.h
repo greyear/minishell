@@ -135,22 +135,23 @@ void            setup_pipes(int *pipe_fd, int i, int num_cmds, int cur_fd);
 int				check_list_for_expansions(t_token *first, t_ms *ms);
 int				expand_in_token(t_token *cur, t_ms *ms);
 //void			expand_variable(t_ms *ms, char *key, int key_len, char **result);
-void			expand_variable(t_ms *ms, char *key, int key_len, char **result, t_char quote);
+void			expand_variable(t_ms *ms, char *key, int key_len, char **result, t_char quote, t_bool first_in_str);
 t_envp			*envp_from_list(t_envp *list, char *name);
 t_bool			is_envp_symbol(int c);
 t_bool			is_envp_first_symbol(int c);
 t_ms			*initialize_struct(char **envp);
 void			check_shlvl(t_ms *ms);
 char			*remove_extra_spaces(char *str);
+char			*remove_first_space(char *str);
 
 //Redirections
 void			put_infile_fd(t_token *token, t_cmd *cmd);
 void			put_outfile_fd(t_token *token, t_cmd *cmd);
 void			check_access(char *filename, t_oper operation);
-char            *generate_heredoc_filename(int index);
-void	        put_heredoc_fd(t_token *token, t_cmd *cmd, t_ms *ms);
-int             handle_heredoc(t_ms *ms, char *limiter, t_token *token);
-void	        reset_heredocs(t_ms *ms);
+char			*generate_heredoc_filename(int index);
+void			put_heredoc_fd(t_token *token, t_cmd *cmd, t_ms *ms);
+int				handle_heredoc(t_ms *ms, char *limiter, t_token *token);
+void			reset_heredocs(t_ms *ms);
 
 //Reading + history
 t_bool			open_read_history_file(t_ms *ms);
