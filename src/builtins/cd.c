@@ -78,6 +78,8 @@ static void	update_cd_env(t_ms *ms, char *pwd_before)
 		update_env_var(ms, "OLDPWD=", current_pwd);
 	else
 		update_env_var(ms, "OLDPWD=", pwd_before);
+	if (ms->exit_status == 1) //in case of malloc error
+		return;
 	update_env_var(ms, "PWD=", cwd);
 }
 
