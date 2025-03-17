@@ -50,7 +50,7 @@ static void	append_to_result(char **result, char *new_part)
   * 
   * @return A string containing the value associated with the environment variable, or an empty string if not found.
   */
- 
+//key, len, quote, if first flag
 static char	*find_env_value(char **envp, char *key, int len, t_char quote, t_bool first_in_str)
 {
 	int		i;
@@ -68,7 +68,7 @@ static char	*find_env_value(char **envp, char *key, int len, t_char quote, t_boo
 				copy = ft_strdup(envp[i] + len + 1);
 				if (!copy)
 					return (NULL); //malloc error
-				if (quote == 0)
+				if (quote == 0) //for heredocs????
 				{
 					without_spaces = remove_extra_spaces(copy);
 					//free(copy);
@@ -105,7 +105,7 @@ static char	*find_env_value(char **envp, char *key, int len, t_char quote, t_boo
  * @param result Pointer to the string where the expanded value will be appended.
  *
  */
-
+//key, len, quote, if first flag
 void	expand_variable(t_ms *ms, char *key, int key_len, char **result, t_char quote, t_bool first_in_str)
 {
 	char	*expanded;
