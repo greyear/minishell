@@ -26,14 +26,14 @@ static char	*make_full_path(char **paths, char *cmd)
 		new_full_path = ft_strjoin(paths[i], "/");
 		if (!new_full_path)
 		{
-			print_error(ERR_MALLOC);
+			print_malloc_error();
 			return (NULL);
 		}
 		full_cmd_path = ft_strjoin(new_full_path, cmd);
 		free(new_full_path);
 		if (!full_cmd_path)
 		{
-			print_error(ERR_MALLOC);
+			print_malloc_error();
 			return (NULL);
 		}
 		if (access(full_cmd_path, F_OK) == 0)
@@ -75,7 +75,7 @@ static char *find_path_from_envp(char **envp, char **cmds)
 			paths = ft_split(path_var, ':');
 			if (!paths)
 			{
-				print_error(ERR_MALLOC);
+				print_malloc_error();
 				return (NULL);
 			}
 			full_path = make_full_path(paths, cmds[0]);

@@ -14,7 +14,7 @@
 
 static char	*handle_missing_oldpwd(t_ms *ms)
 {
-	print_error("cd: OLDPWD not set");
+	ft_putstr_fd("cd: OLDPWD not set\n", STDERR_FILENO);
 	ms->exit_status = 1;
 	return (NULL);
 }

@@ -80,7 +80,8 @@ typedef enum e_exit
 	CMD_EXEC = 126,
 	CMD_NF = 127,
 	SIGNAL_HEREDOC = -3,
-	MALLOC_ERR,
+	MALLOC_ERR = 200,
+	SYSTEM_ERR = 201,
 }	t_exit;
 
 typedef enum e_oper
@@ -97,20 +98,9 @@ typedef enum e_mode
 	IGNORE,
 }	t_mode;
 
-/*typedef enum e_cmd_err
-{
-	PERM_DENIED,
-	NO_FILE_OR_DIR,
-	IS_DIR,
-	NO_CMD,
-}	t_cmd_err;*/
-
 # define OWN_ERR_MSG "ms error: "
-//# define PERM_DEN 1
-//# define NO_FILE_OR_DIR 2
-//# define IS_DIR 3
-//# define NO_CMD 4
 # define HISTORY_FILE ".history.tmp"
+# define ERR_MALLOC "memory allocation failed\n"
 # define HISTORY_SIZE 500
 
 /*POSIX ограничивает диапазон exit status от 0 до 255. 

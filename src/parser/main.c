@@ -85,8 +85,6 @@ static void	input_output(t_cmd *cmd)
 
 static void	cleanup_after_execution(t_ms *ms)
 {
-	close(ms->saved_stdin);
-	close(ms->saved_stdout);
 	if (ms->heredoc_files)
 		cleanup_heredocs(ms->heredoc_files);
 	reset_heredocs(ms);
@@ -142,7 +140,7 @@ static void	malloc_heredocs(t_ms *ms, t_token *token)
 	ms->heredoc_files = malloc(sizeof(char *) * (heredoc_count + 1)); // Support 100 heredocs max
 	if (!ms->heredoc_files)
 	{
-		print_error(ERR_MALLOC);
+		print_malloc_error();
 		clean_struct(ms);
 		exit(1);
 	}
@@ -191,7 +189,7 @@ static int	tokenize_input(char **input, t_ms *ms)
 	malloc_heredocs(ms, ms->tokens);
 	if (!ms->heredoc_files)
 	{
-		print_error(ERR_MALLOC);
+		print_malloc_error();
 		clean_token_list(&(ms->tokens));
 		return (0);
 	}
@@ -276,6 +274,9 @@ static void	run_minishell(t_ms *ms)
 
 	while (1)
 	{
+		if (ms->exit_status == MALLOC_ERR
+			|| ms->exit_status == SYSTEM_ERR)
+			break;
 		// Reading the input
 		//if (!inout(ms))
 		//	break; // Restore STDIN and STDOUT

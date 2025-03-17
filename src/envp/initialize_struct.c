@@ -56,7 +56,7 @@ static void	initialize_envp(t_ms *ms, char **envp)
 	ms->exported = copy_map(envp);
 	if (!ms->exported)
 	{
-		print_error(ERR_MALLOC);
+		print_malloc_error();
 		clean_struct(ms);
 		exit(1);
 	}
@@ -72,36 +72,6 @@ static void	initialize_history(t_ms *ms)
 	{
 		print_system_error(HIST_ERR);
 		ms->history_file = false;
-	}
-}
-
-/**
- * @brief Saves the original standard input and output file descriptors.
- * 
- * This function duplicates `STDIN_FILENO` and `STDOUT_FILENO` to store 
- * their original values in `ms->saved_stdin` and `ms->saved_stdout`.
- * 
- * If `dup()` fails, it prints an error message, cleans up the `t_ms` structure, 
- * and exits the program with a failure status.
- * 
- * @param ms Pointer to the `t_ms` structure where the file descriptors are stored.
- */
-
-static void	initialize_fds(t_ms *ms)
-{
-	ms->saved_stdin = dup(STDIN_FILENO);
-	if (ms->saved_stdin == -1)
-	{
-		perror("dup failed\n");
-		clean_struct(ms);
-		exit(1);
-	}
-	ms->saved_stdout = dup(STDOUT_FILENO);
-	if (ms->saved_stdout == -1)
-	{
-		perror("dup failed\n");
-		clean_struct(ms);
-		exit(1);
 	}
 }
 
@@ -136,7 +106,6 @@ t_ms	*initialize_struct(char **envp)
 	initialize_history(ms);
 	ms->heredoc_count = 0;
 	ms->heredoc_files = NULL;
-	initialize_fds(ms);
 	check_shlvl(ms);
 	g_sgnl = 0;
 	return (ms);

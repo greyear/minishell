@@ -67,7 +67,7 @@ static void	change_values(char *arg, char ***env, char *key, int flag)
 		temp[i] = ft_strdup(arg);
 		if (!temp[i])
 		{
-			print_error(ERR_MALLOC);
+			print_malloc_error();
 			clean_arr(&temp);
 			return;
 		}

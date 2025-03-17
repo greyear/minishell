@@ -93,9 +93,8 @@ void	print_cmd_error(char *cmd, int c)
 		ft_putstr_fd(": command not found\n", STDERR_FILENO);
 }
 
-void	print_error(char *error)
+void	print_malloc_error(void)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
-	ft_putstr_fd(error, STDERR_FILENO);
-	ft_putstr_fd("\n", STDERR_FILENO);
+	ft_putstr_fd(ERR_MALLOC, STDERR_FILENO);
 }

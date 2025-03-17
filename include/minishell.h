@@ -25,20 +25,18 @@
 
 extern volatile sig_atomic_t	g_sgnl;
 
+//# define ERR_FORK "fork function failed"
+//# define ERR_PIPE "pipe creation failed"
+//# define ERR_DUP2 "dup2 function failed"
+//# define ERR_OPEN "opening failed"
+//# define ERR_CLOSE "closing failed"
+//# define NO_FILE_DIR "no such file or directory"
+//# define ZSH_NO_FILE "zsh: no such file or directory:"
+//# define CMD_NOT_FOUND "zsh: command not found:"
+//# define PERM_DENIED "zsh: permission denied:"
 
-# define ERR_MALLOC "memory allocation failed"
-# define ERR_FORK "fork function failed"
-# define ERR_PIPE "pipe creation failed"
-# define ERR_DUP2 "dup2 function failed"
-# define ERR_OPEN "opening failed"
-# define ERR_CLOSE "closing failed"
-# define NO_FILE_DIR "no such file or directory"
-# define ZSH_NO_FILE "zsh: no such file or directory:"
-# define CMD_NOT_FOUND "zsh: command not found:"
-# define PERM_DENIED "zsh: permission denied:"
-
-# define CMD_EXEC 126
-# define CMD_NF 127
+//# define CMD_EXEC 126
+//# define CMD_NF 127
 
 //BNF
 char			*validate_word(char *str, int *err_flag);
@@ -173,7 +171,7 @@ void			print_numeric_error(char **array);
 void			print_too_many_args_error(void);
 void			print_env_error(char **args);
 void			print_flag_error(char **args);
-void			print_error(char *error);
+void			print_malloc_error(void);
 
 //Cleaners
 void			clean_arr(char ***arr);
@@ -184,7 +182,7 @@ void			cleanup_heredocs(char **filenames);
 void			close_pipes(int num_cmds, int **pipe_fd);
 void			free_pids(t_pipe *p);
 void			close_fds(t_cmd *cmd);
-void			close_all_fds(t_pipe *p, t_ms *ms);
+void			close_all_fds(t_pipe *p);
 void			close_file(int file);
 void			close_fds2(int fd1, int fd2);
 

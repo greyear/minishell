@@ -96,14 +96,14 @@ char	*build_relative_path(char *target, char *cwd, t_ms *ms)
 	temp = ft_strjoin(cwd, "/");
 	if (!temp)
 	{
-		print_error(ERR_MALLOC);
+		print_malloc_error();
 		ms->exit_status = 1;
 		return (NULL);
 	}
 	full_path = ft_strjoin(temp, target);
 	if (!full_path)
 	{
-		print_error(ERR_MALLOC);
+		print_malloc_error();
 		ms->exit_status = 1;
 		return (NULL);
 	}

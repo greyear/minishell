@@ -18,8 +18,6 @@
 void	execute_child(t_cmd *cmd, t_ms *ms)
 {
 	redirect_process(cmd->infile, cmd->outfile);
-	close(ms->saved_stdin);
-	close(ms->saved_stdout);
 	if (is_builtin(cmd))
 	{
 		handle_builtin(cmd, ms, 1);

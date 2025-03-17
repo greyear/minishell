@@ -111,7 +111,7 @@ void	update_env_var(t_ms *ms, char *key, char *new_value)
 	new_env_entry = malloc(ft_strlen(key) + ft_strlen(new_value) + 1);
 	if (!new_env_entry)
 	{
-		print_error(ERR_MALLOC);
+		print_malloc_error();
 		ms->exit_status = 1;
 		return;
 	}

@@ -26,10 +26,6 @@
 		clean_block_list(&(ms->blocks));
 	if (ms->heredoc_files)
 		cleanup_heredocs(ms->heredoc_files);
-	if (ms->saved_stdin != NO_FD)
-		close(ms->saved_stdin);
-	if (ms->saved_stdout != NO_FD)
-		close(ms->saved_stdout);
 	free(ms);
  }
  

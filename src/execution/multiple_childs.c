@@ -58,7 +58,7 @@ static void	child_process(t_cmd *cur, t_pipe *p)
 {
 	setup_pipes(p->fd, p->cmd_num, p->num_cmds, p->cur_fd);
 	redirect_process(cur->infile, cur->outfile);
-	close_all_fds(p, p->ms);
+	close_all_fds(p);
 	if (is_builtin(cur))
 	{
 		handle_builtin(cur, p->ms, 1);
@@ -133,7 +133,7 @@ void	initialize_p(t_pipe *p, int num_cmds, t_ms *ms)
 	p->cur_fd = -1;
 	p->pids = (pid_t *)malloc((p->num_cmds) * sizeof(pid_t));
 	if (!p->pids)
-		print_error(ERR_MALLOC);
+		print_malloc_error();
 }
 
 /**
@@ -173,7 +173,7 @@ void	make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
 		cur = cur->next;
 		p.cmd_num++;
 	}
-	close_all_fds(&p, ms);
+	close_all_fds(&p);
 	wait_for_children(p.num_cmds, p.last_pid, p.ms);
 	free_pids(&p);
 }
