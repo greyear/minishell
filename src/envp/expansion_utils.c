@@ -64,7 +64,7 @@ static char	*find_env_value(char **envp, char *key, int len, t_char quote, t_boo
 				copy = ft_strdup(envp[i] + len + 1);
 				if (!copy)
 					return (NULL); //malloc error
-				if (quote == 0)
+				if (quote == 0) //for heredocs????
 				{
 					without_spaces = remove_extra_spaces(copy);
 					//free(copy);
