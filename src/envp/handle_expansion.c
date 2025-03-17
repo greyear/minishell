@@ -88,7 +88,7 @@ static char	*extract_key_export(char *args, int *i)
  * @return 0 if the expansion was successful, or 1 if an error occurred (e.g., memory allocation failure).
  * 
  */
-
+//key (args), quote, if first flag
 static int	handle_dollar_expansion(char **result, char *args, int *i, t_ms *ms, t_char quote, t_bool first_in_str) //temporary
 {
 	char	*key;
@@ -120,7 +120,7 @@ static int	handle_dollar_expansion(char **result, char *args, int *i, t_ms *ms, 
  *         If memory allocation fails, returns `NULL`. The caller is responsible 
  *         for freeing the returned string.
  */
-
+//key (args), quote, if first flag
 char	*handle_expansion(char *args, t_ms *ms, t_char quote, t_bool first_in_str)
 {
 	int		i;
