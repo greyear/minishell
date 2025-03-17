@@ -80,10 +80,10 @@ static char *find_path_from_envp(char **envp, char **cmds)
 			}
 			full_path = make_full_path(paths, cmds[0]);
 			clean_arr(&paths);
-			break;
+			return (full_path);
 		}
 	}
-	return (full_path);
+	return (NULL);
 }
 
 /**
