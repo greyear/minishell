@@ -172,12 +172,12 @@ static void	malloc_heredocs(t_ms *ms, t_token *token)
 	return (1);
 }*/
 
-static int	inout(t_ms *ms)
+/*static int	inout(t_ms *ms)
 {
 	dup2(ms->saved_stdin, STDIN_FILENO);
 	dup2(ms->saved_stdout, STDOUT_FILENO);
 	return (1);
-}
+}*/
 
 static int	tokenize_input(char **input, t_ms *ms)
 {
@@ -270,31 +270,21 @@ int	init_terminal_signals(void)
 	return (1);
 }
 
-int	main(int argc, char **argv, char **envp)
+static void	run_minishell(t_ms *ms)
 {
-	t_ms	*ms;
 	char	*input;
-	int		exit_code;
 
-	if (argc != 1 && argv)
-	{
-		ft_putstr_fd("Usage: ./minishell\n", STDERR_FILENO);
-		return (1);
-	}
-	if (!init_terminal_signals())
-		return (1);
-	ms = initialize_struct(envp);
 	while (1)
 	{
 		// Reading the input
-		if (!inout(ms))
-			break; // Restore STDIN and STDOUT
+		//if (!inout(ms))
+		//	break; // Restore STDIN and STDOUT
 		// FOR USUAL EXECUTION
-		signal_mode(INTERACTIVE);
+		/*signal_mode(INTERACTIVE);
 		input = readline("minishell> ");
-		signal_mode(IGNORE);
+		signal_mode(IGNORE);*/
 		//FOR TESTER
-		/*if (isatty(fileno(stdin))) // If running interactively
+		if (isatty(fileno(stdin))) // If running interactively
 			input = readline("minishell> ");
 		else // If receiving input from another program
 		{
@@ -303,10 +293,10 @@ int	main(int argc, char **argv, char **envp)
 				break;
 			input = ft_strtrim(line, "\n"); // Remove newline from input
 			free(line);
-		}*/
+		}
 		if (!input) // EOF check (Ctrl+D)
 		{
-			printf("exit\n");
+			ft_putstr_fd("exit\n", STDOUT_FILENO);
 			break;
 		}
 		if (!process_input(&input, ms))
@@ -327,6 +317,22 @@ int	main(int argc, char **argv, char **envp)
 		execute_commands(ms);
 		cleanup_after_execution(ms);
 	}
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	t_ms	*ms;
+	int		exit_code;
+
+	if (argc != 1 && argv)
+	{
+		ft_putstr_fd("Usage: ./minishell\n", STDERR_FILENO);
+		return (1);
+	}
+	if (!init_terminal_signals())
+		return (1);
+	ms = initialize_struct(envp);
+	run_minishell(ms);
 	clean_cmd_list(&(ms->cmds));
 	history_exit(ms);
 	exit_code = ms->exit_status;
