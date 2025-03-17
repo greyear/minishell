@@ -1,20 +1,38 @@
 
 #include "../../include/minishell.h"
 
+/*static t_expand	*exp_init(void)
+{
+	t_expand	*exp;
+
+	exp->key = NULL;
+	exp->len = 0;
+	exp->quote = 0;
+	exp->if_first = 0;
+	return (exp);
+}*/
+
 //cur-data, quote, if first flag
 int	expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str)
 {
 	char	*data_copy;
 	char	*expanded;
+	//t_expand	*exp;
 
 	data_copy = ft_strdup(cur->data);
 	if (!data_copy)
 		return (1); //error msg?
-
+	//exp = exp_init();
 	if (ft_strcmp(cur->data, "$") == 0 && !cur->quote && cur->next && cur->next->quote)
 		expanded = ft_strdup("");
 	else
+	{
+		/*exp->key = cur->data;
+		exp->quote = cur->quote;
+		exp->if_first = first_in_str;*/
 		expanded = handle_expansion(cur->data, ms, cur->quote, first_in_str);
+	}
+		
 	if (!expanded)
 	{
 		free(data_copy);
