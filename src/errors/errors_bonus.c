@@ -81,7 +81,8 @@ void	print_file_error(char *file, t_print reason)
 void	print_cmd_error(char *cmd, int c)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
-	ft_putstr_fd(cmd, STDERR_FILENO);
+	if (cmd)
+		ft_putstr_fd(cmd, STDERR_FILENO);
 	if (c == IS_DIR)
 		ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
 	else if (c == NO_FILE_OR_DIR)
@@ -90,4 +91,11 @@ void	print_cmd_error(char *cmd, int c)
 		ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
 	else if (c == NO_CMD)
 		ft_putstr_fd(": command not found\n", STDERR_FILENO);
+}
+
+void	print_error(char *error)
+{
+	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
+	ft_putstr_fd(error, STDERR_FILENO);
+	ft_putstr_fd("\n", STDERR_FILENO);
 }

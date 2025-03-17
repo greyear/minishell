@@ -46,19 +46,21 @@ int	check_env(char *env, char *key, int len, int flag)
 
 char	*get_env_value(char *key, char **envp)
 {
-    int		i;
-    size_t	len;
+	int	i;
+	size_t	len;
 
+	if (!envp)
+		return (NULL);
 	i = 0;
 	len = ft_strlen(key);
-    while (envp[i])
-    {
-        if (ft_strncmp(envp[i], key, len) == 0
+	while (envp[i])
+	{
+		if (ft_strncmp(envp[i], key, len) == 0
 			&& envp[i][len] && envp[i][len] == '=')
-            return (envp[i] + len + 1);
-        i++;
-    }
-    return (NULL);
+			return (envp[i] + len + 1);
+		i++;
+	}
+	return (NULL);
 }
 
 /**
@@ -81,13 +83,18 @@ char	**allocate_temp_env(char **env, int x)
 	int	i;
 
 	i = 0;
+	if (!env)
+		return (NULL);
 	while (env[i])
 		i++;
 	if (i == 0)
 		return (NULL);
 	temp = malloc(sizeof(char *) * (i + x));
 	if (!temp)
+	{
+		print_error(ERR_MALLOC);
 		return (NULL);
+	}
 	return (temp);
 }
 
@@ -100,9 +107,9 @@ char	**allocate_temp_env(char **env, int x)
  * @param a  A null-terminated array of strings to be printed.
  */
 
-void    print_array(char **a)
+void	print_array(char **a)
 {
-	int		i;
+	int	i;
 
 	i = 0;
 	while (a[i])
@@ -129,20 +136,26 @@ void    print_array(char **a)
 char	**copy_map(char **original_map)
 {
 	char	**new_map;
-	int		i;
+	int	i;
 
 	i = 0;
+	if (!original_map)
+		return (NULL);
 	while (original_map[i])
 		i++;
 	new_map = malloc(sizeof(char *) * (i + 1));
 	if (!new_map)
+	{
+		print_error(ERR_MALLOC);
 		return (NULL);
+	}
 	i = 0;
 	while (original_map[i])
 	{
 		new_map[i] = ft_strdup(original_map[i]);
 		if (!new_map[i])
 		{
+			print_error(ERR_MALLOC);
 			clean_arr(&(new_map));
 			return (NULL);
 		}

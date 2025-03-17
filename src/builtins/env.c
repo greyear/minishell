@@ -10,13 +10,13 @@
  * @param ms   A pointer to the `t_ms` structure containing environment variables and exit status.
  */
 
-void    handle_env(char	**args, t_ms *ms)
+void	handle_env(char	**args, t_ms *ms)
 {
-    ms->exit_status = 0;
-    if (!args || !*args)
+	if (!args || !*args)
 		return;
 	if (ft_strcmp(args[0], "env") != 0)
 		return;
+	ms->exit_status = 0;
 	if (args[1])
 	{
 		print_env_error(args);

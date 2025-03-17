@@ -39,7 +39,10 @@ char	*extract_key(char *arg, int len)
 
 	name = malloc(sizeof(char) * (len + 1));
 	if (!name)
+	{
+		print_error(ERR_MALLOC);
 		return (NULL);
+	}
 	ft_strncpy(name, arg, len);
 	name[len] = '\0';
 	return (name);

@@ -45,8 +45,8 @@ typedef struct s_ms
 	t_bool	history_file; //yes (1) if save, no (0) if can't save in file
 	char	*history[500];
 	int		history_num;
-    char    **heredoc_files; // Store heredoc filenames
-    int     heredoc_count;   // Number of heredoc files
+	char	**heredoc_files; // Store heredoc filenames
+	int		heredoc_count;   // Number of heredoc files
 	int		saved_stdin;
 	int		saved_stdout;
 } t_ms;
@@ -60,15 +60,14 @@ typedef struct s_envp
 
 typedef struct s_pipe
 {
-    //int     **pipe_fd;
-    int     num_cmds;
+	int		num_cmds;
 	int		cmd_num;
-    pid_t   last_pid;
-	pid_t	*pids;
 	int		fd[2];
 	int		cur_fd;
-    t_ms    *ms;
-}   t_pipe;
+	pid_t	last_pid;
+	pid_t	*pids;
+	t_ms	*ms;
+}	t_pipe;
 
 /*typedef struct s_terminal
 {

@@ -9,14 +9,14 @@
  * exit status is updated.
  * 
  * @param ms A pointer to the shell structure containing execution state.
- * @param flag If set to 1, attempts to use `getenv("HOME")` as a fallback.
+ * @param flag If set to 1 and envp exist, attempts to use `getenv("HOME")` as a fallback.
  * 
  * @return A newly allocated string containing the home directory path, or NULL on failure.
  */
 
 char	*get_home_directory(t_ms *ms, int flag)
 {
-	char *temp;
+	char	*temp;
 
 	temp = get_env_value("HOME", ms->envp);
 	if (!temp)
@@ -24,8 +24,8 @@ char	*get_home_directory(t_ms *ms, int flag)
 		if (flag == 1)
 			return (ft_strdup(getenv("HOME")));
 		ft_putstr_fd("bash: cd: HOME not set\n", STDERR_FILENO);
-        ms->exit_status = 1;
-        return (NULL);
+		ms->exit_status = 1;
+		return (NULL);
 	}
 	if (*temp == '\0')
 	{
@@ -62,7 +62,7 @@ char	*get_parent_directory(t_ms *ms)
 
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
-		perror("cd: getcwd failed");
+		perror("getcwd failed\n");
 		ms->exit_status = 1;
 		return (NULL);
 	}
@@ -88,15 +88,25 @@ char	*get_parent_directory(t_ms *ms)
  *         if memory allocation fails.
  */
 
-char	*build_relative_path(char *target, char *cwd)
+char	*build_relative_path(char *target, char *cwd, t_ms *ms)
 {
 	char	*temp;
 	char	*full_path;
 
 	temp = ft_strjoin(cwd, "/");
 	if (!temp)
+	{
+		print_error(ERR_MALLOC);
+		ms->exit_status = 1;
 		return (NULL);
+	}
 	full_path = ft_strjoin(temp, target);
+	if (!full_path)
+	{
+		print_error(ERR_MALLOC);
+		ms->exit_status = 1;
+		return (NULL);
+	}
 	free(temp);
 	return (full_path);
 }

@@ -51,12 +51,12 @@ void	pipe_process(int prev_pipe, int next_pipe)
  * @param cur_fd The current file descriptor for input redirection.
  */
 
-void    setup_pipes(int *pipe_fd, int i, int num_cmds, int cur_fd)
+void	setup_pipes(int *pipe_fd, int i, int num_cmds, int cur_fd)
 {
-    if (i == 0)
-        pipe_process(0, pipe_fd[1]);
-    else if (i == num_cmds - 1)
-        pipe_process(cur_fd, 0);
-    else
-        pipe_process(cur_fd, pipe_fd[1]);
+	if (i == 0)
+		pipe_process(0, pipe_fd[1]);
+	else if (i == num_cmds - 1)
+		pipe_process(cur_fd, 0);
+	else
+		pipe_process(cur_fd, pipe_fd[1]);
 }

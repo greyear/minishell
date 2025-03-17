@@ -27,6 +27,10 @@ static void	append_to_result(char **result, char *new_part)
 		free(new_part);
 		return;
 	}
+	{
+		free(new_part);
+		return;
+	}
 	free(*result);
 	*result = temp;
 	free(new_part);
@@ -104,6 +108,7 @@ static char	*find_env_value(char **envp, char *key, int len, t_char quote, t_boo
 
 void	expand_variable(t_ms *ms, char *key, int key_len, char **result, t_char quote, t_bool first_in_str)
 {
+	char	*expanded;
 	char	*expanded;
 
 	if (!key || !*key)

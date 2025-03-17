@@ -18,24 +18,24 @@
 
 void	handle_absolute_or_relative_path(char **envp, char **cmds)
 {
-    DIR *dir;
+	DIR *dir;
 	
 	dir = opendir(cmds[0]);
-    if (dir)
-    {
-        closedir(dir);
-        print_cmd_error(cmds[0], IS_DIR);
-        exit(126);
-    }
-    if (access(cmds[0], F_OK) == 0)
-    {
-        if (access(cmds[0], X_OK) == 0)
-            execve(cmds[0], cmds, envp);
+	if (dir)
+	{
+		closedir(dir);
+		print_cmd_error(cmds[0], IS_DIR);
+		exit(CMD_EXEC);
+	}
+	if (access(cmds[0], F_OK) == 0)
+	{
+		if (access(cmds[0], X_OK) == 0)
+			execve(cmds[0], cmds, envp);
 		print_cmd_error(cmds[0], PERM_DEN);
-        exit(126);
-    }
+		exit(CMD_EXEC);
+	}
 	print_cmd_error(cmds[0], NO_FILE_OR_DIR);
-    exit(127);
+	exit(CMD_NF);
 }
 
 /**
@@ -53,18 +53,18 @@ void	handle_absolute_or_relative_path(char **envp, char **cmds)
  *
  */
 
-void    check_if_dot(char **cmds)
+void	check_if_dot(char **cmds)
 {
-    int     i;
+	int	i;
 
-    i = 0;
-    while (cmds[0][i] && cmds[0][i] == '.')
-        i++;
-    if (cmds[0][i] == '\0')
-    {
-        print_cmd_error(cmds[0], NO_CMD);
-        exit(127);
-    }
+	i = 0;
+	while (cmds[0][i] && cmds[0][i] == '.')
+		i++;
+	if (cmds[0][i] == '\0')
+	{
+		print_cmd_error(cmds[0], NO_CMD);
+		exit(CMD_NF);
+	}
 }
 
 /**
@@ -82,15 +82,15 @@ void    check_if_dot(char **cmds)
  *         an appropriate status code (127 for command not found, 126 for permission denied).
  */
 
- void    handle_no_path_variable(char **envp, char **cmd)
- {
-     if (access(cmd[0], F_OK) == 0)
-     {
-         if (access(cmd[0], X_OK) == 0)
-             execve(cmd[0], cmd, envp);
-         print_cmd_error(cmd[0], PERM_DEN);
-         exit(126);
-     }
-     print_cmd_error(cmd[0], NO_CMD);
-     exit(127);
- }
+void	handle_no_path_variable(char **envp, char **cmd)
+{
+	if (access(cmd[0], F_OK) == 0)
+	{
+		if (access(cmd[0], X_OK) == 0)
+			execve(cmd[0], cmd, envp);
+		print_cmd_error(cmd[0], PERM_DEN);
+		exit(CMD_EXEC);
+	}
+	print_cmd_error(cmd[0], NO_CMD);
+	exit(CMD_NF);
+}
