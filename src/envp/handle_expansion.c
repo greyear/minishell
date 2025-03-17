@@ -121,17 +121,15 @@ static int	handle_dollar_expansion(char **result, char *args, int *i, t_ms *ms, 
  *         for freeing the returned string.
  */
 
-char	*handle_expansion(char *args, t_ms *ms, t_char quote)
+char	*handle_expansion(char *args, t_ms *ms, t_char quote, t_bool first_in_str)
 {
 	int		i;
 	char	*result;
-	t_bool	first_in_str;
 
 	result = ft_strdup("");
 	if (!result)
 		return (NULL);
 	i = 0;
-	first_in_str = 1;
 	while (args[i])
 	{
 		if (args[i] == '$' && args[i + 1] && args[i + 1] != '$'
@@ -145,7 +143,6 @@ char	*handle_expansion(char *args, t_ms *ms, t_char quote)
 		}
 		else
 			append_literal_char(&result, args[i++]);
-		first_in_str = 0;
 	}
 	//printf("res of exp: %s\n", result);
 	return (result);
