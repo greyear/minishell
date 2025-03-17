@@ -1,4 +1,3 @@
-
 #include "../../include/minishell.h"
 
 #include <stdio.h>
@@ -9,7 +8,7 @@
 
 volatile sig_atomic_t	g_sgnl;
 
-void print_tokens(t_token *token_list)
+/*void print_tokens(t_token *token_list)
 {
 	t_token *cur = token_list;
 
@@ -19,7 +18,7 @@ void print_tokens(t_token *token_list)
 		printf("Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->type, cur->data, cur->quote, cur->specific_redir, cur->ambiguous, cur->file);
 		cur = cur->next;
 	}
-}
+}*/
 /*
 static void print_blocks(t_block *block_list)
 {
@@ -133,20 +132,51 @@ static void	malloc_heredocs(t_ms *ms, t_token *token)
 			heredoc_count++;
 		cur = cur->next;
 	}
+	if (heredoc_count > 16)
+	{
+		ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
+		ft_putstr_fd("maximum here-document count exceeded\n", STDERR_FILENO);
+		clean_struct(ms);
+		exit(2);
+	}
 	ms->heredoc_files = malloc(sizeof(char *) * (heredoc_count + 1)); // Support 100 heredocs max
 	if (!ms->heredoc_files)
 	{
-		perror("heredoc: memory allocation failed");
+		print_error(ERR_MALLOC);
 		clean_struct(ms);
 		exit(1);
 	}
 	ft_memset(ms->heredoc_files, 0, sizeof(char *) * (heredoc_count + 1)); // Set all entries to NULL
+	ms->heredoc_files[0] = NULL;
 }
 
-static void	inout(int saved_stdin, int saved_stdout)
+/*static int	inout(t_ms *ms)
 {
-	dup2(saved_stdin, STDIN_FILENO);
-	dup2(saved_stdout, STDOUT_FILENO);
+	if (dup2(ms->saved_stdin, STDIN_FILENO) == -1)
+	{
+		close(ms->saved_stdin);
+		close(ms->saved_stdout);
+		perror("dup2 failed\n");
+		ms->exit_status = 1;
+		return (0);
+	}
+	close(ms->saved_stdin);
+	if (dup2(ms->saved_stdout, STDOUT_FILENO) == -1)
+	{
+		close(ms->saved_stdout);
+		perror("dup2 failed\n");
+		ms->exit_status = 1;
+		return (0);
+	}
+	close(ms->saved_stdout);
+	return (1);
+}*/
+
+static int	inout(t_ms *ms)
+{
+	dup2(ms->saved_stdin, STDIN_FILENO);
+	dup2(ms->saved_stdout, STDOUT_FILENO);
+	return (1);
 }
 
 static int	tokenize_input(char **input, t_ms *ms)
@@ -161,7 +191,7 @@ static int	tokenize_input(char **input, t_ms *ms)
 	malloc_heredocs(ms, ms->tokens);
 	if (!ms->heredoc_files)
 	{
-		perror("heredoc memory allocaton failed");
+		print_error(ERR_MALLOC);
 		clean_token_list(&(ms->tokens));
 		return (0);
 	}
@@ -197,20 +227,15 @@ static int	process_input(char **input, t_ms *ms)
 	int		err_syntax;
 
 	err_syntax = 0;
-	if ((*input)[0] == '\0') // Ignore empty input (Enter)
-	{
-		free(*input);
-		if (g_sgnl == SIGINT)
-		{
-			ms->exit_status = 130;
-			g_sgnl = 0;
-		}
-		return (0);
-	}
 	if (g_sgnl == SIGINT)
 	{
 		ms->exit_status = 130;
 		g_sgnl = 0;
+	}
+	if ((*input)[0] == '\0') // Ignore empty input (Enter)
+	{
+		free(*input);
+		return (0);
 	}
 	err_syntax = validate_input(*input);
 	if (err_syntax)
@@ -223,6 +248,7 @@ static int	process_input(char **input, t_ms *ms)
 	add_line_to_history(*input, ms);
 	return (1);
 }
+
 int	init_terminal_signals(void)
 {
 	struct termios	term;
@@ -232,20 +258,19 @@ int	init_terminal_signals(void)
 		if (tcgetattr(STDIN_FILENO, &term) == -1)
 		{
 			perror("tcgetattr failed");
-			return (1);
+			return (0);
 		}
 		term.c_lflag &= ~ECHOCTL;
 		if (tcsetattr(STDIN_FILENO, TCSANOW, &term) == -1)
 		{
 			perror("tcsetattr failed");
-			return (1);
+			return (0);
 		}
 	}
-	//signals
-	return (0);
+	return (1);
 }
 
-int main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
 	t_ms	*ms;
 	char	*input;
@@ -256,18 +281,20 @@ int main(int argc, char **argv, char **envp)
 		ft_putstr_fd("Usage: ./minishell\n", STDERR_FILENO);
 		return (1);
 	}
-	init_terminal_signals();
+	if (!init_terminal_signals())
+		return (1);
 	ms = initialize_struct(envp);
 	while (1)
 	{
 		// Reading the input
-		inout(ms->saved_stdin, ms->saved_stdout); // Restore STDIN and STDOUT
+		if (!inout(ms))
+			break; // Restore STDIN and STDOUT
 		// FOR USUAL EXECUTION
-		/*signal_mode(INTERACTIVE);
+		signal_mode(INTERACTIVE);
 		input = readline("minishell> ");
-		signal_mode(IGNORE);*/
+		signal_mode(IGNORE);
 		//FOR TESTER
-		if (isatty(fileno(stdin))) // If running interactively
+		/*if (isatty(fileno(stdin))) // If running interactively
 			input = readline("minishell> ");
 		else // If receiving input from another program
 		{
@@ -276,7 +303,7 @@ int main(int argc, char **argv, char **envp)
 				break;
 			input = ft_strtrim(line, "\n"); // Remove newline from input
 			free(line);
-		}
+		}*/
 		if (!input) // EOF check (Ctrl+D)
 		{
 			printf("exit\n");
@@ -288,6 +315,15 @@ int main(int argc, char **argv, char **envp)
 			continue;
 		if (!create_blocks_and_cmds_lists(ms))
 			continue;
+		if (g_sgnl == SIGINT)
+		{
+			clean_token_list(&(ms->tokens));
+			clean_block_list(&(ms->blocks));
+			clean_cmd_list(&(ms->cmds));
+			cleanup_heredocs(ms->heredoc_files);
+			g_sgnl = 0;
+			continue;
+		}
 		execute_commands(ms);
 		cleanup_after_execution(ms);
 	}

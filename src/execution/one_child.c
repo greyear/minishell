@@ -18,14 +18,14 @@
 void	execute_child(t_cmd *cmd, t_ms *ms)
 {
 	redirect_process(cmd->infile, cmd->outfile);
-    close(ms->saved_stdin);
-    close(ms->saved_stdout);
-    if (is_builtin(cmd))
-    {
-        handle_builtin(cmd, ms, 1);
-        exit(ms->exit_status);
-    }
-    else
+	close(ms->saved_stdin);
+	close(ms->saved_stdout);
+	if (is_builtin(cmd))
+	{
+		handle_builtin(cmd, ms, 1);
+		exit(ms->exit_status);
+	}
+	else
 	{
 		//we are not sure if we need to put it for ALL child processes or only for externals
 		signal_mode(DEFAULT);
@@ -50,21 +50,28 @@ void	execute_child(t_cmd *cmd, t_ms *ms)
 
 void	make_one_child(t_cmd *cmd, t_ms *ms)
 {
-    pid_t	pid;
-    int		status;
+	pid_t	pid;
+	int		status;
 
-    //printf("hey\n");
-    if (!cmd->args || !cmd->args[0])
-        return;
-    pid = fork();
-    if (pid < 0)
-    {
-        ms->exit_status = 1;
-        return;
-    }
-    if (pid == 0)
-        execute_child(cmd, ms);
-    waitpid(pid, &status, 0);
-    if (WIFEXITED(status))
+	if (!cmd->args || !cmd->args[0])
+		return;
+	pid = fork();
+	if (pid < 0)
+	{
+		perror("fork failed\n");
+		ms->exit_status = 1;
+		return;
+	}
+	if (pid == 0)
+		execute_child(cmd, ms);
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
 		ms->exit_status = WEXITSTATUS(status);
+	if (WIFSIGNALED(status))
+	{
+		if (WTERMSIG(status) == SIGINT)
+			ms->exit_status = 130;
+		if (WTERMSIG(status) == SIGQUIT)
+			ms->exit_status = 131;
+	}
 }

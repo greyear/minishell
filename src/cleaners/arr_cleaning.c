@@ -5,7 +5,7 @@ void	clean_arr(char ***arr)
 	int	i;
 
 	if (!arr || !*arr)
-		return ;
+		return;
 	i = 0;
 	while ((*arr)[i])
 	{
@@ -19,7 +19,7 @@ void	clean_arr(char ***arr)
 
 void	free_int_array(int **array)
 {
-	int	i;	
+	int	i;
 
 	i = 0;
 	while (array[i])
@@ -32,22 +32,23 @@ void	free_int_array(int **array)
 
 void	cleanup_heredocs(char **filenames)
 {
-    int		i;
+	int	i;
 	
 	i = 0;
 	if (!filenames)
 		return;
-    while (filenames[i])
+	while (filenames[i])
 	{
-        if (unlink(filenames[i]) == -1)
+		if (unlink(filenames[i]) == -1)
 		{
 			perror("unlink fail\n");
 			exit(1);
 		}
 		free(filenames[i]);
-        i++;
-    }
-    free(filenames);
+		i++;
+	}
+	if (filenames)
+		free(filenames);
 }
 
 void	close_fds(t_cmd *cmd)

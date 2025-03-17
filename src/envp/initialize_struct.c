@@ -12,7 +12,7 @@
 
 static t_ms	*allocate_struct(void)
 {
-	t_ms *ms;
+	t_ms	*ms;
 
 	ms = malloc(sizeof(t_ms));
 	if (!ms)
@@ -40,6 +40,12 @@ static t_ms	*allocate_struct(void)
 
 static void	initialize_envp(t_ms *ms, char **envp)
 {
+	if (!envp)
+	{
+		ms->envp = NULL;
+		ms->exported = NULL;
+		return;
+	}
 	ms->envp = copy_map(envp);
 	if (!ms->envp)
 	{
@@ -50,7 +56,7 @@ static void	initialize_envp(t_ms *ms, char **envp)
 	ms->exported = copy_map(envp);
 	if (!ms->exported)
 	{
-		perror("ms->exported: memory allocation failed");
+		print_error(ERR_MALLOC);
 		clean_struct(ms);
 		exit(1);
 	}
@@ -86,14 +92,14 @@ static void	initialize_fds(t_ms *ms)
 	ms->saved_stdin = dup(STDIN_FILENO);
 	if (ms->saved_stdin == -1)
 	{
-		perror("dup stdin failed");
+		perror("dup failed\n");
 		clean_struct(ms);
 		exit(1);
 	}
 	ms->saved_stdout = dup(STDOUT_FILENO);
 	if (ms->saved_stdout == -1)
 	{
-		perror("dup stdout failed");
+		perror("dup failed\n");
 		clean_struct(ms);
 		exit(1);
 	}
@@ -108,6 +114,7 @@ static void	initialize_fds(t_ms *ms)
  * - Sets up tokens and command blocks.
  * - Initializes command history.
  * - Prepares file descriptors and heredoc-related data.
+ * - Updates SHLVL in environmental variables if needed.
  * - Updates SHLVL in environmental variables if needed.
  * 
  * @param envp The environment variables inherited from the parent process.

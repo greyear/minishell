@@ -43,6 +43,16 @@ static int	open_heredoc_file(char *filename, int *fd)
 	return (*fd);
 }
 
+static void	print_heredoc_ctrl_d(char *limiter)
+{
+	ft_putstr_fd("minishell: warning: here-document at " \
+		"line 1 delimited by end-of-file", 2);
+	ft_putstr_fd(" (wanted ", 2);
+	ft_putstr_fd("`", 2);
+	ft_putstr_fd(limiter, 2);
+	ft_putstr_fd("')\n", 2);
+}
+
 /**
  * @brief Reads a line of input for the heredoc.
  * 
@@ -53,19 +63,32 @@ static int	open_heredoc_file(char *filename, int *fd)
  * @return Returns the line read from the standard input. If an error occurs, the program exits.
  */
 
-static char	*read_heredoc_line(int temp_fd)
+static char	*read_heredoc_line(int temp_fd, char *limiter)
 {
 	char	*line;
+	//char	*temp;
  
-	write(STDOUT_FILENO, "heredoc> ", 9);
-	line = get_next_line(STDIN_FILENO);
-	//line = readline("> ");
+	//write(STDOUT_FILENO, "heredoc> ", 9);
+	signal_mode(HEREDOC_MODE);
+	//line = get_next_line(STDIN_FILENO);
+	line = readline("> ");
+	signal_mode(IGNORE);
 	if (!line)
 	{
-		perror("heredoc: read error");
+		print_heredoc_ctrl_d(limiter);
+		//perror("readline error");
 		close(temp_fd);
-		exit(1);
+		exit(0);
 	}
+	/*line = ft_strjoin(temp, "\n");
+	free(temp);
+	
+	if (!line)
+	{
+		perror("malloc error");
+		close(temp_fd);
+		exit (2);
+	}*/
 	return (line);
  }
  
@@ -88,8 +111,9 @@ static int process_heredoc_line(char **line, char *limiter, t_token *token, t_ms
 {
 	char	*expanded;
  
-	if (ft_strncmp(*line, limiter, ft_strlen(limiter)) == 0
-		&& (ft_strlen(limiter) == ft_strlen(*line) || (*line)[ft_strlen(limiter)] == '\n'))
+	//if (ft_strncmp(*line, limiter, ft_strlen(limiter)) == 0
+		//&& (ft_strlen(limiter) == ft_strlen(*line) || (*line)[ft_strlen(limiter)] == '\n'))
+	if (ft_strcmp(*line, limiter) == 0)
 	{
 		free(*line);
 		return (1);
@@ -127,11 +151,11 @@ static void read_heredoc_input(int temp_fd, char *limiter, t_token *token, t_ms 
 
 	while (1)
 	{
-		line = read_heredoc_line(temp_fd);
+		line = read_heredoc_line(temp_fd, limiter);
 		if (process_heredoc_line(&line, limiter, token, ms))
 			break;
-		write(temp_fd, line, ft_strlen(line));
-		//ft_putendl_fd(line, temp_fd);
+		//write(temp_fd, line, ft_strlen(line));
+		ft_putendl_fd(line, temp_fd);
 		free(line);
 	}
 	close(temp_fd);
@@ -161,11 +185,40 @@ int	handle_heredoc(t_ms *ms, char *limiter, t_token *token)
 	int		temp_fd;
 	int		fd;
 	char	*filename;
+	pid_t	pid;
+	int		status;
  
 	filename = generate_heredoc_filename(ms->heredoc_count);
 	ms->heredoc_files[ms->heredoc_count++] = filename;
-	open_heredoc_file(filename, &temp_fd);
-	read_heredoc_input(temp_fd, limiter, token, ms);
+	pid = fork();
+	if (pid == -1)
+	{
+		perror("fork failed");
+		return (-1);
+	}
+	else if (pid == 0)
+	{
+		signal_mode(HEREDOC_MODE);
+		open_heredoc_file(filename, &temp_fd);
+		read_heredoc_input(temp_fd, limiter, token, ms);
+		//close(temp_fd);
+		exit(0);
+	}
+	else
+	{
+		signal_mode(IGNORE);
+		waitpid(pid, &status, 0);
+		signal_mode(DEFAULT);
+		if (WIFEXITED(status))
+		{
+			ms->exit_status = WEXITSTATUS(status);
+			if (ms->exit_status == 130)
+			{
+				g_sgnl = SIGINT;
+				return (SIGNAL_HEREDOC);
+			}
+		}
+	}
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 	{

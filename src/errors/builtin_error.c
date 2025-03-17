@@ -16,11 +16,11 @@
 
  void	print_unset_error(char **args, int i, t_ms *ms)
  {
-     ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
-     ft_putstr_fd("unset: '", STDERR_FILENO);
-     ft_putstr_fd(args[i], STDERR_FILENO);
-     ft_putstr_fd("': not a valid indentifier\n", STDERR_FILENO);
-     ms->exit_status = 1;
+	 ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
+	 ft_putstr_fd("unset: '", STDERR_FILENO);
+	 ft_putstr_fd(args[i], STDERR_FILENO);
+	 ft_putstr_fd("': not a valid indentifier\n", STDERR_FILENO);
+	 ms->exit_status = 1;
  }
  
  /**
@@ -38,9 +38,9 @@
  
  void	print_flag_error(char **args)
  {
-     ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
-     ft_putstr_fd(args[0], STDERR_FILENO);
-     ft_putstr_fd(": flags are not supported in minishell\n", STDERR_FILENO);
+	 ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
+	 ft_putstr_fd(args[0], STDERR_FILENO);
+	 ft_putstr_fd(": flags are not supported in minishell\n", STDERR_FILENO);
  }
  
  /**
@@ -58,11 +58,11 @@
  
  void	print_export_error(t_ms *ms, char *arg)
  {
-     ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
-     ft_putstr_fd("export: '", STDERR_FILENO);
-     ft_putstr_fd(arg, STDERR_FILENO);
-     ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
-     ms->exit_status = 1;
+	 ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
+	 ft_putstr_fd("export: '", STDERR_FILENO);
+	 ft_putstr_fd(arg, STDERR_FILENO);
+	 ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
+	 ms->exit_status = 1;
  }
  
  /**
@@ -80,13 +80,13 @@
  
  void	print_cd_error(char *target_dir)
  {
-     ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
-     ft_putstr_fd("cd: ", STDERR_FILENO);
-     if (target_dir && *target_dir)
-         ft_putstr_fd(target_dir, STDERR_FILENO);
-     else
-         ft_putstr_fd(" ", STDERR_FILENO);
-     ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+	 ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
+	 ft_putstr_fd("cd: ", STDERR_FILENO);
+	 if (target_dir && *target_dir)
+		 ft_putstr_fd(target_dir, STDERR_FILENO);
+	 else
+		 ft_putstr_fd(" ", STDERR_FILENO);
+	 ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
  }
  
  /**
@@ -104,8 +104,8 @@
  
  void	print_env_error(char **args)
  {
-     ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
-     ft_putstr_fd("env: '", STDERR_FILENO);
-     ft_putstr_fd(args[1], STDERR_FILENO);
-     ft_putstr_fd("': No such file or directory\n", STDERR_FILENO);
+	 ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
+	 ft_putstr_fd("env: '", STDERR_FILENO);
+	 ft_putstr_fd(args[1], STDERR_FILENO);
+	 ft_putstr_fd("': No such file or directory\n", STDERR_FILENO);
  }
