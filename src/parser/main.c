@@ -281,7 +281,7 @@ static void	run_minishell(t_ms *ms)
 		//if (!inout(ms))
 		//	break; // Restore STDIN and STDOUT
 		// FOR USUAL EXECUTION
-		/* signal_mode(INTERACTIVE);
+		/*signal_mode(INTERACTIVE);
 		input = readline("minishell> ");
 		signal_mode(IGNORE);*/
 		//FOR TESTER

@@ -52,13 +52,13 @@ void	print_file_error(char *file, t_print reason)
 	else
 		ft_putstr_fd(file, STDERR_FILENO);
 	if (reason == NO_FILE)
-		ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+		ft_putendl_fd(NO_FD_ERR, STDERR_FILENO);
 	if (reason == DIRECT)
-		ft_putendl_fd(": Is a directory", STDERR_FILENO);
+		ft_putendl_fd(IS_DIR_ERR, STDERR_FILENO);
 	if (reason == PERM_DEN)
-		ft_putendl_fd(": Permission denied", STDERR_FILENO);
+		ft_putendl_fd(PERM_DEN_ERR, STDERR_FILENO);
 	if (reason == AMBIG)
-		ft_putendl_fd(": ambiguous redirect", STDERR_FILENO);
+		ft_putendl_fd(AMBIG_ERR, STDERR_FILENO);
 }
 
 /**
@@ -84,13 +84,13 @@ void	print_cmd_error(char *cmd, int c)
 	if (cmd)
 		ft_putstr_fd(cmd, STDERR_FILENO);
 	if (c == IS_DIR)
-		ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+		ft_putstr_fd(IS_DIR_ERR, STDERR_FILENO);
 	else if (c == NO_FILE_OR_DIR)
-		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+		ft_putstr_fd(NO_FD_ERR, STDERR_FILENO);
 	else if (c == PERM_DEN)
-		ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
+		ft_putstr_fd(PERM_DEN_ERR, STDERR_FILENO);
 	else if (c == NO_CMD)
-		ft_putstr_fd(": command not found\n", STDERR_FILENO);
+		ft_putstr_fd(NO_CMD_ERR, STDERR_FILENO);
 }
 
 void	print_malloc_error(void)
