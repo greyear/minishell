@@ -19,7 +19,7 @@
 	 ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
 	 ft_putstr_fd("unset: '", STDERR_FILENO);
 	 ft_putstr_fd(args[i], STDERR_FILENO);
-	 ft_putstr_fd("': not a valid indentifier\n", STDERR_FILENO);
+	 ft_putstr_fd(INDENT_ERR, STDERR_FILENO);
 	 ms->exit_status = 1;
  }
  
@@ -40,7 +40,7 @@
  {
 	 ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
 	 ft_putstr_fd(args[0], STDERR_FILENO);
-	 ft_putstr_fd(": flags are not supported in minishell\n", STDERR_FILENO);
+	 ft_putstr_fd(FLAG_ERR, STDERR_FILENO);
  }
  
  /**
@@ -61,7 +61,7 @@
 	 ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
 	 ft_putstr_fd("export: '", STDERR_FILENO);
 	 ft_putstr_fd(arg, STDERR_FILENO);
-	 ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
+	 ft_putstr_fd(INDENT_ERR, STDERR_FILENO);
 	 ms->exit_status = 1;
  }
  
@@ -78,15 +78,18 @@
   * @return This function does not return a value. It directly prints an error message to `stderr`.
   */
  
- void	print_cd_error(char *target_dir)
+ void	print_cd_error(char *target_dir, int flag)
  {
-	 ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
-	 ft_putstr_fd("cd: ", STDERR_FILENO);
-	 if (target_dir && *target_dir)
-		 ft_putstr_fd(target_dir, STDERR_FILENO);
-	 else
-		 ft_putstr_fd(" ", STDERR_FILENO);
-	 ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
+	ft_putstr_fd("cd: ", STDERR_FILENO);
+	if (target_dir && *target_dir)
+		ft_putstr_fd(target_dir, STDERR_FILENO);
+	else
+		ft_putstr_fd(" ", STDERR_FILENO);
+	if (flag == NO_FILE_OR_DIR)
+	ft_putstr_fd(NO_FD_ERR, STDERR_FILENO);
+	else if (flag == PERM_DEN)
+		ft_putstr_fd(PERM_DEN_ERR, STDERR_FILENO);
  }
  
  /**
@@ -107,5 +110,5 @@
 	 ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
 	 ft_putstr_fd("env: '", STDERR_FILENO);
 	 ft_putstr_fd(args[1], STDERR_FILENO);
-	 ft_putstr_fd("': No such file or directory\n", STDERR_FILENO);
+	 ft_putstr_fd(NO_FD_ERR, STDERR_FILENO);
  }

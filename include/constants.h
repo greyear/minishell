@@ -69,7 +69,6 @@ typedef enum e_print
 	NO_FILE_OR_DIR,
 	IS_DIR,
 	NO_CMD,
-
 }	t_print;
 
 typedef enum e_exit
@@ -80,7 +79,8 @@ typedef enum e_exit
 	CMD_EXEC = 126,
 	CMD_NF = 127,
 	SIGNAL_HEREDOC = -3,
-	MALLOC_ERR,
+	MALLOC_ERR = 200,
+	SYSTEM_ERR = 201,
 }	t_exit;
 
 typedef enum e_oper
@@ -97,20 +97,19 @@ typedef enum e_mode
 	IGNORE,
 }	t_mode;
 
-/*typedef enum e_cmd_err
-{
-	PERM_DENIED,
-	NO_FILE_OR_DIR,
-	IS_DIR,
-	NO_CMD,
-}	t_cmd_err;*/
-
 # define OWN_ERR_MSG "ms error: "
-//# define PERM_DEN 1
-//# define NO_FILE_OR_DIR 2
-//# define IS_DIR 3
-//# define NO_CMD 4
 # define HISTORY_FILE ".history.tmp"
+# define ERR_MALLOC "memory allocation failed\n"
+# define NO_FD_ERR ": No such file or directory\n"
+# define IS_DIR_ERR ": Is a directory\n"
+# define PERM_DEN_ERR ": Permission denid\n"
+# define NO_CMD_ERR ": command not found\n"
+# define AMBIG_ERR ": ambiguos redirect\n"
+# define FLAG_ERR ": flags are not supported in minishell\n"
+# define INDENT_ERR "': not a valid indentifier\n"
+# define BLOCKS_ERR "Error: failed to create blocks\n"
+# define CMDS_ERR "Error: failed to create commands\n"
+# define TOKENS_ERR "Error: failed to create tokens\n"
 # define HISTORY_SIZE 500
 
 /*POSIX ограничивает диапазон exit status от 0 до 255. 

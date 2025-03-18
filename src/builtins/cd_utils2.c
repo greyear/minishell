@@ -14,7 +14,6 @@
 
 static char	*handle_missing_oldpwd(t_ms *ms)
 {
-	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
 	ft_putstr_fd("cd: OLDPWD not set\n", STDERR_FILENO);
 	ms->exit_status = 1;
 	return (NULL);
@@ -47,11 +46,12 @@ static char	*handle_empty_oldpwd(t_ms *ms)
 	{
 		if (getcwd(cwd, sizeof(cwd)) == NULL)
 		{
-			perror("getcwd failed\n");
-			ms->exit_status = 1;
+			perror("getcwd failed");
+			ms->exit_status = SYSTEM_ERR;
 			return (NULL);
 		}
 		update_env_var(ms, "PWD=", cwd);
+		return (NULL);
 	}
 	update_env_var(ms, "OLDPWD=", current_pwd);
 	return (ft_strdup(current_pwd));
@@ -75,7 +75,7 @@ static char	*handle_empty_oldpwd(t_ms *ms)
  {
 	 if (access(target, F_OK) != 0)
 	 {
-		 print_cd_error(target);
+		 print_cd_error(target, NO_FILE_OR_DIR);
 		 ms->exit_status = 1;
 		 return (NULL);
 	 }

@@ -16,8 +16,6 @@ static void	clean_up_and_exit(int exit_status, t_ms *ms)
 {
 	clean_cmd_list(&(ms->cmds));
 	history_exit(ms);
-	/*close(ms->saved_stdin);
-	close(ms->saved_stdout);*/
 	clean_struct(ms);
 	exit(exit_status);
 }
@@ -119,16 +117,12 @@ static void	handle_exit_argument(char **array, t_ms *ms)
  * `handle_exit_argument`.
  * If the command is not `exit` or if the argument is invalid, the function simply returns without performing any action.
  * 
- * @param array The arguments passed to the `exit` command. The first argument should be "exit".
+ * @param array The arguments passed to the `exit` command.
  * @param ms    A pointer to the `t_ms` structure, which holds the exit status and other shell information.
  */
 
 void	check_exit(char **array, t_ms *ms)
 {
-	if (!array || !*array)
-		return;
-	if (ft_strcmp(array[0], "exit") != 0)
-		return;
 	if (isatty(STDIN_FILENO))
 		ft_putstr_fd("exit\n", STDOUT_FILENO);
 	handle_exit_argument(array, ms);
