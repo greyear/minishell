@@ -1,19 +1,22 @@
 #include "../../include/minishell.h"
 
 /**
- * @brief Appends a single character to an existing string.
+ * @brief Appends a single character to a dynamically allocated string.
  * 
- * This function takes a character (`c`) and appends it to the existing string (`result`). 
- * The character is first converted to a string and then joined with the existing string.
- * After the operation, the memory for the temporary substring is freed, and the `result` 
- * string is updated to include the appended character.
+ * This function takes a character and appends it to the given string by creating 
+ * a new string with the additional character. If memory allocation fails at any 
+ * point, an error message is printed, and the shell's exit status is set to `MALLOC_ERR`.
  * 
- * @param result A pointer to the string that will receive the appended character. 
- *               It will be updated with the new string.
- * @param c The character to append to the string.
+ * @param result A pointer to the dynamically allocated string to which the character 
+ *               will be appended. The original memory is freed after concatenation.
+ * @param c The character to append.
+ * @param ms A pointer to the `t_ms` structure, which manages shell-related data, 
+ *           including exit status.
+ * 
+ * @return None. The function modifies `*result` and updates `ms->exit_status` on failure.
  */
 
-static void	append_literal_char(char **result, char c)
+static void	append_literal_char(char **result, char c, t_ms *ms)
 {
 	char	*substr;
 	char	*temp;
@@ -23,10 +26,16 @@ static void	append_literal_char(char **result, char c)
 	str[1] = '\0';
 	substr = ft_substr(str, 0, 1);
 	if (!substr)
+	{
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
 		return;
+	}
 	temp = ft_strjoin(*result, substr);
 	if (!temp)
 	{
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
 		free(substr);
 		return;
 	}
@@ -35,22 +44,24 @@ static void	append_literal_char(char **result, char c)
 	*result = temp;
 }
 
- /**
-  * @brief Extracts a key from a string (e.g., for export purposes).
-  * 
-  * This function extracts a valid key (starting with an alphanumeric character or underscore, and potentially 
-  * including alphanumeric characters or underscores) from the provided string, starting at the position 
-  * specified by the `i` index. It ensures that the key does not start with an invalid character (like a digit, 
-  * `?`, `$`, or a space). The extracted key is returned as a new string, and the `i` index is updated to point 
-  * to the next position in the original string.
-  * 
-  * @param args The string from which the key is to be extracted.
-  * @param i A pointer to the current index in the string, which is updated after the key is extracted.
-  * 
-  * @return A newly allocated string containing the extracted key. If no key is found, an empty string is returned.
-  */
- 
-static char	*extract_key_export(char *args, int *i)
+/**
+ * @brief Extracts a key (variable name) from an export command argument.
+ * 
+ * This function scans the given argument string starting at index `*i` and extracts 
+ * a valid key consisting of alphanumeric characters or underscores. If the key is `?`, 
+ * it extracts only that character. The function dynamically allocates memory for the key 
+ * and updates `*i` to reflect the new position in the string. If memory allocation fails, 
+ * an error message is printed, and the shell's exit status is set to `MALLOC_ERR`.
+ * 
+ * @param args The string containing the export argument.
+ * @param i A pointer to the current index in `args`, which will be updated after extraction.
+ * @param ms A pointer to the `t_ms` structure, which manages shell-related data, including 
+ *           exit status.
+ * 
+ * @return A newly allocated string containing the extracted key, or NULL on failure.
+ */
+
+static char	*extract_key_export(char *args, int *i, t_ms *ms)
 {
 	int		x;
 	char	*key;
@@ -66,7 +77,11 @@ static char	*extract_key_export(char *args, int *i)
 	}
 	key = ft_substr(args, *i, x);
 	if (!key)
+	{
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
 		return (NULL);
+	}
 	*i += x;
 	return (key);
 }
@@ -83,6 +98,8 @@ static int	handle_dollar_expansion(char **result, t_expand *exp, int *i, t_ms *m
 	exp->len = ft_strlen(exp->key);
 	expand_variable(ms, exp, result);
 	free(exp->key);
+  if (ms->exit_status == MALLOC_ERR)
+		return (1);
 	return (0);
 }
 
@@ -94,10 +111,16 @@ char	*handle_expansion(t_expand *exp, t_ms *ms)
 
 	result = ft_strdup("");
 	if (!result)
+	{
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
 		return (NULL);
+	}
 	i = 0;
 	while (exp->data[i])
 	{
+    if (ms->exit_status == MALLOC_ERR)
+			return (NULL);
 		if (exp->data[i] == '$' && exp->data[i + 1] && exp->data[i + 1] != '$'
 			&& !ft_isspace(exp->data[i + 1]) && exp->data[i + 1] != '/') //new slash to fix 303&307 parsing hell
 		{
@@ -110,7 +133,6 @@ char	*handle_expansion(t_expand *exp, t_ms *ms)
 		else
 			append_literal_char(&result, exp->data[i++]);
 	}
-	//printf("res of exp: %s\n", result);
 	return (result);
 }
 

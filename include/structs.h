@@ -47,8 +47,7 @@ typedef struct s_ms
 	int		history_num;
 	char	**heredoc_files; // Store heredoc filenames
 	int		heredoc_count;   // Number of heredoc files
-	int		saved_stdin;
-	int		saved_stdout;
+	int		no_env;
 } t_ms;
 
 typedef struct s_expand

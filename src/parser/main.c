@@ -85,8 +85,6 @@ static void	input_output(t_cmd *cmd)
 
 static void	cleanup_after_execution(t_ms *ms)
 {
-	close(ms->saved_stdin);
-	close(ms->saved_stdout);
 	if (ms->heredoc_files)
 		cleanup_heredocs(ms->heredoc_files);
 	reset_heredocs(ms);
@@ -142,41 +140,12 @@ static void	malloc_heredocs(t_ms *ms, t_token *token)
 	ms->heredoc_files = malloc(sizeof(char *) * (heredoc_count + 1)); // Support 100 heredocs max
 	if (!ms->heredoc_files)
 	{
-		print_error(ERR_MALLOC);
+		print_malloc_error();
 		clean_struct(ms);
 		exit(1);
 	}
 	ft_memset(ms->heredoc_files, 0, sizeof(char *) * (heredoc_count + 1)); // Set all entries to NULL
 	ms->heredoc_files[0] = NULL;
-}
-
-/*static int	inout(t_ms *ms)
-{
-	if (dup2(ms->saved_stdin, STDIN_FILENO) == -1)
-	{
-		close(ms->saved_stdin);
-		close(ms->saved_stdout);
-		perror("dup2 failed\n");
-		ms->exit_status = 1;
-		return (0);
-	}
-	close(ms->saved_stdin);
-	if (dup2(ms->saved_stdout, STDOUT_FILENO) == -1)
-	{
-		close(ms->saved_stdout);
-		perror("dup2 failed\n");
-		ms->exit_status = 1;
-		return (0);
-	}
-	close(ms->saved_stdout);
-	return (1);
-}*/
-
-static int	inout(t_ms *ms)
-{
-	dup2(ms->saved_stdin, STDIN_FILENO);
-	dup2(ms->saved_stdout, STDOUT_FILENO);
-	return (1);
 }
 
 static int	tokenize_input(char **input, t_ms *ms)
@@ -185,13 +154,13 @@ static int	tokenize_input(char **input, t_ms *ms)
 	free(*input);
 	if (!ms->tokens)
 	{
-		ft_putstr_fd("Error: tokenization failed\n", STDERR_FILENO);
+		ft_putstr_fd(TOKENS_ERR, STDERR_FILENO);
 		return (0);
 	}
 	malloc_heredocs(ms, ms->tokens);
 	if (!ms->heredoc_files)
 	{
-		print_error(ERR_MALLOC);
+		print_malloc_error();
 		clean_token_list(&(ms->tokens));
 		return (0);
 	}
@@ -207,14 +176,14 @@ static int	create_blocks_and_cmds_lists(t_ms *ms)
 	ms->blocks = create_blocks_list(ms->tokens, NULL, &err_syntax);
 	if (err_syntax)
 	{
-		ft_putstr_fd("Error: failed to create blocks\n", STDERR_FILENO);
+		ft_putstr_fd(BLOCKS_ERR, STDERR_FILENO);
 		clean_token_list(&(ms->tokens));
 		return (0);
 	}
 	ms->cmds = create_cmd_list(ms->blocks, ms);
 	if (!ms->cmds)
 	{
-		ft_putstr_fd("Error: failed to create commands\n", STDERR_FILENO);
+		ft_putstr_fd(CMDS_ERR, STDERR_FILENO);
 		clean_token_list(&(ms->tokens));
 		clean_block_list(&(ms->blocks));
 		return (0);
@@ -271,25 +240,16 @@ int	init_terminal_signals(void)
 	return (1);
 }
 
-int	main(int argc, char **argv, char **envp)
+static void	run_minishell(t_ms *ms)
 {
-	t_ms	*ms;
 	char	*input;
-	int		exit_code;
 
-	if (argc != 1 && argv)
-	{
-		ft_putstr_fd("Usage: ./minishell\n", STDERR_FILENO);
-		return (1);
-	}
-	if (!init_terminal_signals())
-		return (1);
-	ms = initialize_struct(envp);
 	while (1)
 	{
+		if (ms->exit_status == MALLOC_ERR
+			|| ms->exit_status == SYSTEM_ERR)
+			break;
 		// Reading the input
-		if (!inout(ms))
-			break; // Restore STDIN and STDOUT
 		// FOR USUAL EXECUTION
 		/*signal_mode(INTERACTIVE);
 		input = readline("minishell> ");
@@ -307,11 +267,11 @@ int	main(int argc, char **argv, char **envp)
 		}
 		if (!input) // EOF check (Ctrl+D)
 		{
-			printf("exit\n");
+			ft_putstr_fd("exit\n", STDOUT_FILENO);
 			break;
 		}
 		if (!process_input(&input, ms))
-			continue; 
+			continue;
 		if (!tokenize_input(&input, ms))
 			continue;
 		if (!create_blocks_and_cmds_lists(ms))
@@ -328,9 +288,27 @@ int	main(int argc, char **argv, char **envp)
 		execute_commands(ms);
 		cleanup_after_execution(ms);
 	}
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	t_ms	*ms;
+	int		exit_code;
+
+	if (argc != 1 && argv)
+	{
+		ft_putstr_fd("Usage: ./minishell\n", STDERR_FILENO);
+		return (1);
+	}
+	if (!init_terminal_signals())
+		return (1);
+	ms = initialize_struct(envp);
+	run_minishell(ms);
 	clean_cmd_list(&(ms->cmds));
 	history_exit(ms);
 	exit_code = ms->exit_status;
+	if (exit_code == MALLOC_ERR || exit_code == SYSTEM_ERR)
+		exit_code = 1;
 	clean_struct(ms);
 	rl_clear_history();
 	return (exit_code);

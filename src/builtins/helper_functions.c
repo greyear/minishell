@@ -83,16 +83,14 @@ char	**allocate_temp_env(char **env, int x)
 	int	i;
 
 	i = 0;
-	if (!env)
+	if (!env || !*env)
 		return (NULL);
 	while (env[i])
 		i++;
-	if (i == 0)
-		return (NULL);
 	temp = malloc(sizeof(char *) * (i + x));
 	if (!temp)
 	{
-		print_error(ERR_MALLOC);
+		print_malloc_error();
 		return (NULL);
 	}
 	return (temp);
@@ -139,23 +137,17 @@ char	**copy_map(char **original_map)
 	int	i;
 
 	i = 0;
-	if (!original_map)
-		return (NULL);
 	while (original_map[i])
 		i++;
 	new_map = malloc(sizeof(char *) * (i + 1));
 	if (!new_map)
-	{
-		print_error(ERR_MALLOC);
 		return (NULL);
-	}
 	i = 0;
 	while (original_map[i])
 	{
 		new_map[i] = ft_strdup(original_map[i]);
 		if (!new_map[i])
 		{
-			print_error(ERR_MALLOC);
 			clean_arr(&(new_map));
 			return (NULL);
 		}

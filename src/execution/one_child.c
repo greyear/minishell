@@ -1,25 +1,24 @@
 #include "../../include/minishell.h"
 
 /**
- * @brief Executes a command in a child process, handling redirection and built-in commands.
+ * @brief Executes a command within a child process.
  * 
- * This function redirects input and output files for the current command using `redirect_process`. Then, it checks
- * if the command is a built-in. If it is, it handles the built-in command with `handle_builtin` and exits the child
- * process with the corresponding exit status. If the command is not a built-in, it is executed using `execute_command`.
+ * This function handles input/output redirection and determines whether the command 
+ * is a built-in or an external program. If the command is a built-in, it is executed, 
+ * and the child process exits with the appropriate status. Otherwise, the function 
+ * sets the signal mode and executes an external command using `execve()`.
  * 
- * @param cmd A pointer to the `t_cmd` structure containing the command details, including the command arguments,
- *            input file, and output file for redirection.
- * @param ms A pointer to the `t_ms` structure that holds the global execution state, such as exit status.
+ * @param cmd A pointer to the `t_cmd` structure containing command details, such as 
+ *            arguments and input/output files.
+ * @param ms A pointer to the `t_ms` structure, which holds shell-related data, including 
+ *           environment variables and exit status.
  * 
- * @return This function does not return; it either executes the command or exits the child process after handling
- *         the built-in or executing the command.
+ * @return None. The function either executes the command or exits the child process.
  */
 
 void	execute_child(t_cmd *cmd, t_ms *ms)
 {
 	redirect_process(cmd->infile, cmd->outfile);
-	close(ms->saved_stdin);
-	close(ms->saved_stdout);
 	if (is_builtin(cmd))
 	{
 		handle_builtin(cmd, ms, 1);
@@ -34,18 +33,19 @@ void	execute_child(t_cmd *cmd, t_ms *ms)
 }
 
 /**
- * @brief Creates a child process to execute a single command, handling file redirection and heredocs.
+ * @brief Creates a child process to execute a single command.
  * 
- * This function first checks if valid arguments and file descriptors are provided for the command. It then forks a
- * child process to execute the command using `execute_child`. After the child process completes, the parent process
- * waits for the child to exit using `waitpid`, and updates the global exit status based on the child's exit status.
+ * This function forks a new process to execute a given command. If the fork fails, 
+ * an error message is printed, and the shell's exit status is set to 1. The child 
+ * process executes the command using `execute_child()`, while the parent process 
+ * waits for the child to finish and updates the shell's exit status based on the 
+ * child's termination status.
  * 
- * @param cmd A pointer to the `t_cmd` structure containing the command details, including arguments, input file,
- *            and output file for redirection.
- * @param ms A pointer to the `t_ms` structure that holds the global execution state, including the exit status.
+ * @param cmd A pointer to the `t_cmd` structure containing the command and its arguments.
+ * @param ms A pointer to the `t_ms` structure, which manages shell-related data such 
+ *           as environment variables and exit status.
  * 
- * @return This function does not return; it either forks and executes the command in a child process or handles
- *         errors such as invalid file descriptors.
+ * @return None. The function modifies `ms->exit_status` based on the child's termination.
  */
 
 void	make_one_child(t_cmd *cmd, t_ms *ms)
@@ -58,7 +58,7 @@ void	make_one_child(t_cmd *cmd, t_ms *ms)
 	pid = fork();
 	if (pid < 0)
 	{
-		perror("fork failed\n");
+		perror("fork failed");
 		ms->exit_status = 1;
 		return;
 	}
