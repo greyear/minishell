@@ -89,16 +89,19 @@ static char	*extract_key_export(char *args, int *i)
  * 
  */
 //key (args), quote, if first flag
-static int	handle_dollar_expansion(char **result, char *args, int *i, t_ms *ms, t_char quote, t_bool first_in_str) //temporary
+//static int	handle_dollar_expansion(char **result, char *args, int *i, t_ms *ms, t_char quote, t_bool first_in_str) //temporary
+static int	handle_dollar_expansion(char **result, t_expand *exp, int *i, t_ms *ms)
+
 {
-	char	*key;
+	//char	*key;
 
 	(*i)++;
-	key = extract_key_export(args, i);
-	if (!key)
+	exp->key = extract_key_export(exp->data, i);
+	if (!exp->key)
 		return (1);
-	expand_variable(ms, key, ft_strlen(key), result, quote, first_in_str);
-	free(key);
+	exp->len = ft_strlen(exp->key);
+	expand_variable(ms, exp, result);
+	free(exp->key);
 	return (0);
 }
 
@@ -121,29 +124,32 @@ static int	handle_dollar_expansion(char **result, char *args, int *i, t_ms *ms, 
  *         for freeing the returned string.
  */
 //key (args), quote, if first flag
-char	*handle_expansion(char *args, t_ms *ms, t_char quote, t_bool first_in_str)
+//char	*handle_expansion(char *args, t_ms *ms, t_char quote, t_bool first_in_str)
+char	*handle_expansion(t_expand *exp, t_ms *ms)
 {
 	int		i;
 	char	*result;
+	//t_expand	*exp;
 
 	result = ft_strdup("");
 	if (!result)
 		return (NULL);
 	i = 0;
-	while (args[i])
+	while (exp->data[i])
 	{
-		if (args[i] == '$' && args[i + 1] && args[i + 1] != '$'
-			&& !ft_isspace(args[i + 1]) && args[i + 1] != '/') //new slash to fix 303&307 parsing hell
+		if (exp->data[i] == '$' && exp->data[i + 1] && exp->data[i + 1] != '$'
+			&& !ft_isspace(exp->data[i + 1]) && exp->data[i + 1] != '/') //new slash to fix 303&307 parsing hell
 		{
-			if (handle_dollar_expansion(&result, args, &i, ms, quote, first_in_str))
+			if (handle_dollar_expansion(&result, exp, &i, ms))
 			{
 				free (result);
 				return (NULL);
 			}
 		}
 		else
-			append_literal_char(&result, args[i++]);
+			append_literal_char(&result, exp->data[i++]);
 	}
 	//printf("res of exp: %s\n", result);
 	return (result);
 }
+

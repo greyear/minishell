@@ -53,6 +53,7 @@ typedef struct s_ms
 
 typedef struct s_expand
 {
+	char	*data;
 	char	*key;
 	int		len;
 	t_char	quote;
