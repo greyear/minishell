@@ -209,8 +209,6 @@ static int	process_input(char **input, t_ms *ms)
 	err_syntax = validate_input(*input);
 	if (err_syntax)
 	{
-		history_exit(ms);
-		//clean_struct(ms);
 		free(*input);
 		ms->exit_status = 2;
 		return (0);
