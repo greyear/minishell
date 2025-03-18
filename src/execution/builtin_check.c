@@ -49,7 +49,7 @@ void	handle_builtin(t_cmd *cmd, t_ms *ms, int in_child)
 	else if (ft_strcmp(cmd->name, "cd") == 0)
 		handle_cd(cmd->args, ms);
 	else if (ft_strcmp(cmd->name, "pwd") == 0)
-		check_pwd(cmd->args, ms);
+		check_pwd(ms);
 	else if (ft_strcmp(cmd->name, "export") == 0)
 	{
 		if (in_child && cmd->args[1])

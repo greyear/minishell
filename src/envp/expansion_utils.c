@@ -1,21 +1,24 @@
 #include "../../include/minishell.h"
 
 /**
- * @brief Appends a new string segment to the result string.
- *
- * This function concatenates `new_part` to `*result`, updating the pointer
- * to the newly allocated string. It ensures proper memory management by
- * freeing the previous `*result` and `new_part` after joining.
- *
- * @param result Pointer to the existing result string. It will be updated
- *        to point to the new concatenated string.
- * @param new_part The string segment to be appended. It will be freed after use.
- *
- * @note If memory allocation for the new string fails, `new_part` is freed,
- *       but `*result` remains unchanged.
+ * @brief Appends a dynamically allocated string to the result string.
+ * 
+ * This function concatenates `new_part` to `*result`, creating a new dynamically 
+ * allocated string. The original `*result` is freed after concatenation. If memory 
+ * allocation fails, an error message is printed, the shell's exit status is set to 
+ * `MALLOC_ERR`, and `new_part` is freed.
+ * 
+ * @param result A pointer to the dynamically allocated result string. It is updated 
+ *               with the newly concatenated string.
+ * @param new_part A dynamically allocated string to be appended to `*result`. It 
+ *                 is freed after use.
+ * @param ms A pointer to the `t_ms` structure, which manages shell-related data, 
+ *           including exit status.
+ * 
+ * @return None. The function modifies `*result` and updates `ms->exit_status` on failure.
  */
 
-static void	append_to_result(char **result, char *new_part)
+static void	append_to_result(char **result, char *new_part, t_ms *ms)
 {
 	char	*temp;
 
@@ -24,6 +27,9 @@ static void	append_to_result(char **result, char *new_part)
 	temp = ft_strjoin(*result, new_part);
 	if (!temp)
 	{
+
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
 		free(new_part);
 		return;
 	}
@@ -94,6 +100,12 @@ void	expand_variable(t_ms *ms, t_expand *exp, char **result)
 		expanded = ft_strdup("");
 	else
 		expanded = find_env_value(ms->envp, exp);
+    if (!expanded)
+    {
+      print_malloc_error();
+      ms->exit_status = MALLOC_ERR;
+      return;
+    }
 	append_to_result(result, expanded);
 }
 
