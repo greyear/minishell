@@ -14,12 +14,11 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <fcntl.h>
-# include <dirent.h> // Needed for opendir()
+# include <dirent.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <errno.h>
 # include <signal.h>
-//# include <bits/types.h>
 # include <sys/ioctl.h>
 # include <termios.h>
 
@@ -73,7 +72,8 @@ void			check_pwd(t_ms *ms);
 char			*get_env_value(char *key, char **envp);
 void			check_exit(char	**array, t_ms *ms);
 long long		convert_to_ll(char *str, int *error);
-char			*handle_expansion(char *args, t_ms *ms);
+char			*handle_expansion(t_expand *exp, t_ms *ms);
+
 char			*expand_key(char **envp, char *key, int len, t_ms *ms);
 char			*duplicate_or_replace(char *entry, char *arg, char *key, int *flag);
 char			*return_target(t_ms *ms, char *target);
@@ -131,13 +131,16 @@ void			setup_pipes(int *pipe_fd, int i, int num_cmds, int cur_fd);
 
 //Envp
 int				check_list_for_expansions(t_token *first, t_ms *ms);
-int				expand_in_token(t_token *cur, t_ms *ms);
-void			expand_variable(t_ms *ms, char *key, int key_len, char **result);
+t_expand		*exp_init(void);
+int				expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str);
+void			expand_variable(t_ms *ms, t_expand *exp, char **result);
 t_envp			*envp_from_list(t_envp *list, char *name);
 t_bool			is_envp_symbol(int c);
 t_bool			is_envp_first_symbol(int c);
 t_ms			*initialize_struct(char **envp);
 void			check_shlvl(t_ms *ms);
+char			*remove_extra_spaces(char *str);
+char			*remove_first_space(char *str);
 
 //Redirections
 void			put_infile_fd(t_token *token, t_cmd *cmd);

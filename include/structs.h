@@ -49,6 +49,15 @@ typedef struct s_ms
 	int		heredoc_count;   // Number of heredoc files
 } t_ms;
 
+typedef struct s_expand
+{
+	char	*data;
+	char	*key;
+	int		len;
+	t_char	quote;
+	t_bool	if_first;
+}	t_expand;
+
 typedef struct s_envp
 {
 	char			*name;

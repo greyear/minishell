@@ -1,10 +1,10 @@
 #include "../../include/minishell.h"
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <bits/types.h>
+//#include <asm-generic/termbits.h> //delete for school computers
 
 volatile sig_atomic_t	g_sgnl;
 
@@ -239,9 +239,10 @@ static int	process_input(char **input, t_ms *ms)
 	if (err_syntax)
 	{
 		history_exit(ms);
-		clean_struct(ms);
+		//clean_struct(ms);
 		free(*input);
-		exit(err_syntax);
+		ms->exit_status = 2;
+		return (0);
 	}
 	add_line_to_history(*input, ms);
 	return (1);
