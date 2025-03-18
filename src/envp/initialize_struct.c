@@ -49,7 +49,7 @@ static void	initialize_envp(t_ms *ms, char **envp)
 	ms->envp = copy_map(envp);
 	if (!ms->envp)
 	{
-		perror("ms->envp: memory allocation failed");
+		print_malloc_error();
 		clean_struct(ms);
 		exit(1);
 	}
