@@ -183,7 +183,7 @@ static int	tokenize_input(char **input, t_ms *ms)
 	free(*input);
 	if (!ms->tokens)
 	{
-		ft_putstr_fd("Error: tokenization failed\n", STDERR_FILENO);
+		ft_putstr_fd(TOKENS_ERR, STDERR_FILENO);
 		return (0);
 	}
 	malloc_heredocs(ms, ms->tokens);
@@ -205,14 +205,14 @@ static int	create_blocks_and_cmds_lists(t_ms *ms)
 	ms->blocks = create_blocks_list(ms->tokens, NULL, &err_syntax);
 	if (err_syntax)
 	{
-		ft_putstr_fd("Error: failed to create blocks\n", STDERR_FILENO);
+		ft_putstr_fd(BLOCKS_ERR, STDERR_FILENO);
 		clean_token_list(&(ms->tokens));
 		return (0);
 	}
 	ms->cmds = create_cmd_list(ms->blocks, ms);
 	if (!ms->cmds)
 	{
-		ft_putstr_fd("Error: failed to create commands\n", STDERR_FILENO);
+		ft_putstr_fd(CMDS_ERR, STDERR_FILENO);
 		clean_token_list(&(ms->tokens));
 		clean_block_list(&(ms->blocks));
 		return (0);
