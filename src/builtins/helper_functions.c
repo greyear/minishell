@@ -83,12 +83,10 @@ char	**allocate_temp_env(char **env, int x)
 	int	i;
 
 	i = 0;
-	if (!env)
+	if (!env || !*env)
 		return (NULL);
 	while (env[i])
 		i++;
-	if (i == 0)
-		return (NULL);
 	temp = malloc(sizeof(char *) * (i + x));
 	if (!temp)
 	{

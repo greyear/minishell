@@ -55,7 +55,7 @@ void			add_to_exported(char *key, t_ms *ms);
 void			sort_exported_alphaorder(t_ms *ms);
 void			handle_export(char **args, t_ms *ms);
 void			handle_unset(char **args, t_ms *ms);
-void			rm_from_env_ex(char ***env, char *name, int len, int flag);
+int				rm_from_env_ex(char ***env, char *name, int len, int flag);
 int				check_env(char *env, char *name, int len, int flag);
 char			**allocate_temp_env(char **env, int x);
 char			**copy_map(char **original_map);
