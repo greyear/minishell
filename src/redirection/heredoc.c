@@ -110,9 +110,11 @@ static char	*read_heredoc_line(int temp_fd, char *limiter)
 static int process_heredoc_line(char **line, char *limiter, t_token *token, t_ms *ms)
 {
 	char	*expanded;
+	t_expand	*exp;
  
 	//if (ft_strncmp(*line, limiter, ft_strlen(limiter)) == 0
 		//&& (ft_strlen(limiter) == ft_strlen(*line) || (*line)[ft_strlen(limiter)] == '\n'))
+	exp = exp_init();
 	if (ft_strcmp(*line, limiter) == 0)
 	{
 		free(*line);
@@ -120,7 +122,8 @@ static int process_heredoc_line(char **line, char *limiter, t_token *token, t_ms
 	}
 	if (token->quote != SG_QUOT && token->quote != DB_QUOT) //why db quote? can you pls explain?
 	{
-		expanded = handle_expansion(*line, ms, 0, 0);
+		exp->key = *line;
+		expanded = handle_expansion(exp, ms);
 		free(*line);
 		*line = expanded;
 	}

@@ -47,7 +47,7 @@ static void	append_to_result(char **result, char *new_part)
   * @return A string containing the value associated with the environment variable, or an empty string if not found.
   */
 //key, len, quote, if first flag
-static char	*find_env_value(char **envp, char *key, int len, t_char quote, t_bool first_in_str)
+static char	*find_env_value(char **envp, t_expand *exp)
 {
 	int		i;
 	char	*copy;
@@ -57,18 +57,18 @@ static char	*find_env_value(char **envp, char *key, int len, t_char quote, t_boo
 	i = 0;
 	while (envp[i])
 	{
-		if (ft_strncmp(envp[i], key, len) == 0)
+		if (ft_strncmp(envp[i], exp->key, exp->len) == 0)
 		{
-			if (envp[i][len] && envp[i][len] == '=')
+			if (envp[i][exp->len] && envp[i][exp->len] == '=')
 			{
-				copy = ft_strdup(envp[i] + len + 1);
+				copy = ft_strdup(envp[i] + exp->len + 1);
 				if (!copy)
 					return (NULL); //malloc error
-				if (quote == 0) //for heredocs????
+				if (exp->quote == 0) //for heredocs????
 				{
 					without_spaces = remove_extra_spaces(copy);
 					//free(copy);
-					if (first_in_str && without_spaces[0] == ' ')
+					if (exp->if_first && without_spaces[0] == ' ')
 					{
 						without_first = remove_first_space(without_spaces);
 						//free(without_spaces);
@@ -102,18 +102,18 @@ static char	*find_env_value(char **envp, char *key, int len, t_char quote, t_boo
  *
  */
 //key, len, quote, if first flag
-void	expand_variable(t_ms *ms, char *key, int key_len, char **result, t_char quote, t_bool first_in_str)
+void	expand_variable(t_ms *ms, t_expand *exp, char **result)
 {
 	char	*expanded;
 
-	if (!key || !*key)
+	if (!exp->key || !*(exp->key))
 		return;
-	if (key[0] == '?')
+	if (exp->key[0] == '?')
 		expanded = ft_itoa(ms->exit_status);
-	else if (ft_isdigit(key[0]))
+	else if (ft_isdigit(exp->key[0]))
 		expanded = ft_strdup("");
 	else
-		expanded = find_env_value(ms->envp, key, key_len, quote, first_in_str);
+		expanded = find_env_value(ms->envp, exp);
 	append_to_result(result, expanded);
 }
 
