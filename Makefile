@@ -69,7 +69,6 @@ BUILT_FILES		=	cd.c \
 					exit_utils.c \
 					pwd.c \
 					unset.c \
-					unset_utils.c \
 					key_handling.c \
 					helper_functions.c
 #rename many of them!

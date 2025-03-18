@@ -18,10 +18,11 @@ char	*get_home_directory(t_ms *ms, int flag)
 {
 	char	*temp;
 
+	(void) flag;
 	temp = get_env_value("HOME", ms->envp);
 	if (!temp)
 	{
-		if (flag == 1)
+		if (flag == 1 && ms->no_env == false)
 			return (ft_strdup(getenv("HOME")));
 		ft_putstr_fd("bash: cd: HOME not set\n", STDERR_FILENO);
 		ms->exit_status = 1;
@@ -34,7 +35,7 @@ char	*get_home_directory(t_ms *ms, int flag)
 	}
 	if (access(temp, F_OK) != 0)
 	{
-		print_cd_error(temp);
+		print_cd_error(temp, NO_FILE_OR_DIR);
 		ms->exit_status = 1;
 		return (NULL);
 	}
@@ -62,8 +63,8 @@ char	*get_parent_directory(t_ms *ms)
 
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
-		perror("getcwd failed\n");
-		ms->exit_status = 1;
+		perror("getcwd failed");
+		ms->exit_status = SYSTEM_ERR;
 		return (NULL);
 	}
 	parent_dir = ft_strrchr(cwd, '/');
@@ -96,17 +97,63 @@ char	*build_relative_path(char *target, char *cwd, t_ms *ms)
 	temp = ft_strjoin(cwd, "/");
 	if (!temp)
 	{
-		print_error(ERR_MALLOC);
-		ms->exit_status = 1;
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
 		return (NULL);
 	}
 	full_path = ft_strjoin(temp, target);
 	if (!full_path)
 	{
-		print_error(ERR_MALLOC);
-		ms->exit_status = 1;
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
 		return (NULL);
 	}
 	free(temp);
 	return (full_path);
+}
+
+/**
+ * @brief Updates or adds an environment variable in the shell's environment.
+ * 
+ * This function searches for an existing environment variable matching the given 
+ * key. If found, it updates its value. If the variable does not exist, no new 
+ * entry is added. Memory for the new value is dynamically allocated and replaces 
+ * the old entry. 
+ * 
+ * @param ms A pointer to the `t_ms` structure, which contains the shell's 
+ *           environment variables.
+ * @param key The name of the environment variable to update.
+ * @param new_value The new value to assign to the environment variable.
+ * 
+ * @return None. Modifies the environment variables stored in `ms->envp`.
+ *         If memory allocation fails, the function does nothing.
+ */
+
+void	update_env_var(t_ms *ms, char *key, char *new_value)
+{
+	int	i;
+	char	*new_env_entry;
+
+	if (!ms->envp)
+		return;
+	i = 0;
+	new_env_entry = malloc(ft_strlen(key) + ft_strlen(new_value) + 1);
+	if (!new_env_entry)
+	{
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
+		return;
+	}
+	ft_strcpy(new_env_entry, key);
+	ft_strcat(new_env_entry, new_value);
+	while (ms->envp[i])
+	{
+		if (ft_strncmp(ms->envp[i], key, ft_strlen(key)) == 0)
+		{
+			free(ms->envp[i]);
+			ms->envp[i] = new_env_entry;
+			return;
+		}
+		i++;
+	}
 }
