@@ -174,10 +174,8 @@ void	handle_cd(char **args, t_ms *ms)
 		ms->exit_status = SYSTEM_ERR;
 		return;
 	}
-	printf("111\n");
 	if (change_directory(target_dir, ms))
 		return;
-	printf("222\n");
 	free(target_dir);
 	update_cd_env(ms, cwd);
 }
