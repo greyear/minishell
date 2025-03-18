@@ -40,7 +40,7 @@ static t_ms	*allocate_struct(void)
 
 static void	initialize_envp(t_ms *ms, char **envp)
 {
-	if (!envp)
+	if (!envp || !*envp)
 	{
 		ms->envp = NULL;
 		ms->exported = NULL;

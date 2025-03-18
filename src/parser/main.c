@@ -281,11 +281,11 @@ static void	run_minishell(t_ms *ms)
 		//if (!inout(ms))
 		//	break; // Restore STDIN and STDOUT
 		// FOR USUAL EXECUTION
-		/*signal_mode(INTERACTIVE);
+		signal_mode(INTERACTIVE);
 		input = readline("minishell> ");
-		signal_mode(IGNORE);*/
+		signal_mode(IGNORE);
 		//FOR TESTER
-		if (isatty(fileno(stdin))) // If running interactively
+		/*if (isatty(fileno(stdin))) // If running interactively
 			input = readline("minishell> ");
 		else // If receiving input from another program
 		{
@@ -294,7 +294,7 @@ static void	run_minishell(t_ms *ms)
 				break;
 			input = ft_strtrim(line, "\n"); // Remove newline from input
 			free(line);
-		}
+		}*/
 		if (!input) // EOF check (Ctrl+D)
 		{
 			ft_putstr_fd("exit\n", STDOUT_FILENO);
