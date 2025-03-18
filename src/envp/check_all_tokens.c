@@ -19,7 +19,6 @@ t_expand	*exp_init(void)
 	return (exp);
 }
 
-//cur-data, quote, if first flag
 int	expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str)
 {
 	char	*data_copy;
@@ -87,7 +86,6 @@ int	check_list_for_expansions(t_token *first, t_ms *ms)
 	}
 	return (0);
 }
-
 
 int	expand_tilde(t_token *cur, t_ms *ms)
 {

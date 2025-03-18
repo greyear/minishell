@@ -71,25 +71,6 @@ static char	*extract_key_export(char *args, int *i)
 	return (key);
 }
 
-/**
- * @brief Processes a variable expansion starting with `$` and appends its value to the result.
- *
- * This function extracts the variable key following a `$`, resolves its value (e.g., from environment 
- * variables or special cases), and appends the expanded value to the result string. After the expansion, 
- * it updates the index to point to the character after the expanded variable.
- * 
- * The key is extracted using `extract_key_export()` and the value is expanded with `expand_variable()`.
- *
- * @param result A pointer to the string where the expanded value will be appended.
- * @param args The original string containing the variable to expand.
- * @param i A pointer to the current index in the `args` string. It is updated after processing the variable.
- * @param ms A pointer to the main shell structure containing `exit_status` and `envp`.
- *
- * @return 0 if the expansion was successful, or 1 if an error occurred (e.g., memory allocation failure).
- * 
- */
-//key (args), quote, if first flag
-//static int	handle_dollar_expansion(char **result, char *args, int *i, t_ms *ms, t_char quote, t_bool first_in_str) //temporary
 static int	handle_dollar_expansion(char **result, t_expand *exp, int *i, t_ms *ms)
 
 {
@@ -105,26 +86,6 @@ static int	handle_dollar_expansion(char **result, t_expand *exp, int *i, t_ms *m
 	return (0);
 }
 
-/**
- * @brief Expands environment variables and special symbols within a string.
- * 
- * This function processes a string (`args`) and expands any environment variables 
- * or special symbols (such as `$` followed by a variable) in the string. It traverses 
- * the string, identifies the variables or special symbols, and appends the expanded 
- * values to a result string. If a part of the string is not a variable, it is added 
- * to the result string as a literal character.
- * 
- * @param args The input string that may contain environment variables or special symbols 
- *             (such as `$` for variables or `?` and `$` for special symbols).
- * @param ms A pointer to the `t_ms` structure, which contains the environment variables 
- *           and other necessary data.
- * 
- * @return A new string with environment variables and special symbols expanded. 
- *         If memory allocation fails, returns `NULL`. The caller is responsible 
- *         for freeing the returned string.
- */
-//key (args), quote, if first flag
-//char	*handle_expansion(char *args, t_ms *ms, t_char quote, t_bool first_in_str)
 char	*handle_expansion(t_expand *exp, t_ms *ms)
 {
 	int		i;
