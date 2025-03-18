@@ -142,6 +142,7 @@ static void	add_oldpwd_to_envp(t_ms *ms, char *pwd_before)
 	}
 	if (check == 0)
 		return;
+	i = 0;
 	while (ms->envp[i])
 	{
 		if (!ft_strncmp("OLDPWD", ms->envp[i], 6))
@@ -171,7 +172,8 @@ void	update_cd_env(t_ms *ms, char *pwd_before)
 	else
 		update_env_var(ms, "OLDPWD=", pwd_before);
 	if (ms->exit_status != MALLOC_ERR
-		&& !get_env_value("OLDPWD", ms->envp))
+		&& !get_env_value("OLDPWD", ms->envp)
+		&& ms->no_env == true)
 		add_oldpwd_to_envp(ms, pwd_before);
 	if (ms->exit_status != MALLOC_ERR)
 		update_env_var(ms, "PWD=", cwd);
