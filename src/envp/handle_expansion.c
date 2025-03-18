@@ -86,60 +86,28 @@ static char	*extract_key_export(char *args, int *i, t_ms *ms)
 	return (key);
 }
 
-/**
- * @brief Processes a variable expansion starting with `$` and appends its value to the result.
- *
- * This function extracts the variable key following a `$`, resolves its value (e.g., from environment 
- * variables or special cases), and appends the expanded value to the result string. After the expansion, 
- * it updates the index to point to the character after the expanded variable.
- * 
- * The key is extracted using `extract_key_export()` and the value is expanded with `expand_variable()`.
- *
- * @param result A pointer to the string where the expanded value will be appended.
- * @param args The original string containing the variable to expand.
- * @param i A pointer to the current index in the `args` string. It is updated after processing the variable.
- * @param ms A pointer to the main shell structure containing `exit_status` and `envp`.
- *
- * @return 0 if the expansion was successful, or 1 if an error occurred (e.g., memory allocation failure).
- * 
- */
+static int	handle_dollar_expansion(char **result, t_expand *exp, int *i, t_ms *ms)
 
-static int	handle_dollar_expansion(char **result, char *args, int *i, t_ms *ms)
 {
-	char	*key;
+	//char	*key;
 
 	(*i)++;
-	key = extract_key_export(args, i, ms);
-	if (!key)
+	exp->key = extract_key_export(exp->data, i);
+	if (!exp->key)
 		return (1);
-	expand_variable(ms, key, ft_strlen(key), result);
-	free(key);
-	if (ms->exit_status == MALLOC_ERR)
+	exp->len = ft_strlen(exp->key);
+	expand_variable(ms, exp, result);
+	free(exp->key);
+  if (ms->exit_status == MALLOC_ERR)
 		return (1);
 	return (0);
 }
 
-/**
- * @brief Handles environment variable expansion in a given string.
- * 
- * This function processes the input `args` string, replacing `$VAR` occurrences 
- * with their corresponding environment variable values. If an expansion fails due 
- * to a memory allocation error, it updates `ms->exit_status` and returns `NULL`. 
- * The function also correctly handles literal characters and prevents expansion in 
- * cases such as double dollar signs (`$$`), spaces, or slashes.
- * 
- * @param args The input string that may contain variables to be expanded.
- * @param ms A pointer to the `t_ms` structure, which contains environment variables 
- *           and shell-related data, including the exit status.
- * 
- * @return A dynamically allocated string with expanded variables, or `NULL` on failure.
- *         The caller is responsible for freeing the returned string.
- */
-
-char	*handle_expansion(char *args, t_ms *ms)
+char	*handle_expansion(t_expand *exp, t_ms *ms)
 {
 	int		i;
 	char	*result;
+	//t_expand	*exp;
 
 	result = ft_strdup("");
 	if (!result)
@@ -149,21 +117,22 @@ char	*handle_expansion(char *args, t_ms *ms)
 		return (NULL);
 	}
 	i = 0;
-	while (args[i])
+	while (exp->data[i])
 	{
-		if (ms->exit_status == MALLOC_ERR)
+    if (ms->exit_status == MALLOC_ERR)
 			return (NULL);
-		if (args[i] == '$' && args[i + 1] && args[i + 1] != '$'
-			&& !ft_isspace(args[i + 1]) && args[i + 1] != '/') //new slash to fix 303&307 parsing hell
+		if (exp->data[i] == '$' && exp->data[i + 1] && exp->data[i + 1] != '$'
+			&& !ft_isspace(exp->data[i + 1]) && exp->data[i + 1] != '/') //new slash to fix 303&307 parsing hell
 		{
-			if (handle_dollar_expansion(&result, args, &i, ms))
+			if (handle_dollar_expansion(&result, exp, &i, ms))
 			{
 				free(result);
 				return (NULL);
 			}
 		}
 		else
-			append_literal_char(&result, args[i++], ms);
+			append_literal_char(&result, exp->data[i++]);
 	}
 	return (result);
 }
+
