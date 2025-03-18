@@ -62,7 +62,7 @@ char	*get_parent_directory(t_ms *ms)
 
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
-		perror("getcwd failed\n");
+		perror("getcwd failed");
 		ms->exit_status = SYSTEM_ERR;
 		return (NULL);
 	}
@@ -109,4 +109,90 @@ char	*build_relative_path(char *target, char *cwd, t_ms *ms)
 	}
 	free(temp);
 	return (full_path);
+}
+
+/**
+ * @brief Updates the shell's environment variables after a directory change.
+ * 
+ * This function updates the `PWD` and `OLDPWD` environment variables after 
+ * a successful `cd` command. It retrieves the current working directory 
+ * using `getcwd()` and sets `PWD` to the new directory. If `OLDPWD` was 
+ * previously set, it updates it with the previous `PWD` value; otherwise, 
+ * it uses the provided `pwd_before` value.
+ * 
+ * @param ms A pointer to the `t_ms` structure, which contains the shell's 
+ *           environment variables.
+ * @param pwd_before The directory path before changing to the new one.
+ * 
+ * @return None. Modifies the environment variables in `ms->envp` and 
+ *         updates `ms->exit_status` in case of an error.
+ */
+
+void	update_cd_env(t_ms *ms, char *pwd_before)
+{
+	char	cwd[1024];
+	char	*current_pwd;
+
+	if (getcwd(cwd, sizeof(cwd)) == NULL)
+	{
+		perror("cd: getcwd failed");
+		ms->exit_status = SYSTEM_ERR;
+		return;
+	}
+	current_pwd = get_env_value("PWD", ms->envp);
+	if (!current_pwd)
+		current_pwd = "";
+	if (current_pwd && *current_pwd != '\0')
+		update_env_var(ms, "OLDPWD=", current_pwd);
+	else
+		update_env_var(ms, "OLDPWD=", pwd_before);
+	if (ms->exit_status == MALLOC_ERR) //in case of malloc error
+		return;
+	update_env_var(ms, "PWD=", cwd);
+}
+
+/**
+ * @brief Updates or adds an environment variable in the shell's environment.
+ * 
+ * This function searches for an existing environment variable matching the given 
+ * key. If found, it updates its value. If the variable does not exist, no new 
+ * entry is added. Memory for the new value is dynamically allocated and replaces 
+ * the old entry. 
+ * 
+ * @param ms A pointer to the `t_ms` structure, which contains the shell's 
+ *           environment variables.
+ * @param key The name of the environment variable to update.
+ * @param new_value The new value to assign to the environment variable.
+ * 
+ * @return None. Modifies the environment variables stored in `ms->envp`.
+ *         If memory allocation fails, the function does nothing.
+ */
+
+void	update_env_var(t_ms *ms, char *key, char *new_value)
+{
+	int	i;
+	char	*new_env_entry;
+
+	if (!ms->envp)
+		return;
+	i = 0;
+	new_env_entry = malloc(ft_strlen(key) + ft_strlen(new_value) + 1);
+	if (!new_env_entry)
+	{
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
+		return;
+	}
+	ft_strcpy(new_env_entry, key);
+	ft_strcat(new_env_entry, new_value);
+	while (ms->envp[i])
+	{
+		if (ft_strncmp(ms->envp[i], key, ft_strlen(key)) == 0)
+		{
+			free(ms->envp[i]);
+			ms->envp[i] = new_env_entry;
+			return;
+		}
+		i++;
+	}
 }

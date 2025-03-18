@@ -95,14 +95,14 @@ static void	fork_and_execute(t_cmd *cur, t_pipe *p)
 {
 	if (pipe(p->fd) == -1)
 	{
-		perror("pipe failed\n");
+		perror("pipe failed");
 		p->ms->exit_status = 1;
 		return;
 	}
 	p->pids[p->cmd_num] = fork(); 
 	if (p->pids[p->cmd_num] < 0)
 	{
-		perror("fork failed\n");
+		perror("fork failed");
 		p->ms->exit_status = 1;
 		return;
 	}

@@ -41,7 +41,7 @@ void	cleanup_heredocs(char **filenames)
 	{
 		if (unlink(filenames[i]) == -1)
 		{
-			perror("unlink fail\n");
+			perror("unlink fail");
 			exit(1);
 		}
 		free(filenames[i]);

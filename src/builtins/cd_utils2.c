@@ -46,7 +46,7 @@ static char	*handle_empty_oldpwd(t_ms *ms)
 	{
 		if (getcwd(cwd, sizeof(cwd)) == NULL)
 		{
-			perror("getcwd failed\n");
+			perror("getcwd failed");
 			ms->exit_status = SYSTEM_ERR;
 			return (NULL);
 		}
@@ -75,7 +75,7 @@ static char	*handle_empty_oldpwd(t_ms *ms)
  {
 	 if (access(target, F_OK) != 0)
 	 {
-		 print_cd_error(target);
+		 print_cd_error(target, NO_FILE_OR_DIR);
 		 ms->exit_status = 1;
 		 return (NULL);
 	 }

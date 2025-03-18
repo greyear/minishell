@@ -77,6 +77,7 @@ char			*handle_expansion(char *args, t_ms *ms);
 char			*expand_key(char **envp, char *key, int len, t_ms *ms);
 char			*duplicate_or_replace(char *entry, char *arg, char *key, int *flag);
 char			*return_target(t_ms *ms, char *target);
+void			update_cd_env(t_ms *ms, char *pwd_before);
 
 //Lexer
 t_token			*tokenization(char *str, t_ms *ms);

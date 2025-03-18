@@ -58,7 +58,7 @@ void	make_one_child(t_cmd *cmd, t_ms *ms)
 	pid = fork();
 	if (pid < 0)
 	{
-		perror("fork failed\n");
+		perror("fork failed");
 		ms->exit_status = 1;
 		return;
 	}

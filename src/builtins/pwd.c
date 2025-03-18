@@ -28,6 +28,6 @@ void	check_pwd(char **array, t_ms *ms)
 	else
 	{
 		ms->exit_status = 1;
-		perror("pwd: getcwd failed\n");
+		perror("pwd: getcwd failed");
 	}
 }
