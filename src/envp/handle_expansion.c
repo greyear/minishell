@@ -103,7 +103,7 @@ char	*handle_expansion(t_expand *exp, t_ms *ms)
 		{
 			if (handle_dollar_expansion(&result, exp, &i, ms))
 			{
-				free (result);
+				free(result);
 				return (NULL);
 			}
 		}
