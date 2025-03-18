@@ -70,6 +70,18 @@ static char	*find_env_value(char **envp, t_expand *exp)
 	return (ft_strdup(""));
 }
 
+/**
+ * @brief Expands a variable and appends its value to the result string.
+ * 
+ * This function retrieves the value of an environment variable stored in `exp->key`
+ * and appends it to `result`. If the key is `?`, it expands to the shell's exit status.
+ * If the key starts with a digit, it expands to an empty string. Otherwise, the function
+ * searches for the corresponding environment variable and appends its value.
+ * 
+ * @param ms A pointer to the main shell structure, containing environment variables and exit status.
+ * @param exp A pointer to the `t_expand` structure containing the variable key to expand.
+ * @param result A pointer to the result string where the expanded value will be appended.
+ */
 void	expand_variable(t_ms *ms, t_expand *exp, char **result)
 {
 	char	*expanded;
@@ -85,45 +97,85 @@ void	expand_variable(t_ms *ms, t_expand *exp, char **result)
 	append_to_result(result, expanded);
 }
 
-char	*remove_extra_spaces(char *str)
+/**
+ * @brief Skips consecutive spaces in the input string and copies the result to a new string.
+ * 
+ * This function iterates through the input string, copying characters to the `new` string. It ensures
+ * that only a single space character is retained between words, removing any consecutive spaces from the 
+ * input. If a space is encountered after a previous space, it is skipped. Non-space characters are copied 
+ * directly to the new string. The resulting string will not have leading, trailing, or consecutive spaces.
+ * 
+ * @param str The input string to be processed.
+ * @param new A new string that will hold the result with extra spaces removed.
+ * 
+ * @return Returns the length of the processed string.
+ */
+static int	skip_spaces(const char *str, char *new)
 {
-	char	*new;
-	int		i;
-	int		j;
-	int		space;
-	int len;
+	int i;
+	int j;
+	int space;
 
-	if (!str)
-		return (NULL);
-	len = ft_strlen(str);
-	new = ft_calloc(len + 1, sizeof(char));
-	if (!new)
-		return (NULL);
 	i = 0;
 	j = 0;
-	space = 0; //1 if met space
+	space = 0;
 	while (str[i])
 	{
-		if (ft_isspace(str[i]))
+		if (ft_isspace(str[i]) && !space) // Combine the conditions
 		{
-			if (!space)
-			{
-				new[j++] = ' ';
-				space = 1;
-			}
+			new[j++] = ' ';
+			space = 1;
 		}
-		else
+		else if (!ft_isspace(str[i])) // Handle non-space characters
 		{
 			new[j++] = str[i];
-			space = 0; //met non space, reset
+			space = 0;
 		}
 		i++;
 	}
 	new[j] = '\0';
+	return (j);
+}
+
+/**
+ * @brief Removes extra spaces from the input string, leaving only single spaces between words.
+ * 
+ * This function processes the input string by removing any consecutive spaces, replacing them
+ * with a single space. If there are no spaces, it returns the original string unchanged. The function
+ * ensures that spaces around environment variable expansions are preserved. After processing, the 
+ * original string is freed and a new string with reduced spaces is returned.
+ * 
+ * @param str The input string to be processed.
+ * 
+ * @return A new string with reduced spaces between words, or the original string if no extra spaces
+ *         were found. Returns NULL if memory allocation fails.
+ */
+char	*remove_extra_spaces(char *str)
+{
+	char	*new;
+
+	if (!str)
+		return (NULL);
+	new = ft_calloc(ft_strlen(str) + 1, sizeof(char));
+	if (!new)
+		return (NULL);
+	skip_spaces(str, new);
 	free(str);
 	return (new);
 }
 
+/**
+ * @brief Removes the first space from the given string if it exists.
+ * 
+ * This function checks if the input string starts with a space. If it does, it creates
+ * a new string without the leading space and frees the original string. If the string 
+ * does not start with a space or is NULL, it returns the original string unchanged.
+ * 
+ * @param str The input string to be processed.
+ * 
+ * @return A new string without the leading space if a space was present, otherwise 
+ *         returns the original string. Returns NULL if memory allocation fails.
+ */
 char	*remove_first_space(char *str)
 {
 	char	*new;

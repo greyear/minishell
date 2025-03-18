@@ -291,11 +291,11 @@ int	main(int argc, char **argv, char **envp)
 		if (!inout(ms))
 			break; // Restore STDIN and STDOUT
 		// FOR USUAL EXECUTION
-		signal_mode(INTERACTIVE);
+		/*signal_mode(INTERACTIVE);
 		input = readline("minishell> ");
-		signal_mode(IGNORE);
+		signal_mode(IGNORE);*/
 		//FOR TESTER
-		/*if (isatty(fileno(stdin))) // If running interactively
+		if (isatty(fileno(stdin))) // If running interactively
 			input = readline("minishell> ");
 		else // If receiving input from another program
 		{
@@ -304,7 +304,7 @@ int	main(int argc, char **argv, char **envp)
 				break;
 			input = ft_strtrim(line, "\n"); // Remove newline from input
 			free(line);
-		}*/
+		}
 		if (!input) // EOF check (Ctrl+D)
 		{
 			printf("exit\n");

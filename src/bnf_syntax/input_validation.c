@@ -20,7 +20,7 @@ int	validate_input(char *str)
 	while (ft_isspace(*str))
 		str++;
 	if (*str == NULL_TERM)
-		return (0); //empty line is handled as success
+		return (0);
 	next = validate_pipeline(str, &err_flag);
 	/*if (next) {
 		printf("DEBUG: next[0] = %c\n", next[0]);
