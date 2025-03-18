@@ -110,20 +110,25 @@ static char	*read_heredoc_line(int temp_fd, char *limiter)
 static int process_heredoc_line(char **line, char *limiter, t_token *token, t_ms *ms)
 {
 	char	*expanded;
+	t_expand	*exp;
  
 	//if (ft_strncmp(*line, limiter, ft_strlen(limiter)) == 0
 		//&& (ft_strlen(limiter) == ft_strlen(*line) || (*line)[ft_strlen(limiter)] == '\n'))
+	exp = exp_init();
 	if (ft_strcmp(*line, limiter) == 0)
 	{
 		free(*line);
+		free(exp);
 		return (1);
 	}
 	if (token->quote != SG_QUOT && token->quote != DB_QUOT)
 	{
-		expanded = handle_expansion(*line, ms);
+		exp->data = *line;
+		expanded = handle_expansion(exp, ms);
 		free(*line);
 		*line = expanded;
 	}
+	free(exp);
 	return (0);
 }
  
@@ -154,7 +159,6 @@ static void read_heredoc_input(int temp_fd, char *limiter, t_token *token, t_ms 
 		line = read_heredoc_line(temp_fd, limiter);
 		if (process_heredoc_line(&line, limiter, token, ms))
 			break;
-		//write(temp_fd, line, ft_strlen(line));
 		ft_putendl_fd(line, temp_fd);
 		free(line);
 	}
