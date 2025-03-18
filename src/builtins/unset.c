@@ -28,7 +28,7 @@ static void	process_unset_entry(char **args, int i, t_ms *ms, int len)
 		ms->exit_status = 1;
 		return;
 	}
-	if (check_if_valid_key(name) == 1)
+	if (!check_if_valid_key(name))
 	{
 		free(name);
 		return;

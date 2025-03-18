@@ -66,53 +66,54 @@ void	sort_exported_alphaorder(t_ms *ms)
 }
 
 /**
- * @brief Adds a new key to the end of the array.
- *
- * This function duplicates the given `key` and appends it to the end of the 
- * `temp` array. The `ex` = exported array is then replaced with the `temp` array, and 
- * memory for the previous `ex` array is cleaned up. The function ensures that 
- * the array is correctly terminated with a `NULL` value.
- *
- * @param ex A pointer to the array to which the new key will be added. 
- *           This array will be replaced by the `temp` array. Ex holds the exported environmental variables.
- * @param temp A pointer to the temporary array that holds the new key.
- * @param key The key to be added to the array.
- * @param i The index at which the new key should be inserted in the `temp` array.
- *          The index should be the next available spot in the array.
+ * @brief Adds a new key to the end of the provided array of strings.
+ * 
+ * This function appends the string `key` to the end of the `ex` array by first allocating 
+ * memory for the new array (`temp`) and adding the key at the appropriate position. 
+ * If memory allocation fails at any point, the function prints an error and cleans up 
+ * the allocated memory. The array `ex` is updated to point to the newly allocated array `temp`.
+ * 
+ * @param ex A pointer to the array that will be updated.
+ * @param temp A pointer to the temporary array used to hold the updated contents.
+ * @param key The string to be added to the end of the array.
+ * @param i The current index where the new key will be placed.
+ * 
+ * @return Returns `1` on success, or `0` if an error occurred (such as memory allocation failure).
  */
 
-static void	add_to_end(char ***ex, char ***temp, char *key, int i)
+static int	add_to_end(char ***ex, char ***temp, char *key, int i)
 {
 	(*temp)[i] = ft_strdup(key);
 	if (!(*temp)[i])
 	{
+		print_malloc_error();
 		clean_arr(temp);
-		return;
+		return (0);
 	}
 	i++;
 	(*temp)[i] = NULL;
 	clean_arr(ex);
 	*ex = *temp;
+	return (1);
 }
 
 /**
- * @brief Copies the exported environment variables into a temporary array and 
- *        adds a new key if not already present.
- *
- * This function iterates through the `ex` = exported array, checking if the given `key` 
- * already exists in any of the entries. If the `key` is found, no action is 
- * taken. If the `key` is not found, it is added to the `temp` array, which 
- * is then used to replace the `ex` array. The function ensures that the 
- * `ex` array is updated without duplicating the `key` if it already exists.
- *
- * @param key The key to be copied or added to the exported environment variables.
- * @param ex A pointer to the array holding the current exported environment variables.
- *           This array will be replaced with the `temp` array if a new key is added.
- * @param temp A pointer to the temporary array that holds a copy of the exported variables.
- * @param len The length of the `key`, used to check if it matches any existing key in the `ex` array.
+ * @brief Copies the contents of the `ex` array to a new array and optionally adds a key to the end.
+ * 
+ * This function iterates through the `ex` array, copying each element to a new temporary array (`temp`).
+ * If the `key` is not found in `ex`, the function appends the `key` to the end of `temp`. 
+ * If the `key` is already present in the `ex` array, the function simply updates `ex` to point to `temp`.
+ * In case of memory allocation failure, the function cleans up and returns `0`. 
+ * 
+ * @param key The key to be checked and potentially added to the `ex` array.
+ * @param ex A pointer to the array that holds the exported variables.
+ * @param temp A pointer to the temporary array used for copying the contents of `ex`.
+ * @param len The length of the key to check for in the `ex` array.
+ * 
+ * @return Returns `1` on success, or `0` if memory allocation failed or if an error occurred.
  */
 
-static void	copy_exported(char *key, char ***ex, char ***temp, int len)
+static int	copy_exported(char *key, char ***ex, char ***temp, int len)
 {
 	int	i;
 	int	check;
@@ -126,8 +127,9 @@ static void	copy_exported(char *key, char ***ex, char ***temp, int len)
 		(*temp)[i] = ft_strdup((*ex)[i]);
 		if (!(*temp)[i])
 		{
+			print_malloc_error();
 			clean_arr(temp);
-			return;
+			return (0);
 		}
 		i++;
 	}
@@ -136,20 +138,20 @@ static void	copy_exported(char *key, char ***ex, char ***temp, int len)
 	(*temp)[i] = NULL;
 	clean_arr(ex);
 	*ex = *temp;
+	return (1);
 }
 
 /**
- * @brief Adds a new key to the exported environment variables if it's valid.
- *
- * This function checks whether the `key` is valid for export. If the key is 
- * invalid, an error message is printed. If the key is valid, the function 
- * attempts to add it to the `exported` environment variable array (`ms->exported`).
- * A temporary array (`temp`) is used to hold the new environment variables, and 
- * if the key does not already exist in the array, it is added.
- *
- * @param key The key to be added to the exported environment variables.
- * @param ms A pointer to the `t_ms` structure, which contains the environment 
- *           variables (`ms->exported`) and is used for error handling.
+ * @brief Adds a key to the exported variables list.
+ * 
+ * This function validates the `key` using `check_if_valid_key`. If the key is invalid, it prints an error
+ * and returns. If the key is valid, it allocates a temporary array to hold the exported variables, then
+ * copies the contents of the `exported` list to the temporary array. If the `key` is not already in the
+ * exported list, it is added to the end. In case of memory allocation failure, the function sets the
+ * `exit_status` to `MALLOC_ERR`.
+ * 
+ * @param key The key to be added to the `exported` list.
+ * @param ms A pointer to the `t_ms` structure containing the state of the shell, including `exported` variables.
  */
 
 void	add_to_exported(char *key, t_ms *ms)
@@ -157,11 +159,12 @@ void	add_to_exported(char *key, t_ms *ms)
 	char	**temp;
 	int	len;
 	
-	if (check_if_valid_key(key))
+	if (!check_if_valid_key(key))
 		return (print_export_error(ms, key));
 	len = ft_strlen(key);
 	temp = allocate_temp_env(ms->exported, 2);
 	if (!temp)
 		return;
-	copy_exported(key, &ms->exported, &temp, len);
+	if (!copy_exported(key, &ms->exported, &temp, len))
+		ms->exit_status = MALLOC_ERR;
 }

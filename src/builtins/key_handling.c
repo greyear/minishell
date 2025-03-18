@@ -57,24 +57,24 @@ char	*extract_key(char *arg, int len)
  * - Contain only alphanumeric characters or underscores.
  *
  * @param name The string to validate as a key.
- * @return 1 if the key is invalid, 0 if it is valid.
+ * @return 0 if the key is invalid, 1 if it is valid.
  */
 
 
-int		check_if_valid_key(char *name)
+int	check_if_valid_key(char *name)
 {
 	int		x;
 
 	x = 0;
 	if (!name || !*name)
-		return (1);
+		return (0);
 	if (name[0] >= '0' && name[0] <= '9')
-		return (1);
+		return (0);
 	while (name[x])
 	{
 		if (!ft_isalnum(name[x]) && name[x] != '_')
-			return (1);
+			return (0);
 		x++;
 	}
-	return (0);
+	return (1);
 }

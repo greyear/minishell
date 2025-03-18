@@ -44,36 +44,6 @@ static char	*get_cd_target(t_ms *ms, char **args)
 }
 
 /**
- * @brief Checks for errors in the `cd` command arguments.
- * 
- * This function verifies if the provided arguments for `cd` are valid. It 
- * ensures that the command is correctly formatted and checks for the presence 
- * of too many arguments. If an error is detected, an appropriate error message 
- * is printed, and the shell's exit status is updated.
- * 
- * @param args An array of command arguments.
- * @param ms A pointer to the `t_ms` structure, which holds shell-related data, 
- *           including the exit status.
- * 
- * @return `1` if an error occurs (e.g., invalid arguments, too many arguments), 
- *         otherwise `0` if the arguments are valid.
- */
-
-static int	cd_error(char **args, t_ms *ms)
-{
-	if (!args[1])
-		return (0);
-	if (args[2])
-	{
-		ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
-		ft_putstr_fd("cd: too many arguments\n", STDERR_FILENO);
-		ms->exit_status = 1;
-		return (1);
-	}
-	return (0);
-}
-
-/**
  * @brief Performs checks on the target directory before attempting to change to it.
  * 
  * This function checks whether the target directory exists and whether the current process 
@@ -133,6 +103,36 @@ static int	change_directory(char *target_dir, t_ms *ms)
 	}
 
 	return 0;
+}
+
+/**
+ * @brief Checks for errors in the `cd` command arguments.
+ * 
+ * This function verifies if the provided arguments for `cd` are valid. It 
+ * ensures that the command is correctly formatted and checks for the presence 
+ * of too many arguments. If an error is detected, an appropriate error message 
+ * is printed, and the shell's exit status is updated.
+ * 
+ * @param args An array of command arguments.
+ * @param ms A pointer to the `t_ms` structure, which holds shell-related data, 
+ *           including the exit status.
+ * 
+ * @return `1` if an error occurs (e.g., invalid arguments, too many arguments), 
+ *         otherwise `0` if the arguments are valid.
+ */
+
+static int	cd_error(char **args, t_ms *ms)
+{
+	if (!args[1])
+		return (0);
+	if (args[2])
+	{
+		ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
+		ft_putstr_fd("cd: too many arguments\n", STDERR_FILENO);
+		ms->exit_status = 1;
+		return (1);
+	}
+	return (0);
 }
 
 /**

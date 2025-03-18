@@ -39,19 +39,24 @@ static char	**copy_to_temp(char *arg, char ***env, char *key, int *flag)
 }
 
 /**
- * @brief Updates or adds a variable to the environment or exported list.
- *
- * This function searches for an existing variable matching the given key in the specified
- * environment array. If the key is found, it updates the value; otherwise, it adds a new entry.
- * If `flag == 2`, no new entry is added. The function ensures proper memory management.
- *
- * @param arg The full "KEY=VALUE" string to be added or updated.
- * @param env A pointer to the environment/exported variable array.
- * @param key The key extracted from the argument to identify the variable.
- * @param flag A flag indicating whether to update (if key exists) or add a new entry.
+ * @brief Changes the value of an environment variable in the specified environment array.
+ * 
+ * This function updates the environment variable specified by `key` with the value 
+ * provided in `arg`. If the flag is not 2, it appends the new value to the environment 
+ * array. The environment array (`env`) is dynamically resized to accommodate the new value. 
+ * The function handles memory allocation for the new environment array and frees the old one. 
+ * If any memory allocation fails, the function cleans up and returns `0`, signaling an error.
+ * 
+ * @param arg The new environment variable value (in the form of a string).
+ * @param env A pointer to the environment array (`env`), which will be updated.
+ * @param key The key of the environment variable to be modified.
+ * @param flag A flag indicating whether the value should be added (1), or replaced (2). 
+ *             If the flag is not 2, the value is appended.
+ * 
+ * @return Returns `1` on success, or `0` if an error occurred (such as memory allocation failure).
  */
 
-static void	change_values(char *arg, char ***env, char *key, int flag)
+static int	change_values(char *arg, char ***env, char *key, int flag)
 {
 	char	**temp;
 	int		i;
@@ -59,7 +64,7 @@ static void	change_values(char *arg, char ***env, char *key, int flag)
 	i = 0;
 	temp = copy_to_temp(arg, env, key, &flag);
 	if (!temp || !*temp)
-		return;
+		return (0);
 	if (flag != 2)
 	{
 		while (temp[i])
@@ -67,26 +72,32 @@ static void	change_values(char *arg, char ***env, char *key, int flag)
 		temp[i] = ft_strdup(arg);
 		if (!temp[i])
 		{
-			print_malloc_error();
 			clean_arr(&temp);
-			return;
+			return (0);
 		}
 		i++;
 		temp[i] = NULL;
 	}
 	clean_arr(env);
 	*env = temp;
+	return (1);
 }
 
 /**
- * @brief Updates or adds an environment variable in both exported and environment lists.
- *
- * This function extracts the key from the given argument and checks if it is valid.
- * If the key is invalid, an error message is printed, and the function returns.
- * Otherwise, it updates or adds the variable in both the exported list and the environment list.
- *
- * @param arg The argument containing the environment variable in the format "KEY=VALUE".
- * @param ms A pointer to the shell's main structure containing environment variables and state.
+ * @brief Changes environment variable values in both `exported` and `envp` arrays.
+ * 
+ * This function extracts the key from the given argument, checks if the key is valid, 
+ * and updates the corresponding environment variable in both `exported` and `envp` arrays 
+ * using the `change_values` function. If the key is invalid, an error is printed, and the 
+ * function returns without modifying the environment. If any memory allocation fails, 
+ * the shell's exit status is set to `MALLOC_ERR`, and the function ensures that memory is 
+ * freed before returning.
+ * 
+ * @param arg The argument containing the environment variable to modify.
+ * @param ms A pointer to the `t_ms` structure, which contains environment variables 
+ *           and shell-related data, including the exit status.
+ * 
+ * @return None. Updates the environment variables directly.
  */
 
 static void	change_values_env_ex(char *arg, t_ms *ms)
@@ -98,17 +109,23 @@ static void	change_values_env_ex(char *arg, t_ms *ms)
 	key = extract_key(arg, len);
 	if (!key)
 	{
-		ms->exit_status = 1;
+		ms->exit_status = MALLOC_ERR;
 		return;
 	}
-	if (check_if_valid_key(key) == 1)
+	if (!check_if_valid_key(key))
 	{
 		free(key);
 		print_export_error(ms, arg);
 		return;
 	}
-	change_values(arg, &ms->exported, key, 1);
-	change_values(arg, &ms->envp, key, 0);
+	if (!change_values(arg, &ms->exported, key, 1)
+		|| !change_values(arg, &ms->envp, key, 0))
+	{
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
+		free(key);
+		return;
+	}
 	free(key);
 }
 
@@ -144,7 +161,7 @@ static void	process_arguments(char **args, t_ms *ms)
 			change_values_env_ex(args[i], ms);
 		else
 			add_to_exported(args[i], ms);
-		if (ms->exit_status == 1)
+		if (ms->exit_status == MALLOC_ERR)
 			return;
 		sort_exported_alphaorder(ms);
 		i++;
