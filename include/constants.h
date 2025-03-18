@@ -107,6 +107,9 @@ typedef enum e_mode
 # define AMBIG_ERR ": ambiguos redirect\n"
 # define FLAG_ERR ": flags are not supported in minishell\n"
 # define INDENT_ERR "': not a valid indentifier\n"
+# define BLOCKS_ERR "Error: failed to create blocks\n"
+# define CMDS_ERR "Error: failed to create commands\n"
+# define TOKENS_ERR "Error: failed to create tokens\n"
 # define HISTORY_SIZE 500
 
 /*POSIX ограничивает диапазон exit status от 0 до 255. 
