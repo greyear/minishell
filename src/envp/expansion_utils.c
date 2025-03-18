@@ -97,7 +97,7 @@ void	expand_variable(t_ms *ms, char *key, int key_len, char **result)
 		return;
 	if (key[0] == '?')
 		expanded = ft_itoa(ms->exit_status);
-	else if (ft_isdigit(key[0]))
+	else if (ft_isdigit(key[0]) || !ms->envp)
 		expanded = ft_strdup("");
 	else
 		expanded = find_env_value(ms->envp, key, key_len);

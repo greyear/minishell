@@ -162,6 +162,8 @@ void	handle_cd(char **args, t_ms *ms)
 	if (cd_error(args, ms))
 		return;
 	target_dir = get_cd_target(ms, args);
+	if (!target_dir)
+		return;
 	if (handle_cd_directory_checks(target_dir, ms))
 		return;
 	if (getcwd(cwd, sizeof(cwd)) == NULL)

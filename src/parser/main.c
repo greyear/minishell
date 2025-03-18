@@ -148,35 +148,6 @@ static void	malloc_heredocs(t_ms *ms, t_token *token)
 	ms->heredoc_files[0] = NULL;
 }
 
-/*static int	inout(t_ms *ms)
-{
-	if (dup2(ms->saved_stdin, STDIN_FILENO) == -1)
-	{
-		close(ms->saved_stdin);
-		close(ms->saved_stdout);
-		perror("dup2 failed\n");
-		ms->exit_status = 1;
-		return (0);
-	}
-	close(ms->saved_stdin);
-	if (dup2(ms->saved_stdout, STDOUT_FILENO) == -1)
-	{
-		close(ms->saved_stdout);
-		perror("dup2 failed\n");
-		ms->exit_status = 1;
-		return (0);
-	}
-	close(ms->saved_stdout);
-	return (1);
-}*/
-
-/*static int	inout(t_ms *ms)
-{
-	dup2(ms->saved_stdin, STDIN_FILENO);
-	dup2(ms->saved_stdout, STDOUT_FILENO);
-	return (1);
-}*/
-
 static int	tokenize_input(char **input, t_ms *ms)
 {
 	ms->tokens = tokenization(*input, ms);
@@ -278,14 +249,12 @@ static void	run_minishell(t_ms *ms)
 			|| ms->exit_status == SYSTEM_ERR)
 			break;
 		// Reading the input
-		//if (!inout(ms))
-		//	break; // Restore STDIN and STDOUT
 		// FOR USUAL EXECUTION
-		signal_mode(INTERACTIVE);
+		/*signal_mode(INTERACTIVE);
 		input = readline("minishell> ");
-		signal_mode(IGNORE);
+		signal_mode(IGNORE);*/
 		//FOR TESTER
-		/*if (isatty(fileno(stdin))) // If running interactively
+		if (isatty(fileno(stdin))) // If running interactively
 			input = readline("minishell> ");
 		else // If receiving input from another program
 		{
@@ -294,14 +263,14 @@ static void	run_minishell(t_ms *ms)
 				break;
 			input = ft_strtrim(line, "\n"); // Remove newline from input
 			free(line);
-		}*/
+		}
 		if (!input) // EOF check (Ctrl+D)
 		{
 			ft_putstr_fd("exit\n", STDOUT_FILENO);
 			break;
 		}
 		if (!process_input(&input, ms))
-			continue; 
+			continue;
 		if (!tokenize_input(&input, ms))
 			continue;
 		if (!create_blocks_and_cmds_lists(ms))
