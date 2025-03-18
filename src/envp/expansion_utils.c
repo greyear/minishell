@@ -44,39 +44,12 @@ static char	*find_env_value(char **envp, t_expand *exp)
 	char	*copy;
 	char	*without_spaces;
 	char	*without_first;
-static char	*find_env_value(char **envp, t_expand *exp)
-{
-	int		i;
-	char	*copy;
-	char	*without_spaces;
-	char	*without_first;
- 
+
 	i = 0;
 	while (envp[i])
 	{
 		if (ft_strncmp(envp[i], exp->key, exp->len) == 0)
-		if (ft_strncmp(envp[i], exp->key, exp->len) == 0)
 		{
-			if (envp[i][exp->len] && envp[i][exp->len] == '=')
-			{
-				copy = ft_strdup(envp[i] + exp->len + 1);
-				if (!copy)
-					return (NULL); //malloc error
-				if (exp->quote == 0) //for heredocs????
-				{
-					without_spaces = remove_extra_spaces(copy);
-					//free(copy);
-					if (exp->if_first && without_spaces[0] == ' ')
-					{
-						without_first = remove_first_space(without_spaces);
-						//free(without_spaces);
-						return (without_first);
-					}
-					return (without_spaces);
-				}
-				else
-					return (copy);
-			}
 			if (envp[i][exp->len] && envp[i][exp->len] == '=')
 			{
 				copy = ft_strdup(envp[i] + exp->len + 1);
@@ -140,7 +113,7 @@ void	expand_variable(t_ms *ms, t_expand *exp, char **result)
       ms->exit_status = MALLOC_ERR;
       return;
     }
-	append_to_result(result, expanded);
+	append_to_result(result, expanded, ms);
 }
 
 /**
