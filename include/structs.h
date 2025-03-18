@@ -47,6 +47,7 @@ typedef struct s_ms
 	int		history_num;
 	char	**heredoc_files; // Store heredoc filenames
 	int		heredoc_count;   // Number of heredoc files
+	int		no_env;
 } t_ms;
 
 typedef struct s_envp

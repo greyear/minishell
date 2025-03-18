@@ -99,10 +99,9 @@ static int	change_directory(char *target_dir, t_ms *ms)
 		free(target_dir);
 		perror("chdir failed");
 		ms->exit_status = SYSTEM_ERR;
-		return 1;
+		return (1);
 	}
-
-	return 0;
+	return (0);
 }
 
 /**
@@ -132,6 +131,8 @@ static int	cd_error(char **args, t_ms *ms)
 		ms->exit_status = 1;
 		return (1);
 	}
+	if (!ft_strcmp(args[1], "~"))
+		return (1);
 	return (0);
 }
 

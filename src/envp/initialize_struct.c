@@ -24,28 +24,83 @@ static t_ms	*allocate_struct(void)
 	return (ms);
 }
 
-/**
- * @brief Initializes the environment variables in the `t_ms` structure.
- * 
- * This function copies the environment variables from `envp` into the 
- * `ms->envp` and `ms->exported` arrays in the `t_ms` structure.
- * 
- * If memory allocation for either `ms->envp` or `ms->exported` fails, 
- * the function prints an error message, cleans up the `t_ms` structure, 
- * and exits the program with a failure status.
- * 
- * @param ms Pointer to the `t_ms` structure where the environment variables will be stored.
- * @param envp The environment variables passed to the program.
- */
+static void	initialize_envp_without_envp(t_ms *ms)
+{
+	ms->envp = malloc(sizeof(char *) * 4);
+	if (!ms->envp)
+	{
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
+		return;
+	}
+	ms->envp[0] = ft_strdup(ms->exported[1]);
+	if (!ms->envp[0])
+	{
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
+		return;
+	}
+	ms->envp[1] = ft_strdup(ms->exported[2]);
+	if (!ms->envp[1])
+	{
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
+		return;
+	}
+	ms->envp[2] = NULL;
+}
+
+static void	initialize_without_envp(t_ms *ms)
+{
+	char	cwd[1024];
+
+	ms->exported = malloc(sizeof(char *) * 4);
+	if (!ms->exported)
+	{
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
+		return;
+	}
+	ms->exported[0] = ft_strdup("OLDPWD");
+	if (!ms->exported[0])
+	{
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
+		return;
+	}
+	if (getcwd(cwd, sizeof(cwd)) == NULL)
+	{
+		perror("pwd: getcwd failed");
+		ms->exit_status = SYSTEM_ERR;
+		return;
+	}
+	ms->exported[1] = ft_strjoin("PWD=", cwd);
+	if (!ms->exported[1])
+	{
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
+		return;
+	}
+	ms->exported[2] = ft_strdup("SHLVL=0");
+	if (!ms->exported[2])
+	{
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
+		return;
+	}
+	ms->exported[3] = NULL;
+	initialize_envp_without_envp(ms);
+}
 
 static void	initialize_envp(t_ms *ms, char **envp)
 {
 	if (!envp || !*envp)
 	{
-		ms->envp = NULL;
-		ms->exported = NULL;
+		initialize_without_envp(ms);
+		ms->no_env = true;
 		return;
 	}
+	ms->no_env = false;
 	ms->envp = copy_map(envp);
 	if (!ms->envp)
 	{

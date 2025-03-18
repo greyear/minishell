@@ -32,19 +32,8 @@ static char	*increase_shlvl(char *shlvl_value)
 	return (ft_itoa(level + 1));
 }
 
-/**
- * @brief Updates the SHLVL environment variable.
- * 
- * This function searches through the environment variable array for the `SHLVL` variable, 
- * increments its value using the `increase_shlvl` function, and updates the environment with the new value.
- * If the `SHLVL` variable is not found, the function returns 0, indicating no update was made.
- * 
- * @param env A pointer to the environment variable array.
- * 
- * @return Returns 1 if the `SHLVL` variable was found and updated. Returns 0 if the variable was not found.
- */
 
-static int	update_shlvl(char ***env)
+static int	update_shlvl(char ***env, t_ms *ms)
 {
 	int		i;
 	char	*new_value;
@@ -57,11 +46,19 @@ static int	update_shlvl(char ***env)
 		{
 		   	new_value = increase_shlvl((*env)[i] + 6);
 			if (!new_value)
+			{
+				print_malloc_error();
+				ms->exit_status = MALLOC_ERR;
 				return (0);
+			}
 			temp = ft_strjoin("SHLVL=", new_value);
 			free(new_value);
 			if (!temp)
+			{
+				print_malloc_error();
+				ms->exit_status = MALLOC_ERR;
 				return(0);
+			}
 			free((*env)[i]);
 			(*env)[i] = temp;
 			return (1);
@@ -71,32 +68,22 @@ static int	update_shlvl(char ***env)
 	return (0);
 }
 
-/**
- * @brief Allocates and initializes an array of strings for the export command.
- * 
- * This function dynamically allocates memory for an array of strings, initializing it with 
- * the `export` command and the `SHLVL=1` variable. The function sets the exit status to 1 if 
- * any allocation fails, and cleans up any allocated memory before returning.
- * 
- * @param export A pointer to the array of strings to be populated with the export command and environment variable.
- * @param ms A pointer to the main program state, which is used to track the exit status.
- * 
- * @return This function does not return a value. It modifies the `export` array and the `exit_status` of the program.
- */
 
 static void	make_args(char ***export, t_ms *ms)
 {
 	*export = malloc(sizeof(char *) * 3);
 	if (!*export)
 	{
-		ms->exit_status = 1;
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
 		return;
 	}
 	(*export)[0] = ft_strdup("export");
 	if (!(*export)[0])
 	{
 		clean_arr(&(*export));
-		ms->exit_status = 1;
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
 		return;
 	}
 	(*export)[1] = ft_strdup("SHLVL=1");
@@ -104,7 +91,8 @@ static void	make_args(char ***export, t_ms *ms)
 	if (!(*export)[1])
 	{
 		clean_arr(&(*export));
-		ms->exit_status = 1;
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
 		return;
 	}
 	(*export)[2] = NULL;
@@ -132,8 +120,13 @@ void	check_shlvl(t_ms *ms)
 	make_args(&export, ms);
 	if (!export)
 		return;
-	update_shlvl(&ms->envp);
-	if (!update_shlvl(&ms->exported))
+	update_shlvl(&ms->envp, ms);
+	if (ms->exit_status == MALLOC_ERR)
+		return;
+	if (!update_shlvl(&ms->exported, ms))
+	{
+		if (ms->exit_status != MALLOC_ERR)
 		handle_export(export, ms);
+	}
 	clean_arr(&export);
 }
