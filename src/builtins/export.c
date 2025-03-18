@@ -170,10 +170,6 @@ void	handle_export(char **args, t_ms *ms)
 	int	arg_count;
 
 	arg_count = 0;
-	if (!args || !*args)
-		return;
-	if (ft_strcmp(args[0], "export") != 0)
-		return;
 	ms->exit_status = 0;
 	while (args[arg_count])
 		arg_count++;

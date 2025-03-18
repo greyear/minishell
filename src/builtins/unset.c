@@ -46,8 +46,7 @@ static void	process_unset_entry(char **args, int i, t_ms *ms, int len)
  * If the argument is not a valid environment variable key, it skips the removal.
  * The exit status is updated based on the success or failure of the unset operation.
  *
- * @param args The array of command arguments. The first argument must be "unset" 
- *             and subsequent arguments are the environment variable names to unset.
+ * @param args The array of command arguments.
  * @param ms The shell structure containing execution state information, including 
  *           the exit status.
  */
@@ -58,10 +57,6 @@ void	handle_unset(char **args, t_ms *ms)
 	int		len;
 
 	i = 1;
-	if (!args || !*args)
-		return;
-	if (ft_strcmp(args[0], "unset") != 0)
-		return;
 	ms->exit_status = 0;
 	if (!args[1])
 		return;

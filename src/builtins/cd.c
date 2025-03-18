@@ -51,7 +51,7 @@ static char	*get_cd_target(t_ms *ms, char **args)
  * of too many arguments. If an error is detected, an appropriate error message 
  * is printed, and the shell's exit status is updated.
  * 
- * @param args An array of command arguments, where args[0] should be "cd".
+ * @param args An array of command arguments.
  * @param ms A pointer to the `t_ms` structure, which holds shell-related data, 
  *           including the exit status.
  * 
@@ -61,10 +61,6 @@ static char	*get_cd_target(t_ms *ms, char **args)
 
 static int	cd_error(char **args, t_ms *ms)
 {
-	if (!args || !*args)
-		return (1);	
-	if (ft_strcmp(args[0], "cd") != 0)
-		return (1);
 	if (!args[1])
 		return (0);
 	if (args[2])

@@ -30,7 +30,7 @@ extern volatile sig_atomic_t	g_sgnl;
 //# define ERR_DUP2 "dup2 function failed"
 //# define ERR_OPEN "opening failed"
 //# define ERR_CLOSE "closing failed"
-//# define NO_FILE_DIR "no such file or directory"
+//# define NO_FILE_DIR "No such file or directory"
 //# define ZSH_NO_FILE "zsh: no such file or directory:"
 //# define CMD_NOT_FOUND "zsh: command not found:"
 //# define PERM_DENIED "zsh: permission denied:"
@@ -69,7 +69,7 @@ char			*build_relative_path(char *target, char *cwd, t_ms *ms);
 char			*get_parent_directory(t_ms *ms);
 char			*get_oldpwd_directory(t_ms *ms);
 char			*get_home_directory(t_ms *ms, int flag);
-void			check_pwd(char **array, t_ms *ms);
+void			check_pwd(t_ms *ms);
 char			*get_env_value(char *key, char **envp);
 void			check_exit(char	**array, t_ms *ms);
 long long		convert_to_ll(char *str, int *error);
