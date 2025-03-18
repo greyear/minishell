@@ -1,17 +1,20 @@
 #include "../../include/minishell.h"
 
 /**
- * @brief Waits for all child processes to finish and updates the exit status of the last child process.
+ * @brief Waits for all child processes to finish and updates the shell's exit status.
  * 
- * This function waits for a number of child processes to finish based on the `num_cmds` argument. It checks the status
- * of each child process, and if the last child process (identified by `last_pid`) has exited successfully, it updates
- * the `exit_status` in the `ms` structure with the exit status of that process.
+ * This function waits for each child process created by a command to terminate. It 
+ * specifically tracks the exit status of the last executed command and updates the 
+ * shell's exit status accordingly. If the last command terminates normally, its exit 
+ * code is stored in `ms->exit_status`. If it is terminated by a signal, the exit status 
+ * is set to 130 for SIGINT or 131 for SIGQUIT.
  * 
- * @param num_cmds The total number of child processes to wait for.
- * @param last_pid The process ID of the last child process. The exit status of this process is recorded.
- * @param ms A pointer to the `t_ms` structure where the exit status of the last child process is stored.
+ * @param num_cmds The number of child processes to wait for.
+ * @param last_pid The process ID of the last executed command, used to determine 
+ *                 the shell's final exit status.
+ * @param ms A pointer to the `t_ms` structure, which stores the shell's exit status.
  * 
- * @return This function does not return; it waits for the specified child processes and updates the `exit_status`.
+ * @return None. Modifies `ms->exit_status` based on the termination status of the last process.
  */
 
 void	wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms)
@@ -40,18 +43,18 @@ void	wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms)
 /**
  * @brief Executes a command in a child process.
  * 
- * This function is responsible for setting up pipes, redirecting input/output as needed, 
- * and executing either a built-in command or an external command in a child process.
+ * This function sets up pipes and redirects input/output for the child process. 
+ * If the command is a built-in, it is executed directly, and the child process 
+ * exits with the appropriate status. Otherwise, the function switches the signal 
+ * mode and executes an external command using `execve()`. All file descriptors 
+ * are closed before execution to prevent leaks.
  * 
- * - First, it configures pipes based on the process's position in the pipeline.
- * - Then, it redirects input and output file descriptors as required.
- * - If the command is a built-in, it executes the built-in function and exits.
- * - Otherwise, it executes an external command using `execve()`.
+ * @param cur A pointer to the `t_cmd` structure containing command details such as 
+ *            arguments and input/output files.
+ * @param p A pointer to the `t_pipe` structure, which manages pipes, file descriptors, 
+ *          and process execution context.
  * 
- * @param cur A pointer to the `t_cmd` structure containing the command's arguments, input, and output files.
- * @param p A pointer to the `t_pipe` structure containing pipe-related information.
- * 
- * @note This function does not return; it either executes a command or exits the child process.
+ * @return None. The function either executes the command or exits the child process.
  */
 
 static void	child_process(t_cmd *cur, t_pipe *p)
@@ -111,17 +114,18 @@ static void	fork_and_execute(t_cmd *cur, t_pipe *p)
 }
 
 /**
- * @brief Initializes the `t_pipe` structure for handling multiple commands in a pipeline.
+ * @brief Initializes the `t_pipe` structure for managing command execution.
  * 
- * This function sets up the `t_pipe` structure by:
- * - Storing the total number of commands.
- * - Associating it with the main shell structure (`ms`).
- * - Initializing tracking variables such as `last_pid`, `cmd_num`, and `cur_fd`.
- * - Allocating memory for storing process IDs (`pids`), which will be used to track child processes.
+ * This function sets up the `t_pipe` structure, which handles multiple commands in 
+ * a pipeline. It initializes values such as the number of commands, process tracking 
+ * variables, and allocates memory for storing process IDs. If memory allocation fails, 
+ * an error is printed.
  * 
  * @param p A pointer to the `t_pipe` structure to be initialized.
  * @param num_cmds The total number of commands in the pipeline.
- * @param ms A pointer to the `t_ms` structure that holds shell-related information.
+ * @param ms A pointer to the `t_ms` structure, which contains shell-related data.
+ * 
+ * @return None. The function modifies `p` and prints an error message if memory allocation fails.
  */
 
 void	initialize_p(t_pipe *p, int num_cmds, t_ms *ms)
