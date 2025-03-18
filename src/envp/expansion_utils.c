@@ -1,21 +1,24 @@
 #include "../../include/minishell.h"
 
 /**
- * @brief Appends a new string segment to the result string.
- *
- * This function concatenates `new_part` to `*result`, updating the pointer
- * to the newly allocated string. It ensures proper memory management by
- * freeing the previous `*result` and `new_part` after joining.
- *
- * @param result Pointer to the existing result string. It will be updated
- *        to point to the new concatenated string.
- * @param new_part The string segment to be appended. It will be freed after use.
- *
- * @note If memory allocation for the new string fails, `new_part` is freed,
- *       but `*result` remains unchanged.
+ * @brief Appends a dynamically allocated string to the result string.
+ * 
+ * This function concatenates `new_part` to `*result`, creating a new dynamically 
+ * allocated string. The original `*result` is freed after concatenation. If memory 
+ * allocation fails, an error message is printed, the shell's exit status is set to 
+ * `MALLOC_ERR`, and `new_part` is freed.
+ * 
+ * @param result A pointer to the dynamically allocated result string. It is updated 
+ *               with the newly concatenated string.
+ * @param new_part A dynamically allocated string to be appended to `*result`. It 
+ *                 is freed after use.
+ * @param ms A pointer to the `t_ms` structure, which manages shell-related data, 
+ *           including exit status.
+ * 
+ * @return None. The function modifies `*result` and updates `ms->exit_status` on failure.
  */
 
-static void	append_to_result(char **result, char *new_part)
+static void	append_to_result(char **result, char *new_part, t_ms *ms)
 {
 	char	*temp;
 
@@ -24,6 +27,9 @@ static void	append_to_result(char **result, char *new_part)
 	temp = ft_strjoin(*result, new_part);
 	if (!temp)
 	{
+
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
 		free(new_part);
 		return;
 	}
@@ -65,20 +71,22 @@ static char	*find_env_value(char **envp, char *key, int len)
 }
 
 /**
- * @brief Expands an environment variable key and appends its value to the result.
- *
- * This function resolves an environment variable key to its corresponding value.
- * - If the key is `"?"`, it converts `ms->exit_status` to a string.
- * - If the key starts with a digit, it appends an empty string.
- * - Otherwise, it searches for the key in the environment variables.
+ * @brief Expands an environment variable and appends its value to the result string.
  * 
- * The expanded value is appended to `result` using `append_to_result()`.
- *
- * @param ms Pointer to the main shell structure containing `exit_status` and `envp`.
- * @param key The environment variable key.
- * @param key_len The length of the key.
- * @param result Pointer to the string where the expanded value will be appended.
- *
+ * This function retrieves the value of the environment variable specified by `key` 
+ * and appends it to `*result`. If the key is `"?"`, it expands to the shell's 
+ * exit status. If the key starts with a digit, it expands to an empty string. 
+ * If memory allocation fails during expansion or appending, an error message is 
+ * printed, and the shell's exit status is set to `MALLOC_ERR`.
+ * 
+ * @param ms A pointer to the `t_ms` structure, which contains environment variables 
+ *           and shell-related data, including the exit status.
+ * @param key A string representing the environment variable name.
+ * @param key_len The length of the `key` string.
+ * @param result A pointer to the dynamically allocated result string. The expanded 
+ *               value is appended to it.
+ * 
+ * @return None. The function modifies `*result` and updates `ms->exit_status` on failure.
  */
 
 void	expand_variable(t_ms *ms, char *key, int key_len, char **result)
@@ -93,5 +101,11 @@ void	expand_variable(t_ms *ms, char *key, int key_len, char **result)
 		expanded = ft_strdup("");
 	else
 		expanded = find_env_value(ms->envp, key, key_len);
-	append_to_result(result, expanded);
+	if (!expanded)
+	{
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
+		return;
+	}
+	append_to_result(result, expanded, ms);
 }
