@@ -122,7 +122,6 @@ static void	initialize_fds(t_ms *ms)
  * @return A pointer to the initialized `t_ms` structure, or `NULL` if allocation fails.
  * 
  */
-
 t_ms	*initialize_struct(char **envp)
 {
 	t_ms *ms;

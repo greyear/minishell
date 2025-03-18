@@ -29,6 +29,7 @@ int	expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str)
 	if (!data_copy)
 		return (1); //error msg?
 	exp = exp_init();
+	//check for malloc
 	if (ft_strcmp(cur->data, "$") == 0 && !cur->quote && cur->next && cur->next->quote)
 		expanded = ft_strdup("");
 	else
@@ -42,6 +43,7 @@ int	expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str)
 	if (!expanded)
 	{
 		free(data_copy);
+		free(exp);
 		return (1);
 	}
 	free(cur->data);
@@ -57,6 +59,7 @@ int	expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str)
 	//what if after expanding it became empty?
 	else
 		free(data_copy);
+	free(exp);
 	return (0);
 }
 
