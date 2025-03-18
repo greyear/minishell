@@ -92,7 +92,7 @@ static int	handle_dollar_expansion(char **result, t_expand *exp, int *i, t_ms *m
 	//char	*key;
 
 	(*i)++;
-	exp->key = extract_key_export(exp->data, i);
+	exp->key = extract_key_export(exp->data, i, ms);
 	if (!exp->key)
 		return (1);
 	exp->len = ft_strlen(exp->key);
@@ -131,7 +131,7 @@ char	*handle_expansion(t_expand *exp, t_ms *ms)
 			}
 		}
 		else
-			append_literal_char(&result, exp->data[i++]);
+			append_literal_char(&result, exp->data[i++], ms);
 	}
 	return (result);
 }
