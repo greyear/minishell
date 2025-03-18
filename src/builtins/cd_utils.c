@@ -18,10 +18,11 @@ char	*get_home_directory(t_ms *ms, int flag)
 {
 	char	*temp;
 
+	(void) flag;
 	temp = get_env_value("HOME", ms->envp);
 	if (!temp)
 	{
-		if (flag == 1)
+		if (flag == 1 && ms->no_env == false)
 			return (ft_strdup(getenv("HOME")));
 		ft_putstr_fd("bash: cd: HOME not set\n", STDERR_FILENO);
 		ms->exit_status = 1;
@@ -109,46 +110,6 @@ char	*build_relative_path(char *target, char *cwd, t_ms *ms)
 	}
 	free(temp);
 	return (full_path);
-}
-
-/**
- * @brief Updates the shell's environment variables after a directory change.
- * 
- * This function updates the `PWD` and `OLDPWD` environment variables after 
- * a successful `cd` command. It retrieves the current working directory 
- * using `getcwd()` and sets `PWD` to the new directory. If `OLDPWD` was 
- * previously set, it updates it with the previous `PWD` value; otherwise, 
- * it uses the provided `pwd_before` value.
- * 
- * @param ms A pointer to the `t_ms` structure, which contains the shell's 
- *           environment variables.
- * @param pwd_before The directory path before changing to the new one.
- * 
- * @return None. Modifies the environment variables in `ms->envp` and 
- *         updates `ms->exit_status` in case of an error.
- */
-
-void	update_cd_env(t_ms *ms, char *pwd_before)
-{
-	char	cwd[1024];
-	char	*current_pwd;
-
-	if (getcwd(cwd, sizeof(cwd)) == NULL)
-	{
-		perror("cd: getcwd failed");
-		ms->exit_status = SYSTEM_ERR;
-		return;
-	}
-	current_pwd = get_env_value("PWD", ms->envp);
-	if (!current_pwd)
-		current_pwd = "";
-	if (current_pwd && *current_pwd != '\0')
-		update_env_var(ms, "OLDPWD=", current_pwd);
-	else
-		update_env_var(ms, "OLDPWD=", pwd_before);
-	if (ms->exit_status == MALLOC_ERR) //in case of malloc error
-		return;
-	update_env_var(ms, "PWD=", cwd);
 }
 
 /**

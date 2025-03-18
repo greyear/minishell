@@ -148,35 +148,6 @@ static void	malloc_heredocs(t_ms *ms, t_token *token)
 	ms->heredoc_files[0] = NULL;
 }
 
-/*static int	inout(t_ms *ms)
-{
-	if (dup2(ms->saved_stdin, STDIN_FILENO) == -1)
-	{
-		close(ms->saved_stdin);
-		close(ms->saved_stdout);
-		perror("dup2 failed\n");
-		ms->exit_status = 1;
-		return (0);
-	}
-	close(ms->saved_stdin);
-	if (dup2(ms->saved_stdout, STDOUT_FILENO) == -1)
-	{
-		close(ms->saved_stdout);
-		perror("dup2 failed\n");
-		ms->exit_status = 1;
-		return (0);
-	}
-	close(ms->saved_stdout);
-	return (1);
-}*/
-
-/*static int	inout(t_ms *ms)
-{
-	dup2(ms->saved_stdin, STDIN_FILENO);
-	dup2(ms->saved_stdout, STDOUT_FILENO);
-	return (1);
-}*/
-
 static int	tokenize_input(char **input, t_ms *ms)
 {
 	ms->tokens = tokenization(*input, ms);
@@ -279,8 +250,6 @@ static void	run_minishell(t_ms *ms)
 			|| ms->exit_status == SYSTEM_ERR)
 			break;
 		// Reading the input
-		//if (!inout(ms))
-		//	break; // Restore STDIN and STDOUT
 		// FOR USUAL EXECUTION
 		/*signal_mode(INTERACTIVE);
 		input = readline("minishell> ");
@@ -302,7 +271,7 @@ static void	run_minishell(t_ms *ms)
 			break;
 		}
 		if (!process_input(&input, ms))
-			continue; 
+			continue;
 		if (!tokenize_input(&input, ms))
 			continue;
 		if (!create_blocks_and_cmds_lists(ms))

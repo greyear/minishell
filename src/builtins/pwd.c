@@ -22,7 +22,7 @@ void	check_pwd(t_ms *ms)
 	}
 	else
 	{
-		ms->exit_status = 1;
+		ms->exit_status = SYSTEM_ERR;
 		perror("pwd: getcwd failed");
 	}
 }

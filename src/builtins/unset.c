@@ -24,25 +24,7 @@ static int	should_filter_entry(char *entry, char *name, int len, int flag)
 	return (0);
 }
 
-/**
- * @brief Copies environment entries from one list to another, excluding a specific variable.
- *
- * This function copies all entries from the source environment list (`src`) to the 
- * destination list (`dest`), except for the entry that matches the specified 
- * environment variable `name`. The function checks each entry in `src` and skips 
- * any that match the variable name. The new list is stored in `dest`.
- *
- * @param dest The destination list where the filtered environment entries will be copied.
- * @param src The source environment list to copy from.
- * @param name The name of the environment variable to exclude from the destination list.
- * @param len The length of the environment variable name for matching.
- * @param flag If `1`, the function filters entries from the exported environment list, 
- *             and if `0`, from the general environment list.
- *
- * @return `1` if the entries were successfully copied, or `0` if an error occurred.
- */
-
-static int	copy_env_entries(char **dest, char **src, char *name, int len, int flag)
+static int	copy_env_entries(char ***dest, char **src, char *name, int len, int flag)
 {
 	int		i;
 	int		x;
@@ -56,36 +38,19 @@ static int	copy_env_entries(char **dest, char **src, char *name, int len, int fl
 			i++;
 			continue;
 		}
-		dest[x] = ft_strdup(src[i]);
-		if (!dest[x])
+		(*dest)[x] = ft_strdup(src[i]);
+		if (!(*dest)[x])
 		{
 			print_malloc_error();
-			clean_arr(&dest);
+			clean_arr(dest);
 			return (0);
 		}
 		x++;
 		i++;
 	}
-	dest[x] = NULL;
+	(*dest)[x] = NULL;
 	return (1);
 }
-
-/**
- * @brief Removes an entry from the environment or exported variables.
- * 
- * This function removes the specified `name` (environment variable or exported variable) from either the
- * `env` or `exported` variables list, depending on the `flag`. The `env` array is first checked to ensure
- * it is not NULL. A temporary array (`new_env`) is allocated to hold the remaining entries after removing
- * the target variable. If the allocation or copying fails, the function returns `0`. Otherwise, it cleans up
- * the old environment or exported array and updates it with the new one, returning `1` on success.
- * 
- * @param env A pointer to the environment or exported variables list (`char **`).
- * @param name The name of the environment or exported variable to remove.
- * @param len The length of the `name` to assist in locating the correct entry.
- * @param flag A flag to determine which list to modify (e.g., `env` or `exported`).
- * 
- * @return Returns `1` on success, `0` on failure.
- */
 
 int	rm_from_env_ex(char ***env, char *name, int len, int flag)
 {
@@ -94,7 +59,9 @@ int	rm_from_env_ex(char ***env, char *name, int len, int flag)
 	if (!env || !(*env))
 		return (1);
 	new_env = allocate_temp_env(*env, 1);
-	if (!new_env || !copy_env_entries(new_env, *env, name, len, flag))
+	if (!new_env)
+		return (0);
+	if (!copy_env_entries(&new_env, *env, name, len, flag))
 		return (0);
 	clean_arr(env);
 	*env = new_env;
