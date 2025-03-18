@@ -56,7 +56,7 @@ static int	handle_n_flags(char **args, int *i)
  * (which suppresses the trailing newline). If no arguments are provided, it prints a 
  * newline by default.
  * 
- * @param args A NULL-terminated array of command arguments, with args[0] expected to be "echo".
+ * @param args A NULL-terminated array of command arguments.
  * @param ms A pointer to the shell structure, used to update the exit status.
  */
 
@@ -65,8 +65,6 @@ void	handle_echo(char **args, t_ms *ms)
 	int	i;
 	int	check;
 
-	if (!args || !*args || ft_strcmp(args[0], "echo") != 0)
-		return;
 	ms->exit_status = 0;
 	i = 1;
 	check = handle_n_flags(args, &i);

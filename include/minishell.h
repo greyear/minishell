@@ -24,20 +24,18 @@
 
 extern volatile sig_atomic_t	g_sgnl;
 
+//# define ERR_FORK "fork function failed"
+//# define ERR_PIPE "pipe creation failed"
+//# define ERR_DUP2 "dup2 function failed"
+//# define ERR_OPEN "opening failed"
+//# define ERR_CLOSE "closing failed"
+//# define NO_FILE_DIR "No such file or directory"
+//# define ZSH_NO_FILE "zsh: no such file or directory:"
+//# define CMD_NOT_FOUND "zsh: command not found:"
+//# define PERM_DENIED "zsh: permission denied:"
 
-# define ERR_MALLOC "memory allocation failed"
-# define ERR_FORK "fork function failed"
-# define ERR_PIPE "pipe creation failed"
-# define ERR_DUP2 "dup2 function failed"
-# define ERR_OPEN "opening failed"
-# define ERR_CLOSE "closing failed"
-# define NO_FILE_DIR "no such file or directory"
-# define ZSH_NO_FILE "zsh: no such file or directory:"
-# define CMD_NOT_FOUND "zsh: command not found:"
-# define PERM_DENIED "zsh: permission denied:"
-
-# define CMD_EXEC 126
-# define CMD_NF 127
+//# define CMD_EXEC 126
+//# define CMD_NF 127
 
 //BNF
 char			*validate_word(char *str, int *err_flag);
@@ -56,7 +54,7 @@ void			add_to_exported(char *key, t_ms *ms);
 void			sort_exported_alphaorder(t_ms *ms);
 void			handle_export(char **args, t_ms *ms);
 void			handle_unset(char **args, t_ms *ms);
-void			rm_from_env_ex(char ***env, char *name, int len, int flag);
+int				rm_from_env_ex(char ***env, char *name, int len, int flag);
 int				check_env(char *env, char *name, int len, int flag);
 char			**allocate_temp_env(char **env, int x);
 char			**copy_map(char **original_map);
@@ -70,7 +68,7 @@ char			*build_relative_path(char *target, char *cwd, t_ms *ms);
 char			*get_parent_directory(t_ms *ms);
 char			*get_oldpwd_directory(t_ms *ms);
 char			*get_home_directory(t_ms *ms, int flag);
-void			check_pwd(char **array, t_ms *ms);
+void			check_pwd(t_ms *ms);
 char			*get_env_value(char *key, char **envp);
 void			check_exit(char	**array, t_ms *ms);
 long long		convert_to_ll(char *str, int *error);
@@ -79,6 +77,7 @@ char			*handle_expansion(t_expand *exp, t_ms *ms);
 char			*expand_key(char **envp, char *key, int len, t_ms *ms);
 char			*duplicate_or_replace(char *entry, char *arg, char *key, int *flag);
 char			*return_target(t_ms *ms, char *target);
+void			update_cd_env(t_ms *ms, char *pwd_before);
 
 //Lexer
 t_token			*tokenization(char *str, t_ms *ms);
@@ -170,13 +169,13 @@ void			print_system_error(t_print reason);
 void			print_cmd_error(char *cmd, int c);
 void			print_unset_error(char **args, int i, t_ms *ms);
 void			print_export_error(t_ms *ms, char *arg);
-void			print_cd_error(char *target_dir);
+void			print_cd_error(char *target_dir, int flag);
 void			print_syntax_error(char *text);
 void			print_numeric_error(char **array);
 void			print_too_many_args_error(void);
 void			print_env_error(char **args);
 void			print_flag_error(char **args);
-void			print_error(char *error);
+void			print_malloc_error(void);
 
 //Cleaners
 void			clean_arr(char ***arr);
@@ -187,7 +186,7 @@ void			cleanup_heredocs(char **filenames);
 void			close_pipes(int num_cmds, int **pipe_fd);
 void			free_pids(t_pipe *p);
 void			close_fds(t_cmd *cmd);
-void			close_all_fds(t_pipe *p, t_ms *ms);
+void			close_all_fds(t_pipe *p);
 void			close_file(int file);
 void			close_fds2(int fd1, int fd2);
 
