@@ -114,26 +114,26 @@ static int	handle_dollar_expansion(char **result, char *args, int *i, t_ms *ms)
 		return (1);
 	expand_variable(ms, key, ft_strlen(key), result);
 	free(key);
+	if (ms->exit_status == MALLOC_ERR)
+		return (1);
 	return (0);
 }
 
 /**
- * @brief Expands environment variables and special symbols within a string.
+ * @brief Handles environment variable expansion in a given string.
  * 
- * This function processes a string (`args`) and expands any environment variables 
- * or special symbols (such as `$` followed by a variable) in the string. It traverses 
- * the string, identifies the variables or special symbols, and appends the expanded 
- * values to a result string. If a part of the string is not a variable, it is added 
- * to the result string as a literal character.
+ * This function processes the input `args` string, replacing `$VAR` occurrences 
+ * with their corresponding environment variable values. If an expansion fails due 
+ * to a memory allocation error, it updates `ms->exit_status` and returns `NULL`. 
+ * The function also correctly handles literal characters and prevents expansion in 
+ * cases such as double dollar signs (`$$`), spaces, or slashes.
  * 
- * @param args The input string that may contain environment variables or special symbols 
- *             (such as `$` for variables or `?` and `$` for special symbols).
- * @param ms A pointer to the `t_ms` structure, which contains the environment variables 
- *           and other necessary data.
+ * @param args The input string that may contain variables to be expanded.
+ * @param ms A pointer to the `t_ms` structure, which contains environment variables 
+ *           and shell-related data, including the exit status.
  * 
- * @return A new string with environment variables and special symbols expanded. 
- *         If memory allocation fails, returns `NULL`. The caller is responsible 
- *         for freeing the returned string.
+ * @return A dynamically allocated string with expanded variables, or `NULL` on failure.
+ *         The caller is responsible for freeing the returned string.
  */
 
 char	*handle_expansion(char *args, t_ms *ms)
@@ -143,10 +143,16 @@ char	*handle_expansion(char *args, t_ms *ms)
 
 	result = ft_strdup("");
 	if (!result)
+	{
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
 		return (NULL);
+	}
 	i = 0;
 	while (args[i])
 	{
+		if (ms->exit_status == MALLOC_ERR)
+			return (NULL);
 		if (args[i] == '$' && args[i + 1] && args[i + 1] != '$'
 			&& !ft_isspace(args[i + 1]) && args[i + 1] != '/') //new slash to fix 303&307 parsing hell
 		{

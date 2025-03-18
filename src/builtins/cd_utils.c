@@ -34,7 +34,7 @@ char	*get_home_directory(t_ms *ms, int flag)
 	}
 	if (access(temp, F_OK) != 0)
 	{
-		print_cd_error(temp);
+		print_cd_error(temp, NO_FILE_OR_DIR);
 		ms->exit_status = 1;
 		return (NULL);
 	}
@@ -63,7 +63,7 @@ char	*get_parent_directory(t_ms *ms)
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
 		perror("getcwd failed\n");
-		ms->exit_status = 1;
+		ms->exit_status = SYSTEM_ERR;
 		return (NULL);
 	}
 	parent_dir = ft_strrchr(cwd, '/');
@@ -97,14 +97,14 @@ char	*build_relative_path(char *target, char *cwd, t_ms *ms)
 	if (!temp)
 	{
 		print_malloc_error();
-		ms->exit_status = 1;
+		ms->exit_status = MALLOC_ERR;
 		return (NULL);
 	}
 	full_path = ft_strjoin(temp, target);
 	if (!full_path)
 	{
 		print_malloc_error();
-		ms->exit_status = 1;
+		ms->exit_status = MALLOC_ERR;
 		return (NULL);
 	}
 	free(temp);

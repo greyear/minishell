@@ -47,7 +47,7 @@ static char	*handle_empty_oldpwd(t_ms *ms)
 		if (getcwd(cwd, sizeof(cwd)) == NULL)
 		{
 			perror("getcwd failed\n");
-			ms->exit_status = 1;
+			ms->exit_status = SYSTEM_ERR;
 			return (NULL);
 		}
 		update_env_var(ms, "PWD=", cwd);

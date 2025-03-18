@@ -165,7 +165,7 @@ void			print_system_error(t_print reason);
 void			print_cmd_error(char *cmd, int c);
 void			print_unset_error(char **args, int i, t_ms *ms);
 void			print_export_error(t_ms *ms, char *arg);
-void			print_cd_error(char *target_dir);
+void			print_cd_error(char *target_dir, int flag);
 void			print_syntax_error(char *text);
 void			print_numeric_error(char **array);
 void			print_too_many_args_error(void);

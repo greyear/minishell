@@ -281,7 +281,7 @@ static void	run_minishell(t_ms *ms)
 		//if (!inout(ms))
 		//	break; // Restore STDIN and STDOUT
 		// FOR USUAL EXECUTION
-		/*signal_mode(INTERACTIVE);
+		/* signal_mode(INTERACTIVE);
 		input = readline("minishell> ");
 		signal_mode(IGNORE);*/
 		//FOR TESTER
@@ -337,6 +337,8 @@ int	main(int argc, char **argv, char **envp)
 	clean_cmd_list(&(ms->cmds));
 	history_exit(ms);
 	exit_code = ms->exit_status;
+	if (exit_code == MALLOC_ERR || exit_code == SYSTEM_ERR)
+		exit_code = 1;
 	clean_struct(ms);
 	rl_clear_history();
 	return (exit_code);

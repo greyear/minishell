@@ -35,7 +35,7 @@ static char	*get_cd_target(t_ms *ms, char **args)
 		if (getcwd(cwd, sizeof(cwd)) == NULL)
 		{
 			perror("cd: getcwd failed");
-			ms->exit_status = 1;
+			ms->exit_status = SYSTEM_ERR;
 			return (NULL);
 		}
 		return (build_relative_path(args[1], cwd, ms));
@@ -68,7 +68,7 @@ static void	update_cd_env(t_ms *ms, char *pwd_before)
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
 		perror("cd: getcwd failed");
-		ms->exit_status = 1;
+		ms->exit_status = SYSTEM_ERR;
 		return;
 	}
 	current_pwd = get_env_value("PWD", ms->envp);
@@ -78,7 +78,7 @@ static void	update_cd_env(t_ms *ms, char *pwd_before)
 		update_env_var(ms, "OLDPWD=", current_pwd);
 	else
 		update_env_var(ms, "OLDPWD=", pwd_before);
-	if (ms->exit_status == 1) //in case of malloc error
+	if (ms->exit_status == MALLOC_ERR) //in case of malloc error
 		return;
 	update_env_var(ms, "PWD=", cwd);
 }
@@ -112,7 +112,7 @@ void	update_env_var(t_ms *ms, char *key, char *new_value)
 	if (!new_env_entry)
 	{
 		print_malloc_error();
-		ms->exit_status = 1;
+		ms->exit_status = MALLOC_ERR;
 		return;
 	}
 	ft_strcpy(new_env_entry, key);
@@ -189,12 +189,26 @@ void	handle_cd(char **args, t_ms *ms)
 	if (cd_error(args, ms))
 		return;
 	target_dir = get_cd_target(ms, args);
-	if (ms->exit_status == 1 || !target_dir)
+	if (access(target_dir, F_OK) == -1)
+	{
+		print_cd_error(target_dir, NO_FILE_OR_DIR);
+		ms->exit_status = 1;
+		return;
+	}
+	if (!target_dir || ms->exit_status == 1
+		|| ms->exit_status == SYSTEM_ERR ||
+		ms->exit_status == MALLOC_ERR)
 		return;
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
 		free(target_dir);
 		perror("getcwd failed\n");
+		ms->exit_status = SYSTEM_ERR;
+		return;
+	}
+	if (access(target_dir, X_OK) == -1)
+	{
+		print_cd_error(target_dir, PERM_DEN);
 		ms->exit_status = 1;
 		return;
 	}
@@ -202,7 +216,7 @@ void	handle_cd(char **args, t_ms *ms)
 	{
 		free(target_dir);
 		perror("chdir failed\n");
-		ms->exit_status = 1;
+		ms->exit_status = SYSTEM_ERR;
 		return;
 	}
 	free(target_dir);

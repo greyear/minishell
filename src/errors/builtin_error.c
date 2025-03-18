@@ -78,15 +78,18 @@
   * @return This function does not return a value. It directly prints an error message to `stderr`.
   */
  
- void	print_cd_error(char *target_dir)
+ void	print_cd_error(char *target_dir, int flag)
  {
-	 ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
-	 ft_putstr_fd("cd: ", STDERR_FILENO);
-	 if (target_dir && *target_dir)
-		 ft_putstr_fd(target_dir, STDERR_FILENO);
-	 else
-		 ft_putstr_fd(" ", STDERR_FILENO);
-	 ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
+	ft_putstr_fd("cd: ", STDERR_FILENO);
+	if (target_dir && *target_dir)
+		ft_putstr_fd(target_dir, STDERR_FILENO);
+	else
+		ft_putstr_fd(" ", STDERR_FILENO);
+	if (flag == NO_FILE_OR_DIR)
+	ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+	else if (flag == PERM_DEN)
+		ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
  }
  
  /**
