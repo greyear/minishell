@@ -122,7 +122,7 @@ static int process_heredoc_line(char **line, char *limiter, t_token *token, t_ms
 	}
 	if (token->quote != SG_QUOT && token->quote != DB_QUOT) //why db quote? can you pls explain?
 	{
-		exp->key = *line;
+		exp->data = *line;
 		expanded = handle_expansion(exp, ms);
 		free(*line);
 		*line = expanded;
