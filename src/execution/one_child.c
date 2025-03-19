@@ -33,19 +33,24 @@ void	execute_child(t_cmd *cmd, t_ms *ms)
 }
 
 /**
- * @brief Creates a child process to execute a single command.
+ * @brief Creates and executes a single child process for a command.
  * 
- * This function forks a new process to execute a given command. If the fork fails, 
- * an error message is printed, and the shell's exit status is set to 1. The child 
- * process executes the command using `execute_child()`, while the parent process 
- * waits for the child to finish and updates the shell's exit status based on the 
- * child's termination status.
+ * This function forks a child process to execute a single command. After forking, 
+ * the parent process waits for the child process to complete. The exit status of 
+ * the child process is checked to update the shell's exit status based on its 
+ * termination (normal exit or signal termination).
  * 
- * @param cmd A pointer to the `t_cmd` structure containing the command and its arguments.
- * @param ms A pointer to the `t_ms` structure, which manages shell-related data such 
- *           as environment variables and exit status.
+ * - If the command arguments are empty, the function returns without forking.
+ * - If the fork fails, an error message is printed, and the shell exit status is 
+ *   set to `SYSTEM_ERR`.
+ * - If the child process terminates normally, the shell's exit status is updated 
+ *   accordingly.
+ * - If the child process is terminated by a signal (SIGINT or SIGQUIT), the exit 
+ *   status is updated to reflect the corresponding signal.
  * 
- * @return None. The function modifies `ms->exit_status` based on the child's termination.
+ * @param cmd The command structure containing the arguments and details of the command 
+ *            to be executed.
+ * @param ms The main shell structure, used to track the exit status and manage shell state.
  */
 
 void	make_one_child(t_cmd *cmd, t_ms *ms)
@@ -59,7 +64,7 @@ void	make_one_child(t_cmd *cmd, t_ms *ms)
 	if (pid < 0)
 	{
 		perror("fork failed");
-		ms->exit_status = 1;
+		ms->exit_status = SYSTEM_ERR;
 		return;
 	}
 	if (pid == 0)
@@ -67,11 +72,12 @@ void	make_one_child(t_cmd *cmd, t_ms *ms)
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		ms->exit_status = WEXITSTATUS(status);
-	if (WIFSIGNALED(status))
-	{
-		if (WTERMSIG(status) == SIGINT)
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
 			ms->exit_status = 130;
-		if (WTERMSIG(status) == SIGQUIT)
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGQUIT)
 			ms->exit_status = 131;
-	}
+	if (ms->exit_status == 130)
+		write(STDERR_FILENO, "\n", 1);
+	if (ms->exit_status == 131)
+		write(STDERR_FILENO, "Quit\n", 5);
 }

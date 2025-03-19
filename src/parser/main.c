@@ -1,9 +1,5 @@
 #include "../../include/minishell.h"
 
-#include <stdio.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <bits/types.h>
 //#include <asm-generic/termbits.h> //delete for school computers
 
 volatile sig_atomic_t	g_sgnl;
@@ -83,15 +79,21 @@ static void	input_output(t_cmd *cmd)
 	}
 }*/
 
-static void	cleanup_after_execution(t_ms *ms)
-{
-	if (ms->heredoc_files)
-		cleanup_heredocs(ms->heredoc_files);
-	reset_heredocs(ms);
-	clean_token_list(&(ms->tokens));
-	clean_block_list(&(ms->blocks));
-	clean_cmd_list(&(ms->cmds));
-}
+/**
+ * @brief Executes a list of commands.
+ * 
+ * This function processes a list of commands, determining whether to execute 
+ * them as built-in functions or external commands. It handles the execution 
+ * of a single command or multiple commands by creating child processes as needed.
+ * 
+ * If there is only one command and it is a built-in, it will be executed directly. 
+ * If there are multiple commands, child processes will be created for each command 
+ * to execute them in parallel. After executing the commands, it ensures file descriptors 
+ * are closed and handles the appropriate exit statuses.
+ * 
+ * @param ms A pointer to the shell's main structure containing the command list 
+ *           and other relevant state information.
+ */
 
 static void	execute_commands(t_ms *ms)
 {
@@ -117,10 +119,22 @@ static void	execute_commands(t_ms *ms)
 	close_fds(ms->cmds);
 }
 
-static void	malloc_heredocs(t_ms *ms, t_token *token)
+/**
+ * @brief Counts the number of heredoc tokens in the token list.
+ * 
+ * This function iterates through the token list and counts how many tokens 
+ * are of type `HEREDOC`. The function returns the total count of heredoc 
+ * tokens in the list.
+ * 
+ * @param token A pointer to the head of the token list to be scanned.
+ * 
+ * @return The number of heredoc tokens found in the list.
+ */
+
+static int	count_heredocs(t_token *token)
 {
 	t_token	*cur;
-	int		heredoc_count;
+	int	heredoc_count;
 
 	cur = token;
 	heredoc_count = 0;
@@ -130,10 +144,33 @@ static void	malloc_heredocs(t_ms *ms, t_token *token)
 			heredoc_count++;
 		cur = cur->next;
 	}
+	return (heredoc_count);
+}
+
+/**
+ * @brief Allocates memory for heredoc file paths and handles errors.
+ * 
+ * This function calculates the number of heredocs from the given token list 
+ * and allocates memory for storing the paths to the heredoc files in the 
+ * `ms->heredoc_files` array. If the number of heredocs exceeds the maximum 
+ * allowed (16), an error message is printed, and the program exits. If memory 
+ * allocation fails, a malloc error is printed, and the program exits. 
+ * Otherwise, the function initializes the `ms->heredoc_files` array with NULL 
+ * values.
+ * 
+ * @param ms A pointer to the main shell structure, which will store the heredoc file paths.
+ * @param token A pointer to the token list, which is used to count the heredocs.
+ */
+
+static void	malloc_heredocs(t_ms *ms, t_token *token)
+{
+	int		heredoc_count;
+
+	heredoc_count = count_heredocs(token);
 	if (heredoc_count > 16)
 	{
 		ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
-		ft_putstr_fd("maximum here-document count exceeded\n", STDERR_FILENO);
+		ft_putstr_fd(HEREDOC_ERR, STDERR_FILENO);
 		clean_struct(ms);
 		exit(2);
 	}
@@ -148,6 +185,19 @@ static void	malloc_heredocs(t_ms *ms, t_token *token)
 	ms->heredoc_files[0] = NULL;
 }
 
+/**
+ * @brief Tokenizes the input string and processes redirections and heredocs.
+ * 
+ * This function tokenizes the given input string and stores the tokens in the 
+ * `ms->tokens` structure. If tokenization fails, it prints an error message and 
+ * returns 0. It also frees the original input string after tokenization. After 
+ * tokenization, it processes heredocs and sets up files for redirections.
+ * 
+ * @param input A pointer to the input string to be tokenized.
+ * @param ms A pointer to the main shell structure, which holds the tokens.
+ * @return 1 if tokenization is successful, 0 if there is an error.
+ */
+
 static int	tokenize_input(char **input, t_ms *ms)
 {
 	ms->tokens = tokenization(*input, ms);
@@ -158,15 +208,21 @@ static int	tokenize_input(char **input, t_ms *ms)
 		return (0);
 	}
 	malloc_heredocs(ms, ms->tokens);
-	if (!ms->heredoc_files)
-	{
-		print_malloc_error();
-		clean_token_list(&(ms->tokens));
-		return (0);
-	}
 	put_files_for_redirections(ms->tokens);
 	return (1);
 }
+
+/**
+ * @brief Creates the blocks and commands lists from the tokenized input.
+ * 
+ * This function creates the list of blocks and commands from the tokenized input. 
+ * If an error occurs during the creation of either list, it will clean up 
+ * any previously allocated resources (tokens and blocks) and return 0. 
+ * Otherwise, it returns 1 to indicate successful creation of both lists.
+ * 
+ * @param ms A pointer to the main shell structure, used to store the blocks and commands lists.
+ * @return 1 if both blocks and commands lists are successfully created, 0 if there was an error.
+ */
 
 static int	create_blocks_and_cmds_lists(t_ms *ms)
 {
@@ -191,6 +247,19 @@ static int	create_blocks_and_cmds_lists(t_ms *ms)
 	return (1);
 }
 
+/**
+ * @brief Processes user input for syntax validation and history addition.
+ * 
+ * This function checks if the input is empty or contains syntax errors. 
+ * If the input is empty (i.e., only Enter was pressed), it is ignored.
+ * If a syntax error is found, the error code is set and the input is discarded. 
+ * Otherwise, the input is added to the history.
+ * 
+ * @param input A pointer to the string containing the user input.
+ * @param ms A pointer to the main shell structure, used to store the exit status.
+ * @return 1 if the input is valid and processed, 0 if there was an error or the input was empty.
+ */
+
 static int	process_input(char **input, t_ms *ms)
 {
 	int		err_syntax;
@@ -214,27 +283,6 @@ static int	process_input(char **input, t_ms *ms)
 		return (0);
 	}
 	add_line_to_history(*input, ms);
-	return (1);
-}
-
-int	init_terminal_signals(void)
-{
-	struct termios	term;
-
-	if (isatty(STDIN_FILENO))
-	{
-		if (tcgetattr(STDIN_FILENO, &term) == -1)
-		{
-			perror("tcgetattr failed");
-			return (0);
-		}
-		term.c_lflag &= ~ECHOCTL;
-		if (tcsetattr(STDIN_FILENO, TCSANOW, &term) == -1)
-		{
-			perror("tcsetattr failed");
-			return (0);
-		}
-	}
 	return (1);
 }
 
@@ -274,15 +322,6 @@ static void	run_minishell(t_ms *ms)
 			continue;
 		if (!create_blocks_and_cmds_lists(ms))
 			continue;
-		if (g_sgnl == SIGINT)
-		{
-			clean_token_list(&(ms->tokens));
-			clean_block_list(&(ms->blocks));
-			clean_cmd_list(&(ms->cmds));
-			cleanup_heredocs(ms->heredoc_files);
-			g_sgnl = 0;
-			continue;
-		}
 		execute_commands(ms);
 		cleanup_after_execution(ms);
 	}

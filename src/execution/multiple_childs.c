@@ -1,43 +1,53 @@
 #include "../../include/minishell.h"
 
 /**
- * @brief Waits for all child processes to finish and updates the shell's exit status.
+ * @brief Waits for the completion of child processes and updates the exit status.
  * 
- * This function waits for each child process created by a command to terminate. It 
- * specifically tracks the exit status of the last executed command and updates the 
- * shell's exit status accordingly. If the last command terminates normally, its exit 
- * code is stored in `ms->exit_status`. If it is terminated by a signal, the exit status 
- * is set to 130 for SIGINT or 131 for SIGQUIT.
+ * This function waits for all child processes to terminate, checks their exit status, 
+ * and updates the shell's exit status accordingly. If a child process is terminated 
+ * by a signal, the function handles specific signals (SIGINT and SIGQUIT) and updates 
+ * the exit status. Additionally, it manages closing file descriptors and freeing 
+ * resources related to the child processes.
  * 
- * @param num_cmds The number of child processes to wait for.
- * @param last_pid The process ID of the last executed command, used to determine 
- *                 the shell's final exit status.
- * @param ms A pointer to the `t_ms` structure, which stores the shell's exit status.
+ * - If a child process exits normally, the exit status is captured.
+ * - If the child process is terminated by a signal, the exit status is updated 
+ *   to reflect the signal that caused termination (SIGINT or SIGQUIT).
+ * - The function ensures that the correct exit status is propagated, with special 
+ *   handling for interactive signals.
  * 
- * @return None. Modifies `ms->exit_status` based on the termination status of the last process.
+ * @param num_cmds The number of child commands (processes) to wait for.
+ * @param last_pid The PID of the last child process.
+ * @param ms The main shell structure, used to update the exit status.
+ * @param p A structure containing pipe resources, used to manage file descriptors.
  */
 
-void	wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms)
+static void	wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms, t_pipe *p)
 {
 	int	i;
 	int	status;
 	pid_t	wpid;
 
 	i = 0;
+	close_all_fds(p);
 	while (i < num_cmds)
 	{
 		wpid = wait(&status);
 		if (wpid == last_pid && WIFEXITED(status))
 			ms->exit_status = WEXITSTATUS(status);
-		if (wpid == last_pid && WIFSIGNALED(status))
+		if (WIFSIGNALED(status))
 		{
-			if (WTERMSIG(status) == SIGINT)
+			if (wpid == last_pid && WTERMSIG(status) == SIGINT)
 				ms->exit_status = 130;
-			if (WTERMSIG(status) == SIGQUIT)
+			if (wpid == last_pid && WTERMSIG(status) == SIGQUIT)
 				ms->exit_status = 131;
+			if (WTERMSIG(status) == SIGINT)
+				write(STDERR_FILENO, "\n", 1);
 		}
 		i++;
 	}
+	if (ms->exit_status == 131)
+		write(STDERR_FILENO, "Quit\n", 5);
+	free_pids(p);
 }
 
 /**
@@ -87,8 +97,6 @@ static void	child_process(t_cmd *cur, t_pipe *p)
  * 
  * @param cur A pointer to the `t_cmd` structure containing the command's arguments, input, and output files.
  * @param p A pointer to the `t_pipe` structure containing pipe-related information.
- * 
- * @note If `fork()` fails, the function sets `p->ms->exit_status` to 1 and returns without executing the command.
  */
 
 static void	fork_and_execute(t_cmd *cur, t_pipe *p)
@@ -96,14 +104,14 @@ static void	fork_and_execute(t_cmd *cur, t_pipe *p)
 	if (pipe(p->fd) == -1)
 	{
 		perror("pipe failed");
-		p->ms->exit_status = 1;
+		p->ms->exit_status = SYSTEM_ERR;
 		return;
 	}
 	p->pids[p->cmd_num] = fork(); 
 	if (p->pids[p->cmd_num] < 0)
 	{
 		perror("fork failed");
-		p->ms->exit_status = 1;
+		p->ms->exit_status = SYSTEM_ERR;
 		return;
 	}
 	if (p->pids[p->cmd_num] == 0)
@@ -128,7 +136,7 @@ static void	fork_and_execute(t_cmd *cur, t_pipe *p)
  * @return None. The function modifies `p` and prints an error message if memory allocation fails.
  */
 
-void	initialize_p(t_pipe *p, int num_cmds, t_ms *ms)
+static void	initialize_p(t_pipe *p, int num_cmds, t_ms *ms)
 {
 	p->num_cmds = num_cmds;
 	p->ms = ms;
@@ -141,18 +149,23 @@ void	initialize_p(t_pipe *p, int num_cmds, t_ms *ms)
 }
 
 /**
- * @brief Creates multiple child processes to execute a pipeline of commands.
+ * @brief Creates and manages multiple child processes to execute commands in a pipeline.
  * 
- * This function manages the execution of multiple commands in a pipeline by:
- * - Initializing a `t_pipe` structure to track child processes.
- * - Iterating through the list of commands, forking child processes for each.
- * - Handling cases where a command has no arguments.
- * - Closing file descriptors and waiting for all child processes to complete.
- * - Cleaning up allocated resources after execution.
+ * This function forks a child process for each command in a pipeline, executes the 
+ * commands in parallel, and waits for their completion. It handles the initialization 
+ * of pipes, forks the processes, and manages the process execution flow. After all child 
+ * processes have been created and executed, the function waits for their termination 
+ * and updates the shell's exit status accordingly.
  * 
- * @param num_cmds The total number of commands to execute.
- * @param cmds A linked list of commands to be executed.
- * @param ms A pointer to the `t_ms` structure containing shell-related data.
+ * - Each child process is created using `fork_and_execute`, and pipes are set up to 
+ *   connect the commands in the pipeline.
+ * - The function ensures that empty commands are skipped and that resources are freed 
+ *   in case of errors such as memory allocation failures or system errors.
+ * 
+ * @param num_cmds The number of child processes (commands) to create and execute.
+ * @param cmds A linked list of command structures, each containing the arguments 
+ *             and details of the command to be executed.
+ * @param ms The main shell structure, used to track the exit status and manage shell state.
  */
 
 void	make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
@@ -174,10 +187,11 @@ void	make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
 			continue;
 		}
 		fork_and_execute(cur, &p);
+		if (ms->exit_status == MALLOC_ERR
+			|| ms->exit_status == SYSTEM_ERR)
+			return;
 		cur = cur->next;
 		p.cmd_num++;
 	}
-	close_all_fds(&p);
-	wait_for_children(p.num_cmds, p.last_pid, p.ms);
-	free_pids(&p);
+	wait_for_children(p.num_cmds, p.last_pid, p.ms, &p);
 }

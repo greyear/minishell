@@ -43,52 +43,34 @@ static int	open_heredoc_file(char *filename, int *fd)
 	return (*fd);
 }
 
-static void	print_heredoc_ctrl_d(char *limiter)
-{
-	ft_putstr_fd("minishell: warning: here-document at " \
-		"line 1 delimited by end-of-file", 2);
-	ft_putstr_fd(" (wanted ", 2);
-	ft_putstr_fd("`", 2);
-	ft_putstr_fd(limiter, 2);
-	ft_putstr_fd("')\n", 2);
-}
-
 /**
- * @brief Reads a line of input for the heredoc.
+ * @brief Reads a line of input for a heredoc.
  * 
- * This function writes a prompt (`heredoc> `) to `stdout` to indicate that the shell is waiting for input for the heredoc. 
- * It then reads a line from the standard input (`stdin`) using `get_next_line()`. If reading the line fails, 
- * it prints an error message and terminates the program.
+ * This function handles reading a line of input from the user for a heredoc.
+ * It uses `readline` to get input and processes signals to manage the heredoc 
+ * mode (e.g., handle `Ctrl+D` for EOF). If `readline` returns `NULL`, it indicates 
+ * an EOF signal, and the heredoc is closed with a message printed to indicate the EOF.
+ * The function will then close the temporary file descriptor and exit the program.
  * 
- * @return Returns the line read from the standard input. If an error occurs, the program exits.
+ * @param temp_fd The temporary file descriptor to be closed if EOF is encountered.
+ * @param limiter The string to be printed when `Ctrl+D` is pressed, indicating the EOF condition.
+ * 
+ * @return A pointer to the line of input read from the user.
  */
 
 static char	*read_heredoc_line(int temp_fd, char *limiter)
 {
 	char	*line;
-	//char	*temp;
- 
-	//write(STDOUT_FILENO, "heredoc> ", 9);
+
 	signal_mode(HEREDOC_MODE);
-	//line = get_next_line(STDIN_FILENO);
 	line = readline("> ");
 	signal_mode(IGNORE);
 	if (!line)
 	{
 		print_heredoc_ctrl_d(limiter);
-		//perror("readline error");
 		close(temp_fd);
 		exit(0);
 	}
-	/*line = ft_strjoin(temp, "\n");
-	free(temp);
-	
-	if (!line)
-	{
-		perror("malloc error");
-		close(temp_fd);
-		exit (2);
-	}*/
 	return (line);
  }
  
@@ -112,8 +94,6 @@ static int process_heredoc_line(char **line, char *limiter, t_token *token, t_ms
 	char	*expanded;
 	t_expand	*exp;
  
-	//if (ft_strncmp(*line, limiter, ft_strlen(limiter)) == 0
-		//&& (ft_strlen(limiter) == ft_strlen(*line) || (*line)[ft_strlen(limiter)] == '\n'))
 	exp = exp_init();
 	if (ft_strcmp(*line, limiter) == 0)
 	{
@@ -197,6 +177,7 @@ int	handle_heredoc(t_ms *ms, char *limiter, t_token *token)
 	pid = fork();
 	if (pid == -1)
 	{
+		ms->exit_status = SYSTEM_ERR,
 		perror("fork failed");
 		return (-1);
 	}
@@ -205,7 +186,6 @@ int	handle_heredoc(t_ms *ms, char *limiter, t_token *token)
 		signal_mode(HEREDOC_MODE);
 		open_heredoc_file(filename, &temp_fd);
 		read_heredoc_input(temp_fd, limiter, token, ms);
-		//close(temp_fd);
 		exit(0);
 	}
 	else
