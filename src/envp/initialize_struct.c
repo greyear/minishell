@@ -24,73 +24,113 @@ static t_ms	*allocate_struct(void)
 	return (ms);
 }
 
+/**
+ * @brief Initializes the `envp` variable in the shell without using the `envp` environment.
+ * 
+ * This function initializes the `envp` array in the `t_ms` structure, which is an array
+ * of strings representing the environment variables. It copies the second and third 
+ * elements from the `exported` array (which should contain exported variables) into `envp`.
+ * If memory allocation fails during this process, the function prints an error message,
+ *  frees the struct and exits with 1.
+ *
+ * The `envp` array will contain:
+ * - `envp[0]` will be a copy of `exported[1]` (the second exported variable).
+ * - `envp[1]` will be a copy of `exported[2]` (the third exported variable).
+ * - `envp[2]` will be set to `NULL`, indicating the end of the array.
+ * 
+ * @param ms The main shell structure that contains `envp` and `exported`.
+ */
+
 static void	initialize_envp_without_envp(t_ms *ms)
 {
 	ms->envp = malloc(sizeof(char *) * 4);
 	if (!ms->envp)
 	{
 		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return;
+		clean_struct(ms);
+		exit(1);
 	}
 	ms->envp[0] = ft_strdup(ms->exported[1]);
 	if (!ms->envp[0])
 	{
 		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return;
+		clean_struct(ms);
+		exit(1);
 	}
 	ms->envp[1] = ft_strdup(ms->exported[2]);
 	if (!ms->envp[1])
 	{
 		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return;
+		clean_struct(ms);
+		exit(1);
 	}
 	ms->envp[2] = NULL;
 }
 
-static void	initialize_without_envp(t_ms *ms)
+static void	initialize_envp_without_envp2(t_ms *ms)
 {
 	char	cwd[1024];
 
-	ms->exported = malloc(sizeof(char *) * 4);
-	if (!ms->exported)
-	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return;
-	}
-	ms->exported[0] = ft_strdup("OLDPWD");
-	if (!ms->exported[0])
-	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return;
-	}
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
 		perror("pwd: getcwd failed");
-		ms->exit_status = SYSTEM_ERR;
-		return;
+		clean_struct(ms);
+		exit(1);
 	}
 	ms->exported[1] = ft_strjoin("PWD=", cwd);
 	if (!ms->exported[1])
 	{
 		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return;
+		clean_struct(ms);
+		exit(1);
 	}
 	ms->exported[2] = ft_strdup("SHLVL=0");
 	if (!ms->exported[2])
 	{
 		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return;
+		clean_struct(ms);
+		exit(1);
 	}
 	ms->exported[3] = NULL;
 	initialize_envp_without_envp(ms);
 }
+
+static void	initialize_without_envp(t_ms *ms)
+{
+	ms->exported = malloc(sizeof(char *) * 4);
+	if (!ms->exported)
+	{
+		print_malloc_error();
+		clean_struct(ms);
+		exit(1);
+	}
+	ms->exported[0] = ft_strdup("OLDPWD");
+	if (!ms->exported[0])
+	{
+		print_malloc_error();
+		clean_struct(ms);
+		exit(1);
+	}
+	initialize_envp_without_envp2(ms);
+}
+
+/**
+ * @brief Initializes the `envp` and `exported` environment variables in the shell.
+ * 
+ * This function is responsible for initializing both the `envp` and `exported` arrays
+ * in the `t_ms` structure, which represent the environment variables. It first checks if
+ * the `envp` passed as an argument is valid. If `envp` is `NULL` or points to an empty array,
+ * it calls `initialize_without_envp` to handle the case where no environment variables are provided.
+ * Otherwise, it copies the values from the provided `envp` into both `envp` and `exported` arrays.
+ * If memory allocation fails for either array, the function prints a memory allocation error, 
+ * cleans up the `t_ms` structure, and exits the program.
+ * 
+ * The `envp` and `exported` arrays are copied from the provided `envp` argument, which contains 
+ * the environment variables passed to the program at launch.
+ * 
+ * @param ms The main shell structure where `envp` and `exported` are stored.
+ * @param envp The environment variables passed to the shell (typically from `main`).
+ */
 
 static void	initialize_envp(t_ms *ms, char **envp)
 {

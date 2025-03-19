@@ -18,7 +18,6 @@ char	*get_home_directory(t_ms *ms, int flag)
 {
 	char	*temp;
 
-	(void) flag;
 	temp = get_env_value("HOME", ms->envp);
 	if (!temp)
 	{
@@ -104,6 +103,7 @@ char	*build_relative_path(char *target, char *cwd, t_ms *ms)
 	full_path = ft_strjoin(temp, target);
 	if (!full_path)
 	{
+		free(temp);
 		print_malloc_error();
 		ms->exit_status = MALLOC_ERR;
 		return (NULL);
