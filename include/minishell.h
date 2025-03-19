@@ -181,7 +181,7 @@ void			print_malloc_error(void);
 void			clean_arr(char ***arr);
 void			free_int_array(int **array);
 void			clean_struct(t_ms *ms);
-void			clean_struct_fields(t_ms *ms);
+//void			clean_struct_fields(t_ms *ms);
 void			cleanup_heredocs(char **filenames);
 void			close_pipes(int num_cmds, int **pipe_fd);
 void			free_pids(t_pipe *p);

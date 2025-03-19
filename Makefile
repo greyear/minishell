@@ -40,9 +40,7 @@ BNF_FILES		=	input_validation.c \
 					command.c \
 					simple_command.c \
 					redirect.c \
-					word.c \
-					main.c
-#DELETE main.c!
+					word.c
 LEX_FILES		=	tokenization.c \
 					token_creation.c \
 					token_cleaning.c \
