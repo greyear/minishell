@@ -177,8 +177,8 @@ int	handle_heredoc(t_ms *ms, char *limiter, t_token *token)
 	pid = fork();
 	if (pid == -1)
 	{
-		ms->exit_status = SYSTEM_ERR,
 		perror("fork failed");
+		ms->exit_status = SYSTEM_ERR;
 		return (-1);
 	}
 	else if (pid == 0)
