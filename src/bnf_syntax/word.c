@@ -23,7 +23,20 @@
  */
 char	*validate_word(char *str, int *err_flag);
 
-int	ft_special(int c) // &? space?
+/**
+ * @brief Checks if a character is a special shell-related character.
+ * 
+ * This function determines whether the given character `c` is considered 
+ * special in the context of shell parsing. Special characters include 
+ * pipes (`|`), ampersands (`&`), redirection symbols (`<`, `>`), spaces, 
+ * and quotes (`'`, `"`). These characters typically serve as syntax elements 
+ * rather than part of a regular word.
+ * 
+ * @param c The character to be checked.
+ * 
+ * @return Returns `1` if `c` is a special character, otherwise returns `0`.
+ */
+int	ft_special(int c)
 {
 	if (c == '|' || c == '&' || c == '<' || c == '>' || \
 				c == ' '|| c == '\'' || c == '\"')
@@ -31,6 +44,22 @@ int	ft_special(int c) // &? space?
 	return (0);
 }
 
+/**
+ * @brief Calculates the length of a quoted substring.
+ * 
+ * This function determines the length of a substring enclosed within single or double 
+ * quotes. It starts from the first character in `str`, treating it as the opening quote, 
+ * and counts characters until it encounters a matching closing quote or reaches the end 
+ * of the string. If no closing quote is found, the `err_flag` is set to `1`, indicating 
+ * a syntax error.
+ * 
+ * @param str The input string, expected to start with a quote character.
+ * @param err_flag A pointer to an error flag, which is set to `1` if no matching closing 
+ *                quote is found.
+ * 
+ * @return The number of characters inside the quotes, excluding the opening and closing 
+ *         quotes. Returns an incomplete length if no closing quote is found.
+ */
 static int	length_inside_quotes(char *str, int *err_flag)
 {
 	char	any_quote;

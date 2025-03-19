@@ -15,7 +15,6 @@
  * 
  * @return None. The function modifies `*result` and updates `ms->exit_status` on failure.
  */
-
 static void	append_literal_char(char **result, char c, t_ms *ms)
 {
 	char	*substr;
@@ -60,7 +59,6 @@ static void	append_literal_char(char **result, char c, t_ms *ms)
  * 
  * @return A newly allocated string containing the extracted key, or NULL on failure.
  */
-
 static char	*extract_key_export(char *args, int *i, t_ms *ms)
 {
 	int		x;
@@ -86,11 +84,25 @@ static char	*extract_key_export(char *args, int *i, t_ms *ms)
 	return (key);
 }
 
+/**
+ * @brief Handles the expansion of a variable prefixed with `$` in a string.
+ * 
+ * This function processes a dollar-sign-prefixed (`$`) variable in a string by extracting 
+ * its key, determining its length, and expanding it to its corresponding value. The 
+ * expanded value is then appended to the result string. The function also manages memory 
+ * allocation failures and updates the shell's exit status if needed.
+ * 
+ * @param result A pointer to the string where the expanded value will be appended.
+ * @param exp A pointer to the `t_expand` structure, which stores expansion-related data.
+ * @param i A pointer to the current index in `exp->data`, which is incremented accordingly.
+ * @param ms A pointer to the `t_ms` structure, which contains shell-related information.
+ * 
+ * @return Returns `1` if memory allocation fails, setting `ms->exit_status` to `MALLOC_ERR`, 
+ *         otherwise returns `0` on success.
+ */
 static int	handle_dollar_expansion(char **result, t_expand *exp, int *i, t_ms *ms)
 
 {
-	//char	*key;
-
 	(*i)++;
 	exp->key = extract_key_export(exp->data, i, ms);
 	if (!exp->key)
@@ -107,7 +119,6 @@ char	*handle_expansion(t_expand *exp, t_ms *ms)
 {
 	int		i;
 	char	*result;
-	//t_expand	*exp;
 
 	result = ft_strdup("");
 	if (!result)
@@ -119,7 +130,7 @@ char	*handle_expansion(t_expand *exp, t_ms *ms)
 	i = 0;
 	while (exp->data[i])
 	{
-    if (ms->exit_status == MALLOC_ERR)
+	if (ms->exit_status == MALLOC_ERR)
 			return (NULL);
 		if (exp->data[i] == '$' && exp->data[i + 1] && exp->data[i + 1] != '$'
 			&& !ft_isspace(exp->data[i + 1]) && exp->data[i + 1] != '/') //new slash to fix 303&307 parsing hell

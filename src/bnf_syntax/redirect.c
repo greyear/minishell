@@ -28,16 +28,13 @@ char	*validate_redirect(char *str, int *err_flag)
 		str += 1;
 	while (ft_isspace(*str))
 		str++;
-	/*здесь пропускаем имя файла*/
 	next = validate_word(str, err_flag);
-	if (next == str) //null-terminator or special symbol
+	if (next == str)
 		*err_flag = 1;
-	//2 previuos cases + unclosed quote:
 	if (*err_flag == 1 || *next == R_PARENT)
 		return (next);
 	while (ft_isspace(*next))
 		next++;
-	//recursive call of the same function which will check all the redirections if there're many
 	next = validate_redirect(next, err_flag);
 	return (next);
 }

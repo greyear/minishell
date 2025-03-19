@@ -29,7 +29,7 @@
 	free(ms);
  }
  
- void	clean_struct_fields(t_ms *ms)
+ /*void	clean_struct_fields(t_ms *ms)
  {
 	 if (!ms)
 		 return ;
@@ -41,4 +41,4 @@
 	 {
 		 clean_arr(&(ms->exported));
 	 }
- }
+ }*/

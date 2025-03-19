@@ -1,10 +1,23 @@
 #include "../../include/minishell.h"
 
+/**
+ * @brief Prints an error message based on a specified reason.
+ * 
+ * This function prints a generic error message (`OWN_ERR_MSG`) followed by 
+ * a specific error message based on the provided `reason`. For example, if the 
+ * `reason` is `HIST_ERR`, it will print an error message indicating a failure 
+ * to read from the history file.
+ * The error message is printed to `stderr` to notify the user about the specific error.
+ * 
+ * @param reason The reason for the error, which determines the specific error message.
+ * 
+ * @return None.
+ */
 void	print_system_error(t_print reason)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
 	if (reason == HIST_ERR)
-		ft_putendl_fd("Reading from history file failed", STDERR_FILENO);
+		ft_putendl_fd(HISTORY_ERR, STDERR_FILENO);
 }
 
 /**
@@ -34,7 +47,6 @@ void	print_syntax_error(char *text)
 	else if (ft_isalnum(*text) == 1 || *text == SG_QUOT || *text == DB_QUOT)
 		while (ft_isalnum(text[cut]) == 1 || text[cut] == SG_QUOT || text[cut] == DB_QUOT)
 			cut++;
-	//do I need to handle symbols for printing err msg that I don't handle in real parsing??
 	if (cut != 0)
 		text[cut] = NULL_TERM;
 	ft_putstr_fd(": syntax error near unexpected token `", STDERR_FILENO);
@@ -42,6 +54,22 @@ void	print_syntax_error(char *text)
 	ft_putendl_fd("'", STDERR_FILENO);
 }
 
+/**
+ * @brief Prints an error message related to file operations.
+ * 
+ * This function prints an error message to `stderr` based on the specified `reason`. 
+ * It first prints a generic error message (`OWN_ERR_MSG`), followed by additional 
+ * context depending on the type of error. The function handles various file-related 
+ * errors, such as file not found, permission denied, directory issues, or ambiguity 
+ * in file operations.
+ * 
+ * @param file A string representing the file that caused the error, used to provide 
+ *             context in the error message.
+ * @param reason An enumerated value (`t_print`) that specifies the reason for the 
+ *               error, determining the specific error message to print.
+ * 
+ * @return None.
+ */
 void	print_file_error(char *file, t_print reason)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
@@ -77,7 +105,6 @@ void	print_file_error(char *file, t_print reason)
  * 
  * @return This function does not return a value. It only prints the error message to `stderr`.
  */
-
 void	print_cmd_error(char *cmd, int c)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
@@ -93,6 +120,16 @@ void	print_cmd_error(char *cmd, int c)
 		ft_putstr_fd(NO_CMD_ERR, STDERR_FILENO);
 }
 
+/**
+ * @brief Prints an error message for memory allocation failure.
+ * 
+ * This function prints a generic error message (`OWN_ERR_MSG`) followed by 
+ * a specific message indicating a memory allocation failure (`ERR_MALLOC`).
+ * The error message is printed to `stderr` to inform the user about the failure 
+ * to allocate memory during the program's execution.
+ * 
+ * @return None.
+ */
 void	print_malloc_error(void)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);

@@ -58,11 +58,9 @@ static char	*find_env_value(char **envp, t_expand *exp)
 				if (exp->quote == 0) //for heredocs????
 				{
 					without_spaces = remove_extra_spaces(copy);
-					//free(copy);
 					if (exp->if_first && without_spaces[0] == ' ')
 					{
 						without_first = remove_first_space(without_spaces);
-						//free(without_spaces);
 						return (without_first);
 					}
 					return (without_spaces);
