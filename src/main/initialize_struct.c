@@ -160,7 +160,7 @@ t_ms	*initialize_struct(char **envp)
 	initialize_history(ms);
 	ms->heredoc_count = 0;
 	ms->heredoc_files = NULL;
-	check_shlvl(ms);
+	update_shlvl(ms);
 	g_sgnl = 0;
 	return (ms);
 }

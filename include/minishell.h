@@ -116,7 +116,7 @@ t_expand		*exp_init(void);
 int				expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str);
 void			expand_variable(t_ms *ms, t_expand *exp, char **result);
 t_ms			*initialize_struct(char **envp);
-void			check_shlvl(t_ms *ms);
+void			update_shlvl(t_ms *ms);
 char			*remove_extra_spaces(char *str);
 char			*remove_first_space(char *str);
 

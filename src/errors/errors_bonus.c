@@ -4,15 +4,17 @@
  * @brief Prints an error message based on a specified reason.
  * 
  * This function prints a generic error message (`OWN_ERR_MSG`) followed by 
- * a specific error message based on the provided `reason`. For example, if the 
- * `reason` is `HIST_ERR`, it will print an error message indicating a failure 
- * to read from the history file.
- * The error message is printed to `stderr` to notify the user about the specific error.
+ * a specific error message based on the provided `reason`. For example, 
+ * if the `reason` is `HIST_ERR`, it will print an error message indicating 
+ * a failure to read from the history file. The error message is printed to 
+ * `stderr` to notify the user about the specific error.
  * 
- * @param reason The reason for the error, which determines the specific error message.
+ * @param reason The reason for the error, which determines the specific 
+ *        error message.
  * 
  * @return None.
  */
+
 void	print_system_error(t_print reason)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
@@ -30,6 +32,7 @@ void	print_system_error(t_print reason)
  * 
  * @param text The unexpected token causing the syntax error.
  */
+
 void	print_syntax_error(char *text)
 {
 	int	cut;
@@ -57,19 +60,20 @@ void	print_syntax_error(char *text)
 /**
  * @brief Prints an error message related to file operations.
  * 
- * This function prints an error message to `stderr` based on the specified `reason`. 
- * It first prints a generic error message (`OWN_ERR_MSG`), followed by additional 
- * context depending on the type of error. The function handles various file-related 
- * errors, such as file not found, permission denied, directory issues, or ambiguity 
- * in file operations.
+ * This function prints an error message to `stderr` based on the specified 
+ * `reason`. It first prints a generic error message (`OWN_ERR_MSG`), followed 
+ * by additional context depending on the type of error. The function handles 
+ * various file-related errors, such as file not found, permission denied, 
+ * directory issues, or ambiguity in file operations.
  * 
- * @param file A string representing the file that caused the error, used to provide 
- *             context in the error message.
- * @param reason An enumerated value (`t_print`) that specifies the reason for the 
- *               error, determining the specific error message to print.
+ * @param file A string representing the file that caused the error, used to 
+ *             provide context in the error message.
+ * @param reason An enumerated value (`t_print`) that specifies the reason for 
+ *               the error, determining the specific error message to print.
  * 
  * @return None.
  */
+
 void	print_file_error(char *file, t_print reason)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
@@ -92,9 +96,10 @@ void	print_file_error(char *file, t_print reason)
 /**
  * @brief Prints an error message for a given command.
  * 
- * This function prints a detailed error message to `stderr` based on the provided
- * error code and command name. It handles different error types like "is a directory",
- * "No such file or directory", "Permission denied", and "command not found".
+ * This function prints a detailed error message to `stderr` based on the 
+ * provided error code and command name. It handles different error types 
+ * like "is a directory", "No such file or directory", "Permission denied", 
+ * and "command not found".
  * 
  * @param cmd The command name that caused the error.
  * @param c The error code that defines the type of error.
@@ -103,8 +108,10 @@ void	print_file_error(char *file, t_print reason)
  *          - `PERM_DEN`: Permission is denied to the command.
  *          - `NO_CMD`: The command was not found.
  * 
- * @return This function does not return a value. It only prints the error message to `stderr`.
+ * @return This function does not return a value. It only prints the error 
+ *         message to `stderr`.
  */
+
 void	print_cmd_error(char *cmd, int c)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
@@ -130,6 +137,7 @@ void	print_cmd_error(char *cmd, int c)
  * 
  * @return None.
  */
+
 void	print_malloc_error(void)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
