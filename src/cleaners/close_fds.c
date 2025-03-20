@@ -10,6 +10,7 @@
  * @param fd1 The first file descriptor to close.
  * @param fd2 The second file descriptor to close.
  */
+
 void	close_fds2(int fd1, int fd2)
 {
 	if (fd1 != NO_FD)
@@ -26,6 +27,7 @@ void	close_fds2(int fd1, int fd2)
  * 
  * @param file The file descriptor to be closed.
  */
+
 void	close_file(int file)
 {
 	if (file != NO_FD)
@@ -41,6 +43,7 @@ void	close_file(int file)
  * 
  * @param p A pointer to the `t_pipe` structure containing the file descriptors.
  */
+
 void	close_all_fds(t_pipe *p)
 {
 	close_file(p->fd[0]);
@@ -58,6 +61,7 @@ void	close_all_fds(t_pipe *p)
  * 
  * @param cmd A pointer to the first command in the linked list of commands.
  */
+
 void	close_fds(t_cmd *cmd)
 {
 	t_cmd	*cur;
