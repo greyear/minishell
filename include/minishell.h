@@ -1,4 +1,3 @@
-
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -41,7 +40,6 @@ void			add_to_exported(char *key, t_ms *ms);
 void			sort_exported_alphaorder(t_ms *ms);
 void			handle_export(char **args, t_ms *ms);
 void			handle_unset(char **args, t_ms *ms);
-int				rm_from_env_ex(char ***env, char *name, int len, int flag);
 int				check_env(char *env, char *name, int len, int flag);
 char			**allocate_temp_env(char **env, int x);
 char			**copy_map(char **original_map);
@@ -118,9 +116,14 @@ t_expand		*exp_init(void);
 int				expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str);
 void			expand_variable(t_ms *ms, t_expand *exp, char **result);
 t_ms			*initialize_struct(char **envp);
-void			check_shlvl(t_ms *ms);
+void			update_shlvl(t_ms *ms);
 char			*remove_extra_spaces(char *str);
 char			*remove_first_space(char *str);
+
+//Main
+void			initialize_envp(t_ms *ms, char **envp);
+int				create_blocks_and_cmds_lists(t_ms *ms);
+int				tokenize_input(char **input, t_ms *ms);
 
 //Redirections
 void			put_infile_fd(t_token *token, t_cmd *cmd);
@@ -162,10 +165,9 @@ void			*print_malloc_set_status(t_ms *ms);
 
 //Cleaners
 void			clean_arr(char ***arr);
-void			free_int_array(int **array);
 void			clean_struct(t_ms *ms);
 void			cleanup_after_execution(t_ms *ms);
-void			cleanup_heredocs(char **filenames);
+void			cleanup_heredocs(char **filenames, t_ms *ms);
 void			free_pids(t_pipe *p);
 void			close_fds(t_cmd *cmd);
 void			close_all_fds(t_pipe *p);

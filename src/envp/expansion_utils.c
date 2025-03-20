@@ -3,35 +3,34 @@
 /**
  * @brief Appends a dynamically allocated string to the result string.
  * 
- * This function concatenates `new_part` to `*result`, creating a new dynamically 
- * allocated string. The original `*result` is freed after concatenation. If memory 
- * allocation fails, an error message is printed, the shell's exit status is set to 
- * `MALLOC_ERR`, and `new_part` is freed.
+ * This function concatenates `new_part` to `*result`, creating a new 
+ * dynamically allocated string. The original `*result` is freed after 
+ * concatenation. If memory allocation fails, an error message is printed, 
+ * the shell's exit status is set to `MALLOC_ERR`, and `new_part` is freed.
  * 
- * @param result A pointer to the dynamically allocated result string. It is updated 
- *               with the newly concatenated string.
- * @param new_part A dynamically allocated string to be appended to `*result`. It 
- *                 is freed after use.
- * @param ms A pointer to the `t_ms` structure, which manages shell-related data, 
- *           including exit status.
+ * @param result A pointer to the dynamically allocated result string. It is 
+ *               updated with the newly concatenated string.
+ * @param new_part A dynamically allocated string to be appended to `*result`. 
+ *                 It is freed after use.
+ * @param ms A pointer to the `t_ms` structure, which manages shell-related
+ *           data, including exit status.
  * 
- * @return None. The function modifies `*result` and updates `ms->exit_status` on failure.
+ * @return None. The function modifies `*result` and updates `ms->exit_status` 
+ *         on failure.
  */
-
 static void	append_to_result(char **result, char *new_part, t_ms *ms)
 {
 	char	*temp;
 
 	if (!new_part)
-		return;
+		return ;
 	temp = ft_strjoin(*result, new_part);
 	if (!temp)
 	{
-
 		print_malloc_error();
 		ms->exit_status = MALLOC_ERR;
 		free(new_part);
-		return;
+		return ;
 	}
 	free(*result);
 	*result = temp;
@@ -75,45 +74,53 @@ static char	*find_env_value(char **envp, t_expand *exp)
 }
 
 /**
- * @brief Expands a variable and appends its value to the result string.
- * 
- * This function retrieves the value of an environment variable stored in `exp->key`
- * and appends it to `result`. If the key is `?`, it expands to the shell's exit status.
- * If the key starts with a digit, it expands to an empty string. Otherwise, the function
- * searches for the corresponding environment variable and appends its value.
- * 
- * @param ms A pointer to the main shell structure, containing environment variables and exit status.
- * @param exp A pointer to the `t_expand` structure containing the variable key to expand.
- * @param result A pointer to the result string where the expanded value will be appended.
+ * @brief Expands a shell variable and appends its value to the result string.
+ *
+ * This function expands a shell variable based on its key. If the key is "?",
+ * it appends the exit status. If the key is a number, it appends an empty 
+ * string. For other keys, it looks up the value in the environment variables.
+ * The  expanded value is then appended to the `result` string. If memory 
+ * allocation fails during the process, it prints an error and updates the 
+ * exit status to indicate a failure.
+ *
+ * @param ms The shell structure containing the current state, including the 
+ *           exit status and environment variables.
+ * @param exp The structure containing the key of the variable to expand and 
+ *            the result to append to.
+ * @param result A pointer to the string where the expanded variable value will 
+ *               be appended.
  */
 void	expand_variable(t_ms *ms, t_expand *exp, char **result)
 {
 	char	*expanded;
 
 	if (!exp->key || !*(exp->key))
-		return;
+		return ;
 	if (exp->key[0] == '?')
 		expanded = ft_itoa(ms->exit_status);
 	else if (ft_isdigit(exp->key[0]))
 		expanded = ft_strdup("");
 	else
 		expanded = find_env_value(ms->envp, exp);
-    if (!expanded)
-    {
-      print_malloc_error();
-      ms->exit_status = MALLOC_ERR;
-      return;
-    }
+	if (!expanded)
+	{
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
+		return ;
+	}
 	append_to_result(result, expanded, ms);
 }
 
 /**
- * @brief Skips consecutive spaces in the input string and copies the result to a new string.
+ * @brief Skips consecutive spaces in the input string and copies the result 
+ *        to a new string.
  * 
- * This function iterates through the input string, copying characters to the `new` string. It ensures
- * that only a single space character is retained between words, removing any consecutive spaces from the 
- * input. If a space is encountered after a previous space, it is skipped. Non-space characters are copied 
- * directly to the new string. The resulting string will not have leading, trailing, or consecutive spaces.
+ * This function iterates through the input string, copying characters to the 
+ * `new` string. It ensures that only a single space character is retained 
+ * between words, removing any consecutive spaces from the input. If a space 
+ * is encountered after a previous space, it is skipped. Non-space characters 
+ * are copied directly to the new string. The resulting string will not have 
+ * leading, trailing, or consecutive spaces.
  * 
  * @param str The input string to be processed.
  * @param new A new string that will hold the result with extra spaces removed.
@@ -122,9 +129,9 @@ void	expand_variable(t_ms *ms, t_expand *exp, char **result)
  */
 static int	skip_spaces(const char *str, char *new)
 {
-	int i;
-	int j;
-	int space;
+	int		i;
+	int		j;
+	int		space;
 
 	i = 0;
 	j = 0;
@@ -148,17 +155,20 @@ static int	skip_spaces(const char *str, char *new)
 }
 
 /**
- * @brief Removes extra spaces from the input string, leaving only single spaces between words.
+ * @brief Removes extra spaces from the input string, leaving only single 
+ *        spaces between words.
  * 
- * This function processes the input string by removing any consecutive spaces, replacing them
- * with a single space. If there are no spaces, it returns the original string unchanged. The function
- * ensures that spaces around environment variable expansions are preserved. After processing, the 
- * original string is freed and a new string with reduced spaces is returned.
+ * This function processes the input string by removing any consecutive spaces, 
+ * replacing them with a single space. If there are no spaces, it returns the 
+ * original string unchanged. The function ensures that spaces around 
+ * environment variable expansions are preserved. After processing, the original
+ * string is freed and a new string with reduced spaces is returned.
  * 
  * @param str The input string to be processed.
  * 
- * @return A new string with reduced spaces between words, or the original string if no extra spaces
- *         were found. Returns NULL if memory allocation fails.
+ * @return A new string with reduced spaces between words, or the original
+ *         string if no extra spaces were found. Returns NULL if memory 
+ *         allocation fails.
  */
 char	*remove_extra_spaces(char *str)
 {
@@ -177,14 +187,16 @@ char	*remove_extra_spaces(char *str)
 /**
  * @brief Removes the first space from the given string if it exists.
  * 
- * This function checks if the input string starts with a space. If it does, it creates
- * a new string without the leading space and frees the original string. If the string 
- * does not start with a space or is NULL, it returns the original string unchanged.
+ * This function checks if the input string starts with a space. If it does, it 
+ * creates a new string without the leading space and frees the original string. 
+ * If the string does not start with a space or is NULL, it returns the original 
+ * string unchanged.
  * 
  * @param str The input string to be processed.
  * 
- * @return A new string without the leading space if a space was present, otherwise 
- *         returns the original string. Returns NULL if memory allocation fails.
+ * @return A new string without the leading space if a space was present, 
+ *         otherwise returns the original string. Returns NULL if memory 
+ *         allocation fails.
  */
 char	*remove_first_space(char *str)
 {

@@ -1,21 +1,22 @@
-
 #include "../../include/minishell.h"
 
 /**
  * @brief Checks if a given command is a shell built-in command.
- *        The function compares the command name with a predefined list of built-ins.
+ *        The function compares the command name with a predefined list of 
+ *        built-ins.
  * 
- * @param cmd A pointer to a `t_cmd` structure containing the command information.
- *            The `name` field should contain the command string to check.
+ * @param cmd A pointer to a `t_cmd` structure containing the command 
+ *            information. The `name` field should contain the command 
+ *            string to check.
  * 
- * @return Returns `1` if the command is a built-in (`echo`, `cd`, `pwd`, `export`, `unset`, `env`, `exit`), 
- *         otherwise returns `0`. If `cmd->name` is NULL, returns `0`.
+ * @return Returns `1` if the command is a built-in (`echo`, `cd`, `pwd`, 
+ *         `export`, `unset`, `env`, `exit`), otherwise returns `0`. If 
+ *         `cmd->name` is NULL, returns `0`.
  */
 int	is_builtin(t_cmd *cmd)
 {
 	if (!cmd->name)
-	return (0);
-
+		return (0);
 	if ((ft_strcmp(cmd->name, "echo") == 0) || \
 		(ft_strcmp(cmd->name, "cd") == 0) || \
 		(ft_strcmp(cmd->name, "pwd") == 0) || \
@@ -69,16 +70,18 @@ void	handle_builtin(t_cmd *cmd, t_ms *ms, int in_child)
 }
 
 /**
- * @brief Determines whether a built-in command should be executed in a child process.
+ * @brief Determines whether a built-in command should be executed in a child 
+ *        process.
  * 
- * Some built-in commands, such as `cd`, `exit`, `unset`, and `export` (with arguments),
- * should be executed in the main process.
- * This function checks the command type and decides if a child process is required.
+ * Some built-in commands, such as `cd`, `exit`, `unset`, and `export` (with 
+ * arguments), should be executed in the main process. This function checks the 
+ * command type and decides if a child process is required.
  * 
- * @param cmd A pointer to the `t_cmd` structure containing the command details.
- *            The `name` field specifies the command, and `args` holds its arguments.
+ * @param cmd A pointer to the `t_cmd` structure containing the command 
+ *            details. The `name` field specifies the command, and `args` 
+ *            holds its arguments.
  * 
- * @return `true` if the command should be executed in a child process,
+ * @return `true` if the command should be executed in a child process, 
  *         `false` if it should be executed in the main shell process.
  */
 int	if_children_needed(t_cmd *cmd)
