@@ -129,7 +129,7 @@ int				tokenize_input(char **input, t_ms *ms);
 void			put_infile_fd(t_token *token, t_cmd *cmd);
 void			put_outfile_fd(t_token *token, t_cmd *cmd);
 void			check_access(char *filename, t_oper operation);
-char			*generate_heredoc_filename(int index);
+char			*generate_filename(int index, t_ms *ms);
 void			put_heredoc_fd(t_token *token, t_cmd *cmd, t_ms *ms);
 int				handle_heredoc(t_ms *ms, char *limiter, t_token *token);
 void			reset_heredocs(t_ms *ms);
@@ -145,7 +145,6 @@ void			history_exit(t_ms *ms);
 
 //Signals
 void			signal_mode(t_mode mode);
-int				init_terminal_signals(void);
 void			print_heredoc_ctrl_d(char *limiter);
 
 //Errors
