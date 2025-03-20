@@ -1,18 +1,5 @@
 #include "../../include/minishell.h"
 
-/*static int	check_if_dir(char *path)
-{
-	DIR *dir;
-	
-	dir = opendir(path);
-	if (dir)
-	{
-		closedir(dir);
-		return (1);
-	}
-	return (0);
-}*/
-
 /**
  * @brief Checks file accessibility for reading or writing.
  * 
@@ -94,14 +81,6 @@ void	put_outfile_fd(t_token *token, t_cmd *cmd)
 {
 	if (cmd->outfile > 0)
 		close(cmd->outfile);
-
-	/*if (check_if_dir(token->file))
-	{
-		cmd->outfile = NO_FD;
-		print_file_error(token->file, DIRECT);
-		return ;
-	}*/
-
 	if (token->ambiguous)
 	{
 		cmd->outfile = NO_FD;
