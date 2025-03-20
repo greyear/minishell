@@ -18,7 +18,6 @@
  * @return None. The function modifies `*result` and updates `ms->exit_status` 
  *         on failure.
  */
-
 static void	append_literal_char(char **result, char c, t_ms *ms)
 {
 	char	*substr;
@@ -66,7 +65,6 @@ static void	append_literal_char(char **result, char c, t_ms *ms)
  * @return A newly allocated string containing the extracted key, or NULL 
  *         on failure.
  */
-
 static char	*extract_key_export(char *args, int *i, t_ms *ms)
 {
 	int		x;
@@ -113,7 +111,6 @@ static char	*extract_key_export(char *args, int *i, t_ms *ms)
  * @return Returns `1` if memory allocation fails, setting `ms->exit_status` 
  *         to `MALLOC_ERR`, otherwise returns `0` on success.
  */
-
 static int	dollar_expansion(char **result, t_expand *exp, int *i, t_ms *ms)
 {
 	(*i)++;
@@ -149,7 +146,6 @@ static int	dollar_expansion(char **result, t_expand *exp, int *i, t_ms *ms)
  * @return The expanded result string or `NULL` if an error occurs during memory 
  *         allocation.
  */
-
 static char	*expand(t_expand *exp, t_ms *ms, char **result)
 {
 	int		i;
@@ -194,7 +190,6 @@ static char	*expand(t_expand *exp, t_ms *ms, char **result)
  * @return A string containing the expanded variables, or `NULL` if memory 
  *         allocation fails.
  */
-
 char	*handle_expansion(t_expand *exp, t_ms *ms)
 {
 	char	*result;

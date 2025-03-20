@@ -16,7 +16,6 @@
  * @return This function does not return a value. It sets the exit status to 1, 
  *         indicating an error.
  */
-
 void	print_unset_error(char **args, int i, t_ms *ms)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
@@ -40,7 +39,6 @@ void	print_unset_error(char **args, int i, t_ms *ms)
  * @return None. The function does not return any value. It prints an error 
  *         message to `stderr`.
  */
-
 void	print_flag_error(char **args)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
@@ -64,7 +62,6 @@ void	print_flag_error(char **args)
  * @return This function does not return a value. It sets the exit status 
  *         to 1, indicating an error.
  */
-
 void	print_export_error(t_ms *ms, char *arg)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
@@ -89,7 +86,6 @@ void	print_export_error(t_ms *ms, char *arg)
  * @return This function does not return a value. It directly prints an error 
  *         message to `stderr`.
  */
-
 void	print_cd_error(char *target_dir, int flag)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
@@ -120,7 +116,6 @@ void	print_cd_error(char *target_dir, int flag)
  * @return This function does not return a value. It directly prints an error 
  *         message to `stderr`.
  */
-
 void	print_env_error(char **args)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);

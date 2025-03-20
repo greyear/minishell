@@ -12,7 +12,6 @@
  * 
  * @return int Returns 1 if the argument is a valid `-n` flag, otherwise 0.
  */
-
 static int	is_valid_n_flag(char *arg)
 {
 	int		i;
@@ -41,7 +40,6 @@ static int	is_valid_n_flag(char *arg)
  * @return int Returns 1 if at least one valid `-n` flag is found, 
  *         otherwise 0.
  */
-
 static int	handle_n_flags(char **args, int *i)
 {
 	int		check;
@@ -66,7 +64,6 @@ static int	handle_n_flags(char **args, int *i)
  * @param ms A pointer to the shell structure, used to update the exit 
  *           status.
  */
-
 void	handle_echo(char **args, t_ms *ms)
 {
 	int		i;

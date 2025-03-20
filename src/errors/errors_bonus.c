@@ -14,7 +14,6 @@
  * 
  * @return None.
  */
-
 void	print_system_error(t_print reason)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
@@ -32,7 +31,6 @@ void	print_system_error(t_print reason)
  * 
  * @param text The unexpected token causing the syntax error.
  */
-
 void	print_syntax_error(char *text)
 {
 	int	cut;
@@ -73,7 +71,6 @@ void	print_syntax_error(char *text)
  * 
  * @return None.
  */
-
 void	print_file_error(char *file, t_print reason)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
@@ -111,7 +108,6 @@ void	print_file_error(char *file, t_print reason)
  * @return This function does not return a value. It only prints the error 
  *         message to `stderr`.
  */
-
 void	print_cmd_error(char *cmd, int c)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
@@ -137,7 +133,6 @@ void	print_cmd_error(char *cmd, int c)
  * 
  * @return None.
  */
-
 void	print_malloc_error(void)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);

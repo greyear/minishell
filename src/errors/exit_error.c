@@ -18,7 +18,6 @@
  * @return This function does not return a value. It directly prints an error 
  *         message to `stderr`.
  */
-
 void	print_numeric_error(char **array)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
@@ -39,7 +38,6 @@ void	print_numeric_error(char **array)
  * @return This function does not return a value. It directly prints an error 
  *         message to `stderr`.
  */
-
 void	print_too_many_args_error(void)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);

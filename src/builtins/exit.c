@@ -42,7 +42,6 @@ static void	clean_up_and_exit(int exit_status, t_ms *ms)
  * @param ms A pointer to the `t_ms` structure that stores shell data, including 
  *           the exit status.
  */
-
 static void	handle_exit_code(long long exit_nbr, int err, char **arr, t_ms *ms)
 {
 	if (err == 1 && ms)
@@ -71,7 +70,6 @@ static void	handle_exit_code(long long exit_nbr, int err, char **arr, t_ms *ms)
  * @param ms    A pointer to the `t_ms` structure, which holds the shell's exit 
  *              status and other data.
  */
-
 static void	check_numeric_argument(char *arg, char **arr, t_ms *ms)
 {
 	int		i;
@@ -105,13 +103,12 @@ static void	check_numeric_argument(char *arg, char **arr, t_ms *ms)
  * @param ms    A pointer to the `t_ms` structure that contains shell data, 
  *              including the exit status.
  */
-
 void	check_exit(char **array, t_ms *ms)
 {
 	long long	exit_nbr;
-	int			error;
+	int			err;
 
-	error = 0;
+	err = 0;
 	if (isatty(STDIN_FILENO))
 		ft_putstr_fd("exit\n", STDOUT_FILENO);
 	if (array[1])
@@ -123,8 +120,8 @@ void	check_exit(char **array, t_ms *ms)
 			ms->exit_status = 1;
 			return ;
 		}
-		exit_nbr = convert_to_ll(array[1], &error);
-		handle_exit_code(exit_nbr, error, array, ms);
+		exit_nbr = convert_to_ll(array[1], &err);
+		handle_exit_code(exit_nbr, err, array, ms);
 	}
 	clean_up_and_exit(ms->exit_status, ms);
 }

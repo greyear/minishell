@@ -19,7 +19,6 @@
  * @return 1 if the copying is successful, 0 if an error occurs during memory 
  *         allocation.
  */
-
 static int	copy_env_entries(char ***dest, char **src, char *key, int flag)
 {
 	int		i;
@@ -66,7 +65,6 @@ static int	copy_env_entries(char ***dest, char **src, char *key, int flag)
  * 
  * @return 1 if the removal and replacement are successful, 0 if an error occurs.
  */
-
 static int	rm_from_env_ex(char ***env, char *key, int flag)
 {
 	char	**new_env;
@@ -102,7 +100,6 @@ static int	rm_from_env_ex(char ***env, char *key, int flag)
  * @param len The length of the environment variable key to extract from 
  *            the argument.
  */
-
 static void	process_unset_entry(char **args, int i, t_ms *ms, int len)
 {
 	char	*key;
@@ -140,7 +137,6 @@ static void	process_unset_entry(char **args, int i, t_ms *ms, int len)
  * @param ms The shell structure containing execution state information, 
  *           including the exit status.
  */
-
 void	handle_unset(char **args, t_ms *ms)
 {
 	int		i;

@@ -15,7 +15,6 @@
  * @return A newly allocated string containing the home directory path, 
  *         or `NULL` on failure.
  */
-
 char	*get_home_directory(t_ms *ms, int flag)
 {
 	char	*temp;
@@ -56,7 +55,6 @@ char	*get_home_directory(t_ms *ms, int flag)
  * @return A newly allocated string containing the parent directory path, 
  *         or NULL if `getcwd` fails.
  */
-
 char	*get_parent_directory(t_ms *ms)
 {
 	char	cwd[1024];
@@ -91,7 +89,6 @@ char	*get_parent_directory(t_ms *ms)
  * @return A newly allocated string containing the full relative path, or 
  *         `NULL` if memory allocation fails.
  */
-
 char	*build_relative_path(char *target, char *cwd, t_ms *ms)
 {
 	char	*temp;
@@ -133,7 +130,6 @@ char	*build_relative_path(char *target, char *cwd, t_ms *ms)
  * @return None. Modifies the environment variables stored in `ms->envp`.
  *         If memory allocation fails, the function does nothing.
  */
-
 void	update_env_var(t_ms *ms, char *key, char *new_value)
 {
 	int		i;

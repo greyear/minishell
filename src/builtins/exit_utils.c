@@ -6,14 +6,13 @@
  * This function updates the provided error variable to indicate an error 
  * and returns `1` as a general error status.
  *
- * @param error Pointer to an integer that will be set to `1` to signal an error.
+ * @param err Pointer to an integer that will be set to `1` to signal an error.
  *
  * @return Always returns `1`, indicating an error condition.
  */
-
-static int	error_found(int *error)
+static int	error_found(int *err)
 {
-	*error = 1;
+	*err = 1;
 	return (1);
 }
 
@@ -34,16 +33,15 @@ static int	error_found(int *error)
  *               digit.
  * @param digit The next digit to be added to `result`.
  * @param sign The sign of the number (1 for positive, -1 for negative).
- * @param error A pointer to an integer flag that is set to 1 if an overflow 
+ * @param err A pointer to an integer flag that is set to 1 if an overflow 
  *              is detected.
  */
-
-static void	check_overflow(long long result, int digit, int sign, int *error)
+static void	check_overflow(long long result, int digit, int sign, int *err)
 {
 	if (sign == 1 && (result > (LLONG_MAX - digit) / 10))
-		*error = 1;
+		*err = 1;
 	if (sign == -1 && (-result < (LLONG_MIN + digit) / 10))
-		*error = 1;
+		*err = 1;
 }
 
 /**
@@ -62,14 +60,13 @@ static void	check_overflow(long long result, int digit, int sign, int *error)
  * @param sign The sign of the number (+1 for positive, -1 for negative).
  * @param has_digit A pointer to an integer that will be set to 1 if valid 
  *                  digits are found, or 0 if no digits are found.
- * @param error A pointer to an integer that will be set to 1 if an error 
+ * @param err A pointer to an integer that will be set to 1 if an error 
  *              occurs during the parsing, or 0 if successful.
  * 
  * @return The parsed `long long` integer value if successful, or a predefined 
  *         error value if an error occurs (e.g., invalid character).
  */
-
-static long long	parse_number(char *s, int sign, int *has_digit, int *error)
+static long long	parse_number(char *s, int sign, int *has_digit, int *err)
 {
 	long long	result;
 	int			digit;
@@ -81,13 +78,13 @@ static long long	parse_number(char *s, int sign, int *has_digit, int *error)
 		{
 			*has_digit = 1;
 			digit = *s - '0';
-			check_overflow(result, digit, sign, error);
-			if (*error == 1)
+			check_overflow(result, digit, sign, err);
+			if (*err == 1)
 				return (1);
 			result = result * 10 + digit;
 		}
 		else
-			return (error_found(error));
+			return (error_found(err));
 		s++;
 	}
 	return (sign * result);
@@ -106,14 +103,13 @@ static long long	parse_number(char *s, int sign, int *has_digit, int *error)
  * and signs. If no valid digits are found, an error is returned.
  * 
  * @param str The string to convert to a `long long` integer.
- * @param error A pointer to an integer that will be set to `1` if an error 
+ * @param err A pointer to an integer that will be set to `1` if an error 
  *              occurs during the conversion, or `0` if successful.
  * 
  * @return The converted `long long` integer value if successful,
  *          or a predefined error value if an error occurs.
  */
-
-long long	convert_to_ll(char *str, int *error)
+long long	convert_to_ll(char *str, int *err)
 {
 	long long	nbr;
 	int			sign;
@@ -130,9 +126,9 @@ long long	convert_to_ll(char *str, int *error)
 		str++;
 	}
 	if (*str == '\0')
-		return (error_found(error));
-	nbr = parse_number(str, sign, &has_digit, error);
+		return (error_found(err));
+	nbr = parse_number(str, sign, &has_digit, err);
 	if (!has_digit)
-		*error = 1;
+		*err = 1;
 	return (nbr);
 }

@@ -20,7 +20,6 @@
  *               Used for checking exported environmental variables.
  * @return 1 if the environment variable matches the conditions, otherwise 0.
  */
-
 int	check_env(char *env, char *key, int len, int flag)
 {
 	if (ft_strncmp(key, env, len) != 0)
@@ -49,7 +48,6 @@ int	check_env(char *env, char *key, int len, int flag)
  * @return The value of the environment variable if found, or NULL if the key is 
  *         not present in the environment.
  */
-
 char	*get_env_value(char *key, char **envp)
 {
 	int		i;
@@ -84,7 +82,6 @@ char	*get_env_value(char *key, char **envp)
  *         array, or NULL if memory allocation fails or the original environment 
  *         array is empty.
  */
-
 char	**allocate_temp_env(char **env, int x)
 {
 	char	**temp;
@@ -112,7 +109,6 @@ char	**allocate_temp_env(char **env, int x)
  *
  * @param a  A null-terminated array of strings to be printed.
  */
-
 void	print_array(char **a)
 {
 	int		i;
@@ -138,7 +134,6 @@ void	print_array(char **a)
  * @return A newly allocated null-terminated copy of the original map, 
  *         or NULL if memory allocation fails.
  */
-
 char	**copy_map(char **original_map)
 {
 	char	**new_map;

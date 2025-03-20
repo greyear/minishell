@@ -19,7 +19,6 @@
  *         path, or NULL if an error occurs. The caller is responsible for 
  *         freeing the returned string.
  */
-
 static char	*get_cd_target(t_ms *ms, char **args)
 {
 	char	cwd[1024];
@@ -62,7 +61,6 @@ static char	*get_cd_target(t_ms *ms, char **args)
  * @return 0 if the directory is valid for changing to, or a non-zero value
  *  if the checks fail.
  */
-
 static int	handle_cd_directory_checks(char *target_dir, t_ms *ms)
 {
 	if (access(target_dir, F_OK) == -1)
@@ -100,7 +98,6 @@ static int	handle_cd_directory_checks(char *target_dir, t_ms *ms)
  * @return 0 if the directory change is successful, or a non-zero value if 
  *         the operation fails.
  */
-
 static int	change_directory(char *target_dir, t_ms *ms)
 {
 	if (chdir(target_dir) == -1)
@@ -128,7 +125,6 @@ static int	change_directory(char *target_dir, t_ms *ms)
  * @return `1` if an error occurs (e.g., invalid arguments, too many arguments), 
  *         otherwise `0` if the arguments are valid.
  */
-
 static int	cd_error(char **args, t_ms *ms)
 {
 	if (!args[1])
@@ -165,7 +161,6 @@ static int	cd_error(char **args, t_ms *ms)
  * @return None. The function modifies `ms->exit_status` and updates the 
  *         shell's environment.
  */
-
 void	handle_cd(char **args, t_ms *ms)
 {
 	char	*target_dir;

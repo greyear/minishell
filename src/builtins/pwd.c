@@ -10,7 +10,6 @@
  * @param array The array of command arguments.
  * @param ms The shell structure containing execution state information.
  */
-
 void	check_pwd(t_ms *ms)
 {
 	char	cwd[1024];

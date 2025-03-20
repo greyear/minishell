@@ -13,7 +13,6 @@
  * @param ms   A pointer to the `t_ms` structure containing environment 
  *             variables and exit status.
  */
-
 void	handle_env(char	**args, t_ms *ms)
 {
 	ms->exit_status = 0;

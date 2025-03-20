@@ -18,7 +18,6 @@
  * @return A newly allocated environment array with the updated values or 
  *         NULL on failure.
  */
-
 static char	**copy_to_temp(char *arg, char ***env, char *key, int *flag)
 {
 	char	**temp;
@@ -64,7 +63,6 @@ static char	**copy_to_temp(char *arg, char ***env, char *key, int *flag)
  * @return Returns `1` on success, or `0` if an error occurred (such as 
  *         memory allocation failure).
  */
-
 static int	change_values(char *arg, char ***env, char *key, int flag)
 {
 	char	**temp;
@@ -110,7 +108,6 @@ static int	change_values(char *arg, char ***env, char *key, int flag)
  * 
  * @return None. Updates the environment variables directly.
  */
-
 static void	change_values_env_ex(char *arg, t_ms *ms)
 {
 	int		len;
@@ -158,7 +155,6 @@ static void	change_values_env_ex(char *arg, t_ms *ms)
  * @param ms A pointer to the shell's main structure containing environment 
  *           variables and state.
  */
-
 static void	process_arguments(char **args, t_ms *ms)
 {
 	int		i;
@@ -201,7 +197,6 @@ static void	process_arguments(char **args, t_ms *ms)
  * @param ms A pointer to the shell's main structure containing environment 
  *           variables and state.
  */
-
 void	handle_export(char **args, t_ms *ms)
 {
 	int		arg_count;

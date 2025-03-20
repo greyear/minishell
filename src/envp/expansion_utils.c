@@ -18,7 +18,6 @@
  * @return None. The function modifies `*result` and updates `ms->exit_status` 
  *         on failure.
  */
-
 static void	append_to_result(char **result, char *new_part, t_ms *ms)
 {
 	char	*temp;
@@ -91,7 +90,6 @@ static char	*find_env_value(char **envp, t_expand *exp)
  * @param result A pointer to the string where the expanded variable value will 
  *               be appended.
  */
-
 void	expand_variable(t_ms *ms, t_expand *exp, char **result)
 {
 	char	*expanded;
@@ -129,7 +127,6 @@ void	expand_variable(t_ms *ms, t_expand *exp, char **result)
  * 
  * @return Returns the length of the processed string.
  */
-
 static int	skip_spaces(const char *str, char *new)
 {
 	int		i;
@@ -173,7 +170,6 @@ static int	skip_spaces(const char *str, char *new)
  *         string if no extra spaces were found. Returns NULL if memory 
  *         allocation fails.
  */
-
 char	*remove_extra_spaces(char *str)
 {
 	char	*new;
@@ -202,7 +198,6 @@ char	*remove_extra_spaces(char *str)
  *         otherwise returns the original string. Returns NULL if memory 
  *         allocation fails.
  */
-
 char	*remove_first_space(char *str)
 {
 	char	*new;

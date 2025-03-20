@@ -62,7 +62,6 @@ static char	*handle_empty_oldpwd(t_ms *ms)
  * @return Returns a newly allocated string containing the `OLDPWD` 
  *         directory, or `NULL` if any error occurs.
  */
-
 char	*get_oldpwd_directory(t_ms *ms)
 {
 	char	*target;
@@ -136,7 +135,6 @@ static void	make_cd_args(t_ms *ms, char *pwd_before, int i)
  * @param pwd_before The path to the directory before a `cd` command is 
  *                   executed (used as the `OLDPWD` value).
  */
-
 static void	add_oldpwd_to_envp(t_ms *ms, char *pwd_before)
 {
 	int		check;
@@ -190,7 +188,6 @@ static void	add_oldpwd_to_envp(t_ms *ms, char *pwd_before)
  * @param pwd_before The value of `PWD` before the `cd` operation, used for 
  *                   updating `OLDPWD` when necessary.
  */
-
 void	update_cd_env(t_ms *ms, char *pwd_before)
 {
 	char	cwd[1024];

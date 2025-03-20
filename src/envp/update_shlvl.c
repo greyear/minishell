@@ -14,7 +14,6 @@
  * @return A string representation of the new `SHLVL` value. If the value is 
  *         invalid, it returns "1" or "0".
  */
-
 static char	*increase_shlvl(char *shlvl_value)
 {
 	int		level;
@@ -49,7 +48,6 @@ static char	*increase_shlvl(char *shlvl_value)
  * @return `1` if `SHLVL` was successfully modified, `2` if a memory error 
  *         occurred, and `0` if `SHLVL` was not found.
  */
-
 static int	modify_shlvl(char ***env)
 {
 	int		i;
@@ -93,7 +91,6 @@ static int	modify_shlvl(char ***env)
  * @param ms The shell structure containing exit status and other execution 
  *           state information.
  */
-
 static void	make_args(char ***export, t_ms *ms)
 {
 	*export = malloc(sizeof(char *) * 3);
@@ -137,7 +134,6 @@ static void	make_args(char ***export, t_ms *ms)
  * @param ms The shell structure containing environment variables and exit 
  *           status information.
  */
-
 void	update_shlvl(t_ms *ms)
 {
 	char	**export;

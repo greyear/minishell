@@ -10,7 +10,6 @@
  * @param arg The string containing the key-value pair.
  * @return The length of the key before the '=' character.
  */
-
 int	get_key_length(char *arg)
 {
 	int		len;
@@ -33,7 +32,6 @@ int	get_key_length(char *arg)
  *         or NULL on failure.
  * The caller is responsible for freeing the allocated memory.
  */
-
 char	*extract_key(char *arg, int len)
 {
 	char	*name;
@@ -60,7 +58,6 @@ char	*extract_key(char *arg, int len)
  * @param name The string to validate as a key.
  * @return 0 if the key is invalid, 1 if it is valid.
  */
-
 int	check_if_valid_key(char *name)
 {
 	int		x;

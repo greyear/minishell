@@ -14,7 +14,6 @@
  *
  * @param var The string representing the variable in the format `key=value`.
  */
-
 static void	print_var(char *var)
 {
 	int		x;
@@ -53,7 +52,6 @@ static void	print_var(char *var)
  * @param ms The shell's main structure containing the list of exported 
  *           environment variables.
  */
-
 void	print_exported(t_ms *ms)
 {
 	int		i;

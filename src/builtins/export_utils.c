@@ -16,7 +16,6 @@
  * @return A newly allocated string with the updated or unchanged entry.
  *         Returns NULL if memory allocation fails.
  */
-
 char	*duplicate_or_replace(char *entry, char *arg, char *key, int *flag)
 {
 	int		len;
@@ -41,7 +40,6 @@ char	*duplicate_or_replace(char *entry, char *arg, char *key, int *flag)
  * @param ms The main structure containing the `exported` array to be sorted.
  *           The array is sorted in-place, modifying the `exported` field.
  */
-
 void	sort_exported_alphaorder(t_ms *ms)
 {
 	int		i;
@@ -85,7 +83,6 @@ void	sort_exported_alphaorder(t_ms *ms)
  * @return Returns `1` on success, or `0` if an error occurred 
  * (e.g., memory allocation failure).
  */
-
 static int	add_to_end(char ***ex, char ***temp, char *key, int i)
 {
 	(*temp)[i] = ft_strdup(key);
@@ -121,7 +118,6 @@ static int	add_to_end(char ***ex, char ***temp, char *key, int i)
  * @return Returns `1` on success, or `0` if memory allocation failed or if an 
  *         error occurred.
  */
-
 static int	copy_exported(char *key, char ***ex, char ***temp, int len)
 {
 	int		i;
@@ -165,7 +161,6 @@ static int	copy_exported(char *key, char ***ex, char ***temp, int len)
  * @param ms A pointer to the `t_ms` structure containing the state of 
  *           the shell, including `exported` variables.
  */
-
 void	add_to_exported(char *key, t_ms *ms)
 {
 	char	**temp;

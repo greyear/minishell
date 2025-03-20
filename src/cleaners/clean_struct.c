@@ -15,7 +15,6 @@
  * @param ms The shell structure containing the exit status to be updated 
  *           if an error occurs.
  */
-
 void	cleanup_heredocs(char **filenames, t_ms *ms)
 {
 	int		i;
@@ -46,7 +45,6 @@ void	cleanup_heredocs(char **filenames, t_ms *ms)
  * @param p A pointer to the `t_pipe` structure containing the process ID 
  *          array.
  */
-
 void	free_pids(t_pipe *p)
 {
 	if (p->pids)
@@ -66,7 +64,6 @@ void	free_pids(t_pipe *p)
  * @param ms A pointer to the `t_ms` structure to be cleaned. If `ms` is NULL, 
  *        the function does nothing.
  */
-
 void	clean_struct(t_ms *ms)
 {
 	if (!ms)
@@ -96,7 +93,6 @@ void	clean_struct(t_ms *ms)
  * @param ms The main shell structure containing environment data and execution 
  *           context.
  */
-
 void	cleanup_after_execution(t_ms *ms)
 {
 	if (ms->heredoc_files)
