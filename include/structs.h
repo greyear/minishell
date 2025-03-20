@@ -1,6 +1,6 @@
-
 #ifndef STRUCTS_H
 # define STRUCTS_H
+
 
 typedef struct s_token
 {

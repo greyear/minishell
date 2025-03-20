@@ -1,7 +1,5 @@
-
 #include "../../include/minishell.h"
 #include <signal.h>
-
 
 /**
  * @brief Handles the SIGINT signal in an interactive shell environment.

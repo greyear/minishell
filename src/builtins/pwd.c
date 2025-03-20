@@ -4,12 +4,12 @@
  * @brief Handles the execution of the "pwd" command.
  *
  * This function prints the current working directory to standard output.
- * If `getcwd` fails, an error message is printed, and the exit status is set to 1.
+ * If `getcwd` fails, an error message is printed, and the exit status
+ * is set to 1.
  *
  * @param array The array of command arguments.
  * @param ms The shell structure containing execution state information.
  */
-
 void	check_pwd(t_ms *ms)
 {
 	char	cwd[1024];
