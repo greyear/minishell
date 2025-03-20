@@ -1,7 +1,7 @@
-
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <sys/types.h>
 # include "constants.h"
 # include "structs.h"
 # include "../libft/include/libft.h"
@@ -10,7 +10,6 @@
 # include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>
-# include <sys/types.h>
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <fcntl.h>
@@ -41,7 +40,6 @@ void			add_to_exported(char *key, t_ms *ms);
 void			sort_exported_alphaorder(t_ms *ms);
 void			handle_export(char **args, t_ms *ms);
 void			handle_unset(char **args, t_ms *ms);
-int				rm_from_env_ex(char ***env, char *name, int len, int flag);
 int				check_env(char *env, char *name, int len, int flag);
 char			**allocate_temp_env(char **env, int x);
 char			**copy_map(char **original_map);
