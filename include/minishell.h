@@ -24,19 +24,6 @@
 
 extern volatile sig_atomic_t	g_sgnl;
 
-//# define ERR_FORK "fork function failed"
-//# define ERR_PIPE "pipe creation failed"
-//# define ERR_DUP2 "dup2 function failed"
-//# define ERR_OPEN "opening failed"
-//# define ERR_CLOSE "closing failed"
-//# define NO_FILE_DIR "No such file or directory"
-//# define ZSH_NO_FILE "zsh: no such file or directory:"
-//# define CMD_NOT_FOUND "zsh: command not found:"
-//# define PERM_DENIED "zsh: permission denied:"
-
-//# define CMD_EXEC 126
-//# define CMD_NF 127
-
 //BNF
 char			*validate_word(char *str, int *err_flag);
 char			*validate_redirect(char *str, int *err_flag);
@@ -73,8 +60,6 @@ char			*get_env_value(char *key, char **envp);
 void			check_exit(char	**array, t_ms *ms);
 long long		convert_to_ll(char *str, int *error);
 char			*handle_expansion(t_expand *exp, t_ms *ms);
-
-char			*expand_key(char **envp, char *key, int len, t_ms *ms);
 char			*duplicate_or_replace(char *entry, char *arg, char *key, int *flag);
 char			*return_target(t_ms *ms, char *target);
 void			update_cd_env(t_ms *ms, char *pwd_before);
@@ -82,14 +67,14 @@ void			update_cd_env(t_ms *ms, char *pwd_before);
 //Lexer
 t_token			*tokenization(char *str, t_ms *ms);
 t_token_type	define_token_type(char *str, size_t i);
-t_token			*create_new_token(char *str, size_t *i, t_token_type type);
-char			*word_with_quotes(char *str, size_t *start, t_token * new);
-char			*word_without_quotes(char *str, size_t *start);
+t_token			*create_new_token(char *str, size_t *i, t_token_type type, t_ms *ms);
+char			*word_with_quotes(char *str, size_t *start, t_token * new, t_ms *ms);
+char			*word_without_quotes(char *str, size_t *start, t_ms *ms);
 void			skip_special_tokens(char *str, size_t *i, t_token_type type);
 void			skip_whitespaces(char *str, size_t *i);
 void			clean_token(t_token *token);
 t_bool			is_empty_word_token(t_token *token);
-void			clean_token_list(t_token **first);
+t_token			*clean_token_list(t_token **first);
 t_token			*delete_empty_word_tokens(t_token *first);
 t_token			*delete_whitespace_tokens(t_token *first);
 t_token			*unite_two_word_tokens(t_token *first);
@@ -122,21 +107,16 @@ void			execute_command(char **envp, char **cmd);
 void			make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms);
 void			pipe_process(int prev_pipe, int next_pipe);
 void			redirect_process(int infile, int outfile);
-void			pipe_or_redir(t_cmd *cur, int *pipe_fd, int i, int num_cmds, int cur_fd);
 void			handle_absolute_or_relative_path(char **envp, char **cmds);
 void			handle_no_path_variable(char **envp, char **cmd);
 void			check_if_dot(char **cmds);
 void			setup_pipes(int *pipe_fd, int i, int num_cmds, int cur_fd);
-
 
 //Envp
 int				check_list_for_expansions(t_token *first, t_ms *ms);
 t_expand		*exp_init(void);
 int				expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str);
 void			expand_variable(t_ms *ms, t_expand *exp, char **result);
-t_envp			*envp_from_list(t_envp *list, char *name);
-t_bool			is_envp_symbol(int c);
-t_bool			is_envp_first_symbol(int c);
 t_ms			*initialize_struct(char **envp);
 void			check_shlvl(t_ms *ms);
 char			*remove_extra_spaces(char *str);
@@ -181,9 +161,7 @@ void			print_malloc_error(void);
 void			clean_arr(char ***arr);
 void			free_int_array(int **array);
 void			clean_struct(t_ms *ms);
-void			clean_struct_fields(t_ms *ms);
 void			cleanup_heredocs(char **filenames);
-void			close_pipes(int num_cmds, int **pipe_fd);
 void			free_pids(t_pipe *p);
 void			close_fds(t_cmd *cmd);
 void			close_all_fds(t_pipe *p);

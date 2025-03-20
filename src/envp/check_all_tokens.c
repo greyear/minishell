@@ -20,8 +20,10 @@ t_expand	*exp_init(void)
 	exp = malloc(sizeof(t_expand));
 	if (!exp)
 	{
-		perror("memory allocation failed");
-		exit(1); //?
+		print_malloc_error();
+		//ms->exit_status = MALLOC_ERR;
+		return (NULL);
+		//exit(1); //?
 	}
 	exp->data = NULL;
 	exp->key = NULL;
@@ -51,7 +53,6 @@ int	expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str)
 		exp->if_first = first_in_str;
 		expanded = handle_expansion(exp, ms);
 	}
-		
 	if (!expanded)
 	{
 		free(data_copy);
@@ -60,7 +61,6 @@ int	expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str)
 	}
 	free(cur->data);
 	cur->data = expanded;
-
 	if (cur->specific_redir && !cur->quote && \
 			data_copy[0] && !cur->data[0])
 	{

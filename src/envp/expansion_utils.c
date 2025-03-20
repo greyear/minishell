@@ -44,7 +44,7 @@ static char	*find_env_value(char **envp, t_expand *exp)
 	char	*copy;
 	char	*without_spaces;
 	char	*without_first;
- 
+
 	i = 0;
 	while (envp[i])
 	{
@@ -58,11 +58,9 @@ static char	*find_env_value(char **envp, t_expand *exp)
 				if (exp->quote == 0) //for heredocs????
 				{
 					without_spaces = remove_extra_spaces(copy);
-					//free(copy);
 					if (exp->if_first && without_spaces[0] == ' ')
 					{
 						without_first = remove_first_space(without_spaces);
-						//free(without_spaces);
 						return (without_first);
 					}
 					return (without_spaces);
@@ -76,6 +74,18 @@ static char	*find_env_value(char **envp, t_expand *exp)
 	return (ft_strdup(""));
 }
 
+/**
+ * @brief Expands a variable and appends its value to the result string.
+ * 
+ * This function retrieves the value of an environment variable stored in `exp->key`
+ * and appends it to `result`. If the key is `?`, it expands to the shell's exit status.
+ * If the key starts with a digit, it expands to an empty string. Otherwise, the function
+ * searches for the corresponding environment variable and appends its value.
+ * 
+ * @param ms A pointer to the main shell structure, containing environment variables and exit status.
+ * @param exp A pointer to the `t_expand` structure containing the variable key to expand.
+ * @param result A pointer to the result string where the expanded value will be appended.
+ */
 void	expand_variable(t_ms *ms, t_expand *exp, char **result)
 {
 	char	*expanded;
@@ -94,7 +104,7 @@ void	expand_variable(t_ms *ms, t_expand *exp, char **result)
       ms->exit_status = MALLOC_ERR;
       return;
     }
-	append_to_result(result, expanded ,ms);
+	append_to_result(result, expanded, ms);
 }
 
 /**

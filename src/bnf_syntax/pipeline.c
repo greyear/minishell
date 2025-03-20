@@ -1,4 +1,6 @@
 
+//mallocs checked
+
 #include "../../include/minishell.h"
 
 /**
@@ -18,11 +20,11 @@ char	*validate_pipeline(char *str, int *err_flag)
 	while (ft_isspace(*str))
 		str++;
 	next = validate_cmd(str, err_flag);
-	if (next == str) //не нашли команду
+	if (next == str)
 		*err_flag = 1;
-	if (*err_flag == 1) //+ слово с незакрытой кавычкой, редирект без файла или со спецсимволом вместо файла
+	if (*err_flag == 1)
 		return (next);
-	if (*next == VERTICAL && *(next + 1) != VERTICAL) //проверка, что не ||
+	if (*next == VERTICAL && *(next + 1) != VERTICAL)
 	{
 		next++;
 		if (ft_isemptystring(next))

@@ -6,6 +6,7 @@ NAME			=	minishell
 LIBFT_DIR		= 	./libft
 SRC_DIR			=	./src
 
+MAIN_DIR		=	main
 BNF_DIR			=	bnf_syntax
 LEX_DIR			=	lexer
 PARS_DIR		=	parser
@@ -35,14 +36,14 @@ LDFLAGS			=	-lreadline
 RM				=	rm -f
 
 # Source files
+MAIN_FILES		=	main.c \
+					initialize_struct.c
 BNF_FILES		=	input_validation.c \
 					pipeline.c \
 					command.c \
 					simple_command.c \
 					redirect.c \
-					word.c \
-					main.c
-#DELETE main.c!
+					word.c
 LEX_FILES		=	tokenization.c \
 					token_creation.c \
 					token_cleaning.c \
@@ -50,13 +51,10 @@ LEX_FILES		=	tokenization.c \
 					skipping.c \
 					merging.c \
 					redirection.c \
-					token_utils.c \
-					main.c
-#DELETE main.c!
+					token_utils.c
 PARS_FILES		=	cmd_creation.c \
 					cmd_blocks.c \
-					cmd_cleaning.c \
-					main.c
+					cmd_cleaning.c
 BUILT_FILES		=	cd.c \
 					cd_utils.c \
 					cd_utils2.c \
@@ -85,9 +83,6 @@ REDIR_FILES		=	fds.c \
 ENVP_FILES		=	check_all_tokens.c \
 					handle_expansion.c \
 					expansion_utils.c \
-					initialize_struct.c \
-					list.c \
-					letters.c \
 					update_shlvl.c
 READING_FILES	=	history.c \
 					history_file.c
@@ -100,7 +95,8 @@ ERR_FILES		=	errors_bonus.c \
 					builtin_error.c \
 					exit_error.c
 
-SRC_FILES		=	$(addprefix $(BNF_DIR)/, $(BNF_FILES)) \
+SRC_FILES		=	$(addprefix $(MAIN_DIR)/, $(MAIN_FILES)) \
+					$(addprefix $(BNF_DIR)/, $(BNF_FILES)) \
 					$(addprefix $(LEX_DIR)/, $(LEX_FILES)) \
 					$(addprefix $(PARS_DIR)/, $(PARS_FILES)) \
 					$(addprefix $(EXEC_DIR)/, $(EXEC_FILES)) \
