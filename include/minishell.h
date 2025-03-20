@@ -2,6 +2,7 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <sys/types.h>
 # include "constants.h"
 # include "structs.h"
 # include "../libft/include/libft.h"
@@ -10,7 +11,6 @@
 # include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>
-# include <sys/types.h>
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <fcntl.h>
@@ -77,11 +77,11 @@ t_bool			is_empty_word_token(t_token *token);
 t_token			*clean_token_list(t_token **first);
 t_token			*delete_empty_word_tokens(t_token *first);
 t_token			*delete_whitespace_tokens(t_token *first);
-t_token			*unite_two_word_tokens(t_token *first);
+t_token			*unite_two_word_tokens(t_token *first, t_ms *ms);
 t_bool			is_redirect(t_token_type type);
 void			flags_for_redirections(t_token *cur);
-void			put_files_for_redirections(t_token *cur);
-void			print_tokens(t_token *token_list);
+void			put_files_for_redirections(t_token *cur, t_ms *ms);
+void			print_tokens(t_token *token_list); //remember to delete!
 int				check_list_for_tilde(t_token *first, t_ms *ms);
 
 //Parser
@@ -158,6 +158,7 @@ void			print_too_many_args_error(void);
 void			print_env_error(char **args);
 void			print_flag_error(char **args);
 void			print_malloc_error(void);
+void			*print_malloc_set_status(t_ms *ms);
 
 //Cleaners
 void			clean_arr(char ***arr);

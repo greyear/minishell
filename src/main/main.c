@@ -1,9 +1,9 @@
 #include "../../include/minishell.h"
 
-#include <stdio.h>
+/*#include <stdio.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-#include <bits/types.h>
+#include <bits/types.h>*/
 //#include <asm-generic/termbits.h> //delete for school computers
 
 volatile sig_atomic_t	g_sgnl;
@@ -83,16 +83,6 @@ static void	input_output(t_cmd *cmd)
 	}
 }*/
 
-static void	cleanup_after_execution(t_ms *ms)
-{
-	if (ms->heredoc_files)
-		cleanup_heredocs(ms->heredoc_files);
-	reset_heredocs(ms);
-	clean_token_list(&(ms->tokens));
-	clean_block_list(&(ms->blocks));
-	clean_cmd_list(&(ms->cmds));
-}
-
 static void	execute_commands(t_ms *ms)
 {
 	t_cmd	*cur;
@@ -164,7 +154,7 @@ static int	tokenize_input(char **input, t_ms *ms)
 		clean_token_list(&(ms->tokens));
 		return (0);
 	}
-	put_files_for_redirections(ms->tokens);
+	put_files_for_redirections(ms->tokens, ms);
 	return (1);
 }
 

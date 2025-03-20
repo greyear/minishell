@@ -37,15 +37,15 @@ typedef enum e_char
 
 typedef enum e_token_type
 {
-	DUMMY = 0, // empty first technical node
-	PIPE = 1, // |
-	IN = 2, // <
-	OUT = 3, // >
-	HEREDOC = 4, // <<
-	APPEND = 5, // >>
-	WORD = 6, // string
+	DUMMY = 0,
+	PIPE = 1,
+	IN = 2,
+	OUT = 3,
+	HEREDOC = 4,
+	APPEND = 5,
+	WORD = 6,
 	SPACE = 7,
-	END = 8, //?? mb ne nuzhen
+	END = 8,
 	EMPTY = 9
 }	t_token_type;
 
@@ -54,8 +54,8 @@ typedef enum e_err
 	ARGS_NUM,
 	INV_ARGS,
 	MLLC,
-	NO_FD = -1, //same as err output of open, dup2...
-	DEF = -2, //divide into 2 structs? change values
+	NO_FD = -1,
+	DEF = -2,
 }	t_err;
 
 typedef enum e_print
@@ -113,10 +113,5 @@ typedef enum e_mode
 # define TOKENS_ERR "Error: failed to create tokens\n"
 # define HEREDOC_ERR "maximum here-document count exceeded\n"
 # define HISTORY_SIZE 500
-
-/*POSIX ограничивает диапазон exit status от 0 до 255. 
-При использовании значений выше 255 операционная система может 
-"обрезать" коды до младших 8 бит, что вызовет некорректные 
-результаты*/
 
 #endif
