@@ -9,7 +9,6 @@
  * 
  * @return A pointer to the newly allocated `t_ms` structure.
  */
-
 static t_ms	*allocate_struct(void)
 {
 	t_ms	*ms;
@@ -24,99 +23,18 @@ static t_ms	*allocate_struct(void)
 	return (ms);
 }
 
-static void	initialize_envp_without_envp(t_ms *ms)
-{
-	ms->envp = malloc(sizeof(char *) * 4);
-	if (!ms->envp)
-	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return;
-	}
-	ms->envp[0] = ft_strdup(ms->exported[1]);
-	if (!ms->envp[0])
-	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return;
-	}
-	ms->envp[1] = ft_strdup(ms->exported[2]);
-	if (!ms->envp[1])
-	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return;
-	}
-	ms->envp[2] = NULL;
-}
-
-static void	initialize_without_envp(t_ms *ms)
-{
-	char	cwd[1024];
-
-	ms->exported = malloc(sizeof(char *) * 4);
-	if (!ms->exported)
-	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return;
-	}
-	ms->exported[0] = ft_strdup("OLDPWD");
-	if (!ms->exported[0])
-	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return;
-	}
-	if (getcwd(cwd, sizeof(cwd)) == NULL)
-	{
-		perror("pwd: getcwd failed");
-		ms->exit_status = SYSTEM_ERR;
-		return;
-	}
-	ms->exported[1] = ft_strjoin("PWD=", cwd);
-	if (!ms->exported[1])
-	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return;
-	}
-	ms->exported[2] = ft_strdup("SHLVL=0");
-	if (!ms->exported[2])
-	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return;
-	}
-	ms->exported[3] = NULL;
-	initialize_envp_without_envp(ms);
-}
-
-static void	initialize_envp(t_ms *ms, char **envp)
-{
-	if (!envp || !*envp)
-	{
-		initialize_without_envp(ms);
-		ms->no_env = true;
-		return;
-	}
-	ms->no_env = false;
-	ms->envp = copy_map(envp);
-	if (!ms->envp)
-	{
-		print_malloc_error();
-		clean_struct(ms);
-		exit(1);
-	}
-	ms->exported = copy_map(envp);
-	if (!ms->exported)
-	{
-		print_malloc_error();
-		clean_struct(ms);
-		exit(1);
-	}
-}
-
+/**
+ * @brief Initializes the shell's history functionality.
+ *
+ * This function sets up the shell's history by calling `default_history` to 
+ * set default values for the history list and initializing the history number. 
+ * It then attempts to open the history file for reading. If the file is 
+ * successfully opened, the history file flag is set. Otherwise, an error 
+ * message is printed and the history file flag is set to false.
+ *
+ * @param ms The shell structure containing execution state, including the 
+ *           history.
+ */
 static void	initialize_history(t_ms *ms)
 {
 	default_history(ms->history);
@@ -144,12 +62,13 @@ static void	initialize_history(t_ms *ms)
  * 
  * @param envp The environment variables inherited from the parent process.
  * 
- * @return A pointer to the initialized `t_ms` structure, or `NULL` if allocation fails.
+ * @return A pointer to the initialized `t_ms` structure, 
+ *         or `NULL` if allocation fails.
  * 
  */
 t_ms	*initialize_struct(char **envp)
 {
-	t_ms *ms;
+	t_ms	*ms;
 
 	ms = allocate_struct();
 	if (!ms)
@@ -160,7 +79,7 @@ t_ms	*initialize_struct(char **envp)
 	initialize_history(ms);
 	ms->heredoc_count = 0;
 	ms->heredoc_files = NULL;
-	check_shlvl(ms);
+	update_shlvl(ms);
 	g_sgnl = 0;
 	return (ms);
 }

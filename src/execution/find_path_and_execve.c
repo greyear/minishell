@@ -1,19 +1,24 @@
 #include "../../include/minishell.h"
 
 /**
- * @brief Constructs the full path of the command by combining directories from the `PATH` variable and the command name.
+ * @brief Constructs the full path of the command by combining directories 
+ *        from the `PATH` variable and the command name.
  * 
- * This function iterates over each directory in the `paths` array (extracted from the `PATH` environment variable) and 
- * attempts to combine it with the command name (`cmd`) to create a potential full path. It checks if the constructed 
- * full path exists using `access()`. If it finds an existing file at that path, it returns the full path. If no valid path 
- * is found after checking all directories, it returns `NULL`.
+ * This function iterates over each directory in the `paths` array (extracted 
+ * from the `PATH` environment variable) and attempts to combine it with the 
+ * command name (`cmd`) to create a potential full path. It checks if the 
+ * constructed full path exists using `access()`. If it finds an existing file 
+ * at that path, it returns the full path. If no valid path is found after 
+ * checking all directories, it returns `NULL`.
  * 
- * @param paths An array of directory paths from the `PATH` environment variable.
- * @param cmd The command name to search for within the directories in `paths`.
+ * @param paths An array of directory paths from the `PATH` environment 
+ *              variable.
+ * @param cmd The command name to search for within the directories in 
+ *            `paths`.
  * 
- * @return Returns the full path to the command if it exists, otherwise returns `NULL`.
+ * @return Returns the full path to the command if it exists, otherwise 
+ *         returns `NULL`.
  */
-
 static char	*make_full_path(char **paths, char *cmd)
 {
 	int		i;
@@ -46,18 +51,22 @@ static char	*make_full_path(char **paths, char *cmd)
 /**
  * @brief Searches the `PATH` environment variable for the specified command.
  * 
- * This function iterates through the environment variables to find the `PATH` variable, which contains a colon-separated 
- * list of directories. It then attempts to find the command specified in `cmds[0]` by searching through the directories 
- * listed in `PATH`. If the command is found, it returns the full path to the command. If the command is not found or 
+ * This function iterates through the environment variables to find the 
+ * `PATH` variable, which contains a colon-separated list of directories. 
+ * It then attempts to find the command specified in `cmds[0]` by searching 
+ * through the directories listed in `PATH`. If the command is found, it 
+ * returns the full path to the command. If the command is not found or 
  * `PATH` is not set, it returns `NULL`.
  * 
- * @param envp An array of environment variables, including the `PATH` variable.
- * @param cmds An array of command arguments, where `cmds[0]` is the command name to search for.
+ * @param envp An array of environment variables, including the `PATH` 
+ *             variable.
+ * @param cmds An array of command arguments, where `cmds[0]` is the 
+ *             command name to search for.
  * 
- * @return Returns the full path to the command if found, otherwise returns `NULL`.
+ * @return Returns the full path to the command if found, otherwise returns 
+ *         `NULL`.
  */
-
-static char *find_path_from_envp(char **envp, char **cmds)
+static char	*find_path_from_envp(char **envp, char **cmds)
 {
 	int		i;
 	char	*path_var;
@@ -87,24 +96,26 @@ static char *find_path_from_envp(char **envp, char **cmds)
 }
 
 /**
- * @brief Executes a command by searching for its path and running it with `execve()`.
+ * @brief Executes a command by searching for its path and running it with 
+ *        `execve()`.
  * 
- * This function processes and executes a given command by checking its validity, 
- * resolving its path, and executing it. If the command is an absolute or relative path, 
- * it is validated using `handle_absolute_or_relatve_path()`. If no `PATH` variable is found, 
- * it handles execution using `handle_no_path_variable()`. Otherwise, the function 
- * searches for the command in the system's `PATH`, executes it if found, or 
- * prints an error if it cannot be executed.
+ * This function processes and executes a given command by checking its 
+ * validity, resolving its path, and executing it. If the command is an 
+ * absolute or relative path, it is validated using 
+ * `handle_absolute_or_relatve_path()`. If no `PATH` variable is found, it 
+ * handles execution using `handle_no_path_variable()`. Otherwise, the 
+ * function searches for the command in the system's `PATH`, executes it if 
+ * found, or prints an error if it cannot be executed.
  * 
  * @param envp The environment variables.
  * @param cmd An array of strings representing the command and its arguments.
  * 
- * @return This function does not return; it either executes the command or exits the process with:
+ * @return This function does not return; it either executes the command or 
+ *         exits the process with:
  *         - `127` if the command is not found.
  *         - `126` if the command exists but lacks execution permission.
  */
-
-void    execute_command(char **envp, char **cmd)
+void	execute_command(char **envp, char **cmd)
 {
 	char	*path;
 

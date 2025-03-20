@@ -1,39 +1,5 @@
-
 #include "../../include/minishell.h"
 #include <signal.h>
-
-/**
- * @brief Initializes terminal settings for signal handling.
- * 
- * This function configures the terminal to disable control character echoing 
- * (such as `Ctrl+C` and `Ctrl+Z`), which is useful for handling terminal signals 
- * in custom shell programs. It uses the `tcgetattr` and `tcsetattr` functions to 
- * modify the terminal settings. If these functions fail, an error is printed.
- * 
- * @return Returns 1 if the terminal settings were successfully initialized, 
- *         or 0 if an error occurred.
- */
-
-int	init_terminal_signals(void)
-{
-	struct termios	term;
-
-	if (isatty(STDIN_FILENO))
-	{
-		if (tcgetattr(STDIN_FILENO, &term) == -1)
-		{
-			perror("tcgetattr failed");
-			return (0);
-		}
-		term.c_lflag &= ~ECHOCTL;
-		if (tcsetattr(STDIN_FILENO, TCSANOW, &term) == -1)
-		{
-			perror("tcsetattr failed");
-			return (0);
-		}
-	}
-	return (1);
-}
 
 /**
  * @brief Handles the SIGINT signal in an interactive shell environment.
