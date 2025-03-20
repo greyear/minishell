@@ -40,13 +40,13 @@ void	clean_token(t_token *token)
  * @param first A pointer to the head of the token list. The pointer itself 
  *              is set to NULL after all tokens are freed.
  */
-void	clean_token_list(t_token **first) //change it to return NULL?
+t_token	*clean_token_list(t_token **first) //change it to return NULL?
 {
 	t_token	*cur;
 	t_token	*next;
 
 	if (!first || !*first)
-		return ;
+		return (NULL);
 	cur = *first;
 	while (cur)
 	{
@@ -55,6 +55,7 @@ void	clean_token_list(t_token **first) //change it to return NULL?
 		cur = next;
 	}
 	*first = NULL;
+	return (NULL);
 }
 
 /**

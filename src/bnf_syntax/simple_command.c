@@ -1,4 +1,6 @@
 
+//mallocs checked
+
 #include "../../include/minishell.h"
 
 /**
@@ -18,16 +20,14 @@ char	*validate_simple_cmd(char *str, int *err_flag)
 {
 	char	*next;
 
-	//whitespaces can be?
 	while (ft_isspace(*str))
 		str++;
 	next = validate_redirect(str, err_flag);
-	if (next == str) //there were no redirect
+	if (next == str)
 		next = validate_word(str, err_flag);
-	if (*err_flag == 1 || *next == R_PARENT) // again ")" check
+	if (*err_flag == 1 || *next == R_PARENT)
 		return (next);
-	//printf("Re-entering str = %c, next = %c\n", *(str + 1), *(next + 1));
-	if (next != str) //we read 1 redirect + cmd or single cmd and need to check for more
+	if (next != str)
 		next = validate_simple_cmd(next, err_flag);
 	return (next);
 }
