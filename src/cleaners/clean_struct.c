@@ -28,3 +28,23 @@
 		cleanup_heredocs(ms->heredoc_files);
 	free(ms);
  }
+
+/**
+ * @brief Cleans up allocated memory and temporary files after command execution.
+ * 
+ * This function performs cleanup operations after executing a command or pipeline.
+ * It ensures that temporary files, token lists, command structures, and any 
+ * allocated resources related to heredocs are properly freed.
+ * 
+ * @param ms The main shell structure containing environment data and execution context.
+ */
+
+void	cleanup_after_execution(t_ms *ms)
+{
+	if (ms->heredoc_files)
+		cleanup_heredocs(ms->heredoc_files);
+	reset_heredocs(ms);
+	clean_token_list(&(ms->tokens));
+	clean_block_list(&(ms->blocks));
+	clean_cmd_list(&(ms->cmds));
+}

@@ -104,6 +104,7 @@ char	*build_relative_path(char *target, char *cwd, t_ms *ms)
 	full_path = ft_strjoin(temp, target);
 	if (!full_path)
 	{
+		free(temp);
 		print_malloc_error();
 		ms->exit_status = MALLOC_ERR;
 		return (NULL);

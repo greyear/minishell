@@ -48,7 +48,7 @@ static char	*get_cd_target(t_ms *ms, char **args)
  * 
  * This function checks whether the target directory exists and whether the current process 
  * has the necessary permissions to access it. If the directory does not exist or if access 
- * is denied, an appropriate error message is printed, the shell's exit status is updated, 
+ * is denied, an appropriate error message is printed, target_dir freed, the shell's exit status is updated, 
  * and the function returns a non-zero value. If the directory passes both checks, the function 
  * returns 0, indicating that the directory is valid for a change.
  * 
@@ -64,12 +64,14 @@ static int	handle_cd_directory_checks(char *target_dir, t_ms *ms)
 	if (access(target_dir, F_OK) == -1)
 	{
 		print_cd_error(target_dir, NO_FILE_OR_DIR);
+		free(target_dir);
 		ms->exit_status = 1;
 		return (1);
 	}
 	if (access(target_dir, X_OK) == -1)
 	{
 		print_cd_error(target_dir, PERM_DEN);
+		free(target_dir);
 		ms->exit_status = 1;
 		return (1);
 	}

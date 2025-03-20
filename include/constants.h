@@ -111,6 +111,7 @@ typedef enum e_mode
 # define BLOCKS_ERR "Error: failed to create blocks\n"
 # define CMDS_ERR "Error: failed to create commands\n"
 # define TOKENS_ERR "Error: failed to create tokens\n"
+# define HEREDOC_ERR "maximum here-document count exceeded\n"
 # define HISTORY_SIZE 500
 
 /*POSIX ограничивает диапазон exit status от 0 до 255. 
