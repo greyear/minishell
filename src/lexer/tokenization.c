@@ -42,7 +42,7 @@ t_token *tokenization(char *str, t_ms *ms)
 	flags_for_redirections(first);
 	if (check_list_for_expansions(first, ms) == 1)
 		return(clean_token_list(&first));
-	first = unite_two_word_tokens(first);
+	first = unite_two_word_tokens(first, ms); //do I need to protect it or return smth else in uniting?
 	if (check_list_for_tilde(first, ms) == 1)
 		return(clean_token_list(&first));
 	return (first);

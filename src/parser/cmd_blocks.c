@@ -1,4 +1,6 @@
 
+//mallocs checked
+
 #include "../../include/minishell.h"
 
 /**
@@ -17,16 +19,16 @@
  * 
  * @note If no tokens exist between `start` and `end`, the function still returns `0`.
  */
-int	check_block(t_token *start, t_token *end, int *err_flag) //check without
-{ //what if the very first block starts from | symbol?
+int	check_block(t_token *start, t_token *end, int *err_flag)
+{
 	t_token	*cur;
-	//what if nothing in between
+
 	cur = start;
 	while (cur != end)
 	{
-		if (!(cur->type == WORD || is_redirect(cur->type) || cur->type == DUMMY)) //dummy?
+		if (!(cur->type == WORD || is_redirect(cur->type) || cur->type == DUMMY))
 		{
-			*err_flag = 1; //save place?
+			*err_flag = 1;
 			return (1);
 		}
 		cur = cur->next;

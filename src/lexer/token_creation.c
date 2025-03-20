@@ -18,7 +18,6 @@
  */
 t_token_type	define_token_type(char *str, size_t i)
 {
-	//&?
 	if (str[i] == '<' && str[i + 1] == '<')
 		return (HEREDOC);
 	else if (str[i] == '<')
@@ -103,11 +102,7 @@ t_token	*create_new_token(char *str, size_t *i, t_token_type type, t_ms *ms)
 
 	new = (t_token *)ft_calloc(1, sizeof(t_token));
 	if (!new)
-	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return (NULL);
-	}
+		return ((t_token *)print_malloc_set_status(ms));
 	default_token_values(new);
 	new->type = type;
 	if (type == WORD)
