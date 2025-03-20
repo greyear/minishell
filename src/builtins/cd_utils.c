@@ -3,22 +3,23 @@
 /**
  * @brief Retrieves the home directory path.
  * 
- * This function attempts to get the home directory from the environment variable `HOME`. 
- * If `HOME` is not set, it optionally falls back to `getenv("HOME")` based on the `flag`.
- * If the directory is empty or does not exist, an error is printed, and the shell's 
- * exit status is updated.
+ * This function attempts to get the home directory from the environment 
+ * variable `HOME`. If `HOME` is not set, it optionally falls back to 
+ * `getenv("HOME")` based on the `flag`. If the directory is empty or does 
+ * not exist, an error is printed, and the shell's exit status is updated.
  * 
  * @param ms A pointer to the shell structure containing execution state.
- * @param flag If set to 1 and envp exist, attempts to use `getenv("HOME")` as a fallback.
+ * @param flag If set to 1 and `envp` exists, attempts to use 
+ *            `getenv("HOME")` as a fallback.
  * 
- * @return A newly allocated string containing the home directory path, or NULL on failure.
+ * @return A newly allocated string containing the home directory path, 
+ *         or `NULL` on failure.
  */
 
 char	*get_home_directory(t_ms *ms, int flag)
 {
 	char	*temp;
 
-	(void) flag;
 	temp = get_env_value("HOME", ms->envp);
 	if (!temp)
 	{
@@ -77,16 +78,18 @@ char	*get_parent_directory(t_ms *ms)
 }
 
 /**
- * @brief Constructs a relative path by appending the target to the current directory.
+ * @brief Constructs a relative path by appending the target to the 
+ *        current directory.
  * 
- * This function concatenates the current working directory (`cwd`) with a given 
- * `target` directory or file, ensuring a proper path format with a `/` separator.
+ * This function concatenates the current working directory (`cwd`) with 
+ * a given `target` directory or file, ensuring a proper path format with 
+ * a `/` separator.
  * 
  * @param target The relative target path to append to `cwd`.
  * @param cwd The current working directory.
  * 
- * @return A newly allocated string containing the full relative path, or NULL 
- *         if memory allocation fails.
+ * @return A newly allocated string containing the full relative path, or 
+ *         `NULL` if memory allocation fails.
  */
 
 char	*build_relative_path(char *target, char *cwd, t_ms *ms)
@@ -116,9 +119,10 @@ char	*build_relative_path(char *target, char *cwd, t_ms *ms)
 /**
  * @brief Updates or adds an environment variable in the shell's environment.
  * 
- * This function searches for an existing environment variable matching the given 
- * key. If found, it updates its value. If the variable does not exist, no new 
- * entry is added. Memory for the new value is dynamically allocated and replaces 
+ * This function searches for an existing environment variable matching
+ * the given key. If found, it updates its value.
+ * If the variable does not exist, no new entry is added.
+ * Memory for the new value is dynamically allocated and replaces 
  * the old entry. 
  * 
  * @param ms A pointer to the `t_ms` structure, which contains the shell's 
@@ -132,18 +136,16 @@ char	*build_relative_path(char *target, char *cwd, t_ms *ms)
 
 void	update_env_var(t_ms *ms, char *key, char *new_value)
 {
-	int	i;
+	int		i;
 	char	*new_env_entry;
 
-	if (!ms->envp)
-		return;
 	i = 0;
 	new_env_entry = malloc(ft_strlen(key) + ft_strlen(new_value) + 1);
 	if (!new_env_entry)
 	{
 		print_malloc_error();
 		ms->exit_status = MALLOC_ERR;
-		return;
+		return ;
 	}
 	ft_strcpy(new_env_entry, key);
 	ft_strcat(new_env_entry, new_value);
@@ -153,7 +155,7 @@ void	update_env_var(t_ms *ms, char *key, char *new_value)
 		{
 			free(ms->envp[i]);
 			ms->envp[i] = new_env_entry;
-			return;
+			return ;
 		}
 		i++;
 	}

@@ -3,19 +3,21 @@
 /**
  * @brief Checks if an environment variable matches a given key.
  *
- * This function checks whether the environment variable `env` starts with the string `key` 
- * and whether it matches specific conditions based on the `flag`. The `flag` determines whether 
- * the function checks for an equal sign (`=`) after the key, or if it allows for an empty string 
- * after the key.
+ * This function checks whether the environment variable `env` starts with the 
+ * string `key` and whether it matches specific conditions based on the `flag`. 
+ * The `flag` determines whether the function checks for an equal sign (`=`) 
+ * after the key, or if it allows for an empty string after the key.
  *
  * @param env  The environment variable to check.
  * @param key  The key to match in the environment variable.
  * @param len  The length of the key.
  * @param flag A flag that modifies the behavior of the function:
- *             - `flag == 0`: checks if the environment variable starts with the key followed by `=`.
-				Used for checking environmental variables.
- *             - `flag == 1`: checks if the environment variable starts with the key followed by `=` or ends right after the key.
- *				Used for checking exported environmental variables
+ *             - `flag == 0`: checks if the environment variable starts with the 
+ *               key followed by `=`.
+ *               Used for checking environmental variables.
+ *             - `flag == 1`: checks if the environment variable starts with the 
+ *               key followed by `=` or ends right after the key.
+ *               Used for checking exported environmental variables.
  * @return 1 if the environment variable matches the conditions, otherwise 0.
  */
 
@@ -26,7 +28,7 @@ int	check_env(char *env, char *key, int len, int flag)
 	if (flag == 0 && (env[len] && env[len] == '='))
 		return (1);
 	if (flag == 1 && (env[len] == '\0'
-		|| (env[len] && env[len] == '=')))
+			|| (env[len] && env[len] == '=')))
 		return (1);
 	return (0);
 }
@@ -34,19 +36,23 @@ int	check_env(char *env, char *key, int len, int flag)
 /**
  * @brief Retrieves the value of an environment variable from the environment.
  *
- * This function searches through the array of environment variables `envp` to find a variable
- * whose key matches the provided `key` and returns its associated value. The key is expected
- * to be followed by an equal sign (`=`) in the environment variable string.
+ * This function searches through the array of environment variables `envp` to 
+ * find a variable whose key matches the provided `key` and returns its 
+ * associated value. The key is expected to be followed by an equal sign (`=`) 
+ * in the environment variable string.
  *
- * @param key   The key of the environment variable whose value is to be retrieved.
- * @param envp  A pointer to the environment variables array (an array of strings, each in the format "KEY=VALUE").
+ * @param key   The key of the environment variable whose value is to be 
+ *              retrieved.
+ * @param envp  A pointer to the environment variables array (an array 
+ *              of strings, each in the format "KEY=VALUE").
  *
- * @return The value of the environment variable if found, or NULL if the key is not present in the environment.
+ * @return The value of the environment variable if found, or NULL if the key is 
+ *         not present in the environment.
  */
 
 char	*get_env_value(char *key, char **envp)
 {
-	int	i;
+	int		i;
 	size_t	len;
 
 	if (!envp)
@@ -66,21 +72,23 @@ char	*get_env_value(char *key, char **envp)
 /**
  * @brief Allocates memory for a temporary environment variable array.
  *
- * This function allocates memory for a new array of environment variables. The size of the array
- * is determined by the current number of environment variables (`env`), plus an additional `x`
- * entries to account for future additions.
+ * This function allocates memory for a new array of environment variables. 
+ * The size of the array is determined by the current number of environment 
+ * variables (`env`), plus an additional `x` entries to account for future 
+ * additions.
  *
  * @param env  A pointer to the current environment variable array.
  * @param x    The number of additional entries to allocate space for.
  *
- * @return A pointer to the newly allocated temporary environment variable array, or NULL if memory allocation fails
- *         or the original environment array is empty.
+ * @return A pointer to the newly allocated temporary environment variable 
+ *         array, or NULL if memory allocation fails or the original environment 
+ *         array is empty.
  */
 
 char	**allocate_temp_env(char **env, int x)
 {
 	char	**temp;
-	int	i;
+	int		i;
 
 	i = 0;
 	if (!env || !*env)
@@ -107,7 +115,7 @@ char	**allocate_temp_env(char **env, int x)
 
 void	print_array(char **a)
 {
-	int	i;
+	int		i;
 
 	i = 0;
 	while (a[i])
@@ -134,7 +142,7 @@ void	print_array(char **a)
 char	**copy_map(char **original_map)
 {
 	char	**new_map;
-	int	i;
+	int		i;
 
 	i = 0;
 	while (original_map[i])

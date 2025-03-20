@@ -44,19 +44,23 @@ static char	*get_cd_target(t_ms *ms, char **args)
 }
 
 /**
- * @brief Performs checks on the target directory before attempting to change to it.
+ * @brief Performs checks on the target directory before attempting 
+ * to change to it.
  * 
- * This function checks whether the target directory exists and whether the current process 
- * has the necessary permissions to access it. If the directory does not exist or if access 
- * is denied, an appropriate error message is printed, target_dir freed, the shell's exit status is updated, 
- * and the function returns a non-zero value. If the directory passes both checks, the function 
- * returns 0, indicating that the directory is valid for a change.
+ * This function checks whether the target directory exists and whether
+ * the current process has the necessary permissions to access it. 
+ * If the directory does not exist or if access is denied, 
+ * an appropriate error message is printed, target_dir freed, 
+ * the shell's exit status is updated, and the function returns a non-zero value.
+ * If the directory passes both checks, the function returns 0,
+ * indicating that the directory is valid for a change.
  * 
  * @param target_dir The directory path to check.
- * @param ms A pointer to the `t_ms` structure, which contains environment variables and 
- *           shell-related data, including the exit status.
+ * @param ms A pointer to the `t_ms` structure, which contains environment
+ *           variables and shell-related data, including the exit status.
  * 
- * @return 0 if the directory is valid for changing to, or a non-zero value if the checks fail.
+ * @return 0 if the directory is valid for changing to, or a non-zero value
+ *  if the checks fail.
  */
 
 static int	handle_cd_directory_checks(char *target_dir, t_ms *ms)
@@ -79,19 +83,22 @@ static int	handle_cd_directory_checks(char *target_dir, t_ms *ms)
 }
 
 /**
- * @brief Changes the current working directory to the specified target directory.
+ * @brief Changes the current working directory to the specified target.
  * 
- * This function attempts to change the working directory using the `chdir` system call. 
- * If the operation fails (e.g., if the target directory does not exist or the process 
- * lacks permission), it prints an error message, frees the target directory string, 
- * updates the shell's exit status to indicate a system error, and returns a non-zero value.
+ * This function attempts to change the working directory using the `chdir`
+ * system call. If the operation fails (e.g., if the target directory does 
+ * not exist or the process lacks permission), it prints an error message, 
+ * frees the target directory string, updates the shell's exit status to 
+ * indicate a system error, and returns a non-zero value.
  * 
- * @param target_dir The target directory to change to. This string is dynamically allocated 
- *                   and will be freed if the operation fails.
- * @param ms A pointer to the `t_ms` structure, which contains environment variables and 
- *           shell-related data, including the exit status.
+ * @param target_dir The target directory to change to. This string is 
+ *                   dynamically allocated and will be freed if the 
+ *                   operation fails.
+ * @param ms A pointer to the `t_ms` structure, which contains environment 
+ *           variables and shell-related data, including the exit status.
  * 
- * @return 0 if the directory change is successful, or a non-zero value if the operation fails.
+ * @return 0 if the directory change is successful, or a non-zero value if 
+ *         the operation fails.
  */
 
 static int	change_directory(char *target_dir, t_ms *ms)
@@ -141,19 +148,22 @@ static int	cd_error(char **args, t_ms *ms)
 /**
  * @brief Handles the `cd` (change directory) command in the shell.
  * 
- * This function processes the `cd` command by performing various checks such as 
- * verifying the target directory, ensuring it is valid, and handling errors (e.g., 
- * failure to retrieve the current directory, invalid directory, etc.). It updates 
- * the shell's environment variables (`PWD` and `OLDPWD`) and changes the working 
- * directory if everything is valid. On failure, it updates the shell's exit status 
- * and returns early.
+ * This function processes the `cd` command by performing various checks 
+ * such as verifying the target directory, ensuring it is valid, and 
+ * handling errors (e.g., failure to retrieve the current directory, 
+ * invalid directory, etc.). It updates the shell's environment variables 
+ * (`PWD` and `OLDPWD`) and changes the working directory if everything 
+ * is valid. On failure, it updates the shell's exit status and returns 
+ * early.
  * 
- * @param args An array of strings representing the command and its arguments. The 
- *             first argument is expected to be `cd`, and the second is the target directory.
- * @param ms A pointer to the `t_ms` structure, which contains environment variables 
- *           and shell-related data, including the exit status.
+ * @param args An array of strings representing the command and its 
+ *             arguments. The first argument is expected to be `cd`, and 
+ *             the second is the target directory.
+ * @param ms A pointer to the `t_ms` structure, which contains environment 
+ *           variables and shell-related data, including the exit status.
  * 
- * @return None. The function modifies `ms->exit_status` and updates the shell's environment.
+ * @return None. The function modifies `ms->exit_status` and updates the 
+ *         shell's environment.
  */
 
 void	handle_cd(char **args, t_ms *ms)
@@ -163,21 +173,21 @@ void	handle_cd(char **args, t_ms *ms)
 
 	ms->exit_status = 0;
 	if (cd_error(args, ms))
-		return;
+		return ;
 	target_dir = get_cd_target(ms, args);
 	if (!target_dir)
-		return;
+		return ;
 	if (handle_cd_directory_checks(target_dir, ms))
-		return;
+		return ;
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
 		free(target_dir);
 		perror("getcwd failed");
 		ms->exit_status = SYSTEM_ERR;
-		return;
+		return ;
 	}
 	if (change_directory(target_dir, ms))
-		return;
+		return ;
 	free(target_dir);
 	update_cd_env(ms, cwd);
 }
