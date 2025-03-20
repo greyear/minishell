@@ -142,6 +142,8 @@ void			history_exit(t_ms *ms);
 
 //Signals
 void			signal_mode(t_mode mode);
+int				init_terminal_signals(void);
+void			print_heredoc_ctrl_d(char *limiter);
 
 //Errors
 void			print_file_error(char *file, t_print reason);
@@ -161,6 +163,7 @@ void			print_malloc_error(void);
 void			clean_arr(char ***arr);
 void			free_int_array(int **array);
 void			clean_struct(t_ms *ms);
+void			cleanup_after_execution(t_ms *ms);
 void			cleanup_heredocs(char **filenames);
 void			free_pids(t_pipe *p);
 void			close_fds(t_cmd *cmd);
