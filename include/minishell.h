@@ -120,6 +120,11 @@ void			update_shlvl(t_ms *ms);
 char			*remove_extra_spaces(char *str);
 char			*remove_first_space(char *str);
 
+//Main
+void			initialize_envp(t_ms *ms, char **envp);
+int				create_blocks_and_cmds_lists(t_ms *ms);
+int				tokenize_input(char **input, t_ms *ms);
+
 //Redirections
 void			put_infile_fd(t_token *token, t_cmd *cmd);
 void			put_outfile_fd(t_token *token, t_cmd *cmd);

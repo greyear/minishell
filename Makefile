@@ -37,7 +37,9 @@ RM				=	rm -f
 
 # Source files
 MAIN_FILES		=	main.c \
-					initialize_struct.c
+					main_utils.c \
+					initialize_struct.c \
+					initialization_utils.c
 BNF_FILES		=	input_validation.c \
 					pipeline.c \
 					command.c \
