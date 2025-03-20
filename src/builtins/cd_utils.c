@@ -18,6 +18,7 @@ char	*get_home_directory(t_ms *ms, int flag)
 {
 	char	*temp;
 
+	(void) flag;
 	temp = get_env_value("HOME", ms->envp);
 	if (!temp)
 	{

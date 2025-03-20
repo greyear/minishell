@@ -28,20 +28,6 @@
 		cleanup_heredocs(ms->heredoc_files);
 	free(ms);
  }
- 
- void	clean_struct_fields(t_ms *ms)
- {
-	 if (!ms)
-		 return ;
-	 if (ms->envp)
-	 {
-		 clean_arr(&(ms->envp));
-	 }
-	 if (ms->exported)
-	 {
-		 clean_arr(&(ms->exported));
-	 }
- }
 
 /**
  * @brief Cleans up allocated memory and temporary files after command execution.

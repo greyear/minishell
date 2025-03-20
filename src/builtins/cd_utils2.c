@@ -196,3 +196,87 @@ void	update_cd_env(t_ms *ms, char *pwd_before)
 	if (ms->exit_status != MALLOC_ERR)
 		update_env_var(ms, "PWD=", cwd);
 }
+
+static void	make_cd_args(t_ms *ms, char *pwd_before)
+{
+	char	**args;
+
+	args = malloc(sizeof(char *) * 3);
+	if (!args)
+	{
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
+		return;
+	}
+	args[0] = ft_strdup("export");
+	if (!args[0])
+	{
+		clean_arr(&args);
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
+		return;
+	}
+	args[1] = ft_strjoin("OLDPWD=", pwd_before);
+	if (!args[1])
+	{
+		clean_arr(&args);
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
+		return;
+	}
+	args[2] = NULL;
+	handle_export(args, ms);
+	free(args);
+}
+
+static void	add_oldpwd_to_envp(t_ms *ms, char *pwd_before)
+{
+	int	check;
+	int	i;
+
+	i = 0;
+	check = 0;
+	while (ms->exported[i])
+	{
+		if (!ft_strncmp("OLDPWD", ms->exported[i], 6))
+			check = 1;
+		i++;
+	}
+	if (check == 0)
+		return;
+	i = 0;
+	while (ms->envp[i])
+	{
+		if (!ft_strncmp("OLDPWD", ms->envp[i], 6))
+			check = 0;
+		i++;
+	}
+	if (check == 1)
+		make_cd_args(ms, pwd_before);
+}
+
+void	update_cd_env(t_ms *ms, char *pwd_before)
+{
+	char	cwd[1024];
+	char	*current_pwd;
+
+	if (getcwd(cwd, sizeof(cwd)) == NULL)
+	{
+		perror("cd: getcwd failed");
+		ms->exit_status = SYSTEM_ERR;
+		return;
+	}
+	current_pwd = get_env_value("PWD", ms->envp);
+	if (!current_pwd)
+		current_pwd = "";
+	if (current_pwd && *current_pwd != '\0')
+		update_env_var(ms, "OLDPWD=", current_pwd);
+	else
+		update_env_var(ms, "OLDPWD=", pwd_before);
+	if (ms->exit_status != MALLOC_ERR
+		&& !get_env_value("OLDPWD", ms->envp)
+		&& ms->no_env == true)
+		add_oldpwd_to_envp(ms, pwd_before);
+	if (ms->exit_status != MALLOC_ERR)
+		update_env_var(ms, "PWD=", cwd);
+}
