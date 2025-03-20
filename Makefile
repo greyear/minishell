@@ -48,9 +48,7 @@ LEX_FILES		=	tokenization.c \
 					skipping.c \
 					merging.c \
 					redirection.c \
-					token_utils.c \
-					main.c
-#DELETE main.c!
+					token_utils.c
 PARS_FILES		=	cmd_creation.c \
 					cmd_blocks.c \
 					cmd_cleaning.c \

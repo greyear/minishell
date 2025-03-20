@@ -1,4 +1,6 @@
 
+//mallocs checked
+
 #include "../../include/minishell.h"
 
 /**
@@ -13,22 +15,25 @@
  * 
  * @return A newly allocated string containing the extracted quoted word, or NULL if memory allocation fails.
  */
-char	*word_with_quotes(char *str, size_t *start, t_token *new)
+char	*word_with_quotes(char *str, size_t *start, t_token *new, t_ms *ms)
 {
 	char	*res;
 	size_t	end;
 
-	//str protection?
 	*start = *start + 1;
 	end = *start;
 	while (str[end] && ((new->quote == SG_QUOT && str[end] != SG_QUOT)
 			|| (new->quote == DB_QUOT && str[end] != DB_QUOT)))
 		end++;
-	if (str[end] == '\0') //do we need the check for unclosed here also?
-		new->unclosed = true; //нужно ли здесь сразу выйти?
+	if (str[end] == '\0')
+		new->unclosed = true;
 	res = (char *)ft_calloc((end - *start + 1), sizeof(char));
 	if (!res)
+	{
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
 		return (NULL);
+	}
 	ft_strlcpy(res, str + *start, end - *start + 1);
 	*start = end;
 	if (new->unclosed == false)
@@ -47,18 +52,21 @@ char	*word_with_quotes(char *str, size_t *start, t_token *new)
  * 
  * @return A newly allocated string containing the extracted word, or NULL if memory allocation fails.
  */
-char	*word_without_quotes(char *str, size_t *start)
+char	*word_without_quotes(char *str, size_t *start, t_ms *ms)
 {
 	char	*res;
 	size_t	end;
 
-	//str protection?
 	end = *start;
 	while (str[end] && !ft_special(str[end]) && !ft_isspace(str[end]))
 		end++;
 	res = (char *)ft_calloc((end - *start + 1), sizeof(char));
 	if (!res)
+	{
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
 		return (NULL);
+	}
 	ft_strlcpy(res, str + *start, end - *start + 1);
 	*start = end;
 	return (res);
