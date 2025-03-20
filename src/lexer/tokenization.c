@@ -1,4 +1,6 @@
 
+//mallocs checked, but should I protect functions that contain malloc protections?
+
 #include "../../include/minishell.h"
 
 /**
@@ -17,57 +19,44 @@
  * @note The function allocates memory dynamically. The caller is responsible for 
  *       freeing the token list using clean_token_list().
  */
-t_token *tokenization(char *str, t_ms *ms) //store str in ms?
+t_token *tokenization(char *str, t_ms *ms)
 {
 	size_t			i;
 	t_token_type	type;
 	t_token			*first;
 	t_token			*cur;
 
-	//where's the check for \0 str?
 	i = 0;
-	first = create_new_token(NULL, &i, DUMMY);
+	first = create_new_token(NULL, &i, DUMMY, ms);
 	if (!first)
 		return (NULL);
 	cur = first;
 	while (str[i])
 	{
 		type = define_token_type(str, i);
-		cur->next = create_new_token(str, &i, type); //where i increases
+		cur->next = create_new_token(str, &i, type, ms);
 		if (!cur->next)
-		{
-			clean_token_list(&first);
-			return (NULL);
-		}
+			return(clean_token_list(&first));
 		cur = cur->next;
 	}
-	/*printf("\ninside tokenization before the redirections\n");
-	print_tokens(first);*/
-
 	flags_for_redirections(first);
-	
-	/*printf("\ninside tokenization before the expansion\n");
-	print_tokens(first);*/
-	if (check_list_for_expansions(first, ms) == 1) //changed the order with uniting
-	{
-		clean_token_list(&first); //what else to clean?
-		return (NULL); //maybe create a separate cleaner?
-	}
-
-	/*printf("\ninside tokenization after expansion before uniting\n");
-	print_tokens(first);*/
-
+	if (check_list_for_expansions(first, ms) == 1)
+		return(clean_token_list(&first));
 	first = unite_two_word_tokens(first);
-
-	/*printf("\ninside tokenization after uniting\n");
-	print_tokens(first);*/
-
 	if (check_list_for_tilde(first, ms) == 1)
-	{
-		clean_token_list(&first);
-		return (NULL);
-	}
-	/*printf("\ninside tokenization after everything\n");
-	print_tokens(first);*/
+		return(clean_token_list(&first));
 	return (first);
 }
+
+/*
+	printf("\ninside tokenization before the redirections\n");
+	print_tokens(first);
+	printf("\ninside tokenization before the expansion\n");
+	print_tokens(first);
+	printf("\ninside tokenization after expansion before uniting\n");
+	print_tokens(first);
+	printf("\ninside tokenization after uniting\n");
+	print_tokens(first);
+	printf("\ninside tokenization after everything\n");
+	print_tokens(first);
+*/

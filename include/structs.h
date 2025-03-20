@@ -6,7 +6,6 @@
 
 typedef struct s_token
 {
-	//index?
 	t_token_type	type;
 	char			*data;
 	char			*file;
