@@ -1,9 +1,5 @@
 #include "../../include/minishell.h"
 
-#include <stdio.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <bits/types.h>
 //#include <asm-generic/termbits.h> //delete for school computers
 
 volatile sig_atomic_t	g_sgnl;
@@ -83,21 +79,28 @@ static void	input_output(t_cmd *cmd)
 	}
 }*/
 
-static void	cleanup_after_execution(t_ms *ms)
-{
-	if (ms->heredoc_files)
-		cleanup_heredocs(ms->heredoc_files);
-	reset_heredocs(ms);
-	clean_token_list(&(ms->tokens));
-	clean_block_list(&(ms->blocks));
-	clean_cmd_list(&(ms->cmds));
-}
-
+/**
+ * @brief Executes a list of commands.
+ * 
+ * This function processes a list of commands, determining whether to execute 
+ * them as built-in functions or external commands. It handles the execution 
+ * of a single command or multiple commands by creating child processes as 
+ * needed.
+ * 
+ * If there is only one command and it is a built-in, it will be executed 
+ * directly. If there are multiple commands, child processes will be created 
+ * for each command to execute them in parallel. After executing the commands, 
+ * it ensures file descriptors are closed and handles the appropriate exit 
+ * statuses.
+ * 
+ * @param ms A pointer to the shell's main structure containing the command 
+ *           list and other relevant state information.
+ */
 static void	execute_commands(t_ms *ms)
 {
 	t_cmd	*cur;
 	int		i;
-	
+
 	cur = ms->cmds;
 	i = 0;
 	while (cur)
@@ -117,80 +120,20 @@ static void	execute_commands(t_ms *ms)
 	close_fds(ms->cmds);
 }
 
-static void	malloc_heredocs(t_ms *ms, t_token *token)
-{
-	t_token	*cur;
-	int		heredoc_count;
-
-	cur = token;
-	heredoc_count = 0;
-	while (cur)
-	{
-		if (cur->type == HEREDOC)
-			heredoc_count++;
-		cur = cur->next;
-	}
-	if (heredoc_count > 16)
-	{
-		ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
-		ft_putstr_fd("maximum here-document count exceeded\n", STDERR_FILENO);
-		clean_struct(ms);
-		exit(2);
-	}
-	ms->heredoc_files = malloc(sizeof(char *) * (heredoc_count + 1)); // Support 100 heredocs max
-	if (!ms->heredoc_files)
-	{
-		print_malloc_error();
-		clean_struct(ms);
-		exit(1);
-	}
-	ft_memset(ms->heredoc_files, 0, sizeof(char *) * (heredoc_count + 1)); // Set all entries to NULL
-	ms->heredoc_files[0] = NULL;
-}
-
-static int	tokenize_input(char **input, t_ms *ms)
-{
-	ms->tokens = tokenization(*input, ms);
-	free(*input);
-	if (!ms->tokens)
-	{
-		ft_putstr_fd(TOKENS_ERR, STDERR_FILENO);
-		return (0);
-	}
-	malloc_heredocs(ms, ms->tokens);
-	if (!ms->heredoc_files)
-	{
-		print_malloc_error();
-		clean_token_list(&(ms->tokens));
-		return (0);
-	}
-	put_files_for_redirections(ms->tokens);
-	return (1);
-}
-
-static int	create_blocks_and_cmds_lists(t_ms *ms)
-{
-	int		err_syntax;
-
-	err_syntax = 0;
-	ms->blocks = create_blocks_list(ms->tokens, NULL, &err_syntax);
-	if (err_syntax)
-	{
-		ft_putstr_fd(BLOCKS_ERR, STDERR_FILENO);
-		clean_token_list(&(ms->tokens));
-		return (0);
-	}
-	ms->cmds = create_cmd_list(ms->blocks, ms);
-	if (!ms->cmds)
-	{
-		ft_putstr_fd(CMDS_ERR, STDERR_FILENO);
-		clean_token_list(&(ms->tokens));
-		clean_block_list(&(ms->blocks));
-		return (0);
-	}
-	return (1);
-}
-
+/**
+ * @brief Processes user input for syntax validation and history addition.
+ * 
+ * This function checks if the input is empty or contains syntax errors. 
+ * If the input is empty (i.e., only Enter was pressed), it is ignored.
+ * If a syntax error is found, the error code is set and the input is discarded. 
+ * Otherwise, the input is added to the history.
+ * 
+ * @param input A pointer to the string containing the user input.
+ * @param ms A pointer to the main shell structure, used to store the 
+ *           exit status.
+ * @return 1 if the input is valid and processed, 0 if there was an error 
+ *         or the input was empty.
+ */
 static int	process_input(char **input, t_ms *ms)
 {
 	int		err_syntax;
@@ -201,7 +144,7 @@ static int	process_input(char **input, t_ms *ms)
 		ms->exit_status = 130;
 		g_sgnl = 0;
 	}
-	if ((*input)[0] == '\0') // Ignore empty input (Enter)
+	if ((*input)[0] == '\0')
 	{
 		free(*input);
 		return (0);
@@ -209,8 +152,6 @@ static int	process_input(char **input, t_ms *ms)
 	err_syntax = validate_input(*input);
 	if (err_syntax)
 	{
-		history_exit(ms);
-		//clean_struct(ms);
 		free(*input);
 		ms->exit_status = 2;
 		return (0);
@@ -219,7 +160,19 @@ static int	process_input(char **input, t_ms *ms)
 	return (1);
 }
 
-int	init_terminal_signals(void)
+/**
+ * @brief Initializes terminal settings for signal handling.
+ * 
+ * This function configures the terminal to disable control character echoing 
+ * (such as `Ctrl+C` and `Ctrl+Z`), which is useful for handling terminal
+ * signals in custom shell programs. It uses the `tcgetattr` and `tcsetattr` 
+ * functions to modify the terminal settings. If these functions fail, 
+ * an error is printed.
+ * 
+ * @return Returns 1 if the terminal settings were successfully initialized, 
+ *         or 0 if an error occurred.
+ */
+static int	init_terminal_signals(void)
 {
 	struct termios	term;
 
@@ -240,6 +193,19 @@ int	init_terminal_signals(void)
 	return (1);
 }
 
+/**
+ * @brief Main loop to run the minishell.
+ *
+ * This function starts the main loop of the minishell, where it continually 
+ * reads user input, processes it, tokenizes it, creates command blocks, and 
+ * executes them. It handles the interactive mode with `readline` and 
+ * gracefully exits on EOF or errors. The loop breaks if the exit status 
+ * indicates a critical error (memory allocation or system error). After 
+ * executing each command, it performs cleanup before the next iteration.
+ *
+ * @param ms The shell structure containing execution state and relevant 
+ * information.
+ */
 static void	run_minishell(t_ms *ms)
 {
 	char	*input;
@@ -248,7 +214,7 @@ static void	run_minishell(t_ms *ms)
 	{
 		if (ms->exit_status == MALLOC_ERR
 			|| ms->exit_status == SYSTEM_ERR)
-			break;
+			break ;
 		// Reading the input
 		// FOR USUAL EXECUTION
 		/*signal_mode(INTERACTIVE);
@@ -261,35 +227,44 @@ static void	run_minishell(t_ms *ms)
 		{
 			char *line = get_next_line(fileno(stdin));
 			if (!line) // Handle EOF (Ctrl+D in non-interactive mode)
-				break;
+				break ;
 			input = ft_strtrim(line, "\n"); // Remove newline from input
 			free(line);
 		}
 		if (!input) // EOF check (Ctrl+D)
 		{
 			ft_putstr_fd("exit\n", STDOUT_FILENO);
-			break;
+			break ;
 		}
 		if (!process_input(&input, ms))
-			continue;
+			continue ;
 		if (!tokenize_input(&input, ms))
-			continue;
+			continue ;
 		if (!create_blocks_and_cmds_lists(ms))
-			continue;
-		if (g_sgnl == SIGINT)
-		{
-			clean_token_list(&(ms->tokens));
-			clean_block_list(&(ms->blocks));
-			clean_cmd_list(&(ms->cmds));
-			cleanup_heredocs(ms->heredoc_files);
-			g_sgnl = 0;
-			continue;
-		}
+			continue ;
 		execute_commands(ms);
 		cleanup_after_execution(ms);
 	}
 }
 
+/**
+ * @brief Initializes and runs the minishell program.
+ *
+ * This function checks the argument count and ensures correct usage of the 
+ * shell. It initializes terminal signals and the minishell structure, then 
+ * runs the shell main loop (`run_minishell`). After execution, it cleans up 
+ * resources like command lists, history, and the minishell structure. The 
+ * function handles error codes and exits with the appropriate exit status 
+ * based on the result of the execution.
+ *
+ * @param argc The argument count, expected to be 1 for proper usage.
+ * @param argv The argument vector, not used in this case but required for 
+ * standard `main` format.
+ * @param envp The environment variables passed to the program, used for 
+ * initialization.
+ * @return The exit status of the program, either 1 on error or the exit 
+ * status set by the shell.
+ */
 int	main(int argc, char **argv, char **envp)
 {
 	t_ms	*ms;

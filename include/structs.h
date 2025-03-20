@@ -1,8 +1,6 @@
-
 #ifndef STRUCTS_H
 # define STRUCTS_H
 
-# include <sys/types.h> 
 
 typedef struct s_token
 {

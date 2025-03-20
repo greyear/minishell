@@ -131,23 +131,23 @@ int	expand_tilde(t_token *cur, t_ms *ms)
 	char	*home;
 	char	*new_data;
 
-	if (!cur->data || cur->data[0] != '~') // Ensure `~` is at the start
+	if (!cur->data || cur->data[0] != '~')
 		return (0);
 	home = get_home_directory(ms, 1);
 	if (!home)
 		return (0);
-	if (cur->data[1] == '\0') // If `~` is alone
+	if (cur->data[1] == '\0')
 		new_data = ft_strdup(home);
-	else if (cur->data[1] == '/') // If `~/something`
+	else if (cur->data[1] == '/')
 		new_data = ft_strjoin(home, &cur->data[1]);
 	else
 	{
 		free(home);
-		return (0); // If `~` is part of a word like `hello~`, don't expand
+		return (0);
 	}
 	free(home);
 	if (!new_data)
-		return (1); // Memory allocation error
+		return (1);
 	free(cur->data);
 	cur->data = new_data;
 	return (0);
@@ -173,7 +173,7 @@ int	check_list_for_tilde(t_token *first, t_ms *ms)
 	while (cur)
 	{
 		if (cur->type == WORD && cur->quote != SG_QUOT && cur->quote != DB_QUOT
-			&& cur->data[0] == '~') // Ensuring `~` is at the start
+			&& cur->data[0] == '~')
 		{
 			if (expand_tilde(cur, ms) == 1)
 				return (1);
