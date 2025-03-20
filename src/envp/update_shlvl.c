@@ -139,8 +139,6 @@ void	update_shlvl(t_ms *ms)
 	char	**export;
 	int		check;
 
-	if (!ms->envp)
-		return ;
 	modify_shlvl(&ms->envp);
 	if (ms->exit_status == MALLOC_ERR)
 		return ;
