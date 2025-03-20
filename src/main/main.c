@@ -228,10 +228,10 @@ static void	run_minishell(t_ms *ms)
 			char *line = get_next_line(fileno(stdin));
 			if (!line) // Handle EOF (Ctrl+D in non-interactive mode)
 				break ;
-			input = ft_strtrim(line, "\n"); // Remove newline from input
+			input = ft_strtrim(line, "\n");
 			free(line);
 		}
-		if (!input) // EOF check (Ctrl+D)
+		if (!input)
 		{
 			ft_putstr_fd("exit\n", STDOUT_FILENO);
 			break ;

@@ -84,14 +84,16 @@ int				check_list_for_tilde(t_token *first, t_ms *ms);
 
 //Parser
 int				words_in_cmd_block(t_token *start, t_token *end);
-int				put_cmg_args(t_cmd *cmd, t_token *start, t_token *end);
+//int				put_cmg_args(t_cmd *cmd, t_token *start, t_token *end);
+int				put_cmg_args(t_cmd *cmd, t_token *start, t_token *end, t_ms *ms);
 t_cmd			*create_new_cmd(t_block *block, int num, t_ms *ms);
 t_cmd			*create_cmd_list(t_block *block, t_ms *ms);
 t_cmd			*clean_cmd(t_cmd *cmd);
 t_cmd			*clean_cmd_list(t_cmd **first);
 int				check_block(t_token *start, t_token *end, int *err_flag);
-t_block			*create_block(t_token *start, t_token *end, t_block *first_block, int *err_flag);
-t_block			*create_blocks_list(t_token *start, t_token *end, int *err_flag);
+//t_block			*create_block(t_token *start, t_token *end, t_block *first_block, int *err_flag);
+t_block			*create_block(t_ms *ms, t_token *end, t_block *first_block, int *err_flag);
+t_block			*create_blocks_list(t_ms *ms, t_token *end, int *err_flag);
 void			redir_in_block(t_block *block, t_cmd *cmd, t_ms *ms);
 t_block			*clean_block(t_block *block);
 t_block			*clean_block_list(t_block **first);
@@ -145,7 +147,6 @@ void			history_exit(t_ms *ms);
 
 //Signals
 void			signal_mode(t_mode mode);
-int				init_terminal_signals(void);
 void			print_heredoc_ctrl_d(char *limiter);
 
 //Errors
