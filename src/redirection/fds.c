@@ -43,7 +43,7 @@ void	check_access(char *filename, t_oper operation)
 		{
 			ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
 			ft_putstr_fd(filename, STDERR_FILENO);
-			ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+			ft_putstr_fd(IS_DIR_ERR, STDERR_FILENO);
 		}
 	}
 }
