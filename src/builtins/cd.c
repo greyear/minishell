@@ -104,7 +104,7 @@ static int	change_directory(char *target_dir, t_ms *ms)
 	{
 		free(target_dir);
 		perror("chdir failed");
-		ms->exit_status = SYSTEM_ERR;
+		ms->exit_status = 1;
 		return (1);
 	}
 	return (0);
@@ -141,30 +141,10 @@ static int	cd_error(char **args, t_ms *ms)
 	return (0);
 }
 
-/**
- * @brief Handles the `cd` (change directory) command in the shell.
- * 
- * This function processes the `cd` command by performing various checks 
- * such as verifying the target directory, ensuring it is valid, and 
- * handling errors (e.g., failure to retrieve the current directory, 
- * invalid directory, etc.). It updates the shell's environment variables 
- * (`PWD` and `OLDPWD`) and changes the working directory if everything 
- * is valid. On failure, it updates the shell's exit status and returns 
- * early.
- * 
- * @param args An array of strings representing the command and its 
- *             arguments. The first argument is expected to be `cd`, and 
- *             the second is the target directory.
- * @param ms A pointer to the `t_ms` structure, which contains environment 
- *           variables and shell-related data, including the exit status.
- * 
- * @return None. The function modifies `ms->exit_status` and updates the 
- *         shell's environment.
- */
 void	handle_cd(char **args, t_ms *ms)
 {
 	char	*target_dir;
-	char	*pwd;
+	//char	cwd[1024];
 
 	ms->exit_status = 0;
 	if (cd_error(args, ms))
@@ -174,10 +154,11 @@ void	handle_cd(char **args, t_ms *ms)
 		return ;
 	if (handle_cd_directory_checks(target_dir, ms))
 		return ;
-	pwd = get_env_value("PWD", ms->envp);
 	if (change_directory(target_dir, ms))
 		return ;
+	update_cd_env(ms, ms->pwd);
+	if (ms->pwd)
+		free(ms->pwd);
 	ms->pwd = ft_strdup(target_dir);
 	free(target_dir);
-	update_cd_env(ms, pwd);
 }

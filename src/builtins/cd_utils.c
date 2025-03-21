@@ -113,23 +113,33 @@ char	*build_relative_path(char *target, char *cwd, t_ms *ms)
 	return (full_path);
 }
 
-/**
- * @brief Updates or adds an environment variable in the shell's environment.
- * 
- * This function searches for an existing environment variable matching
- * the given key. If found, it updates its value.
- * If the variable does not exist, no new entry is added.
- * Memory for the new value is dynamically allocated and replaces 
- * the old entry. 
- * 
- * @param ms A pointer to the `t_ms` structure, which contains the shell's 
- *           environment variables.
- * @param key The name of the environment variable to update.
- * @param new_value The new value to assign to the environment variable.
- * 
- * @return None. Modifies the environment variables stored in `ms->envp`.
- *         If memory allocation fails, the function does nothing.
- */
+void	update_exp_var(t_ms *ms, char *key, char *new_value)
+{
+	int		i;
+	char	*new_env_entry;
+
+	i = 0;
+	new_env_entry = malloc(ft_strlen(key) + ft_strlen(new_value) + 1);
+	if (!new_env_entry)
+	{
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
+		return ;
+	}
+	ft_strcpy(new_env_entry, key);
+	ft_strcat(new_env_entry, new_value);
+	while (ms->exported[i])
+	{
+		if (ft_strncmp(ms->exported[i], key, ft_strlen(key)) == 0)
+		{
+			free(ms->exported[i]);
+			ms->exported[i] = new_env_entry;
+			return ;
+		}
+		i++;
+	}
+}
+
 void	update_env_var(t_ms *ms, char *key, char *new_value)
 {
 	int		i;
@@ -151,8 +161,9 @@ void	update_env_var(t_ms *ms, char *key, char *new_value)
 		{
 			free(ms->envp[i]);
 			ms->envp[i] = new_env_entry;
-			return ;
+			break ;
 		}
 		i++;
 	}
+	update_exp_var(ms, key, new_value);
 }
