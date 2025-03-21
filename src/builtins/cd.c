@@ -177,6 +177,7 @@ void	handle_cd(char **args, t_ms *ms)
 	pwd = get_env_value("PWD", ms->envp);
 	if (change_directory(target_dir, ms))
 		return ;
+	ms->pwd = ft_strdup(target_dir);
 	free(target_dir);
 	update_cd_env(ms, pwd);
 }

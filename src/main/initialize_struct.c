@@ -58,7 +58,6 @@ static void	initialize_history(t_ms *ms)
  * - Initializes command history.
  * - Prepares file descriptors and heredoc-related data.
  * - Updates SHLVL in environmental variables if needed.
- * - Updates SHLVL in environmental variables if needed.
  * 
  * @param envp The environment variables inherited from the parent process.
  * 
@@ -79,6 +78,7 @@ t_ms	*initialize_struct(char **envp)
 	initialize_history(ms);
 	ms->heredoc_count = 0;
 	ms->heredoc_files = NULL;
+	ms->pwd = NULL;
 	update_shlvl(ms);
 	g_sgnl = 0;
 	return (ms);

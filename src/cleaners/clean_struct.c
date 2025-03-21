@@ -80,6 +80,8 @@ void	clean_struct(t_ms *ms)
 		clean_block_list(&(ms->blocks));
 	if (ms->heredoc_files)
 		cleanup_heredocs(ms->heredoc_files, ms);
+	if (ms->pwd)
+		free(ms->pwd);
 	free(ms);
 }
 
