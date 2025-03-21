@@ -34,7 +34,7 @@ static char	*get_cd_target(t_ms *ms, char **args)
 		if (getcwd(cwd, sizeof(cwd)) == NULL)
 		{
 			perror("cd: getcwd failed");
-			ms->exit_status = SYSTEM_ERR;
+			ms->exit_status = 1;
 			return (NULL);
 		}
 		return (build_relative_path(args[1], cwd, ms));
@@ -164,7 +164,7 @@ static int	cd_error(char **args, t_ms *ms)
 void	handle_cd(char **args, t_ms *ms)
 {
 	char	*target_dir;
-	char	cwd[1024];
+	char	*pwd;
 
 	ms->exit_status = 0;
 	if (cd_error(args, ms))
@@ -174,15 +174,9 @@ void	handle_cd(char **args, t_ms *ms)
 		return ;
 	if (handle_cd_directory_checks(target_dir, ms))
 		return ;
-	if (getcwd(cwd, sizeof(cwd)) == NULL)
-	{
-		free(target_dir);
-		perror("getcwd failed");
-		ms->exit_status = SYSTEM_ERR;
-		return ;
-	}
+	pwd = get_env_value("PWD", ms->envp);
 	if (change_directory(target_dir, ms))
 		return ;
 	free(target_dir);
-	update_cd_env(ms, cwd);
+	update_cd_env(ms, pwd);
 }

@@ -63,7 +63,7 @@ char	*get_parent_directory(t_ms *ms)
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
 		perror("getcwd failed");
-		ms->exit_status = SYSTEM_ERR;
+		ms->exit_status = 1;
 		return (NULL);
 	}
 	parent_dir = ft_strrchr(cwd, '/');

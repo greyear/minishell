@@ -29,7 +29,7 @@ static char	*handle_empty_oldpwd(t_ms *ms)
 		if (getcwd(cwd, sizeof(cwd)) == NULL)
 		{
 			perror("getcwd failed");
-			ms->exit_status = SYSTEM_ERR;
+			ms->exit_status = 1;
 			return (NULL);
 		}
 		update_env_var(ms, "PWD=", cwd);
@@ -196,7 +196,7 @@ void	update_cd_env(t_ms *ms, char *pwd_before)
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
 		perror("cd: getcwd failed");
-		ms->exit_status = SYSTEM_ERR;
+		ms->exit_status = 1;
 		return ;
 	}
 	current_pwd = get_env_value("PWD", ms->envp);
