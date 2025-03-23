@@ -12,10 +12,8 @@
  */
 void	close_fds2(int fd1, int fd2)
 {
-	if (fd1 != NO_FD)
-		close(fd1);
-	if (fd2 != NO_FD)
-		close(fd2);
+	close_file(fd1);
+	close_file(fd2);
 }
 
 /**
@@ -28,7 +26,7 @@ void	close_fds2(int fd1, int fd2)
  */
 void	close_file(int file)
 {
-	if (file != NO_FD)
+	if (file != NO_FD && file != DEF)
 		close(file);
 }
 
@@ -45,7 +43,7 @@ void	close_all_fds(t_pipe *p)
 {
 	close_file(p->fd[0]);
 	close_file(p->fd[1]);
-	close(p->cur_fd);
+	close_file(p->cur_fd);
 }
 
 /**
@@ -65,10 +63,8 @@ void	close_fds(t_cmd *cmd)
 	cur = cmd;
 	while (cur)
 	{
-		if (cur->infile != DEF && cur->infile != NO_FD)
-			close(cur->infile);
-		if (cur->outfile != DEF && cur->outfile != NO_FD)
-			close(cur->outfile);
+		close_file(cur->infile);
+		close_file(cur->outfile);
 		cur = cur->next;
 	}
 }

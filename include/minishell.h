@@ -104,7 +104,6 @@ void			make_one_child(t_cmd *cmd, t_ms *ms);
 void			execute_command(char **envp, char **cmd);
 void			make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms);
 void			pipe_process(int prev_pipe, int next_pipe);
-void			redirect_process(int infile, int outfile);
 void			handle_absolute_or_relative_path(char **envp, char **cmds);
 void			handle_no_path_variable(char **envp, char **cmd);
 void			check_if_dot(char **cmds);
@@ -126,6 +125,7 @@ int				create_blocks_and_cmds_lists(t_ms *ms);
 int				tokenize_input(char **input, t_ms *ms);
 
 //Redirections
+void			redirect_process(int infile, int outfile, t_ms *ms);
 void			put_infile_fd(t_token *token, t_cmd *cmd);
 void			put_outfile_fd(t_token *token, t_cmd *cmd);
 void			check_access(char *filename, t_oper operation);

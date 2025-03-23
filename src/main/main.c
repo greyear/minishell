@@ -59,26 +59,6 @@ static void print_blocks(t_block *block_list)
 	}
 }*/
 
-/*
-static void	input_output(t_cmd *cmd)
-{
-	t_cmd	*cur;
-
-	cur = cmd;
-	while (cur)
-	{
-		if (cur->infile != DEF && cur->infile != NO_FD)
-		{
-			dup2(cur->infile, STDIN_FILENO);
-		}
-		if (cur->outfile != DEF && cur->outfile != NO_FD)
-		{
-			dup2(cur->outfile, STDOUT_FILENO);
-		}
-		cur = cur->next;
-	}
-}*/
-
 /**
  * @brief Executes a list of commands.
  * 
