@@ -140,6 +140,7 @@ void	update_shlvl(t_ms *ms)
 	char	**args;
 	int		check;
 
+	args = NULL;
 	modify_shlvl(&ms->envp);
 	if (ms->exit_status == MALLOC_ERR)
 		return ;
