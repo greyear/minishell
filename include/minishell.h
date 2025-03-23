@@ -58,8 +58,8 @@ void			check_exit(char	**array, t_ms *ms);
 long long		convert_to_ll(char *str, int *error);
 char			*handle_expansion(t_expand *exp, t_ms *ms);
 char			*duplicate_or_replace(char *entry, char *arg, char *key, int *flag);
-char			*return_target(t_ms *ms, char *target);
 void			update_cd_env(t_ms *ms, char *pwd_before);
+void			add_oldpwd_to_envp(t_ms *ms, char *pwd_before);
 
 //Lexer
 t_token			*tokenization(char *str, t_ms *ms);

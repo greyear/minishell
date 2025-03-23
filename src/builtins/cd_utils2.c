@@ -85,33 +85,71 @@ char	*get_oldpwd_directory(t_ms *ms)
 	return (ft_strdup(target));
 }
 
-static void	make_cd_args(t_ms *ms, char *pwd_before, int i)
+/**
+ * @brief Creates arguments for exporting the `OLDPWD` environment variable.
+ * 
+ * This function dynamically allocates memory for an array of strings to store 
+ * the `export` command and the `OLDPWD` environment variable with its value 
+ * set to the previous working directory (`pwd_before`). If any memory 
+ * allocation fails, the function sets the exit status to `MALLOC_ERR` and 
+ * prints an error message. The generated arguments are returned in the `args` 
+ * parameter.
+ * 
+ * @param args A pointer to a pointer to an array of strings, which will 
+ *             store the `export` command and the `OLDPWD` variable.
+ * @param ms A pointer to the `t_ms` structure, which manages shell-related 
+ *           data, including exit status.
+ * @param pwd_before A string representing the previous working directory.
+ * 
+ * @return 1 on success, 0 on failure (due to memory allocation errors).
+ */
+static int	make_cd_args(char ***args, t_ms *ms, char *pwd_before)
+{
+	(*args) = malloc(sizeof(char *) * 3);
+	if (!(*args))
+	{
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
+		return (0);
+	}
+	(*args)[0] = ft_strdup("export");
+	if (!(*args)[0])
+		return(0);
+	(*args)[1] = ft_strjoin("OLDPWD=", pwd_before);
+	if (!(*args)[1])
+		return(0);
+	(*args)[2] = NULL;
+	return (1);
+}
+
+/**
+ * @brief Updates the `OLPWD` environment variable with the previous working directory.
+ * 
+ * This function creates arguments to export the `OLPWD` environment variable, 
+ * which stores the previous working directory before a `cd` command. If 
+ * argument creation or memory allocation fails, an error is printed, and 
+ * the exit status is set to `MALLOC_ERR`. The function then calls `handle_export` 
+ * to update the `OLPWD` variable in the environment.
+ * 
+ * @param ms A pointer to the `t_ms` structure, which manages shell-related 
+ *           data, including environment variables.
+ * @param pwd_before A string representing the previous working directory.
+ * 
+ * @return None. The function updates the `OLPWD` environment variable and 
+ *         modifies `ms->exit_status` on failure.
+ */
+static void	export_olpwd(t_ms *ms, char *pwd_before)
 {
 	char	**args;
 
-	args = malloc(sizeof(char *) * 3);
-	if (!args)
+	args = NULL;
+	if (!make_cd_args(&args, ms, pwd_before))
 	{
+		clean_arr(&args);
 		print_malloc_error();
 		ms->exit_status = MALLOC_ERR;
 		return ;
 	}
-	while (i < 2)
-	{
-		if (i == 0)
-			args[i] = ft_strdup("export");
-		if (i == 1)
-			args[i] = ft_strjoin("OLDPWD=", pwd_before);
-		if (!args[i])
-		{
-			clean_arr(&args);
-			print_malloc_error();
-			ms->exit_status = MALLOC_ERR;
-			return ;
-		}
-		i++;
-	}
-	args[2] = NULL;
 	handle_export(args, ms);
 	clean_arr(&args);
 }
@@ -135,7 +173,7 @@ static void	make_cd_args(t_ms *ms, char *pwd_before, int i)
  * @param pwd_before The path to the directory before a `cd` command is 
  *                   executed (used as the `OLDPWD` value).
  */
-static void	add_oldpwd_to_envp(t_ms *ms, char *pwd_before)
+void	add_oldpwd_to_envp(t_ms *ms, char *pwd_before)
 {
 	int		check;
 	int		i;
@@ -158,58 +196,5 @@ static void	add_oldpwd_to_envp(t_ms *ms, char *pwd_before)
 		i++;
 	}
 	if (check == 1)
-		make_cd_args(ms, pwd_before, 0);
-}
-
-/**
- * @brief Updates the `PWD` (current working directory) and `OLDPWD` 
- * (previous working directory) environment variables during a `cd` 
- * command.
- * 
- * This function performs the following actions:
- * - Retrieves the current working directory using `getcwd()` and stores 
- *   it in `PWD`.
- * - Checks if the `PWD` environment variable is set. If it is, it updates 
- *   the `OLDPWD` environment variable to store the previous value of `PWD`. 
- *   If `PWD` isn't set or is empty, it uses the `pwd_before` argument as 
- *   the value for `OLDPWD`.
- * - If the `OLDPWD` environment variable doesn't exist and the shell is 
- *   not using `envp`, it calls `add_oldpwd_to_envp` to add `OLDPWD` to 
- *   the environment.
- * - Finally, it updates the `PWD` environment variable to the newly 
- *   retrieved `cwd`.
- * 
- * The `PWD` variable reflects the current working directory, and `OLDPWD` 
- * stores the previous working directory to allow users to return to it 
- * using the `cd -` command.
- * 
- * @param ms The main shell structure, containing the environment variables 
- *           `envp` and flags like `no_env`.
- * @param pwd_before The value of `PWD` before the `cd` operation, used for 
- *                   updating `OLDPWD` when necessary.
- */
-void	update_cd_env(t_ms *ms, char *pwd_before)
-{
-	char	cwd[1024];
-	char	*current_pwd;
-
-	if (getcwd(cwd, sizeof(cwd)) == NULL)
-	{
-		perror("cd: getcwd failed");
-		ms->exit_status = 1;
-		return ;
-	}
-	current_pwd = get_env_value("PWD", ms->envp);
-	if (!current_pwd)
-		current_pwd = "";
-	if (current_pwd && *current_pwd != '\0')
-		update_env_var(ms, "OLDPWD=", current_pwd);
-	else
-		update_env_var(ms, "OLDPWD=", pwd_before);
-	if (ms->exit_status != MALLOC_ERR
-		&& !get_env_value("OLDPWD", ms->envp)
-		&& ms->no_env == true)
-		add_oldpwd_to_envp(ms, pwd_before);
-	if (ms->exit_status != MALLOC_ERR)
-		update_env_var(ms, "PWD=", cwd);
+		export_olpwd(ms, pwd_before);
 }
