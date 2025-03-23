@@ -115,13 +115,13 @@ t_expand		*exp_init(void);
 int				expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str);
 void			expand_variable(t_ms *ms, t_expand *exp, char **result);
 t_ms			*initialize_struct(char **envp);
-void			update_shlvl(t_ms *ms);
 char			*handle_spaces(char *copy, t_expand *exp);
 
 //Main
 void			initialize_envp_and_exp(t_ms *ms, char **envp);
 int				create_blocks_and_cmds_lists(t_ms *ms);
 int				tokenize_input(char **input, t_ms *ms);
+void			update_shlvl(t_ms *ms);
 
 //Redirections
 void			redirect_process(int infile, int outfile, t_ms *ms);

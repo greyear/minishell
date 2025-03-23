@@ -91,67 +91,71 @@ static int	modify_shlvl(char ***env)
  * @param ms The shell structure containing exit status and other execution 
  *           state information.
  */
-static void	make_args(char ***export, t_ms *ms)
+static void	make_args(char ***args, t_ms *ms)
 {
-	*export = malloc(sizeof(char *) * 3);
-	if (!*export)
+	*args = malloc(sizeof(char *) * 3);
+	if (!*args)
 	{
 		print_malloc_error();
 		ms->exit_status = MALLOC_ERR;
 		return ;
 	}
-	(*export)[0] = ft_strdup("export");
-	if (!(*export)[0])
+	(*args)[0] = ft_strdup("export");
+	if (!(*args)[0])
 	{
-		clean_arr(&(*export));
+		clean_arr(&(*args));
 		print_malloc_error();
 		ms->exit_status = MALLOC_ERR;
 		return ;
 	}
-	(*export)[1] = ft_strdup("SHLVL=1");
-	(*export)[2] = NULL;
-	if (!(*export)[1])
+	(*args)[1] = ft_strdup("SHLVL=1");
+	if (!(*args)[1])
 	{
-		clean_arr(&(*export));
+		clean_arr(&(*args));
 		print_malloc_error();
 		ms->exit_status = MALLOC_ERR;
 		return ;
 	}
-	(*export)[2] = NULL;
+	(*args)[2] = NULL;
 }
 
 /**
- * @brief Updates the `SHLVL` environment variable in both the `envp` and 
- *        `exported` environment lists.
- *
- * This function checks if the `envp` array exists, and if so, it creates a 
- * temporary export array, modifies the `SHLVL` variable in both the `envp` 
- * and `exported` environment lists, and handles errors during modification. 
- * If `modify_shlvl` encounters a failure, appropriate actions are taken, 
- * including printing an error message and updating the exit status. After 
- * processing, the temporary export array is cleaned up.
- *
- * @param ms The shell structure containing environment variables and exit 
- *           status information.
+ * @brief Updates the `SHLVL` environment variable.
+ * 
+ * This function attempts to modify the `SHLVL` value in both the `envp` and 
+ * `exported` environment variable arrays. If the `SHLVL` variable is not found, 
+ * it creates a new one with an initial value of 1. If memory allocation fails 
+ * at any point, the function sets the shell's exit status to `MALLOC_ERR` 
+ * and returns. After updating `SHLVL`, the function exports the modified 
+ * environment variables.
+ * 
+ * @param ms A pointer to the `t_ms` structure, which contains the environment 
+ *           variables (`envp`, `exported`) and the exit status.
+ * 
+ * @return None. This function modifies the `envp` and `exported` arrays and 
+ *         updates `ms->exit_status` on failure.
  */
 void	update_shlvl(t_ms *ms)
 {
-	char	**export;
+	char	**args;
 	int		check;
 
 	modify_shlvl(&ms->envp);
 	if (ms->exit_status == MALLOC_ERR)
 		return ;
-	make_args(&export, ms);
-	if (!export)
-		return ;
 	check = modify_shlvl(&ms->exported);
-	if (check == 0)
-		handle_export(export, ms);
 	if (check == 2)
 	{
 		print_malloc_error();
 		ms->exit_status = MALLOC_ERR;
+		return;
 	}
-	clean_arr(&export);
+	if (check == 0)
+	{
+		make_args(&args, ms);
+		if (!args)
+			return ;
+		handle_export(args, ms);
+		clean_arr(&args);
+	}
 }
