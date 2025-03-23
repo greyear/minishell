@@ -85,6 +85,7 @@ REDIR_FILES		=	fds.c \
 ENVP_FILES		=	check_all_tokens.c \
 					handle_expansion.c \
 					expansion_utils.c \
+					spaces_in_expansion.c \
 					update_shlvl.c
 READING_FILES	=	history.c \
 					history_file.c
