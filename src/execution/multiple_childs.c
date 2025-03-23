@@ -1,25 +1,24 @@
 #include "../../include/minishell.h"
 
 /**
- * @brief Waits for all child processes in a pipeline to finish and handles 
- * their exit statuses.
+ * @brief Waits for all child processes to finish and updates the exit status.
  *
- * This function waits for each child process to terminate, checks the status 
- * of the termination, and updates the exit status of the shell accordingly. 
- * If the last child process exits normally, its exit status is recorded. 
- * If any child process is terminated by a signal (e.g., SIGINT or SIGQUIT), 
- * the function handles those signals and sets the appropriate exit status. 
- * It also ensures proper cleanup of file descriptors and frees allocated 
- * memory related to the child processes.
+ * This function waits for all child processes to terminate, checks their exit 
+ * statuses, and updates the minishell's exit status based on the results. If 
+ * a child process terminates with a signal, it adjusts the exit status 
+ * accordingly. Specifically, if the process was terminated by `SIGINT`, it 
+ * sets the exit status to 130, and if by `SIGQUIT`, it sets it to 131. 
+ * Additionally, it writes the appropriate message to `stderr` when a process 
+ * exits due to a signal.
  *
- * @param last_pid The PID of the last child process in the pipeline.
+ * @param last_pid The PID of the last child process, used to check if it was 
+ * the one that finished.
  * @param ms The minishell structure containing the exit status and other 
  * relevant state.
- * @param p The pipeline structure containing information about the command 
- * pipeline.
- * @param cmds The list of commands to be executed in the pipeline.
+ * @param p The current pipe structure containing the number of commands and 
+ * other pipe-related info.
  */
-static void	wait_for_children(pid_t last_pid, t_ms *ms, t_pipe *p, t_cmd *cmds)
+static void	wait_for_children(pid_t last_pid, t_ms *ms, t_pipe *p)
 {
 	int		i;
 	int		status;
@@ -44,9 +43,6 @@ static void	wait_for_children(pid_t last_pid, t_ms *ms, t_pipe *p, t_cmd *cmds)
 	}
 	if (ms->exit_status == 131)
 		write(STDERR_FILENO, "Quit\n", 5);
-	close_fds(cmds);
-	close_all_fds(p);
-	free_pids(p);
 }
 
 /**
@@ -158,27 +154,19 @@ static void	initialize_p(t_pipe *p, int num_cmds, t_ms *ms)
 }
 
 /**
- * @brief Creates and manages multiple child processes to execute commands in 
- *        a pipeline.
- * 
- * This function forks a child process for each command in a pipeline, executes 
- * the commands in parallel, and waits for their completion. It handles the 
- * initialization of pipes, forks the processes, and manages the process
- * execution flow. After all child processes have been created and executed,
- * the function waits for their termination and updates the shell's 
- * exit status accordingly.
- * 
- * - Each child process is created using `fork_and_execute`, and pipes are
- *   set up to connect the commands in the pipeline.
- * - The function ensures that empty commands are skipped and that resources are 
- *   freed in case of errors such as memory allocation failures or system errors.
- * 
- * @param num_cmds The number of child processes (commands) to create 
- *                 and execute.
- * @param cmds A linked list of command structures, each containing the
- *             arguments and details of the command to be executed.
- * @param ms The main shell structure, used to track the exit status and manage 
- *           shell state.
+ * @brief Creates multiple child processes to execute commands in parallel.
+ *
+ * This function handles the creation of child processes for each command in a 
+ * pipeline, by forking a new process for each one and executing the corresponding 
+ * command. It initializes the necessary pipes, handles the process forking, and 
+ * ensures that the file descriptors are properly managed. After forking the child 
+ * processes, it waits for them to complete and updates the minishell's exit 
+ * status accordingly.
+ *
+ * @param num_cmds The number of commands to execute in the pipeline.
+ * @param cmds A linked list of command structures, each representing a command 
+ * to be executed.
+ * @param ms The minishell structure containing the environment and exit status.
  */
 void	make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
 {
@@ -199,5 +187,8 @@ void	make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
 		cur = cur->next;
 		p.cmd_num++;
 	}
-	wait_for_children(p.last_pid, p.ms, &p, cmds);
+	wait_for_children(p.last_pid, p.ms, &p);
+	close_fds(cmds);
+	close_all_fds(&p);
+	free_pids(&p);
 }
