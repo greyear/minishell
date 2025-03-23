@@ -49,21 +49,42 @@ static void	initialize_history(t_ms *ms)
 }
 
 /**
- * @brief Initializes and allocates memory for the main shell structure.
+ * @brief Initializes all fields of the minishell structure to NULL or default values.
+ *
+ * This function sets each field of the `t_ms` structure to a NULL pointer or its 
+ * appropriate default value (such as 0 for integer fields). It ensures that all 
+ * fields are properly initialized before they are used in further processing, 
+ * preventing potential issues with uninitialized memory.
+ *
+ * @param ms The minishell structure to be initialized.
+ */
+static void	initialize_to_null(t_ms *ms)
+{
+	ms->tokens = NULL;
+	ms->blocks = NULL;
+	ms->cmds = NULL;
+	ms->envp = NULL;
+	ms->exported = NULL;
+	ms->heredoc_count = 0;
+	ms->heredoc_files = NULL;
+	ms->pwd = NULL;
+}
+
+/**
+ * @brief Initializes the minishell structure.
+ *
+ * This function allocates and initializes a `t_ms` structure, setting its 
+ * fields to their default values and ensuring that necessary resources (such 
+ * as environment variables, history, and shell level) are properly set up. 
+ * It attempts to retrieve the current working directory and assigns it to the 
+ * `pwd` field. If memory allocation for `pwd` fails, an error is printed, 
+ * and the program exits. The function also sets up the environment variables, 
+ * shell level, and history through additional helper functions.
+ *
+ * @param envp The environment variables passed to the program.
  * 
- * This function:
- * - Allocates memory for a `t_ms` structure.
- * - Initializes environment variables (`envp`).
- * - Sets up tokens and command blocks.
- * - Initializes command history.
- * - Prepares file descriptors and heredoc-related data.
- * - Updates SHLVL in environmental variables if needed.
- * 
- * @param envp The environment variables inherited from the parent process.
- * 
- * @return A pointer to the initialized `t_ms` structure, 
- *         or `NULL` if allocation fails.
- * 
+ * @return A pointer to the initialized `t_ms` structure, or `NULL` if memory 
+ * allocation fails.
  */
 t_ms	*initialize_struct(char **envp)
 {
@@ -72,13 +93,18 @@ t_ms	*initialize_struct(char **envp)
 	ms = allocate_struct();
 	if (!ms)
 		return (NULL);
-	initialize_envp(ms, envp);
-	ms->tokens = NULL;
-	ms->blocks = NULL;
+	initialize_to_null(ms);
+	getcwd(ms->pwd, sizeof(ms->pwd));
+	if (!ms->pwd)
+		ms->pwd = ft_strdup("");
+	if (!ms->pwd)
+	{
+		print_malloc_error();
+		free(ms);
+		exit(1);
+	}
+	initialize_envp_and_exp(ms, envp);
 	initialize_history(ms);
-	ms->heredoc_count = 0;
-	ms->heredoc_files = NULL;
-	ms->pwd = NULL;
 	update_shlvl(ms);
 	g_sgnl = 0;
 	return (ms);

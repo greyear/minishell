@@ -144,7 +144,6 @@ static int	cd_error(char **args, t_ms *ms)
 void	handle_cd(char **args, t_ms *ms)
 {
 	char	*target_dir;
-	//char	cwd[1024];
 
 	ms->exit_status = 0;
 	if (cd_error(args, ms))

@@ -1,116 +1,122 @@
 #include "../../include/minishell.h"
 
 /**
- * @brief Allocates memory and creates a duplicate of the given string.
+ * @brief Initializes the `envp` environment variables when no environment 
+ *        variables are provided.
  *
- * This function uses `ft_strdup` to allocate memory and copy the contents 
- * of `str` into a newly allocated string. If memory allocation fails, an 
- * error message is printed, and `NULL` is returned.
+ * This function initializes the `envp` array with environment variables for 
+ * the minishell when no `envp` is passed. It allocates memory for 3 strings 
+ * in the `envp` array and assigns them values:
+ *   - The `PWD` variable, which is copied from `ms->exported[1]`.
+ *   - The `SHLVL` variable, which is copied from `ms->exported[2]`.
+ * The last element of the `envp` array is set to `NULL` to mark the end of 
+ * the list. If any memory allocation fails, the function returns `0` to 
+ * indicate failure.
  *
- * @param str The string to duplicate.
- * @return A newly allocated copy of `str`, or `NULL` if allocation fails.
+ * @param ms The minishell structure where the `envp` environment variables 
+ *           will be initialized.
+ * @return 1 if the `envp` is successfully initialized, 0 if memory allocation 
+ *         fails.
  */
-char	*allocate_and_copy(const char *str)
-{
-	char	*new_str;
-
-	new_str = ft_strdup(str);
-	if (!new_str)
-	{
-		print_malloc_error();
-		return (NULL);
-	}
-	return (new_str);
-}
-
-/**
- * @brief Initializes the `envp` array when no environment variables exist.
- *
- * This function manually allocates and sets up a minimal environment (`envp`) 
- * based on entries from the `exported` array. It ensures proper memory 
- * allocation and handles errors by setting the exit status if allocation fails.
- *
- * @param ms The shell structure containing execution state, including `envp` 
- *           and `exported` environment lists.
- */
-static void	initialize_envp_without_envp(t_ms *ms)
+static int	initialize_envp_without_envp(t_ms *ms)
 {
 	ms->envp = malloc(sizeof(char *) * 4);
 	if (!ms->envp)
-	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return ;
-	}
-	ms->envp[0] = allocate_and_copy(ms->exported[1]);
+		return (0);
+	ms->envp[0] = ft_strdup(ms->exported[1]);
 	if (!ms->envp[0])
-	{
-		ms->exit_status = MALLOC_ERR;
-		return ;
-	}
-	ms->envp[1] = allocate_and_copy(ms->exported[2]);
+		return (0);
+	ms->envp[1] = ft_strdup(ms->exported[2]);
 	if (!ms->envp[1])
-	{
-		ms->exit_status = MALLOC_ERR;
-		return ;
-	}
+		return (0);
 	ms->envp[2] = NULL;
-}
-
-static void	initialize_without_envp(t_ms *ms)
-{
-	char	cwd[1024];
-
-	ms->exported = malloc(sizeof(char *) * 4);
-	if (!ms->exported)
-	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return ;
-	}
-	ms->exported[0] = allocate_and_copy("OLDPWD");
-	if (!ms->exported[0])
-	{
-		ms->exit_status = MALLOC_ERR;
-		return ;
-	}
-	if (getcwd(cwd, sizeof(cwd)) == NULL)
-	{
-		perror("pwd: getcwd failed");
-		ms->exit_status = SYSTEM_ERR;
-		return ;
-	}
-	ms->exported[1] = ft_strjoin("PWD=", cwd);
-	if (!ms->exported[1])
-	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return ;
-	}
-	ms->exported[2] = allocate_and_copy("SHLVL=0");
-	if (!ms->exported[2])
-	{
-		ms->exit_status = MALLOC_ERR;
-		return ;
-	}
-	ms->exported[3] = NULL;
-	initialize_envp_without_envp(ms);
+	return (1);
 }
 
 /**
- * @brief Initializes the environment variables for the shell.
+ * @brief Initializes the exported environment variables when no environment 
+ *        variables are provided.
  *
- * This function sets up the `envp` and `exported` arrays by copying the 
- * provided environment (`envp`). If no environment is available, it 
- * initializes a minimal environment instead. It also sets a flag (`no_env`) 
- * to indicate whether an environment was inherited. If memory allocation 
- * fails, the shell structure is cleaned up, and the program exits with an 
- * error.
+ * This function initializes the `exported` environment variables for the 
+ * minishell when no `envp` is passed. It allocates memory for 4 strings in 
+ * the `exported` array and assigns them values:
+ *   - `OLDPWD` is initialized without a value.
+ *   - `PWD` is set to the current working directory (`ms->pwd`).
+ *   - `SHLVL` is set to "0", indicating the initial shell level.
+ * The function ensures that each allocation is successful and that the last 
+ * element in the `exported` array is `NULL`. If any memory allocation fails, 
+ * the function returns `0` to indicate failure.
  *
- * @param ms The shell structure containing execution state.
- * @param envp The inherited environment variables from the system.
+ * @param ms The minishell structure where the exported environment variables 
+ *           will be initialized.
+ * @return 1 if all variables are successfully initialized, 0 if memory 
+ *         allocation fails.
  */
-void	initialize_envp(t_ms *ms, char **envp)
+static int	initialize_exp_without_envp(t_ms *ms)
+{
+	ms->exported = malloc(sizeof(char *) * 4);
+	if (!ms->exported)
+		return (0);
+	ms->exported[0] = ft_strdup("OLDPWD");
+	if (!ms->exported[0])
+		return (0);
+	ms->exported[1] = ft_strjoin("PWD=", ms->pwd);
+	if (!ms->exported[1])
+		return (0);
+	ms->exported[2] = ft_strdup("SHLVL=0");
+	if (!ms->exported[2])
+		return (0);
+	ms->exported[3] = NULL;
+	return (1);
+}
+
+/**
+ * @brief Initializes the minishell environment when no environment variables 
+ *        are provided.
+ *
+ * This function is responsible for initializing the environment when no `envp` 
+ * is passed to the minishell. It attempts to initialize the exported variables 
+ * using `initialize_exp_without_envp`. If this fails, it sets the exit status 
+ * to `MALLOC_ERR`. After that, it attempts to initialize the environment 
+ * variables with `initialize_envp_without_envp`. If both initializations succeed, 
+ * the function continues normally. If any memory allocation fails, the function 
+ * sets the exit status to `MALLOC_ERR`, prints an error message, cleans up the 
+ * minishell structure, and exits with a failure status.
+ *
+ * @param ms The minishell structure to be initialized.
+ */
+static void	initialize_without_envp(t_ms *ms)
+{
+	if (!initialize_exp_without_envp(ms))
+		ms->exit_status = MALLOC_ERR;
+	if (ms->exit_status != MALLOC_ERR)
+	{
+		if (!initialize_envp_without_envp(ms))
+			ms->exit_status = MALLOC_ERR;
+	}
+	if (ms->exit_status == MALLOC_ERR)
+	{
+		print_malloc_error();
+		clean_struct(ms);
+		exit(1);
+	}
+}
+
+/**
+ * @brief Initializes the environment variables and exported variables for the minishell.
+ *
+ * This function sets up the environment variables (`envp`) and exported variables 
+ * (`exported`) from the provided `envp` array. If no environment variables are 
+ * provided, it initializes the minishell without them. If memory allocation fails 
+ * at any step, an error message is printed and the program exits with an error 
+ * status.
+ *
+ * @param ms The minishell structure to be initialized with environment and 
+ *           exported variables.
+ * @param envp The array of environment variables to be copied into the 
+ *             minishell structure.
+ */
+void	initialize_envp_and_exp(t_ms *ms, char **envp)
 {
 	if (!envp || !*envp)
 	{

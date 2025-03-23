@@ -120,7 +120,7 @@ char			*remove_extra_spaces(char *str);
 char			*remove_first_space(char *str);
 
 //Main
-void			initialize_envp(t_ms *ms, char **envp);
+void			initialize_envp_and_exp(t_ms *ms, char **envp);
 int				create_blocks_and_cmds_lists(t_ms *ms);
 int				tokenize_input(char **input, t_ms *ms);
 
