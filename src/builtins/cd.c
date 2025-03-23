@@ -81,36 +81,6 @@ static int	handle_cd_directory_checks(char *target_dir, t_ms *ms)
 }
 
 /**
- * @brief Changes the current working directory to the specified target.
- * 
- * This function attempts to change the working directory using the `chdir`
- * system call. If the operation fails (e.g., if the target directory does 
- * not exist or the process lacks permission), it prints an error message, 
- * frees the target directory string, updates the shell's exit status to 
- * indicate a system error, and returns a non-zero value.
- * 
- * @param target_dir The target directory to change to. This string is 
- *                   dynamically allocated and will be freed if the 
- *                   operation fails.
- * @param ms A pointer to the `t_ms` structure, which contains environment 
- *           variables and shell-related data, including the exit status.
- * 
- * @return 0 if the directory change is successful, or a non-zero value if 
- *         the operation fails.
- */
-static int	change_directory(char *target_dir, t_ms *ms)
-{
-	if (chdir(target_dir) == -1)
-	{
-		free(target_dir);
-		perror("chdir failed");
-		ms->exit_status = 1;
-		return (1);
-	}
-	return (0);
-}
-
-/**
  * @brief Checks for errors in the `cd` command arguments.
  * 
  * This function verifies if the provided arguments for `cd` are valid. It 
@@ -141,6 +111,23 @@ static int	cd_error(char **args, t_ms *ms)
 	return (0);
 }
 
+/**
+ * @brief Handles the `cd` command to change the current directory.
+ * 
+ * This function checks for errors in the `cd` command arguments, determines 
+ * the target directory, performs directory checks, and attempts to change 
+ * the directory using `chdir`. If successful, it updates the shell's `PWD` 
+ * environment variable. On failure, it prints an error message and sets 
+ * the appropriate exit status.
+ * 
+ * @param args An array of strings representing the arguments passed to `cd`. 
+ *             The first argument is the target directory.
+ * @param ms A pointer to the `t_ms` structure, which manages shell-related 
+ *           data, including exit status and current working directory (`pwd`).
+ * 
+ * @return None. The function modifies `ms->exit_status`, `ms->pwd`, and 
+ *         updates the environment variables.
+ */
 void	handle_cd(char **args, t_ms *ms)
 {
 	char	*target_dir;
@@ -153,8 +140,13 @@ void	handle_cd(char **args, t_ms *ms)
 		return ;
 	if (handle_cd_directory_checks(target_dir, ms))
 		return ;
-	if (change_directory(target_dir, ms))
+	if (chdir(target_dir) == -1)
+	{
+		free(target_dir);
+		perror("chdir failed");
+		ms->exit_status = 1;
 		return ;
+	}
 	update_cd_env(ms, ms->pwd);
 	if (ms->pwd)
 		free(ms->pwd);

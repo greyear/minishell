@@ -113,7 +113,22 @@ char	*build_relative_path(char *target, char *cwd, t_ms *ms)
 	return (full_path);
 }
 
-void	update_exp_var(t_ms *ms, char *key, char *new_value)
+/**
+ * @brief Updates the value of an exported environment variable.
+ * 
+ * This function creates a new exported environment variable entry by 
+ * concatenating the provided `key` and `new_value`. It then searches 
+ * through the exported environment variable array (`exported`) for an 
+ * existing entry with the same `key`, replacing it with the new entry.
+ * 
+ * @param ms A pointer to the `t_ms` structure, which manages shell-related 
+ *           data including exported environment variables.
+ * @param key The name of the exported environment variable to update.
+ * @param new_value The new value to assign to the exported environment variable.
+ * 
+ * @return None. The function modifies `ms->exported`.
+ */
+static void	update_exp_var(t_ms *ms, char *key, char *new_value)
 {
 	int		i;
 	char	*new_env_entry;
@@ -140,6 +155,24 @@ void	update_exp_var(t_ms *ms, char *key, char *new_value)
 	}
 }
 
+/**
+ * @brief Updates the value of an environment variable.
+ * 
+ * This function creates a new environment variable entry by concatenating the 
+ * provided `key` and `new_value`. It then searches through the environment 
+ * variable array (`envp`) for an existing entry with the same `key`, replacing 
+ * it with the new entry. After updating the environment variable in `envp`, 
+ * it also updates the corresponding exported variable using the 
+ * `update_exp_var` function.
+ * 
+ * @param ms A pointer to the `t_ms` structure, which manages shell-related 
+ *           data including environment variables.
+ * @param key The name of the environment variable to update.
+ * @param new_value The new value to assign to the environment variable.
+ * 
+ * @return None. The function modifies `ms->envp` and updates the exported 
+ *         variables in `ms->exported`.
+ */
 void	update_env_var(t_ms *ms, char *key, char *new_value)
 {
 	int		i;

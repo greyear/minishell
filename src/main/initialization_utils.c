@@ -103,6 +103,44 @@ static void	initialize_without_envp(t_ms *ms)
 }
 
 /**
+ * @brief Creates a duplicate of a null-terminated array of strings.
+ *
+ * This function allocates memory for a new array of strings and 
+ * copies each string from the original using `ft_strdup`.
+ * If memory allocation fails at any point, it frees the allocated memory 
+ * and returns NULL.
+ *
+ * @param original The null-terminated array of strings to be copied.
+ * @return A newly allocated null-terminated copy of the original map, 
+ *         or NULL if memory allocation fails.
+ */
+static char	**copy_array_of_strings(char **original)
+{
+	char	**new;
+	int		i;
+
+	i = 0;
+	while (original[i])
+		i++;
+	new = malloc(sizeof(char *) * (i + 1));
+	if (!new)
+		return (NULL);
+	i = 0;
+	while (original[i])
+	{
+		new[i] = ft_strdup(original[i]);
+		if (!new[i])
+		{
+			clean_arr(&(new));
+			return (NULL);
+		}
+		i++;
+	}
+	new[i] = NULL;
+	return (new);
+}
+
+/**
  * @brief Initializes the environment variables and exported variables for the minishell.
  *
  * This function sets up the environment variables (`envp`) and exported variables 
@@ -125,14 +163,14 @@ void	initialize_envp_and_exp(t_ms *ms, char **envp)
 		return ;
 	}
 	ms->no_env = false;
-	ms->envp = copy_map(envp);
+	ms->envp = copy_array_of_strings(envp);
 	if (!ms->envp)
 	{
 		print_malloc_error();
 		clean_struct(ms);
 		exit(1);
 	}
-	ms->exported = copy_map(envp);
+	ms->exported = copy_array_of_strings(envp);
 	if (!ms->exported)
 	{
 		print_malloc_error();

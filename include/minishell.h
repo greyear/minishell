@@ -42,7 +42,6 @@ void			handle_export(char **args, t_ms *ms);
 void			handle_unset(char **args, t_ms *ms);
 int				check_env(char *env, char *name, int len, int flag);
 char			**allocate_temp_env(char **env, int x);
-char			**copy_map(char **original_map);
 void			print_array(char **a);
 int				check_if_valid_key(char *name); 
 int				get_key_length(char *arg);
