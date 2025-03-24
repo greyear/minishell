@@ -19,7 +19,10 @@
  */
 void	execute_child(t_cmd *cmd, t_ms *ms)
 {
-	redirect_process(cmd->infile, cmd->outfile);
+	redirect_process(cmd->infile, cmd->outfile, ms);
+	close_fds2(cmd->infile, cmd->outfile);
+	if (ms->exit_status == SYSTEM_ERR)
+		exit(SYSTEM_ERR);
 	if (is_builtin(cmd))
 	{
 		handle_builtin(cmd, ms, 1);
@@ -70,6 +73,7 @@ void	make_one_child(t_cmd *cmd, t_ms *ms)
 	}
 	if (pid == 0)
 		execute_child(cmd, ms);
+	close_fds2(cmd->infile, cmd->outfile);
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		ms->exit_status = WEXITSTATUS(status);

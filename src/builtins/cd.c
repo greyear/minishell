@@ -1,6 +1,59 @@
 #include "../../include/minishell.h"
 
 /**
+ * @brief Updates the `PWD` (current working directory) and `OLDPWD` 
+ * (previous working directory) environment variables during a `cd` 
+ * command.
+ * 
+ * This function performs the following actions:
+ * - Retrieves the current working directory using `getcwd()` and stores 
+ *   it in `PWD`.
+ * - Checks if the `PWD` environment variable is set. If it is, it updates 
+ *   the `OLDPWD` environment variable to store the previous value of `PWD`. 
+ *   If `PWD` isn't set or is empty, it uses the `pwd_before` argument as 
+ *   the value for `OLDPWD`.
+ * - If the `OLDPWD` environment variable doesn't exist and the shell is 
+ *   not using `envp`, it calls `add_oldpwd_to_envp` to add `OLDPWD` to 
+ *   the environment.
+ * - Finally, it updates the `PWD` environment variable to the newly 
+ *   retrieved `cwd`.
+ * 
+ * The `PWD` variable reflects the current working directory, and `OLDPWD` 
+ * stores the previous working directory to allow users to return to it 
+ * using the `cd -` command.
+ * 
+ * @param ms The main shell structure, containing the environment variables 
+ *           `envp` and flags like `no_env`.
+ * @param pwd_before The value of `PWD` before the `cd` operation, used for 
+ *                   updating `OLDPWD` when necessary.
+ */
+void	update_cd_env(t_ms *ms, char *pwd_before)
+{
+	char	cwd[1024];
+	char	*current_pwd;
+
+	if (getcwd(cwd, sizeof(cwd)) == NULL)
+	{
+		perror("cd: getcwd failed");
+		ms->exit_status = 1;
+		return ;
+	}
+	current_pwd = get_env_value("PWD", ms->envp);
+	if (!current_pwd)
+		current_pwd = "";
+	if (current_pwd && *current_pwd != '\0')
+		update_env_var(ms, "OLDPWD=", current_pwd);
+	else
+		update_env_var(ms, "OLDPWD=", pwd_before);
+	if (ms->exit_status != MALLOC_ERR
+		&& !get_env_value("OLDPWD", ms->envp)
+		&& ms->no_env == true)
+		add_oldpwd_to_envp(ms, pwd_before);
+	if (ms->exit_status != MALLOC_ERR)
+		update_env_var(ms, "PWD=", cwd);
+}
+
+/**
  * @brief Determines the target directory for the `cd` command.
  * 
  * This function resolves the directory path based on the given arguments. 
@@ -34,7 +87,7 @@ static char	*get_cd_target(t_ms *ms, char **args)
 		if (getcwd(cwd, sizeof(cwd)) == NULL)
 		{
 			perror("cd: getcwd failed");
-			ms->exit_status = SYSTEM_ERR;
+			ms->exit_status = 1;
 			return (NULL);
 		}
 		return (build_relative_path(args[1], cwd, ms));
@@ -81,36 +134,6 @@ static int	handle_cd_directory_checks(char *target_dir, t_ms *ms)
 }
 
 /**
- * @brief Changes the current working directory to the specified target.
- * 
- * This function attempts to change the working directory using the `chdir`
- * system call. If the operation fails (e.g., if the target directory does 
- * not exist or the process lacks permission), it prints an error message, 
- * frees the target directory string, updates the shell's exit status to 
- * indicate a system error, and returns a non-zero value.
- * 
- * @param target_dir The target directory to change to. This string is 
- *                   dynamically allocated and will be freed if the 
- *                   operation fails.
- * @param ms A pointer to the `t_ms` structure, which contains environment 
- *           variables and shell-related data, including the exit status.
- * 
- * @return 0 if the directory change is successful, or a non-zero value if 
- *         the operation fails.
- */
-static int	change_directory(char *target_dir, t_ms *ms)
-{
-	if (chdir(target_dir) == -1)
-	{
-		free(target_dir);
-		perror("chdir failed");
-		ms->exit_status = SYSTEM_ERR;
-		return (1);
-	}
-	return (0);
-}
-
-/**
  * @brief Checks for errors in the `cd` command arguments.
  * 
  * This function verifies if the provided arguments for `cd` are valid. It 
@@ -122,7 +145,7 @@ static int	change_directory(char *target_dir, t_ms *ms)
  * @param ms A pointer to the `t_ms` structure, which holds shell-related data, 
  *           including the exit status.
  * 
- * @return `1` if an error occurs (e.g., invalid arguments, too many arguments), 
+ * @return `1` if an error occurs (too many arguments), 
  *         otherwise `0` if the arguments are valid.
  */
 static int	cd_error(char **args, t_ms *ms)
@@ -136,35 +159,29 @@ static int	cd_error(char **args, t_ms *ms)
 		ms->exit_status = 1;
 		return (1);
 	}
-	if (!ft_strcmp(args[1], "~"))
-		return (1);
 	return (0);
 }
 
 /**
- * @brief Handles the `cd` (change directory) command in the shell.
+ * @brief Handles the `cd` command to change the current directory.
  * 
- * This function processes the `cd` command by performing various checks 
- * such as verifying the target directory, ensuring it is valid, and 
- * handling errors (e.g., failure to retrieve the current directory, 
- * invalid directory, etc.). It updates the shell's environment variables 
- * (`PWD` and `OLDPWD`) and changes the working directory if everything 
- * is valid. On failure, it updates the shell's exit status and returns 
- * early.
+ * This function checks for errors in the `cd` command arguments, determines 
+ * the target directory, performs directory checks, and attempts to change 
+ * the directory using `chdir`. If successful, it updates the shell's `PWD` 
+ * environment variable. On failure, it prints an error message and sets 
+ * the appropriate exit status.
  * 
- * @param args An array of strings representing the command and its 
- *             arguments. The first argument is expected to be `cd`, and 
- *             the second is the target directory.
- * @param ms A pointer to the `t_ms` structure, which contains environment 
- *           variables and shell-related data, including the exit status.
+ * @param args An array of strings representing the arguments passed to `cd`. 
+ *             The first argument is the target directory.
+ * @param ms A pointer to the `t_ms` structure, which manages shell-related 
+ *           data, including exit status and current working directory (`pwd`).
  * 
- * @return None. The function modifies `ms->exit_status` and updates the 
- *         shell's environment.
+ * @return None. The function modifies `ms->exit_status`, `ms->pwd`, and 
+ *         updates the environment variables.
  */
 void	handle_cd(char **args, t_ms *ms)
 {
 	char	*target_dir;
-	char	cwd[1024];
 
 	ms->exit_status = 0;
 	if (cd_error(args, ms))
@@ -174,15 +191,16 @@ void	handle_cd(char **args, t_ms *ms)
 		return ;
 	if (handle_cd_directory_checks(target_dir, ms))
 		return ;
-	if (getcwd(cwd, sizeof(cwd)) == NULL)
+	if (chdir(target_dir) == -1)
 	{
 		free(target_dir);
-		perror("getcwd failed");
-		ms->exit_status = SYSTEM_ERR;
+		perror("chdir failed");
+		ms->exit_status = 1;
 		return ;
 	}
-	if (change_directory(target_dir, ms))
-		return ;
+	update_cd_env(ms, ms->pwd);
+	if (ms->pwd)
+		free(ms->pwd);
+	ms->pwd = ft_strdup(target_dir);
 	free(target_dir);
-	update_cd_env(ms, cwd);
 }

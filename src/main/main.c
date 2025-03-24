@@ -59,26 +59,6 @@ static void print_blocks(t_block *block_list)
 	}
 }*/
 
-/*
-static void	input_output(t_cmd *cmd)
-{
-	t_cmd	*cur;
-
-	cur = cmd;
-	while (cur)
-	{
-		if (cur->infile != DEF && cur->infile != NO_FD)
-		{
-			dup2(cur->infile, STDIN_FILENO);
-		}
-		if (cur->outfile != DEF && cur->outfile != NO_FD)
-		{
-			dup2(cur->outfile, STDOUT_FILENO);
-		}
-		cur = cur->next;
-	}
-}*/
-
 /**
  * @brief Executes a list of commands.
  * 
@@ -194,17 +174,20 @@ static int	init_terminal_signals(void)
 }
 
 /**
- * @brief Main loop to run the minishell.
- *
- * This function starts the main loop of the minishell, where it continually 
- * reads user input, processes it, tokenizes it, creates command blocks, and 
- * executes them. It handles the interactive mode with `readline` and 
- * gracefully exits on EOF or errors. The loop breaks if the exit status 
- * indicates a critical error (memory allocation or system error). After 
- * executing each command, it performs cleanup before the next iteration.
- *
- * @param ms The shell structure containing execution state and relevant 
- * information.
+ * @brief Main loop for executing the minishell commands.
+ * 
+ * This function runs an interactive or non-interactive loop to read input, 
+ * process it, tokenize the input, and execute the commands. It handles EOF 
+ * detection (Ctrl+D), cleans up after each command execution, and continues 
+ * running until the shell encounters a critical error (e.g., memory allocation 
+ * failure or system error) or the user exits (Ctrl+D). It also manages signals 
+ * like SIGINT to ensure proper cleanup.
+ * 
+ * @param ms A pointer to the `t_ms` structure, which holds the shell's state, 
+ *           including the exit status and other shell-related data.
+ * 
+ * @return None. The function modifies the state of the shell based on the 
+ *         input and execution results.
  */
 static void	run_minishell(t_ms *ms)
 {
@@ -242,8 +225,14 @@ static void	run_minishell(t_ms *ms)
 			continue ;
 		if (!create_blocks_and_cmds_lists(ms))
 			continue ;
+		if (g_sgnl == SIGINT)
+		{
+			clean_struct_partially(ms);
+			g_sgnl = 0;
+			continue;
+		}
 		execute_commands(ms);
-		cleanup_after_execution(ms);
+		clean_struct_partially(ms);
 	}
 }
 

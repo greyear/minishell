@@ -1,37 +1,31 @@
 #include "../../include/minishell.h"
 
 /**
- * @brief Waits for the completion of child processes and updates the exit 
- *        status.
- * 
+ * @brief Waits for all child processes to finish and updates the exit status.
+ *
  * This function waits for all child processes to terminate, checks their exit 
- * status, and updates the shell's exit status accordingly. If a child process 
- * is terminated by a signal, the function handles specific signals (SIGINT and 
- * SIGQUIT) and updates the exit status. Additionally, it manages closing file 
- * descriptors and freeing resources related to the child processes.
- * 
- * - If a child process exits normally, the exit status is captured.
- * - If the child process is terminated by a signal, the exit status is updated 
- *   to reflect the signal that caused termination (SIGINT or SIGQUIT).
- * - The function ensures that the correct exit status is propagated, with 
- *   special handling for interactive signals.
- * 
- * @param num_cmds The number of child commands (processes) to wait for.
- * @param last_pid The PID of the last child process.
- * @param ms The main shell structure, used to update the exit status.
- * @param p A structure containing pipe resources, used to manage 
- *          file descriptors.
+ * statuses, and updates the minishell's exit status based on the results. If 
+ * a child process terminates with a signal, it adjusts the exit status 
+ * accordingly. Specifically, if the process was terminated by `SIGINT`, it 
+ * sets the exit status to 130, and if by `SIGQUIT`, it sets it to 131. 
+ * Additionally, it writes the appropriate message to `stderr` when a process 
+ * exits due to a signal.
+ *
+ * @param last_pid The PID of the last child process, used to check if it was 
+ * the one that finished.
+ * @param ms The minishell structure containing the exit status and other 
+ * relevant state.
+ * @param p The current pipe structure containing the number of commands and 
+ * other pipe-related info.
  */
-
-static void	wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms, t_pipe *p)
+static void	wait_for_children(pid_t last_pid, t_ms *ms, t_pipe *p)
 {
 	int		i;
 	int		status;
 	pid_t	wpid;
 
 	i = 0;
-	close_all_fds(p);
-	while (i < num_cmds)
+	while (i < p->num_cmds)
 	{
 		wpid = wait(&status);
 		if (wpid == last_pid && WIFEXITED(status))
@@ -49,31 +43,36 @@ static void	wait_for_children(int num_cmds, pid_t last_pid, t_ms *ms, t_pipe *p)
 	}
 	if (ms->exit_status == 131)
 		write(STDERR_FILENO, "Quit\n", 5);
-	free_pids(p);
 }
 
 /**
- * @brief Executes a command in a child process.
- * 
- * This function sets up pipes and redirects input/output for the child 
- * process. If the command is a built-in, it is executed directly, and the 
- * child process exits with the appropriate status. Otherwise, the function 
- * switches the signal mode and executes an external command using `execve()`. 
- * All file descriptors are closed before execution to prevent leaks.
- * 
- * @param cur A pointer to the `t_cmd` structure containing command details 
- *            such as arguments and input/output files.
- * @param p A pointer to the `t_pipe` structure, which manages pipes, file 
- *          descriptors, and process execution context.
- * 
- * @return None. The function either executes the command or exits the 
- *         child process.
+ * @brief Handles the execution of a child process in a pipeline.
+ *
+ * This function manages the execution of a command in a child process. It 
+ * checks if the command has arguments and if not, it closes file descriptors 
+ * and exits. It sets up pipes for communication between processes, redirects 
+ * input/output as necessary, and handles any builtins or external commands. 
+ * The function ensures proper cleanup of file descriptors, handles error 
+ * conditions, and manages signals for external commands.
+ *
+ * @param cur The current command structure containing the command arguments, 
+ * input/output files, etc.
+ * @param p The pipeline structure containing information about the current 
+ * pipeline state.
  */
 static void	child_process(t_cmd *cur, t_pipe *p)
 {
+	if (!cur->args || !cur->args[0])
+	{
+		close_fds2(cur->infile, cur->outfile);
+		exit(0);
+	}
 	setup_pipes(p->fd, p->cmd_num, p->num_cmds, p->cur_fd);
-	redirect_process(cur->infile, cur->outfile);
+	redirect_process(cur->infile, cur->outfile, p->ms);
+	close_fds2(cur->infile, cur->outfile);
 	close_all_fds(p);
+	if (p->ms->exit_status == SYSTEM_ERR)
+		exit(SYSTEM_ERR);
 	if (is_builtin(cur))
 	{
 		handle_builtin(cur, p->ms, 1);
@@ -120,6 +119,7 @@ static void	fork_and_execute(t_cmd *cur, t_pipe *p)
 	}
 	if (p->pids[p->cmd_num] == 0)
 		child_process(cur, p);
+	close_fds2(cur->infile, cur->outfile);
 	close_fds2(p->cur_fd, p->fd[1]);
 	p->cur_fd = p->fd[0];
 	p->last_pid = p->pids[p->cmd_num];
@@ -150,31 +150,26 @@ static void	initialize_p(t_pipe *p, int num_cmds, t_ms *ms)
 	p->cur_fd = -1;
 	p->pids = (pid_t *)malloc((p->num_cmds) * sizeof(pid_t));
 	if (!p->pids)
+	{
 		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
+	}
 }
 
 /**
- * @brief Creates and manages multiple child processes to execute commands in 
- *        a pipeline.
- * 
- * This function forks a child process for each command in a pipeline, executes 
- * the commands in parallel, and waits for their completion. It handles the 
- * initialization of pipes, forks the processes, and manages the process
- * execution flow. After all child processes have been created and executed,
- * the function waits for their termination and updates the shell's 
- * exit status accordingly.
- * 
- * - Each child process is created using `fork_and_execute`, and pipes are
- *   set up to connect the commands in the pipeline.
- * - The function ensures that empty commands are skipped and that resources are 
- *   freed in case of errors such as memory allocation failures or system errors.
- * 
- * @param num_cmds The number of child processes (commands) to create 
- *                 and execute.
- * @param cmds A linked list of command structures, each containing the
- *             arguments and details of the command to be executed.
- * @param ms The main shell structure, used to track the exit status and manage 
- *           shell state.
+ * @brief Creates multiple child processes to execute commands in parallel.
+ *
+ * This function handles the creation of child processes for each command in a 
+ * pipeline, by forking a new process for each one and executing the corresponding 
+ * command. It initializes the necessary pipes, handles the process forking, and 
+ * ensures that the file descriptors are properly managed. After forking the child 
+ * processes, it waits for them to complete and updates the minishell's exit 
+ * status accordingly.
+ *
+ * @param num_cmds The number of commands to execute in the pipeline.
+ * @param cmds A linked list of command structures, each representing a command 
+ * to be executed.
+ * @param ms The minishell structure containing the environment and exit status.
  */
 void	make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
 {
@@ -187,19 +182,19 @@ void	make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
 		return ;
 	while (p.cmd_num < p.num_cmds && cur)
 	{
-		if (!cur->args || !cur->args[0])
-		{
-			p.ms->exit_status = 0;
-			cur = cur->next;
-			p.cmd_num++;
-			continue ;
-		}
 		fork_and_execute(cur, &p);
+		close_fds2(cur->infile, cur->outfile);
 		if (ms->exit_status == MALLOC_ERR
 			|| ms->exit_status == SYSTEM_ERR)
+		{
+			free_pids(&p);
 			return ;
+		}
 		cur = cur->next;
 		p.cmd_num++;
 	}
-	wait_for_children(p.num_cmds, p.last_pid, p.ms, &p);
+	wait_for_children(p.last_pid, p.ms, &p);
+	close_fds(cmds);
+	close_all_fds(&p);
+	free_pids(&p);
 }

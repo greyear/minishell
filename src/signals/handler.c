@@ -1,5 +1,4 @@
 #include "../../include/minishell.h"
-#include <signal.h>
 
 /**
  * @brief Handles the SIGINT signal in an interactive shell environment.
@@ -16,7 +15,6 @@
  * 
  * @param sig The signal that triggered the handler, in this case, `SIGINT`.
  */
-
 void	ctrlc_interactive(int sig)
 {
 	if (sig == SIGINT)
@@ -44,7 +42,6 @@ void	ctrlc_interactive(int sig)
  * 
  * @param limiter The delimiter used to define the end of the here-document.
  */
-
 void	print_heredoc_ctrl_d(char *limiter)
 {
 	ft_putstr_fd("minishell: warning: here-document at " \
@@ -55,13 +52,27 @@ void	print_heredoc_ctrl_d(char *limiter)
 	ft_putstr_fd("')\n", 2);
 }
 
-void	ctrlc_heredoc(int sig)
+/**
+ * @brief Handles the SIGINT signal during heredoc input.
+ * 
+ * This function is invoked when a SIGINT signal (e.g., from Ctrl+C) is 
+ * received during the heredoc process. It outputs a newline to STDERR, 
+ * closes the standard input stream to stop further reading, sets a global 
+ * signal flag `g_sgnl` to SIGINT, and terminates the program with an exit 
+ * status of 130 to indicate the signal was caught.
+ * 
+ * @param sig The signal number. It checks if the signal is SIGINT (Ctrl+C).
+ * 
+ * @return None. The function exits the program with a status code of 130 
+ *         after handling the signal.
+ */
+static void	ctrlc_heredoc(int sig)
 {
 	if (sig == SIGINT)
 	{
 		write(STDERR_FILENO, "\n", 1);
-		close(STDIN_FILENO); // Close stdin to force readline() to return NULL
-		//g_sgnl = SIGINT; // Update global signal variable
+		close(STDIN_FILENO);
+		g_sgnl = SIGINT;
 		exit(130);
 	}
 }
@@ -82,7 +93,6 @@ void	ctrlc_heredoc(int sig)
  * @param ctrlc The custom handler function to handle SIGINT (Ctrl+C).
  * @param ctrlbackslash The custom handler function to handle SIGQUIT (Ctrl+\).
  */
-
 static void	mode_init(void (*ctrlc)(int), void (*ctrlbackslash)(int))
 {
 	struct sigaction cc;
@@ -126,7 +136,6 @@ static void	mode_init(void (*ctrlc)(int), void (*ctrlbackslash)(int))
  *        - `HEREDOC_MODE`: Customizes signal handling during heredoc input.
  *        - `IGNORE`: Ignores both SIGINT and SIGQUIT.
  */
-
 void	signal_mode(t_mode mode)
 {
 	if (mode == DEFAULT)
