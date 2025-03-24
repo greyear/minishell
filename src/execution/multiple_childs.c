@@ -150,7 +150,10 @@ static void	initialize_p(t_pipe *p, int num_cmds, t_ms *ms)
 	p->cur_fd = -1;
 	p->pids = (pid_t *)malloc((p->num_cmds) * sizeof(pid_t));
 	if (!p->pids)
+	{
 		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
+	}
 }
 
 /**
@@ -183,7 +186,10 @@ void	make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
 		close_fds2(cur->infile, cur->outfile);
 		if (ms->exit_status == MALLOC_ERR
 			|| ms->exit_status == SYSTEM_ERR)
+		{
+			free_pids(&p);
 			return ;
+		}
 		cur = cur->next;
 		p.cmd_num++;
 	}
