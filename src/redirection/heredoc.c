@@ -94,7 +94,7 @@ static int process_heredoc_line(char **line, char *limiter, t_token *token, t_ms
 	char	*expanded;
 	t_expand	*exp;
  
-	exp = exp_init();
+	exp = exp_init(ms);
 	if (ft_strcmp(*line, limiter) == 0)
 	{
 		free(*line);
