@@ -71,32 +71,35 @@ static void	initialize_to_null(t_ms *ms)
 }
 
 /**
- * @brief Initializes the minishell structure.
- *
- * This function allocates and initializes a `t_ms` structure, setting its 
- * fields to their default values and ensuring that necessary resources (such 
- * as environment variables, history, and shell level) are properly set up. 
- * It attempts to retrieve the current working directory and assigns it to the 
- * `pwd` field. If memory allocation for `pwd` fails, an error is printed, 
- * and the program exits. The function also sets up the environment variables, 
- * shell level, and history through additional helper functions.
- *
- * @param envp The environment variables passed to the program.
+ * @brief Initializes the main Minishell structure.
  * 
- * @return A pointer to the initialized `t_ms` structure, or `NULL` if memory 
- * allocation fails.
+ * This function allocates and initializes the `t_ms` structure, setting up 
+ * environment variables, history, and shell level (`SHLVL`). It also retrieves 
+ * the current working directory (`PWD`). If memory allocation fails or `getcwd` 
+ * encounters an error, the function prints an error message, frees allocated 
+ * resources, and exits the program.
+ * 
+ * @param envp The environment variables passed to the shell.
+ * 
+ * @return A pointer to the initialized `t_ms` structure, or `NULL` if 
+ *         allocation fails.
  */
 t_ms	*initialize_struct(char **envp)
 {
 	t_ms	*ms;
+	char	cwd[1024];
 
 	ms = allocate_struct();
 	if (!ms)
 		return (NULL);
 	initialize_to_null(ms);
-	getcwd(ms->pwd, sizeof(ms->pwd));
-	if (!ms->pwd)
-		ms->pwd = ft_strdup("");
+	if (getcwd(cwd, sizeof(cwd)) == NULL)
+	{
+		perror("getcwd failed");
+		free(ms);
+		exit(1);
+	}
+	ms->pwd = ft_strdup(cwd);
 	if (!ms->pwd)
 	{
 		print_malloc_error();
