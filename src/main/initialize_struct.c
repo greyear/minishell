@@ -49,36 +49,65 @@ static void	initialize_history(t_ms *ms)
 }
 
 /**
- * @brief Initializes and allocates memory for the main shell structure.
+ * @brief Initializes all fields of the minishell structure to NULL or default values.
+ *
+ * This function sets each field of the `t_ms` structure to a NULL pointer or its 
+ * appropriate default value (such as 0 for integer fields). It ensures that all 
+ * fields are properly initialized before they are used in further processing, 
+ * preventing potential issues with uninitialized memory.
+ *
+ * @param ms The minishell structure to be initialized.
+ */
+static void	initialize_to_null(t_ms *ms)
+{
+	ms->tokens = NULL;
+	ms->blocks = NULL;
+	ms->cmds = NULL;
+	ms->envp = NULL;
+	ms->exported = NULL;
+	ms->heredoc_count = 0;
+	ms->heredoc_files = NULL;
+	ms->pwd = NULL;
+}
+
+/**
+ * @brief Initializes the main Minishell structure.
  * 
- * This function:
- * - Allocates memory for a `t_ms` structure.
- * - Initializes environment variables (`envp`).
- * - Sets up tokens and command blocks.
- * - Initializes command history.
- * - Prepares file descriptors and heredoc-related data.
- * - Updates SHLVL in environmental variables if needed.
- * - Updates SHLVL in environmental variables if needed.
+ * This function allocates and initializes the `t_ms` structure, setting up 
+ * environment variables, history, and shell level (`SHLVL`). It also retrieves 
+ * the current working directory (`PWD`). If memory allocation fails or `getcwd` 
+ * encounters an error, the function prints an error message, frees allocated 
+ * resources, and exits the program.
  * 
- * @param envp The environment variables inherited from the parent process.
+ * @param envp The environment variables passed to the shell.
  * 
- * @return A pointer to the initialized `t_ms` structure, 
- *         or `NULL` if allocation fails.
- * 
+ * @return A pointer to the initialized `t_ms` structure, or `NULL` if 
+ *         allocation fails.
  */
 t_ms	*initialize_struct(char **envp)
 {
 	t_ms	*ms;
+	char	cwd[1024];
 
 	ms = allocate_struct();
 	if (!ms)
 		return (NULL);
-	initialize_envp(ms, envp);
-	ms->tokens = NULL;
-	ms->blocks = NULL;
+	initialize_to_null(ms);
+	if (getcwd(cwd, sizeof(cwd)) == NULL)
+	{
+		perror("getcwd failed");
+		free(ms);
+		exit(1);
+	}
+	ms->pwd = ft_strdup(cwd);
+	if (!ms->pwd)
+	{
+		print_malloc_error();
+		free(ms);
+		exit(1);
+	}
+	initialize_envp_and_exp(ms, envp);
 	initialize_history(ms);
-	ms->heredoc_count = 0;
-	ms->heredoc_files = NULL;
 	update_shlvl(ms);
 	g_sgnl = 0;
 	return (ms);

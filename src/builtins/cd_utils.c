@@ -63,7 +63,7 @@ char	*get_parent_directory(t_ms *ms)
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
 		perror("getcwd failed");
-		ms->exit_status = SYSTEM_ERR;
+		ms->exit_status = 1;
 		return (NULL);
 	}
 	parent_dir = ft_strrchr(cwd, '/');
@@ -114,21 +114,64 @@ char	*build_relative_path(char *target, char *cwd, t_ms *ms)
 }
 
 /**
- * @brief Updates or adds an environment variable in the shell's environment.
+ * @brief Updates the value of an exported environment variable.
  * 
- * This function searches for an existing environment variable matching
- * the given key. If found, it updates its value.
- * If the variable does not exist, no new entry is added.
- * Memory for the new value is dynamically allocated and replaces 
- * the old entry. 
+ * This function creates a new exported environment variable entry by 
+ * concatenating the provided `key` and `new_value`. It then searches 
+ * through the exported environment variable array (`exported`) for an 
+ * existing entry with the same `key`, replacing it with the new entry.
  * 
- * @param ms A pointer to the `t_ms` structure, which contains the shell's 
- *           environment variables.
+ * @param ms A pointer to the `t_ms` structure, which manages shell-related 
+ *           data including exported environment variables.
+ * @param key The name of the exported environment variable to update.
+ * @param new_value The new value to assign to the exported environment variable.
+ * 
+ * @return None. The function modifies `ms->exported`.
+ */
+static void	update_exp_var(t_ms *ms, char *key, char *new_value)
+{
+	int		i;
+	char	*new_env_entry;
+
+	i = 0;
+	new_env_entry = malloc(ft_strlen(key) + ft_strlen(new_value) + 1);
+	if (!new_env_entry)
+	{
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
+		return ;
+	}
+	ft_strcpy(new_env_entry, key);
+	ft_strcat(new_env_entry, new_value);
+	while (ms->exported[i])
+	{
+		if (ft_strncmp(ms->exported[i], key, ft_strlen(key)) == 0)
+		{
+			free(ms->exported[i]);
+			ms->exported[i] = new_env_entry;
+			return ;
+		}
+		i++;
+	}
+}
+
+/**
+ * @brief Updates the value of an environment variable.
+ * 
+ * This function creates a new environment variable entry by concatenating the 
+ * provided `key` and `new_value`. It then searches through the environment 
+ * variable array (`envp`) for an existing entry with the same `key`, replacing 
+ * it with the new entry. After updating the environment variable in `envp`, 
+ * it also updates the corresponding exported variable using the 
+ * `update_exp_var` function.
+ * 
+ * @param ms A pointer to the `t_ms` structure, which manages shell-related 
+ *           data including environment variables.
  * @param key The name of the environment variable to update.
  * @param new_value The new value to assign to the environment variable.
  * 
- * @return None. Modifies the environment variables stored in `ms->envp`.
- *         If memory allocation fails, the function does nothing.
+ * @return None. The function modifies `ms->envp` and updates the exported 
+ *         variables in `ms->exported`.
  */
 void	update_env_var(t_ms *ms, char *key, char *new_value)
 {
@@ -151,8 +194,9 @@ void	update_env_var(t_ms *ms, char *key, char *new_value)
 		{
 			free(ms->envp[i]);
 			ms->envp[i] = new_env_entry;
-			return ;
+			break ;
 		}
 		i++;
 	}
+	update_exp_var(ms, key, new_value);
 }

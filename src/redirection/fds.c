@@ -30,7 +30,7 @@ void	check_access(char *filename, t_oper operation)
 		{
 			ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
 			ft_putstr_fd(filename, STDERR_FILENO);
-			ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+			ft_putstr_fd(IS_DIR_ERR, STDERR_FILENO);
 		}
 	}
 }
@@ -127,51 +127,37 @@ void	put_infile_fd(t_token *token, t_cmd *cmd)
 }
 
 /**
- * @brief Redirects input and output file descriptors for a process.
- * 
- * This function handles the redirection of standard input (STDIN) and standard 
- * output (STDOUT) for the process based on the provided file descriptors.
- * 
- * If the `infile` or `outfile` are valid (not equal to `NO_FD`), the function
- * duplicates the respective file descriptor to the corresponding standard input 
- * or output. It closes the original file descriptors after redirection to avoid 
- * resource leakage.
- * 
- * If either `infile` or `outfile` is set to `NO_FD`, the function closes both 
- * file descriptors and exits with an error code.
- * 
- * @param infile The file descriptor for standard input, or `NO_FD` to avoid redirection.
- * @param outfile The file descriptor for standard output, or `NO_FD` to avoid redirection.
- * 
- * @return This function does not return; it exits the process if an error occurs during redirection.
+ * @brief Redirects the input and output of the current process based on the provided file descriptors.
+ *
+ * This function handles the redirection of input (stdin) and output (stdout) for the current process 
+ * using the `dup2` system call. It checks the given file descriptors (`infile` and `outfile`) and, if 
+ * they are valid, redirects stdin and/or stdout accordingly. If either file descriptor is invalid, 
+ * the function closes the files and exits with an error status. In case of failure during `dup2`, 
+ * it sets the shell's exit status to indicate a system error.
+ *
+ * @param infile The file descriptor for input redirection.
+ * @param outfile The file descriptor for output redirection.
+ * @param ms The minishell structure containing the exit status and other relevant state.
  */
-
-void	redirect_process(int infile, int outfile)
+void	redirect_process(int infile, int outfile, t_ms *ms)
 {
 	if (infile == NO_FD || outfile == NO_FD)
 	{
-		if (outfile != NO_FD)
-			close(outfile);
-		if (infile != NO_FD)
-			close(infile);
+		close_file(infile);
+		close_file(outfile);
 		exit(1);
 	}
 	if (infile != DEF)
 	{
-		if (dup2(infile, STDIN_FILENO) == -1) //It duplicates previous pipes read-end to stadard input
+		if (dup2(infile, STDIN_FILENO) == -1)
 		{
-			close(infile);
-			exit(1);
+			ms->exit_status = SYSTEM_ERR;
+			return ;
 		}
-		close(infile);
 	}
 	if (outfile != DEF)
 	{
-		if (dup2(outfile, STDOUT_FILENO) == -1) //It duplicates the next pipes write-end to standard output
-		{
-			close (outfile);
-			exit(1);
-		}
-		close(outfile);
+		if (dup2(outfile, STDOUT_FILENO) == -1)
+			ms->exit_status = SYSTEM_ERR;
 	}
 }

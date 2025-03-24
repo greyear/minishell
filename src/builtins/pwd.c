@@ -19,10 +19,17 @@ void	check_pwd(t_ms *ms)
 	{
 		ft_putstr_fd(cwd, STDOUT_FILENO);
 		ft_putstr_fd("\n", STDOUT_FILENO);
+		return;
+	}
+	if (ms->pwd)
+	{
+		ft_putstr_fd(ms->pwd, STDOUT_FILENO);
+		ft_putstr_fd("\n", STDOUT_FILENO);
+		return;
 	}
 	else
 	{
-		ms->exit_status = SYSTEM_ERR;
 		perror("pwd: getcwd failed");
+		ms->exit_status = 1;
 	}
 }
