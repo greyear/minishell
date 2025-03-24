@@ -45,6 +45,7 @@ typedef struct s_ms
 	char	**heredoc_files;
 	int		heredoc_count;
 	int		no_env;
+	char	*pwd;
 } t_ms;
 
 typedef struct s_expand

@@ -80,7 +80,30 @@ void	clean_struct(t_ms *ms)
 		clean_block_list(&(ms->blocks));
 	if (ms->heredoc_files)
 		cleanup_heredocs(ms->heredoc_files, ms);
+	if (ms->pwd)
+		free(ms->pwd);
 	free(ms);
+}
+
+/**
+ * @brief Resets the heredoc files and count for the current execution state.
+ * 
+ * This function allocates memory for the `heredoc_files` array, setting it 
+ * to hold 100 pointers to strings, and initializes the array to zero using 
+ * `ft_memset`. It also resets the `heredoc_count` to 0, indicating no heredocs 
+ * are currently being tracked. This is useful for clearing the heredoc state 
+ * before starting a new execution cycle.
+ * 
+ * @param ms A pointer to the `t_ms` structure that holds the global execution 
+ * state, including the heredoc files and count.
+ * 
+ * @return This function does not return; it modifies the `ms` structure to 
+ * reset the heredoc state.
+ */
+void	reset_heredocs(t_ms *ms)
+{
+	ms->heredoc_count = 0;
+	ms->heredoc_files = NULL;
 }
 
 /**
@@ -93,7 +116,7 @@ void	clean_struct(t_ms *ms)
  * @param ms The main shell structure containing environment data and execution 
  *           context.
  */
-void	cleanup_after_execution(t_ms *ms)
+void	clean_struct_partially(t_ms *ms)
 {
 	if (ms->heredoc_files)
 		cleanup_heredocs(ms->heredoc_files, ms);
