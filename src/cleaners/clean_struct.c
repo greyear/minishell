@@ -116,7 +116,7 @@ void	reset_heredocs(t_ms *ms)
  * @param ms The main shell structure containing environment data and execution 
  *           context.
  */
-void	cleanup_after_execution(t_ms *ms)
+void	clean_struct_partially(t_ms *ms)
 {
 	if (ms->heredoc_files)
 		cleanup_heredocs(ms->heredoc_files, ms);
