@@ -112,5 +112,11 @@ void	expand_variable(t_ms *ms, t_expand *exp, char **result)
 		ms->exit_status = MALLOC_ERR;
 		return ;
 	}
+	if (!expanded)
+	{
+		print_malloc_error();
+		ms->exit_status = MALLOC_ERR;
+		return ;
+	}
 	append_to_result(result, expanded, ms);
 }
