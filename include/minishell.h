@@ -42,7 +42,6 @@ void			handle_export(char **args, t_ms *ms);
 void			handle_unset(char **args, t_ms *ms);
 int				check_env(char *env, char *name, int len, int flag);
 char			**allocate_temp_env(char **env, int x);
-char			**copy_map(char **original_map);
 void			print_array(char **a);
 int				check_if_valid_key(char *name); 
 int				get_key_length(char *arg);
@@ -59,8 +58,8 @@ void			check_exit(char	**array, t_ms *ms);
 long long		convert_to_ll(char *str, int *error);
 char			*handle_expansion(t_expand *exp, t_ms *ms);
 char			*duplicate_or_replace(char *entry, char *arg, char *key, int *flag);
-char			*return_target(t_ms *ms, char *target);
 void			update_cd_env(t_ms *ms, char *pwd_before);
+void			add_oldpwd_to_envp(t_ms *ms, char *pwd_before);
 
 //Lexer
 t_token			*tokenization(char *str, t_ms *ms);
@@ -104,7 +103,6 @@ void			make_one_child(t_cmd *cmd, t_ms *ms);
 void			execute_command(char **envp, char **cmd);
 void			make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms);
 void			pipe_process(int prev_pipe, int next_pipe);
-void			redirect_process(int infile, int outfile);
 void			handle_absolute_or_relative_path(char **envp, char **cmds);
 void			handle_no_path_variable(char **envp, char **cmd);
 void			check_if_dot(char **cmds);
@@ -116,20 +114,20 @@ t_expand		*exp_init(void);
 int				expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str);
 void			expand_variable(t_ms *ms, t_expand *exp, char **result);
 t_ms			*initialize_struct(char **envp);
-void			update_shlvl(t_ms *ms);
-char			*remove_extra_spaces(char *str);
-char			*remove_first_space(char *str);
+char			*handle_spaces(char *copy, t_expand *exp);
 
 //Main
-void			initialize_envp(t_ms *ms, char **envp);
+void			initialize_envp_and_exp(t_ms *ms, char **envp);
 int				create_blocks_and_cmds_lists(t_ms *ms);
 int				tokenize_input(char **input, t_ms *ms);
+void			update_shlvl(t_ms *ms);
 
 //Redirections
+void			redirect_process(int infile, int outfile, t_ms *ms);
 void			put_infile_fd(t_token *token, t_cmd *cmd);
 void			put_outfile_fd(t_token *token, t_cmd *cmd);
 void			check_access(char *filename, t_oper operation);
-char			*generate_heredoc_filename(int index);
+char			*generate_filename(int index, t_ms *ms);
 void			put_heredoc_fd(t_token *token, t_cmd *cmd, t_ms *ms);
 int				handle_heredoc(t_ms *ms, char *limiter, t_token *token);
 void			reset_heredocs(t_ms *ms);
@@ -145,7 +143,6 @@ void			history_exit(t_ms *ms);
 
 //Signals
 void			signal_mode(t_mode mode);
-int				init_terminal_signals(void);
 void			print_heredoc_ctrl_d(char *limiter);
 
 //Errors
@@ -165,7 +162,7 @@ void			print_malloc_error(void);
 //Cleaners
 void			clean_arr(char ***arr);
 void			clean_struct(t_ms *ms);
-void			cleanup_after_execution(t_ms *ms);
+void			clean_struct_partially(t_ms *ms);
 void			cleanup_heredocs(char **filenames, t_ms *ms);
 void			free_pids(t_pipe *p);
 void			close_fds(t_cmd *cmd);

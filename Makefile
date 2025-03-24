@@ -39,7 +39,8 @@ RM				=	rm -f
 MAIN_FILES		=	main.c \
 					main_utils.c \
 					initialize_struct.c \
-					initialization_utils.c
+					initialization_utils.c \
+					update_shlvl.c
 BNF_FILES		=	input_validation.c \
 					pipeline.c \
 					command.c \
@@ -85,7 +86,7 @@ REDIR_FILES		=	fds.c \
 ENVP_FILES		=	check_all_tokens.c \
 					handle_expansion.c \
 					expansion_utils.c \
-					update_shlvl.c
+					spaces_in_expansion.c
 READING_FILES	=	history.c \
 					history_file.c
 #delete initialize_struct

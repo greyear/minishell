@@ -81,13 +81,13 @@ void	print_file_error(char *file, t_print reason)
 	else
 		ft_putstr_fd(file, STDERR_FILENO);
 	if (reason == NO_FILE)
-		ft_putendl_fd(NO_FD_ERR, STDERR_FILENO);
+		ft_putstr_fd(NO_FD_ERR, STDERR_FILENO);
 	if (reason == DIRECT)
-		ft_putendl_fd(IS_DIR_ERR, STDERR_FILENO);
+		ft_putstr_fd(IS_DIR_ERR, STDERR_FILENO);
 	if (reason == PERM_DEN)
-		ft_putendl_fd(PERM_DEN_ERR, STDERR_FILENO);
+		ft_putstr_fd(PERM_DEN_ERR, STDERR_FILENO);
 	if (reason == AMBIG)
-		ft_putendl_fd(AMBIG_ERR, STDERR_FILENO);
+		ft_putstr_fd(AMBIG_ERR, STDERR_FILENO);
 }
 
 /**

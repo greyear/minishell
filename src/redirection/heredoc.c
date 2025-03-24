@@ -1,37 +1,19 @@
 #include "../../include/minishell.h"
 
 /**
- * @brief Resets the heredoc files and count for the current execution state.
- * 
- * This function allocates memory for the `heredoc_files` array, setting it to hold 100 pointers to strings, and
- * initializes the array to zero using `ft_memset`. It also resets the `heredoc_count` to 0, indicating no heredocs
- * are currently being tracked. This is useful for clearing the heredoc state before starting a new execution cycle.
- * 
- * @param ms A pointer to the `t_ms` structure that holds the global execution state, including the heredoc files
- *           and count.
- * 
- * @return This function does not return; it modifies the `ms` structure to reset the heredoc state.
- */
-
-void	reset_heredocs(t_ms *ms)
-{
-	ms->heredoc_count = 0;
-	ms->heredoc_files = NULL;
-}
-
-/**
  * @brief Opens the heredoc file for writing.
  * 
- * This function attempts to open a file for writing the heredoc content. It creates the file if it doesn't exist, 
- * truncates the file if it exists, and sets the file permissions to `0644`. If the file cannot be opened, 
+ * This function attempts to open a file for writing the heredoc content. 
+ * It creates the file if it doesn't exist, truncates the file if it exists, 
+ * and sets the file permissions to `0644`. If the file cannot be opened, 
  * an error message is printed and the program terminates.
  * 
  * @param filename The name of the file to be opened for the heredoc.
  * @param fd A pointer to the file descriptor where the file is opened.
  * 
- * @return Returns the file descriptor of the opened file. If the file cannot be opened, the program exits.
+ * @return Returns the file descriptor of the opened file. If the file cannot 
+ * be opened, the program exits.
  */
-
 static int	open_heredoc_file(char *filename, int *fd)
 {
 	*fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -44,56 +26,31 @@ static int	open_heredoc_file(char *filename, int *fd)
 }
 
 /**
- * @brief Reads a line of input for a heredoc.
+ * @brief Processes a line of input for the heredoc, expanding variables 
+ * and checking for the limiter.
  * 
- * This function handles reading a line of input from the user for a heredoc.
- * It uses `readline` to get input and processes signals to manage the heredoc 
- * mode (e.g., handle `Ctrl+D` for EOF). If `readline` returns `NULL`, it indicates 
- * an EOF signal, and the heredoc is closed with a message printed to indicate the EOF.
- * The function will then close the temporary file descriptor and exit the program.
+ * This function checks if the input line matches the heredoc delimiter 
+ * (`limiter`). If it does, the function frees the line and returns `1` 
+ * to stop further processing. If the line does not match the limiter, 
+ * it performs variable expansion (unless the line is quoted), updating 
+ * the line with the expanded result.
  * 
- * @param temp_fd The temporary file descriptor to be closed if EOF is encountered.
- * @param limiter The string to be printed when `Ctrl+D` is pressed, indicating the EOF condition.
- * 
- * @return A pointer to the line of input read from the user.
- */
-
-static char	*read_heredoc_line(int temp_fd, char *limiter)
-{
-	char	*line;
-
-	signal_mode(HEREDOC_MODE);
-	line = readline("> ");
-	signal_mode(IGNORE);
-	if (!line)
-	{
-		print_heredoc_ctrl_d(limiter);
-		close(temp_fd);
-		exit(0);
-	}
-	return (line);
- }
- 
-/**
- * @brief Processes a line of input for the heredoc, expanding variables and checking for the limiter.
- * 
- * This function checks if the input line matches the heredoc delimiter (`limiter`). If it does,
- * the function frees the line and returns `1` to stop further processing. If the line does not match
- * the limiter, it performs variable expansion (unless the line is quoted), updating the line with the expanded result.
- * 
- * @param line A pointer to the line read from the input that needs to be processed.
+ * @param line A pointer to the line read from the input that needs to be 
+ * processed.
  * @param limiter The delimiter string used to end the heredoc input.
- * @param token A pointer to the token that contains information about quotes in the line.
- * @param ms A pointer to the main shell structure, containing shell-wide information.
+ * @param token A pointer to the token that contains information about 
+ * quotes in the line.
+ * @param ms A pointer to the main shell structure, containing shell-wide 
+ * information.
  * 
- * @return Returns `1` if the limiter is found, stopping further processing. Returns `0` if the line is processed successfully.
+ * @return Returns `1` if the limiter is found, stopping further processing. 
+ * Returns `0` if the line is processed successfully.
  */
-
-static int process_heredoc_line(char **line, char *limiter, t_token *token, t_ms *ms)
+static int	process_line(char **line, char *limiter, t_token *token, t_ms *ms)
 {
-	char	*expanded;
+	char		*expanded;
 	t_expand	*exp;
- 
+
 	exp = exp_init();
 	if (ft_strcmp(*line, limiter) == 0)
 	{
@@ -111,68 +68,128 @@ static int process_heredoc_line(char **line, char *limiter, t_token *token, t_ms
 	free(exp);
 	return (0);
 }
- 
-/**
- * @brief Reads input for the heredoc until the limiter is encountered.
- * 
- * This function continuously reads lines from user input until it encounters
- * the specified delimiter (limiter). Each line is written to the temporary file.
- * 
- * The process stops when the `process_heredoc_line()` function indicates that the
- * limiter has been encountered. After all the input has been processed, the
- * temporary file is closed.
- * 
- * @param temp_fd The file descriptor for the temporary heredoc file to store input.
- * @param limiter The delimiter string used to end the heredoc input.
- * @param token A pointer to the token related to the heredoc input.
- * @param ms A pointer to the main shell structure.
- * 
- * @return This function does not return a value. It terminates when the limiter is found.
- */
 
-static void read_heredoc_input(int temp_fd, char *limiter, t_token *token, t_ms *ms)
+/**
+ * @brief Reads input for heredocs and writes it to a temporary file.
+ * 
+ * This function continuously prompts the user for input, reading lines using 
+ * `readline`, until the specified `limiter` is encountered or the user sends 
+ * a `Ctrl+D` (EOF). The input is processed and written to the provided 
+ * `temp_fd` file descriptor. If `Ctrl+D` is pressed, a message is printed, 
+ * the temporary file is closed, and the program exits.
+ * 
+ * @param temp_fd The file descriptor where the input lines are written.
+ * @param limiter The string that marks the end of the heredoc input.
+ * @param token A pointer to a `t_token` structure, used for tokenization.
+ * @param ms A pointer to the `t_ms` structure, which holds the shell's state.
+ * 
+ * @return None. The function exits when the heredoc input is completed or 
+ *         aborted.
+ */
+static void	read_input(int temp_fd, char *limiter, t_token *token, t_ms *ms)
 {
 	char	*line;
 
 	while (1)
 	{
-		line = read_heredoc_line(temp_fd, limiter);
-		if (process_heredoc_line(&line, limiter, token, ms))
-			break;
+		signal_mode(HEREDOC_MODE);
+		line = readline("> ");
+		signal_mode(IGNORE);
+		 if (g_sgnl == SIGINT)
+        {
+            free(line);
+            close(temp_fd);
+            // Handle cleanup and exit gracefully
+			printf("gere\n");
+            exit(130);  // Exit with status 130 (SIGINT)
+        }
+		if (!line)
+		{
+			print_heredoc_ctrl_d(limiter);
+			close(temp_fd);
+			exit(0);
+		}
+		if (process_line(&line, limiter, token, ms))
+			break ;
 		ft_putendl_fd(line, temp_fd);
 		free(line);
 	}
 	close(temp_fd);
+	exit(0);
 }
- 
-/**
- * @brief Handles the heredoc functionality in the shell.
- * 
- * This function processes the heredoc input by:
- * 1. Generating a unique filename for the heredoc file.
- * 2. Storing the filename in `ms->heredoc_files`.
- * 3. Opening the heredoc file for writing and reading the input until the delimiter is encountered.
- * 4. Returning a file descriptor for reading the heredoc file.
- * 
- * If there is an error in opening the heredoc file, the function updates `ms->exit_status`
- * and returns `-1`.
- * 
- * @param ms The main shell structure, containing `heredoc_count` and `heredoc_files`.
- * @param limiter The delimiter string used to mark the end of the heredoc input.
- * @param token A pointer to the token containing heredoc-related information.
- * 
- * @return The file descriptor of the heredoc file on success, or `-1` if there was an error opening the file.
- */
 
+/**
+ * @brief Handles the parent process logic after a heredoc operation.
+ * 
+ * This function waits for the child process (that reads input for the heredoc) 
+ * to complete. It checks the exit status of the child process, updating the 
+ * shell's exit status accordingly. If the child process exits with a status 
+ * of 130 (indicating a signal interruption, like `Ctrl+C`), it sets a signal 
+ * flag. After the child process exits, the function attempts to open the 
+ * heredoc file for reading and returns the file descriptor. If opening the 
+ * file fails, the shell's exit status is set to 1.
+ * 
+ * @param ms A pointer to the `t_ms` structure, which holds the shell's state.
+ * @param pid The process ID of the child process that handles the heredoc input.
+ * @param filename The name of the file containing the heredoc content.
+ * 
+ * @return The file descriptor for the heredoc file if successful, or -1 if 
+ *         an error occurs.
+ */
+static int	handle_heredoc_parent(t_ms *ms, pid_t pid, char *filename)
+{
+	int		status;
+	int		fd;
+
+	signal_mode(IGNORE);
+	waitpid(pid, &status, 0);
+	signal_mode(DEFAULT);
+	if (WIFEXITED(status))
+	{
+		ms->exit_status = WEXITSTATUS(status);
+		if (ms->exit_status == 130)
+		{
+			g_sgnl = SIGINT;
+			return (SIGNAL_HEREDOC);
+		}
+	}
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+	{
+		ms->exit_status = 130;
+		return (SIGNAL_HEREDOC);
+	}
+	fd = open(filename, O_RDONLY);
+	if (fd < 0)
+		ms->exit_status = 1;
+	return (fd);
+}
+
+/**
+ * @brief Handles the heredoc process by creating a child process to read input.
+ * 
+ * This function generates a filename for the heredoc file and creates a child 
+ * process to handle reading the input for the heredoc. The child process writes 
+ * the input to the temporary file. The parent process waits for the child to 
+ * complete and returns the file descriptor of the heredoc file. If any error 
+ * occurs during the creation of the child process or file handling, it updates 
+ * the shell's exit status accordingly.
+ * 
+ * @param ms A pointer to the `t_ms` structure, which holds the shell's state.
+ * @param limiter The string that marks the end of the heredoc input.
+ * @param token A pointer to the token structure for processing the heredoc input.
+ * 
+ * @return The file descriptor for the heredoc file if successful, or -1 if an 
+ *         error occurs.
+ */
 int	handle_heredoc(t_ms *ms, char *limiter, t_token *token)
 {
 	int		temp_fd;
-	int		fd;
 	char	*filename;
 	pid_t	pid;
-	int		status;
- 
-	filename = generate_heredoc_filename(ms->heredoc_count);
+
+	filename = generate_filename(ms->heredoc_count, ms);
+	if (!filename)
+		return (-1);
 	ms->heredoc_files[ms->heredoc_count++] = filename;
 	pid = fork();
 	if (pid == -1)
@@ -185,29 +202,7 @@ int	handle_heredoc(t_ms *ms, char *limiter, t_token *token)
 	{
 		signal_mode(HEREDOC_MODE);
 		open_heredoc_file(filename, &temp_fd);
-		read_heredoc_input(temp_fd, limiter, token, ms);
-		exit(0);
+		read_input(temp_fd, limiter, token, ms);
 	}
-	else
-	{
-		signal_mode(IGNORE);
-		waitpid(pid, &status, 0);
-		signal_mode(DEFAULT);
-		if (WIFEXITED(status))
-		{
-			ms->exit_status = WEXITSTATUS(status);
-			if (ms->exit_status == 130)
-			{
-				g_sgnl = SIGINT;
-				return (SIGNAL_HEREDOC);
-			}
-		}
-	}
-	fd = open(filename, O_RDONLY);
-	if (fd < 0)
-	{
-		ms->exit_status = 1;
-		return (-1);
-	}
-	return (fd);
+	return (handle_heredoc_parent(ms, pid, filename));
 }
