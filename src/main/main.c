@@ -134,6 +134,8 @@ static int	process_input(char **input, t_ms *ms)
 	{
 		free(*input);
 		ms->exit_status = 2;
+		/*printf("wrong input: %s\n", *input);
+		add_line_to_history(*input, ms);*/
 		return (0);
 	}
 	add_line_to_history(*input, ms);
