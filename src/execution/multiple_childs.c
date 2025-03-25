@@ -46,30 +46,30 @@ static void	wait_for_children(pid_t last_pid, t_ms *ms, t_pipe *p)
 }
 
 /**
- * @brief Handles the execution of a child process in a pipeline.
- *
- * This function manages the execution of a command in a child process. It 
- * checks if the command has arguments and if not, it closes file descriptors 
- * and exits. It sets up pipes for communication between processes, redirects 
- * input/output as necessary, and handles any builtins or external commands. 
- * The function ensures proper cleanup of file descriptors, handles error 
- * conditions, and manages signals for external commands.
- *
- * @param cur The current command structure containing the command arguments, 
- * input/output files, etc.
- * @param p The pipeline structure containing information about the current 
- * pipeline state.
+ * @brief Executes a command in a child process.
+ * 
+ * This function is called within a forked process. It sets up pipes, 
+ * redirects input/output as needed, and executes either a built-in or 
+ * an external command.
+ * 
+ * @param cur The current command to be executed.
+ * @param p A pointer to the pipe structure managing process execution.
+ * @param cmds A pointer to the first command in the linked list.
+ * 
+ * @return None. The function terminates the child process with an 
+ *         appropriate exit status.
  */
-static void	child_process(t_cmd *cur, t_pipe *p)
+static void	child_process(t_cmd *cur, t_pipe *p, t_cmd *cmds)
 {
 	if (!cur->args || !cur->args[0])
 	{
-		close_fds2(cur->infile, cur->outfile);
+		close_fds(cmds);
+		close_all_fds(p);
 		exit(0);
 	}
 	setup_pipes(p->fd, p->cmd_num, p->num_cmds, p->cur_fd);
 	redirect_process(cur->infile, cur->outfile, p->ms);
-	close_fds2(cur->infile, cur->outfile);
+	close_fds(cmds);
 	close_all_fds(p);
 	if (p->ms->exit_status == SYSTEM_ERR)
 		exit(SYSTEM_ERR);
@@ -87,22 +87,21 @@ static void	child_process(t_cmd *cur, t_pipe *p)
 }
 
 /**
- * @brief Creates a child process to execute a command and sets up pipes.
+ * @brief Forks a new process to execute a command and sets up pipes.
  * 
- * This function performs the following steps:
- * - Creates a new pipe for inter-process communication.
- * - Forks a child process to execute a command.
- * - If the fork fails, it updates the shell's exit status and returns.
- * - In the child process, it calls `child_process()` to execute the command.
- * - In the parent process, it closes unused file descriptors and updates 
- *   pipe tracking variables.
+ * This function creates a pipe for inter-process communication, forks a 
+ * child process to execute a command, and manages file descriptors for 
+ * proper data flow.
  * 
- * @param cur A pointer to the `t_cmd` structure containing the command's 
- *            arguments, input, and output files.
- * @param p A pointer to the `t_pipe` structure containing pipe-related 
- *          information.
+ * @param cur The current command to execute.
+ * @param p A pointer to the pipe structure managing process execution.
+ * @param cmds A pointer to the first command in the linked list of commands.
+ * 
+ * @return None. The function updates `p->ms->exit_status` in case of 
+ *         errors (e.g., pipe or fork failures) and sets up necessary 
+ *         file descriptors.
  */
-static void	fork_and_execute(t_cmd *cur, t_pipe *p)
+static void	fork_and_execute(t_cmd *cur, t_pipe *p, t_cmd *cmds)
 {
 	if (pipe(p->fd) == -1)
 	{
@@ -118,8 +117,7 @@ static void	fork_and_execute(t_cmd *cur, t_pipe *p)
 		return ;
 	}
 	if (p->pids[p->cmd_num] == 0)
-		child_process(cur, p);
-	close_fds2(cur->infile, cur->outfile);
+		child_process(cur, p, cmds);
 	close_fds2(p->cur_fd, p->fd[1]);
 	p->cur_fd = p->fd[0];
 	p->last_pid = p->pids[p->cmd_num];
@@ -182,8 +180,7 @@ void	make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
 		return ;
 	while (p.cmd_num < p.num_cmds && cur)
 	{
-		fork_and_execute(cur, &p);
-		close_fds2(cur->infile, cur->outfile);
+		fork_and_execute(cur, &p, cmds);
 		if (ms->exit_status == MALLOC_ERR
 			|| ms->exit_status == SYSTEM_ERR)
 		{
@@ -194,7 +191,6 @@ void	make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
 		p.cmd_num++;
 	}
 	wait_for_children(p.last_pid, p.ms, &p);
-	close_fds(cmds);
 	close_all_fds(&p);
 	free_pids(&p);
 }
