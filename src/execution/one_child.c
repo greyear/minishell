@@ -20,7 +20,7 @@
 void	execute_child(t_cmd *cmd, t_ms *ms)
 {
 	redirect_process(cmd->infile, cmd->outfile, ms);
-	close_fds2(cmd->infile, cmd->outfile);
+	close_every_cmds_fds(cmd);
 	if (ms->exit_status == SYSTEM_ERR)
 		exit(SYSTEM_ERR);
 	if (is_builtin(cmd))
@@ -73,7 +73,6 @@ void	make_one_child(t_cmd *cmd, t_ms *ms)
 	}
 	if (pid == 0)
 		execute_child(cmd, ms);
-	close_fds2(cmd->infile, cmd->outfile);
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		ms->exit_status = WEXITSTATUS(status);
@@ -85,4 +84,5 @@ void	make_one_child(t_cmd *cmd, t_ms *ms)
 		write(STDERR_FILENO, "\n", 1);
 	if (ms->exit_status == 131)
 		write(STDERR_FILENO, "Quit\n", 5);
+	//close_every_cmds_fds(cmd);
 }

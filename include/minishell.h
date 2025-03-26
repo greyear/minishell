@@ -165,9 +165,9 @@ void			clean_struct(t_ms *ms);
 void			clean_struct_partially(t_ms *ms);
 void			cleanup_heredocs(char **filenames, t_ms *ms);
 void			free_pids(t_pipe *p);
-void			close_fds(t_cmd *cmd);
-void			close_all_fds(t_pipe *p);
+void			close_every_cmds_fds(t_cmd *cmd);
+void			close_pipe_fds(t_pipe *p);
 void			close_file(int file);
-void			close_fds2(int fd1, int fd2);
+void			close_two_fds(int fd1, int fd2);
 
 #endif

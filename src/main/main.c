@@ -97,7 +97,7 @@ static void	execute_commands(t_ms *ms)
 		else
 			make_multiple_childs(i, ms->cmds, ms);
 	}
-	close_fds(ms->cmds);
+	close_every_cmds_fds(ms->cmds);
 }
 
 /**

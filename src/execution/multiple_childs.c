@@ -63,14 +63,16 @@ static void	child_process(t_cmd *cur, t_pipe *p, t_cmd *cmds)
 {
 	if (!cur->args || !cur->args[0])
 	{
-		close_fds(cmds);
-		close_all_fds(p);
+		close_every_cmds_fds(cmds);
+		close_pipe_fds(p);
 		exit(0);
 	}
 	setup_pipes(p->fd, p->cmd_num, p->num_cmds, p->cur_fd);
 	redirect_process(cur->infile, cur->outfile, p->ms);
-	close_fds(cmds);
-	close_all_fds(p);
+	close_file(cur->infile);  // Close infile after redirect
+    close_file(cur->outfile);
+	close_every_cmds_fds(cmds);
+	close_pipe_fds(p);
 	if (p->ms->exit_status == SYSTEM_ERR)
 		exit(SYSTEM_ERR);
 	if (is_builtin(cur))
@@ -118,7 +120,7 @@ static void	fork_and_execute(t_cmd *cur, t_pipe *p, t_cmd *cmds)
 	}
 	if (p->pids[p->cmd_num] == 0)
 		child_process(cur, p, cmds);
-	close_fds2(p->cur_fd, p->fd[1]);
+	close_two_fds(p->cur_fd, p->fd[1]);
 	p->cur_fd = p->fd[0];
 	p->last_pid = p->pids[p->cmd_num];
 }
@@ -191,6 +193,6 @@ void	make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
 		p.cmd_num++;
 	}
 	wait_for_children(p.last_pid, p.ms, &p);
-	close_all_fds(&p);
+	close_pipe_fds(&p);
 	free_pids(&p);
 }
