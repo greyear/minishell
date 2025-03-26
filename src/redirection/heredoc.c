@@ -95,14 +95,12 @@ static void	read_input(int temp_fd, char *limiter, t_token *token, t_ms *ms)
 		signal_mode(HEREDOC_MODE);
 		line = readline("> ");
 		signal_mode(IGNORE);
-		 if (g_sgnl == SIGINT)
-        {
-            free(line);
-            close(temp_fd);
-            // Handle cleanup and exit gracefully
-			printf("gere\n");
-            exit(130);  // Exit with status 130 (SIGINT)
-        }
+		if (g_sgnl == SIGINT)
+		{
+			free(line);
+			close(temp_fd);
+			exit(130);
+		}
 		if (!line)
 		{
 			print_heredoc_ctrl_d(limiter);
