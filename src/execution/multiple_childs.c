@@ -68,11 +68,9 @@ static void	child_process(t_cmd *cur, t_pipe *p, t_cmd *cmds)
 		exit(0);
 	}
 	setup_pipes(p->fd, p->cmd_num, p->num_cmds, p->cur_fd);
-	redirect_process(cur->infile, cur->outfile, p->ms);
-	close_file(cur->infile);  // Close infile after redirect
-    close_file(cur->outfile);
-	close_every_cmds_fds(cmds);
 	close_pipe_fds(p);
+	redirect_process(cur->infile, cur->outfile, p->ms);
+	close_every_cmds_fds(cmds);
 	if (p->ms->exit_status == SYSTEM_ERR)
 		exit(SYSTEM_ERR);
 	if (is_builtin(cur))
