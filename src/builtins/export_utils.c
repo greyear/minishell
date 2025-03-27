@@ -183,7 +183,10 @@ void	add_to_exported(char *key, t_ms *ms)
 	len = ft_strlen(key);
 	temp = allocate_temp_env(ms->exported, 2);
 	if (!temp)
+	{
+		print_malloc_set_status(ms);
 		return ;
+	}
 	if (!copy_exported(key, &ms->exported, &temp, len))
 		ms->exit_status = MALLOC_ERR;
 }
