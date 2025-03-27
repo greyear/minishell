@@ -118,11 +118,6 @@ void	execute_command(char **envp, char **cmd, t_ms *ms)
 {
 	char	*path;
 
-	if (!cmd || !*cmd)
-	{
-		print_cmd_error(NULL, 0);
-		exit(CMD_NF);
-	}
 	check_if_dot(cmd);
 	if (cmd[0][0] == '/' || cmd[0][0] == '.')
 		handle_absolute_or_relative_path(envp, cmd);
