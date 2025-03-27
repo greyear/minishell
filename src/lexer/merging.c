@@ -65,9 +65,6 @@ t_token	*unite_two_word_tokens(t_token *first, t_ms *ms)
 	{
 		if (cur->next && cur->type == WORD && cur->next->type == WORD)
 		{
-			/*if (cur->data[0] == '$' && cur->quote == 0)
-				joined = ft_strdup(cur->next->data);
-			else*/ //fixed 309 in parsing hell, but ...
 			joined = ft_strjoin(cur->data, cur->next->data);
 			if (!joined)
 				return ((t_token *)print_malloc_set_status(ms));
@@ -85,12 +82,3 @@ t_token	*unite_two_word_tokens(t_token *first, t_ms *ms)
 	first = delete_empty_word_tokens(first);
 	return (first);
 }
-
-/*
-	printf("\n inside uniting: after uniting and before deleting whitespaces\n");
-	print_tokens(first);
-	printf("\n inside uniting: after deleting whitespaces\n");
-	print_tokens(first);
-	printf("\n inside uniting: after deleting empty\n");
-	print_tokens(first);
-*/

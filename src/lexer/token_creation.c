@@ -27,7 +27,7 @@
  * @return The corresponding token type (`HEREDOC`, `IN`, `APPEND`, `OUT`, 
  *         `PIPE`, `SPACE`, or `WORD`).
  */
-t_token_type	define_token_type(char *str, size_t i)
+t_type	define_token_type(char *str, size_t i)
 {
 	if (str[i] == '<' && str[i + 1] == '<')
 		return (HEREDOC);
@@ -107,7 +107,7 @@ static void	process_word_token(char *str, size_t *i, t_token *new, t_ms *ms)
  * 
  * @return A pointer to the newly created token, or NULL if an error occurs.
  */
-t_token	*create_new_token(char *str, size_t *i, t_token_type type, t_ms *ms)
+t_token	*create_new_token(char *str, size_t *i, t_type type, t_ms *ms)
 {
 	t_token	*new;
 

@@ -75,11 +75,12 @@ void			add_oldpwd_to_envp(t_ms *ms, char *pwd_before);
 
 //Lexer
 t_token			*tokenization(char *str, t_ms *ms);
-t_token_type	define_token_type(char *str, size_t i);
-t_token			*create_new_token(char *str, size_t *i, t_token_type type, t_ms *ms);
-char			*word_with_quotes(char *str, size_t *start, t_token *new, t_ms *ms);
+t_type			define_token_type(char *str, size_t i);
+t_token			*create_new_token(char *str, size_t *i, t_type type, t_ms *ms);
+char			*word_with_quotes(char *str, size_t *start, t_token *new,
+					t_ms *ms);
 char			*word_without_quotes(char *str, size_t *start, t_ms *ms);
-void			skip_special_tokens(char *str, size_t *i, t_token_type type);
+void			skip_special_tokens(char *str, size_t *i, t_type type);
 void			skip_whitespaces(char *str, size_t *i);
 void			clean_token(t_token *token);
 t_bool			is_empty_word_token(t_token *token);
@@ -87,23 +88,23 @@ t_token			*clean_token_list(t_token **first);
 t_token			*delete_empty_word_tokens(t_token *first);
 t_token			*delete_whitespace_tokens(t_token *first);
 t_token			*unite_two_word_tokens(t_token *first, t_ms *ms);
-t_bool			is_redirect(t_token_type type);
+t_bool			is_redirect(t_type type);
 void			flags_for_redirections(t_token *cur);
 void			put_files_for_redirections(t_token *cur, t_ms *ms);
-void			print_tokens(t_token *token_list); //remember to delete!
+void			print_tokens(t_token *token_list);                           //remember to delete!
 int				check_list_for_tilde(t_token *first, t_ms *ms);
 
 //Parser
 int				words_in_cmd_block(t_token *start, t_token *end);
-//int				put_cmg_args(t_cmd *cmd, t_token *start, t_token *end);
-int				put_cmg_args(t_cmd *cmd, t_token *start, t_token *end, t_ms *ms);
+int				put_cmg_args(t_cmd *cmd, t_token *start, t_token *end,
+					t_ms *ms);
 t_cmd			*create_new_cmd(t_block *block, int num, t_ms *ms);
 t_cmd			*create_cmd_list(t_block *block, t_ms *ms);
 t_cmd			*clean_cmd(t_cmd *cmd);
 t_cmd			*clean_cmd_list(t_cmd **first);
 int				check_block(t_token *start, t_token *end, int *err_flag);
-//t_block			*create_block(t_token *start, t_token *end, t_block *first_block, int *err_flag);
-t_block			*create_block(t_ms *ms, t_token *end, t_block *first_block, int *err_flag);
+t_block			*create_block(t_ms *ms, t_token *end, t_block *first_block,
+					int *err_flag);
 t_block			*create_blocks_list(t_ms *ms, t_token *end, int *err_flag);
 void			redir_in_block(t_block *block, t_cmd *cmd, t_ms *ms);
 t_block			*clean_block(t_block *block);

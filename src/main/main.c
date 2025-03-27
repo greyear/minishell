@@ -37,9 +37,9 @@ static void print_blocks(t_block *block_list)
 	{
 		printf("Block Start: %s (Type: %d) | Block End: %s (Type: %d)\n",
 		cur->start ? cur->start->data : "NULL",
-		cur->start ? cur->start->type : (t_token_type)-1,  // <-- приведение типа
+		cur->start ? cur->start->type : (t_type)-1,  // <-- приведение типа
 		cur->end ? cur->end->data : "NULL",
-		cur->end ? cur->end->type : (t_token_type)-1);  // <-- приведение типа
+		cur->end ? cur->end->type : (t_type)-1);  // <-- приведение типа
 
 		cur = cur->next;
 	}
@@ -200,18 +200,17 @@ static void	run_minishell(t_ms *ms)
 		if (ms->exit_status == MALLOC_ERR
 			|| ms->exit_status == SYSTEM_ERR)
 			break ;
-		// Reading the input
 		// FOR USUAL EXECUTION
 		/*signal_mode(INTERACTIVE);
 		input = readline("minishell> ");
 		signal_mode(IGNORE);*/
 		//FOR TESTER
-		if (isatty(fileno(stdin))) // If running interactively
+		if (isatty(fileno(stdin)))
 			input = readline("minishell> ");
-		else // If receiving input from another program
+		else
 		{
-			char *line = get_next_line(fileno(stdin));
-			if (!line) // Handle EOF (Ctrl+D in non-interactive mode)
+			char	*line = get_next_line(fileno(stdin));
+			if (!line)
 				break ;
 			input = ft_strtrim(line, "\n");
 			free(line);
