@@ -119,6 +119,7 @@ void			handle_absolute_or_relative_path(char **envp, char **cmds);
 void			handle_no_path_variable(char **envp, char **cmd);
 void			check_if_dot(char **cmds);
 void			setup_pipes(int *pipe_fd, int i, int num_cmds, int cur_fd);
+void			redirect_process(int infile, int outfile, t_ms *ms);
 
 //Envp
 int				check_list_for_expansions(t_token *first, t_ms *ms);
@@ -136,7 +137,6 @@ void			update_shlvl(t_ms *ms);
 int				process_input(char **input, t_ms *ms);
 
 //Redirections
-void			redirect_process(int infile, int outfile, t_ms *ms);
 void			put_infile_fd(t_token *token, t_cmd *cmd);
 void			put_outfile_fd(t_token *token, t_cmd *cmd);
 void			check_access(char *filename, t_oper operation);

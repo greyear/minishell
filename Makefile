@@ -79,7 +79,7 @@ EXEC_FILES		=	builtin_check.c \
 					multiple_childs.c \
 					find_path_and_execve.c \
 					cmd_handling.c \
-					pipes.c
+					pipe_and_redirect.c
 REDIR_FILES		=	fds.c \
 					heredoc.c \
 					generate_filename.c
