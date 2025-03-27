@@ -74,23 +74,25 @@ t_bool			is_empty_word_token(t_token *token);
 t_token			*clean_token_list(t_token **first);
 t_token			*delete_empty_word_tokens(t_token *first);
 t_token			*delete_whitespace_tokens(t_token *first);
-t_token			*unite_two_word_tokens(t_token *first);
+t_token			*unite_two_word_tokens(t_token *first, t_ms *ms);
 t_bool			is_redirect(t_token_type type);
 void			flags_for_redirections(t_token *cur);
-void			put_files_for_redirections(t_token *cur);
-void			print_tokens(t_token *token_list);
+void			put_files_for_redirections(t_token *cur, t_ms *ms);
+void			print_tokens(t_token *token_list); //remember to delete!
 int				check_list_for_tilde(t_token *first, t_ms *ms);
 
 //Parser
 int				words_in_cmd_block(t_token *start, t_token *end);
-int				put_cmg_args(t_cmd *cmd, t_token *start, t_token *end);
+//int				put_cmg_args(t_cmd *cmd, t_token *start, t_token *end);
+int				put_cmg_args(t_cmd *cmd, t_token *start, t_token *end, t_ms *ms);
 t_cmd			*create_new_cmd(t_block *block, int num, t_ms *ms);
 t_cmd			*create_cmd_list(t_block *block, t_ms *ms);
 t_cmd			*clean_cmd(t_cmd *cmd);
 t_cmd			*clean_cmd_list(t_cmd **first);
 int				check_block(t_token *start, t_token *end, int *err_flag);
-t_block			*create_block(t_token *start, t_token *end, t_block *first_block, int *err_flag);
-t_block			*create_blocks_list(t_token *start, t_token *end, int *err_flag);
+//t_block			*create_block(t_token *start, t_token *end, t_block *first_block, int *err_flag);
+t_block			*create_block(t_ms *ms, t_token *end, t_block *first_block, int *err_flag);
+t_block			*create_blocks_list(t_ms *ms, t_token *end, int *err_flag);
 void			redir_in_block(t_block *block, t_cmd *cmd, t_ms *ms);
 t_block			*clean_block(t_block *block);
 t_block			*clean_block_list(t_block **first);
@@ -110,7 +112,7 @@ void			setup_pipes(int *pipe_fd, int i, int num_cmds, int cur_fd);
 
 //Envp
 int				check_list_for_expansions(t_token *first, t_ms *ms);
-t_expand		*exp_init(void);
+t_expand		*exp_init(t_ms *ms);
 int				expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str);
 void			expand_variable(t_ms *ms, t_expand *exp, char **result);
 t_ms			*initialize_struct(char **envp);
@@ -158,6 +160,7 @@ void			print_too_many_args_error(void);
 void			print_env_error(char **args);
 void			print_flag_error(char **args);
 void			print_malloc_error(void);
+void			*print_malloc_set_status(t_ms *ms);
 
 //Cleaners
 void			clean_arr(char ***arr);

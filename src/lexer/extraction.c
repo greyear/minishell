@@ -29,11 +29,7 @@ char	*word_with_quotes(char *str, size_t *start, t_token *new, t_ms *ms)
 		new->unclosed = true;
 	res = (char *)ft_calloc((end - *start + 1), sizeof(char));
 	if (!res)
-	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return (NULL);
-	}
+		return ((char *)print_malloc_set_status(ms));
 	ft_strlcpy(res, str + *start, end - *start + 1);
 	*start = end;
 	if (new->unclosed == false)
@@ -62,11 +58,7 @@ char	*word_without_quotes(char *str, size_t *start, t_ms *ms)
 		end++;
 	res = (char *)ft_calloc((end - *start + 1), sizeof(char));
 	if (!res)
-	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return (NULL);
-	}
+		return ((char *)print_malloc_set_status(ms));
 	ft_strlcpy(res, str + *start, end - *start + 1);
 	*start = end;
 	return (res);

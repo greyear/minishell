@@ -129,6 +129,7 @@ static int	process_input(char **input, t_ms *ms)
 		free(*input);
 		return (0);
 	}
+	add_line_to_history(*input, ms);
 	err_syntax = validate_input(*input);
 	if (err_syntax)
 	{
@@ -136,7 +137,6 @@ static int	process_input(char **input, t_ms *ms)
 		ms->exit_status = 2;
 		return (0);
 	}
-	add_line_to_history(*input, ms);
 	return (1);
 }
 
@@ -211,10 +211,10 @@ static void	run_minishell(t_ms *ms)
 			char *line = get_next_line(fileno(stdin));
 			if (!line) // Handle EOF (Ctrl+D in non-interactive mode)
 				break ;
-			input = ft_strtrim(line, "\n"); // Remove newline from input
+			input = ft_strtrim(line, "\n");
 			free(line);
 		}
-		if (!input) // EOF check (Ctrl+D)
+		if (!input)
 		{
 			ft_putstr_fd("exit\n", STDOUT_FILENO);
 			break ;
