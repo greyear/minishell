@@ -108,18 +108,12 @@ char	*build_relative_path(char *target, char *cwd, t_ms *ms)
 
 	temp = ft_strjoin(cwd, "/");
 	if (!temp)
-	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return (NULL);
-	}
+		return (print_malloc_set_status(ms));
 	full_path = ft_strjoin(temp, target);
 	if (!full_path)
 	{
 		free(temp);
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return (NULL);
+		return (print_malloc_set_status(ms));
 	}
 	free(temp);
 	return (full_path);
@@ -149,8 +143,7 @@ static void	update_exp_var(t_ms *ms, char *key, char *new_value)
 	new_env_entry = malloc(ft_strlen(key) + ft_strlen(new_value) + 1);
 	if (!new_env_entry)
 	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
+		print_malloc_set_status(ms);
 		return ;
 	}
 	ft_strcpy(new_env_entry, key);
@@ -194,8 +187,7 @@ void	update_env_var(t_ms *ms, char *key, char *new_value)
 	new_env_entry = malloc(ft_strlen(key) + ft_strlen(new_value) + 1);
 	if (!new_env_entry)
 	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
+		print_malloc_set_status(ms);
 		return ;
 	}
 	ft_strcpy(new_env_entry, key);

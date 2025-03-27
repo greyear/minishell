@@ -13,25 +13,24 @@
 #include "../../include/minishell.h"
 
 /**
- * @brief Constructs the full path of the command by combining directories 
- *        from the `PATH` variable and the command name.
+ * @brief Constructs the full path of a command by combining directories
+ *        from PATH.
  * 
- * This function iterates over each directory in the `paths` array (extracted 
- * from the `PATH` environment variable) and attempts to combine it with the 
- * command name (`cmd`) to create a potential full path. It checks if the 
- * constructed full path exists using `access()`. If it finds an existing file 
- * at that path, it returns the full path. If no valid path is found after 
- * checking all directories, it returns `NULL`.
+ * This function takes an array of directories (from the "PATH" environment 
+ * variable) and attempts to find the full path to the given command by 
+ * checking each directory for the command. If the command is found, the full 
+ * path is returned. Memory is properly managed by freeing intermediate strings.
  * 
- * @param paths An array of directory paths from the `PATH` environment 
- *              variable.
- * @param cmd The command name to search for within the directories in 
- *            `paths`.
+ * @param paths An array of directories (extracted from the "PATH" environment 
+ *              variable).
+ * @param cmd The command to search for in the directories.
+ * @param ms A pointer to the main shell structure, used to handle errors and 
+ *           status.
  * 
- * @return Returns the full path to the command if it exists, otherwise 
- *         returns `NULL`.
+ * @return The full path to the command if found, or NULL if not found or if 
+ *         an error occurs.
  */
-static char	*make_full_path(char **paths, char *cmd)
+static char	*make_full_path(char **paths, char *cmd, t_ms *ms)
 {
 	int		i;
 	char	*new_full_path;
@@ -42,17 +41,11 @@ static char	*make_full_path(char **paths, char *cmd)
 	{
 		new_full_path = ft_strjoin(paths[i], "/");
 		if (!new_full_path)
-		{
-			print_malloc_error();
-			return (NULL);
-		}
+			return (print_malloc_set_status(ms));
 		full_cmd_path = ft_strjoin(new_full_path, cmd);
 		free(new_full_path);
 		if (!full_cmd_path)
-		{
-			print_malloc_error();
-			return (NULL);
-		}
+			return (print_malloc_set_status(ms));
 		if (access(full_cmd_path, F_OK) == 0)
 			return (full_cmd_path);
 		free(full_cmd_path);
@@ -61,24 +54,25 @@ static char	*make_full_path(char **paths, char *cmd)
 }
 
 /**
- * @brief Searches the `PATH` environment variable for the specified command.
+ * @brief Finds the full path of a command by searching the PATH 
+ *        environment variable.
  * 
- * This function iterates through the environment variables to find the 
- * `PATH` variable, which contains a colon-separated list of directories. 
- * It then attempts to find the command specified in `cmds[0]` by searching 
- * through the directories listed in `PATH`. If the command is found, it 
- * returns the full path to the command. If the command is not found or 
- * `PATH` is not set, it returns `NULL`.
+ * This function iterates through the environment variables to find the "PATH" 
+ * variable. It then splits the value of "PATH" into individual directories, 
+ * searching each for the specified command. The function returns the full path 
+ * of the command if found. If memory allocation fails or the "PATH" variable 
+ * is empty, it handles errors accordingly.
  * 
- * @param envp An array of environment variables, including the `PATH` 
- *             variable.
- * @param cmds An array of command arguments, where `cmds[0]` is the 
- *             command name to search for.
+ * @param envp A pointer to the environment variables.
+ * @param cmds A pointer to the array of command arguments (the first argument 
+ *             is the command to search for).
+ * @param ms A pointer to the main shell structure, used to handle errors 
+ *           and status.
  * 
- * @return Returns the full path to the command if found, otherwise returns 
- *         `NULL`.
+ * @return The full path to the command if found, or NULL if not found or 
+ *         if an error occurs.
  */
-static char	*find_path_from_envp(char **envp, char **cmds)
+static char	*find_path_from_envp(char **envp, char **cmds, t_ms *ms)
 {
 	int		i;
 	char	*path_var;
@@ -95,11 +89,8 @@ static char	*find_path_from_envp(char **envp, char **cmds)
 				return (NULL);
 			paths = ft_split(path_var, ':');
 			if (!paths)
-			{
-				print_malloc_error();
-				return (NULL);
-			}
-			full_path = make_full_path(paths, cmds[0]);
+				return (print_malloc_set_status(ms));
+			full_path = make_full_path(paths, cmds[0], ms);
 			clean_arr(&paths);
 			return (full_path);
 		}
@@ -108,26 +99,22 @@ static char	*find_path_from_envp(char **envp, char **cmds)
 }
 
 /**
- * @brief Executes a command by searching for its path and running it with 
- *        `execve()`.
+ * @brief Executes a command by searching for its path and calling `execve`.
  * 
- * This function processes and executes a given command by checking its 
- * validity, resolving its path, and executing it. If the command is an 
- * absolute or relative path, it is validated using 
- * `handle_absolute_or_relatve_path()`. If no `PATH` variable is found, it 
- * handles execution using `handle_no_path_variable()`. Otherwise, the 
- * function searches for the command in the system's `PATH`, executes it if 
- * found, or prints an error if it cannot be executed.
+ * This function checks if the provided command is valid, resolves its path 
+ * (either through the `PATH` environment variable or directly if it's an 
+ * absolute/relative path), and then attempts to execute it using `execve`. 
+ * It also handles errors related to command not found, permission denied, 
+ * or memory allocation failure.
  * 
- * @param envp The environment variables.
- * @param cmd An array of strings representing the command and its arguments.
+ * @param envp A pointer to the environment variables.
+ * @param cmd A pointer to the command arguments.
+ * @param ms A pointer to the main shell structure containing shell state.
  * 
- * @return This function does not return; it either executes the command or 
- *         exits the process with:
- *         - `127` if the command is not found.
- *         - `126` if the command exists but lacks execution permission.
+ * @return This function does not return; it exits the program after attempting 
+ *         to execute the command.
  */
-void	execute_command(char **envp, char **cmd)
+void	execute_command(char **envp, char **cmd, t_ms *ms)
 {
 	char	*path;
 
@@ -141,7 +128,9 @@ void	execute_command(char **envp, char **cmd)
 		handle_absolute_or_relative_path(envp, cmd);
 	if (!get_env_value("PATH", envp))
 		handle_no_path_variable(envp, cmd);
-	path = find_path_from_envp(envp, cmd);
+	path = find_path_from_envp(envp, cmd, ms);
+	if (ms->exit_status == MALLOC_ERR)
+		exit(MALLOC_ERR);
 	if (!path)
 	{
 		print_cmd_error(cmd[0], NO_CMD);

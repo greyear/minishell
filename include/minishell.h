@@ -114,7 +114,7 @@ int				is_builtin(t_cmd *cmd);
 void			handle_builtin(t_cmd *cmd, t_ms *ms, int in_child);
 int				if_children_needed(t_cmd *cmd);
 void			make_one_child(t_cmd *cmd, t_ms *ms);
-void			execute_command(char **envp, char **cmd);
+void			execute_command(char **envp, char **cmd, t_ms *ms);
 void			make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms);
 void			pipe_process(int prev_pipe, int next_pipe);
 void			handle_absolute_or_relative_path(char **envp, char **cmds);

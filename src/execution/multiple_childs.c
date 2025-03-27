@@ -94,7 +94,7 @@ static void	child_process(t_cmd *cur, t_pipe *p, t_cmd *cmds)
 	{
 		//we are not sure if we need to put it for ALL child processes or only for externals
 		signal_mode(DEFAULT);
-		execute_command(p->ms->envp, cur->args);
+		execute_command(p->ms->envp, cur->args, p->ms);
 	}
 }
 

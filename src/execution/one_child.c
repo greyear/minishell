@@ -44,7 +44,7 @@ void	execute_child(t_cmd *cmd, t_ms *ms)
 	{
 		//we are not sure if we need to put it for ALL child processes or only for externals
 		signal_mode(DEFAULT);
-		execute_command(ms->envp, cmd->args);
+		execute_command(ms->envp, cmd->args, ms);
 	}
 }
 
@@ -85,7 +85,6 @@ void	make_one_child(t_cmd *cmd, t_ms *ms)
 	}
 	if (pid == 0)
 		execute_child(cmd, ms);
-	close_two_fds(cmd->infile, cmd->outfile);
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		ms->exit_status = WEXITSTATUS(status);
