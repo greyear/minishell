@@ -100,7 +100,6 @@ static int	add_to_end(char ***ex, char ***temp, char *key, int i)
 	(*temp)[i] = ft_strdup(key);
 	if (!(*temp)[i])
 	{
-		print_malloc_error();
 		clean_arr(temp);
 		return (0);
 	}
@@ -144,7 +143,6 @@ static int	copy_exported(char *key, char ***ex, char ***temp, int len)
 		(*temp)[i] = ft_strdup((*ex)[i]);
 		if (!(*temp)[i])
 		{
-			print_malloc_error();
 			clean_arr(temp);
 			return (0);
 		}
@@ -188,5 +186,5 @@ void	add_to_exported(char *key, t_ms *ms)
 		return ;
 	}
 	if (!copy_exported(key, &ms->exported, &temp, len))
-		ms->exit_status = MALLOC_ERR;
+		print_malloc_set_status(ms);
 }

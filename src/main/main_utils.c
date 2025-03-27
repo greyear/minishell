@@ -69,7 +69,7 @@ static void	malloc_heredocs(t_ms *ms, t_token *token)
 	ms->heredoc_files = malloc(sizeof(char *) * (heredoc_count + 1));
 	if (!ms->heredoc_files)
 	{
-		print_malloc_error();
+		print_malloc_set_status(ms);
 		clean_struct(ms);
 		exit(1);
 	}

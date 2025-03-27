@@ -115,7 +115,7 @@ t_ms	*initialize_struct(char **envp)
 	ms->pwd = ft_strdup(cwd);
 	if (!ms->pwd)
 	{
-		print_malloc_error();
+		print_malloc_set_status(ms);
 		free(ms);
 		exit(1);
 	}

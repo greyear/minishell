@@ -39,8 +39,7 @@ static void	append_to_result(char **result, char *new_part, t_ms *ms)
 	temp = ft_strjoin(*result, new_part);
 	if (!temp)
 	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
+		print_malloc_set_status(ms);
 		free(new_part);
 		return ;
 	}
@@ -121,14 +120,12 @@ void	expand_variable(t_ms *ms, t_expand *exp, char **result)
 		expanded = find_env_value(ms->envp, exp);
 	if (!expanded)
 	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
+		print_malloc_set_status(ms);
 		return ;
 	}
 	if (!expanded)
 	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
+		print_malloc_set_status(ms);
 		return ;
 	}
 	append_to_result(result, expanded, ms);

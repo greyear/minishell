@@ -129,10 +129,7 @@ static void	process_unset_entry(char **args, int i, t_ms *ms, int len)
 	}
 	if (!rm_from_env_ex(&ms->exported, key, 1)
 		|| !rm_from_env_ex(&ms->envp, key, 0))
-	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-	}
+		print_malloc_set_status(ms);
 	free(key);
 }
 

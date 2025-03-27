@@ -173,7 +173,6 @@ void			print_numeric_error(char **array);
 void			print_too_many_args_error(void);
 void			print_env_error(char **args);
 void			print_flag_error(char **args);
-void			print_malloc_error(void);
 void			*print_malloc_set_status(t_ms *ms);
 
 //Cleaners

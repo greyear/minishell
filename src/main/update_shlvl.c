@@ -108,24 +108,21 @@ static void	make_args(char ***args, t_ms *ms)
 	*args = malloc(sizeof(char *) * 3);
 	if (!*args)
 	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
+		print_malloc_set_status(ms);
 		return ;
 	}
 	(*args)[0] = ft_strdup("export");
 	if (!(*args)[0])
 	{
 		clean_arr(&(*args));
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
+		print_malloc_set_status(ms);
 		return ;
 	}
 	(*args)[1] = ft_strdup("SHLVL=1");
 	if (!(*args)[1])
 	{
 		clean_arr(&(*args));
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
+		print_malloc_set_status(ms);
 		return ;
 	}
 	(*args)[2] = NULL;
@@ -159,8 +156,7 @@ void	update_shlvl(t_ms *ms)
 	check = modify_shlvl(&ms->exported);
 	if (check == 2)
 	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
+		print_malloc_set_status(ms);
 		return ;
 	}
 	if (check == 0)

@@ -137,26 +137,22 @@ void	print_cmd_error(char *cmd, int c)
 }
 
 /**
- * @brief Prints an error message for memory allocation failure.
+ * @brief Prints a memory allocation error message and sets the exit status.
  * 
- * This function prints a generic error message (`OWN_ERR_MSG`) followed by 
- * a specific message indicating a memory allocation failure (`ERR_MALLOC`).
- * The error message is printed to `stderr` to inform the user about the failure 
- * to allocate memory during the program's execution.
+ * This function is called when a memory allocation failure occurs. It prints a 
+ * predefined error message to `stderr` and, if the `ms` structure is provided, 
+ * it updates the exit status to indicate a memory allocation error.
  * 
- * @return None.
+ * @param ms A pointer to the main shell structure. If not NULL, the exit 
+ *           status of the shell is set to `MALLOC_ERR`.
+ * 
+ * @return NULL. This function always returns `NULL`.
  */
-void	print_malloc_error(void)
-{
-	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
-	ft_putstr_fd(ERR_MALLOC, STDERR_FILENO);
-}
-
-//try this instead of 3 lines
 void	*print_malloc_set_status(t_ms *ms)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
 	ft_putstr_fd(ERR_MALLOC, STDERR_FILENO);
-	ms->exit_status = MALLOC_ERR;
+	if (ms)
+		ms->exit_status = MALLOC_ERR;
 	return (NULL);
 }

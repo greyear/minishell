@@ -108,7 +108,7 @@ static void	initialize_without_envp(t_ms *ms)
 	}
 	if (ms->exit_status == MALLOC_ERR)
 	{
-		print_malloc_error();
+		print_malloc_set_status(ms);
 		clean_struct(ms);
 		exit(1);
 	}
@@ -179,14 +179,14 @@ void	initialize_envp_and_exp(t_ms *ms, char **envp)
 	ms->envp = copy_array_of_strings(envp);
 	if (!ms->envp)
 	{
-		print_malloc_error();
+		print_malloc_set_status(ms);
 		clean_struct(ms);
 		exit(1);
 	}
 	ms->exported = copy_array_of_strings(envp);
 	if (!ms->exported)
 	{
-		print_malloc_error();
+		print_malloc_set_status(ms);
 		clean_struct(ms);
 		exit(1);
 	}
