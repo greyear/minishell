@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 14:07:23 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 14:07:25 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 //#include <asm-generic/termbits.h> //delete for school computers
@@ -210,7 +222,7 @@ static void	run_minishell(t_ms *ms)
 			break ;
 		}
 		if (!tokenize_and_process_input(&input, ms))
-			continue;
+			continue ;
 		execute_commands(ms);
 		clean_struct_partially(ms);
 	}

@@ -1,11 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cmd_cleaning.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 14:10:57 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 14:11:00 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
 /**
  * @brief Frees memory allocated for a command structure.
  * 
- * This function releases all dynamically allocated fields within a `t_cmd` structure, 
- * including the argument array. Finally, it frees the `t_cmd` structure itself.
+ * This function releases all dynamically allocated fields within a `t_cmd` 
+ * structure, including the argument array. Finally, it frees the `t_cmd` 
+ * structure itself.
  * 
  * @param cmd A pointer to the command structure to be freed.
  * 
@@ -27,12 +39,13 @@ t_cmd	*clean_cmd(t_cmd *cmd)
 /**
  * @brief Frees a linked list of command structures.
  * 
- * This function iterates through a linked list of `t_cmd` structures, freeing each command
- * and its associated memory. Once all commands are freed, the pointer to the first command
- * is set to `NULL`.
+ * This function iterates through a linked list of `t_cmd` structures, freeing 
+ * each command and its associated memory. Once all commands are freed, the 
+ * pointer to the first command is set to `NULL`.
  * 
- * @param first A double pointer to the first command in the list. After execution, `*first`
- *              is set to `NULL` to prevent dangling pointers.
+ * @param first A double pointer to the first command in the list. After
+ *              execution, `*first` is set to `NULL` to prevent dangling
+ *              pointers.
  * 
  * @return Always returns `NULL` to ensure proper pointer resetting.
  * 
@@ -81,10 +94,12 @@ t_block	*clean_block(t_block *block)
 /**
  * @brief Frees a linked list of command blocks.
  * 
- * This function iterates through a linked list of `t_block` structures, freeing each block 
- * and its associated resources. It ensures that all allocated memory is properly freed.
+ * This function iterates through a linked list of `t_block` structures, freeing 
+ * each block and its associated resources. It ensures that all allocated memory 
+ * is properly freed.
  * 
- * @param first A pointer to the head of the list. The pointer is set to `NULL` after cleanup.
+ * @param first A pointer to the head of the list. The pointer is set to `NULL` 
+ *              after cleanup.
  * 
  * @return Always returns `NULL` to facilitate pointer resetting.
  * 
