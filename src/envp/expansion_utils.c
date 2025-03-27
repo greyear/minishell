@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expansion_utils.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 13:36:08 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 13:36:10 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 /**
@@ -47,11 +59,12 @@ static void	append_to_result(char **result, char *new_part, t_ms *ms)
  * not found, an empty string is returned.
  * 
  * @param envp The array of environment variables.
- * @param exp A pointer to the `t_expand` structure containing the key to search for.
+ * @param exp A pointer to the `t_expand` structure containing the key to
+ *            search for.
  * 
- * @return A dynamically allocated string containing the environment variable's value. 
- *         Returns an empty string if the key is not found or `NULL` if memory 
- *         allocation fails.
+ * @return A dynamically allocated string containing the environment variable's 
+ *         value. Returns an empty string if the key is not found or `NULL` if 
+ *         memory allocation fails.
  */
 static char	*find_env_value(char **envp, t_expand *exp)
 {

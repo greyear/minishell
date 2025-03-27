@@ -94,7 +94,7 @@ SIGN_FILES		=	handler.c
 CLEAN_FILES		=	arr_cleaning.c \
 					clean_struct.c \
 					close_fds.c
-ERR_FILES		=	errors_bonus.c \
+ERR_FILES		=	errors.c \
 					builtin_error.c \
 					exit_error.c
 
