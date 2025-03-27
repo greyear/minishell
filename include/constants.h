@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   constants.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 12:42:52 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 12:42:55 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef CONSTANTS_H
 # define CONSTANTS_H
 
@@ -36,15 +48,15 @@ typedef enum e_char
 
 typedef enum e_token_type
 {
-	DUMMY = 0, // empty first technical node
-	PIPE = 1, // |
-	IN = 2, // <
-	OUT = 3, // >
-	HEREDOC = 4, // <<
-	APPEND = 5, // >>
-	WORD = 6, // string
+	DUMMY = 0,
+	PIPE = 1,
+	IN = 2,
+	OUT = 3,
+	HEREDOC = 4,
+	APPEND = 5,
+	WORD = 6,
 	SPACE = 7,
-	END = 8, //?? mb ne nuzhen
+	END = 8,
 	EMPTY = 9
 }	t_token_type;
 
@@ -53,8 +65,8 @@ typedef enum e_err
 	ARGS_NUM,
 	INV_ARGS,
 	MLLC,
-	NO_FD = -1, //same as err output of open, dup2...
-	DEF = -2, //divide into 2 structs? change values
+	NO_FD = -1,
+	DEF = -2,
 }	t_err;
 
 typedef enum e_print

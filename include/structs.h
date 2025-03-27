@@ -1,6 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   structs.h                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 12:43:51 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 12:43:52 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef STRUCTS_H
 # define STRUCTS_H
-
 
 typedef struct s_token
 {
@@ -33,20 +44,20 @@ typedef struct s_block
 
 typedef struct s_ms
 {
-	int		exit_status; // Store the last exit status
-	char	**envp;     // Environment variables
-	char	**exported; // store exported variables
-	t_token	*tokens; //Tried to put this all here not to have problems with cleaning
+	int		exit_status;
+	char	**envp;
+	char	**exported;
+	t_token	*tokens;
 	t_block	*blocks;
 	t_cmd	*cmds;
-	t_bool	history_file; //yes (1) if save, no (0) if can't save in file
+	t_bool	history_file;
 	char	*history[500];
 	int		history_num;
-	char	**heredoc_files; // Store heredoc filenames
-	int		heredoc_count;   // Number of heredoc files
+	char	**heredoc_files;
+	int		heredoc_count;
 	int		no_env;
 	char	*pwd;
-} t_ms;
+}	t_ms;
 
 typedef struct s_expand
 {
@@ -74,11 +85,5 @@ typedef struct s_pipe
 	pid_t	*pids;
 	t_ms	*ms;
 }	t_pipe;
-
-/*typedef struct s_terminal
-{
-	struct termios	new;
-	struct termios	old;
-}	t_terminal;*/
 
 #endif

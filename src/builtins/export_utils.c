@@ -16,7 +16,7 @@
  * @return A newly allocated string with the updated or unchanged entry.
  *         Returns NULL if memory allocation fails.
  */
-char	*duplicate_or_replace(char *entry, char *arg, char *key, int *flag)
+char	*dup_or_replace(char *entry, char *arg, char *key, int *flag)
 {
 	int		len;
 

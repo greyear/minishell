@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 12:39:13 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 12:39:20 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -43,7 +55,7 @@ void			handle_unset(char **args, t_ms *ms);
 int				check_env(char *env, char *name, int len, int flag);
 char			**allocate_temp_env(char **env, int x);
 void			print_array(char **a);
-int				check_if_valid_key(char *name); 
+int				check_if_valid_key(char *name);
 int				get_key_length(char *arg);
 char			*extract_key(char *arg, int len);
 void			handle_cd(char **args, t_ms *ms);
@@ -57,7 +69,7 @@ char			*get_env_value(char *key, char **envp);
 void			check_exit(char	**array, t_ms *ms);
 long long		convert_to_ll(char *str, int *error);
 char			*handle_expansion(t_expand *exp, t_ms *ms);
-char			*duplicate_or_replace(char *entry, char *arg, char *key, int *flag);
+char			*dup_or_replace(char *entry, char *arg, char *key, int *flag);
 void			update_cd_env(t_ms *ms, char *pwd_before);
 void			add_oldpwd_to_envp(t_ms *ms, char *pwd_before);
 
@@ -65,7 +77,7 @@ void			add_oldpwd_to_envp(t_ms *ms, char *pwd_before);
 t_token			*tokenization(char *str, t_ms *ms);
 t_token_type	define_token_type(char *str, size_t i);
 t_token			*create_new_token(char *str, size_t *i, t_token_type type, t_ms *ms);
-char			*word_with_quotes(char *str, size_t *start, t_token * new, t_ms *ms);
+char			*word_with_quotes(char *str, size_t *start, t_token *new, t_ms *ms);
 char			*word_without_quotes(char *str, size_t *start, t_ms *ms);
 void			skip_special_tokens(char *str, size_t *i, t_token_type type);
 void			skip_whitespaces(char *str, size_t *i);

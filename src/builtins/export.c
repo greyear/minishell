@@ -29,7 +29,7 @@ static char	**copy_to_temp(char *arg, char ***env, char *key, int *flag)
 		return (NULL);
 	while ((*env)[i])
 	{
-		temp[i] = duplicate_or_replace((*env)[i], arg, key, flag);
+		temp[i] = dup_or_replace((*env)[i], arg, key, flag);
 		if (!temp[i])
 		{
 			clean_arr(&temp);
