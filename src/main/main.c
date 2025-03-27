@@ -114,7 +114,7 @@ static void	execute_commands(t_ms *ms)
  * @return 1 if the input is valid and processed, 0 if there was an error 
  *         or the input was empty.
  */
-static int	process_input(char **input, t_ms *ms)
+int	process_input(char **input, t_ms *ms)
 {
 	int		err_syntax;
 
@@ -219,18 +219,8 @@ static void	run_minishell(t_ms *ms)
 			ft_putstr_fd("exit\n", STDOUT_FILENO);
 			break ;
 		}
-		if (!process_input(&input, ms))
-			continue ;
-		if (!tokenize_input(&input, ms))
-			continue ;
-		if (!create_blocks_and_cmds_lists(ms))
-			continue ;
-		if (g_sgnl == SIGINT)
-		{
-			clean_struct_partially(ms);
-			g_sgnl = 0;
+		if (!tokenize_and_process_input(&input, ms))
 			continue;
-		}
 		execute_commands(ms);
 		clean_struct_partially(ms);
 	}

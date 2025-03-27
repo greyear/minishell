@@ -77,7 +77,7 @@ static void	malloc_heredocs(t_ms *ms, t_token *token)
  * @param ms A pointer to the main shell structure, which holds the tokens.
  * @return 1 if tokenization is successful, 0 if there is an error.
  */
-int	tokenize_input(char **input, t_ms *ms)
+static int	tokenize_input(char **input, t_ms *ms)
 {
 	ms->tokens = tokenization(*input, ms);
 	free(*input);
@@ -104,7 +104,7 @@ int	tokenize_input(char **input, t_ms *ms)
  * @return 1 if both blocks and commands lists are successfully created, 
  *         0 if there was an error.
  */
-int	create_blocks_and_cmds_lists(t_ms *ms)
+static int	create_blocks_and_cmds_lists(t_ms *ms)
 {
 	int		err_syntax;
 
@@ -122,6 +122,37 @@ int	create_blocks_and_cmds_lists(t_ms *ms)
 		ft_putstr_fd(CMDS_ERR, STDERR_FILENO);
 		clean_token_list(&(ms->tokens));
 		clean_block_list(&(ms->blocks));
+		return (0);
+	}
+	return (1);
+}
+
+/**
+ * @brief Processes and tokenizes the user input for execution.
+ * 
+ * This function applies multiple processing steps to the input, including 
+ * initial validation, tokenization, and the creation of command structures. 
+ * It also handles interruption signals and cleans up partially allocated 
+ * data if necessary.
+ * 
+ * @param input A pointer to the user's input string.
+ * @param ms A pointer to the main shell structure containing shell state.
+ * 
+ * @return 1 if processing is successful, 0 if an error occurs or an 
+ *         interruption is detected.
+ */
+int	tokenize_and_process_input(char **input, t_ms *ms)
+{
+	if (!process_input(input, ms))
+		return (0);
+	if (!tokenize_input(input, ms))
+		return (0);
+	if (!create_blocks_and_cmds_lists(ms))
+		return (0);
+	if (g_sgnl == SIGINT)
+	{
+		clean_struct_partially(ms);
+		g_sgnl = 0;
 		return (0);
 	}
 	return (1);

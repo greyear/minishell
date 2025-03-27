@@ -118,9 +118,9 @@ char			*handle_spaces(char *copy, t_expand *exp);
 
 //Main
 void			initialize_envp_and_exp(t_ms *ms, char **envp);
-int				create_blocks_and_cmds_lists(t_ms *ms);
-int				tokenize_input(char **input, t_ms *ms);
 void			update_shlvl(t_ms *ms);
+int				tokenize_and_process_input(char **input, t_ms *ms);
+int				process_input(char **input, t_ms *ms);
 
 //Redirections
 void			redirect_process(int infile, int outfile, t_ms *ms);
