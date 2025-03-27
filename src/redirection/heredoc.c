@@ -32,7 +32,7 @@ static int	open_heredoc_file(char *filename, int *fd)
 	if (*fd < 0)
 	{
 		perror("heredoc: open failed");
-		exit(1);
+		exit(1); //do we need to clean anything here?
 	}
 	return (*fd);
 }
