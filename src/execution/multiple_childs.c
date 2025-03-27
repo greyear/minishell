@@ -85,17 +85,14 @@ static void	child_process(t_cmd *cur, t_pipe *p, t_cmd *cmds)
 	close_every_cmds_fds(cmds);
 	if (p->ms->exit_status == SYSTEM_ERR)
 		exit(SYSTEM_ERR);
+	signal_mode(DEFAULT);
 	if (is_builtin(cur))
 	{
 		handle_builtin(cur, p->ms, 1);
 		exit(p->ms->exit_status);
 	}
 	else
-	{
-		//we are not sure if we need to put it for ALL child processes or only for externals
-		signal_mode(DEFAULT);
 		execute_command(p->ms->envp, cur->args, p->ms);
-	}
 }
 
 /**
