@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirection.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 13:58:58 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 13:59:00 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
@@ -31,10 +42,11 @@ t_bool	is_redirect(t_token_type type)
 /**
  * @brief Assigns redirection flags to tokens following redirection operators.
  * 
- * This function scans a linked list of tokens and assigns a specific redirection 
- * type to words that follow redirection operators (`<`, `>`, `<<`, `>>`). 
- * It ensures that the correct redirection flag is set while handling spaces 
- * and edge cases like consecutive redirections or concatenated words.
+ * This function scans a linked list of tokens and assigns a specific
+ * redirection type to words that follow redirection operators 
+ * (`<`, `>`, `<<`, `>>`). It ensures that the correct redirection flag 
+ * is set while handling spaces and edge cases like consecutive redirections 
+ * or concatenated words.
  * 
  * @param cur A pointer to the first token in the list.
  */
@@ -80,7 +92,6 @@ void	flags_for_redirections(t_token *cur)
 void	put_files_for_redirections(t_token *cur)
 {
 	t_token	*deleted;
-
 
 	while (cur)
 	{

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipe_and_redirect.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 13:57:44 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 13:57:46 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 /**
@@ -63,17 +75,21 @@ void	setup_pipes(int *pipe_fd, int i, int num_cmds, int cur_fd)
 }
 
 /**
- * @brief Redirects the input and output of the current process based on the provided file descriptors.
+ * @brief Redirects the input and output of the current process based 
+ *        on the provided file descriptors.
  *
- * This function handles the redirection of input (stdin) and output (stdout) for the current process 
- * using the `dup2` system call. It checks the given file descriptors (`infile` and `outfile`) and, if 
- * they are valid, redirects stdin and/or stdout accordingly. If either file descriptor is invalid, 
- * the function closes the files and exits with an error status. In case of failure during `dup2`, 
- * it sets the shell's exit status to indicate a system error.
+ * This function handles the redirection of input (stdin) and output 
+ * (stdout) for the current process using the `dup2` system call. It 
+ * checks the given file descriptors (`infile` and `outfile`) and, if 
+ * they are valid, redirects stdin and/or stdout accordingly. If either 
+ * file descriptor is invalid, the function closes the files and exits 
+ * with an error status. In case of failure during `dup2`, it sets the 
+ * shell's exit status to indicate a system error.
  *
  * @param infile The file descriptor for input redirection.
  * @param outfile The file descriptor for output redirection.
- * @param ms The minishell structure containing the exit status and other relevant state.
+ * @param ms The minishell structure containing the exit status and 
+ *           other relevant state.
  */
 void	redirect_process(int infile, int outfile, t_ms *ms)
 {

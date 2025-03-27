@@ -96,5 +96,4 @@ void	make_one_child(t_cmd *cmd, t_ms *ms)
 		write(STDERR_FILENO, "\n", 1);
 	if (ms->exit_status == 131)
 		write(STDERR_FILENO, "Quit\n", 5);
-	//close_every_cmds_fds(cmd);
 }

@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenization.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 13:59:46 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 13:59:53 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 //mallocs checked, but should I protect functions that contain malloc protections?
 
@@ -36,15 +47,15 @@ t_token *tokenization(char *str, t_ms *ms)
 		type = define_token_type(str, i);
 		cur->next = create_new_token(str, &i, type, ms);
 		if (!cur->next)
-			return(clean_token_list(&first));
+			return (clean_token_list(&first));
 		cur = cur->next;
 	}
 	flags_for_redirections(first);
 	if (check_list_for_expansions(first, ms) == 1)
-		return(clean_token_list(&first));
+		return (clean_token_list(&first));
 	first = unite_two_word_tokens(first);
 	if (check_list_for_tilde(first, ms) == 1)
-		return(clean_token_list(&first));
+		return (clean_token_list(&first));
 	return (first);
 }
 

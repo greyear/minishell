@@ -1,19 +1,35 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   extraction.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 13:58:40 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 13:58:43 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 //mallocs checked
 
 #include "../../include/minishell.h"
 
 /**
- * @brief Extracts a quoted word from the input string, handling both single ('') and double ("") quotes.
+ * @brief Extracts a quoted word from the input string, handling both 
+ *        single ('') and double ("") quotes.
  * 
- * This function scans the input string starting from the given index (`*start`) and extracts a word enclosed 
- * in either single or double quotes. The type of quotes is determined by the `new->quote` field.
+ * This function scans the input string starting from the given index 
+ * (`*start`) and extracts a word enclosed in either single or double 
+ * quotes. The type of quotes is determined by the `new->quote` field.
  * 
  * @param str A pointer to the null-terminated input string.
- * @param start A pointer to the current position in `str`, updated after processing.
- * @param new A pointer to a `t_token` struct that stores quote type and other stuff.
+ * @param start A pointer to the current position in `str`, updated after 
+ *              processing.
+ * @param new A pointer to a `t_token` struct that stores quote type and 
+ *            other stuff.
  * 
- * @return A newly allocated string containing the extracted quoted word, or NULL if memory allocation fails.
+ * @return A newly allocated string containing the extracted quoted word, 
+ *         or NULL if memory allocation fails.
  */
 char	*word_with_quotes(char *str, size_t *start, t_token *new, t_ms *ms)
 {
@@ -44,13 +60,16 @@ char	*word_with_quotes(char *str, size_t *start, t_token *new, t_ms *ms)
 /**
  * @brief Extracts a word from the input string that is not enclosed in quotes.
  * 
- * This function scans the input string starting from `*start` and extracts a word until it encounters 
- * a special character (as defined by `ft_special()`) or a whitespace character.
+ * This function scans the input string starting from `*start` and extracts 
+ * a word until it encounters a special character (as defined by `ft_special()`) 
+ * or a whitespace character.
  * 
  * @param str A pointer to the null-terminated input string.
- * @param start A pointer to the current position in `str`, updated after processing.
+ * @param start A pointer to the current position in `str`, updated after 
+ *              processing.
  * 
- * @return A newly allocated string containing the extracted word, or NULL if memory allocation fails.
+ * @return A newly allocated string containing the extracted word, or NULL 
+ *         if memory allocation fails.
  */
 char	*word_without_quotes(char *str, size_t *start, t_ms *ms)
 {

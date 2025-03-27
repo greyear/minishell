@@ -170,11 +170,11 @@ static void	initialize_p(t_pipe *p, int num_cmds, t_ms *ms)
  * @brief Creates multiple child processes to execute commands in parallel.
  *
  * This function handles the creation of child processes for each command in a 
- * pipeline, by forking a new process for each one and executing the corresponding 
- * command. It initializes the necessary pipes, handles the process forking, and 
- * ensures that the file descriptors are properly managed. After forking the child 
- * processes, it waits for them to complete and updates the minishell's exit 
- * status accordingly.
+ * pipeline, by forking a new process for each one and executing the 
+ * corresponding command. It initializes the necessary pipes, handles 
+ * the process forking, and ensures that the file descriptors are properly 
+ * managed. After forking the child processes, it waits for them to complete 
+ * and updates the minishell's exit status accordingly.
  *
  * @param num_cmds The number of commands to execute in the pipeline.
  * @param cmds A linked list of command structures, each representing a command 
