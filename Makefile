@@ -79,7 +79,7 @@ EXEC_FILES		=	builtin_check.c \
 					multiple_childs.c \
 					find_path_and_execve.c \
 					cmd_handling.c \
-					pipes.c
+					pipe_and_redirect.c
 REDIR_FILES		=	fds.c \
 					heredoc.c \
 					generate_filename.c
@@ -94,7 +94,7 @@ SIGN_FILES		=	handler.c
 CLEAN_FILES		=	arr_cleaning.c \
 					clean_struct.c \
 					close_fds.c
-ERR_FILES		=	errors_bonus.c \
+ERR_FILES		=	errors.c \
 					builtin_error.c \
 					exit_error.c
 

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export_utils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 12:56:14 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 12:56:16 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 /**
@@ -16,7 +28,7 @@
  * @return A newly allocated string with the updated or unchanged entry.
  *         Returns NULL if memory allocation fails.
  */
-char	*duplicate_or_replace(char *entry, char *arg, char *key, int *flag)
+char	*dup_or_replace(char *entry, char *arg, char *key, int *flag)
 {
 	int		len;
 

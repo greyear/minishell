@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 14:07:23 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 14:07:25 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 //#include <asm-generic/termbits.h> //delete for school computers
@@ -97,44 +109,35 @@ static void	execute_commands(t_ms *ms)
 		else
 			make_multiple_childs(i, ms->cmds, ms);
 	}
-	close_fds(ms->cmds);
+	close_every_cmds_fds(ms->cmds);
 }
 
 /**
- * @brief Processes user input for syntax validation and history addition.
+ * @brief Processes and tokenizes the user input for execution.
  * 
- * This function checks if the input is empty or contains syntax errors. 
- * If the input is empty (i.e., only Enter was pressed), it is ignored.
- * If a syntax error is found, the error code is set and the input is discarded. 
- * Otherwise, the input is added to the history.
+ * This function applies multiple processing steps to the input, including 
+ * initial validation, tokenization, and the creation of command structures. 
+ * It also handles interruption signals and cleans up partially allocated 
+ * data if necessary.
  * 
- * @param input A pointer to the string containing the user input.
- * @param ms A pointer to the main shell structure, used to store the 
- *           exit status.
- * @return 1 if the input is valid and processed, 0 if there was an error 
- *         or the input was empty.
+ * @param input A pointer to the user's input string.
+ * @param ms A pointer to the main shell structure containing shell state.
+ * 
+ * @return 1 if processing is successful, 0 if an error occurs or an 
+ *         interruption is detected.
  */
-static int	process_input(char **input, t_ms *ms)
+static int	tokenize_and_process_input(char **input, t_ms *ms)
 {
-	int		err_syntax;
-
-	err_syntax = 0;
+	if (!process_input(input, ms))
+		return (0);
+	if (!tokenize_input(input, ms))
+		return (0);
+	if (!create_blocks_and_cmds_lists(ms))
+		return (0);
 	if (g_sgnl == SIGINT)
 	{
-		ms->exit_status = 130;
+		clean_struct_partially(ms);
 		g_sgnl = 0;
-	}
-	if ((*input)[0] == '\0')
-	{
-		free(*input);
-		return (0);
-	}
-	add_line_to_history(*input, ms);
-	err_syntax = validate_input(*input);
-	if (err_syntax)
-	{
-		free(*input);
-		ms->exit_status = 2;
 		return (0);
 	}
 	return (1);
@@ -180,8 +183,7 @@ static int	init_terminal_signals(void)
  * process it, tokenize the input, and execute the commands. It handles EOF 
  * detection (Ctrl+D), cleans up after each command execution, and continues 
  * running until the shell encounters a critical error (e.g., memory allocation 
- * failure or system error) or the user exits (Ctrl+D). It also manages signals 
- * like SIGINT to ensure proper cleanup.
+ * failure or system error) or the user exits (Ctrl+D).
  * 
  * @param ms A pointer to the `t_ms` structure, which holds the shell's state, 
  *           including the exit status and other shell-related data.
@@ -219,18 +221,8 @@ static void	run_minishell(t_ms *ms)
 			ft_putstr_fd("exit\n", STDOUT_FILENO);
 			break ;
 		}
-		if (!process_input(&input, ms))
+		if (!tokenize_and_process_input(&input, ms))
 			continue ;
-		if (!tokenize_input(&input, ms))
-			continue ;
-		if (!create_blocks_and_cmds_lists(ms))
-			continue ;
-		if (g_sgnl == SIGINT)
-		{
-			clean_struct_partially(ms);
-			g_sgnl = 0;
-			continue;
-		}
 		execute_commands(ms);
 		clean_struct_partially(ms);
 	}

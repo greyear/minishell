@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   spaces_in_expansion.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 13:36:25 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 13:36:27 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 /**
@@ -103,7 +115,8 @@ static char	*remove_first_space(char *str)
 }
 
 /**
- * @brief Removes extra spaces from a string and optionally removes a leading space.
+ * @brief Removes extra spaces from a string and optionally removes 
+ *        a leading space.
  * 
  * This function processes the input string by removing redundant spaces. 
  * If `exp->if_first` is set and the resulting string starts with a space, 
