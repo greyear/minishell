@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+//mallocs checked
+
 #include "../../include/minishell.h"
 
 /**
@@ -31,14 +33,6 @@ t_bool	is_redirect(t_token_type type)
 	return (false);
 }
 
-/*Если тип этого элемента - редирект - сохраняем конкретный тип
-	и переходим к следующему
-  Если уже встретился ранее редир и не было слова:
-	если пробелы - пропускаем и переходим, сбрасываем тип
-	если слова - ставим им флаг и переходим, сбрасываем тип
-  Если не встретился - просто переходим, сбрасываем тип
-*/
-
 /**
  * @brief Assigns redirection flags to tokens following redirection operators.
  * 
@@ -57,24 +51,24 @@ void	flags_for_redirections(t_token *cur)
 	specific = EMPTY;
 	while (cur)
 	{
-		if (is_redirect(cur->type)) //this one is redir
+		if (is_redirect(cur->type))
 		{
 			specific = cur->type;
 			cur = cur->next;
-			continue ; //don't need to stay on this one in a loop
+			continue ;
 		}
-		if (is_redirect(specific)) //we met redir earlier
+		if (is_redirect(specific))
 		{
 			if (cur && cur->type == SPACE)
 				cur = cur->next;
-			while (cur && cur->type == WORD) //case with 2 words in a row without spaces?? "a"b??
+			while (cur && cur->type == WORD)
 			{
 				cur->specific_redir = specific;
 				cur = cur->next;
 			}
-			specific = EMPTY; //try case with 2 redirections in a row
+			specific = EMPTY;
 		}
-		else //we didn't meet redir
+		else
 			cur = cur->next;
 	}
 }
@@ -89,7 +83,7 @@ void	flags_for_redirections(t_token *cur)
  * 
  * @param cur A pointer to the first token in the list.
  */
-void	put_files_for_redirections(t_token *cur)
+void	put_files_for_redirections(t_token *cur, t_ms *ms)
 {
 	t_token	*deleted;
 
@@ -97,30 +91,38 @@ void	put_files_for_redirections(t_token *cur)
 	{
 		if (is_redirect(cur->type) && cur->next && cur->next->type == WORD)
 		{
-			//printf("CUR: Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->type, cur->data, cur->quote, cur->specific_redir, cur->ambiguous, cur->file);
-			//printf("NEXT: Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->next->type, cur->next->data, cur->next->quote, cur->next->specific_redir, cur->next->ambiguous, cur->next->file);
 			deleted = cur->next;
 			cur->ambiguous = cur->next->ambiguous;
 			if (!cur->ambiguous)
 			{
 				cur->file = ft_strdup(cur->next->data);
+				if (!cur->file)
+				{
+					print_malloc_set_status(ms); //? can I typecast into void?
+					return ;
+				}
 				free(deleted->data);
-				//printf("new cur->file: %s\n", cur->file);
 				if (deleted->file)
 					free(deleted->file);
 			}
 			else
 			{
-				cur->file = cur->next->file; //check it's created
-				//printf("new cur->file: %s\n", cur->file);
-				//printf("new cur->file: %s\n", cur->file);
+				cur->file = cur->next->file;
 				free(deleted->data);
 			}
 			cur->quote = cur->next->quote;
 			cur->next = cur->next->next;
-			free(deleted); //we have the node itself and 2 allocated fields
-		} //and we free 2 of them which we don't need
-		//printf("LEFT: Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->type, cur->data, cur->quote, cur->specific_redir, cur->ambiguous, cur->file);
+			free(deleted);
+		}
 		cur = cur->next;
 	}
 }
+
+/*
+	//printf("CUR: Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->type, cur->data, cur->quote, cur->specific_redir, cur->ambiguous, cur->file);
+	//printf("NEXT: Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->next->type, cur->next->data, cur->next->quote, cur->next->specific_redir, cur->next->ambiguous, cur->next->file);
+	//printf("new cur->file: %s\n", cur->file);
+	//printf("new cur->file: %s\n", cur->file);
+	//printf("new cur->file: %s\n", cur->file);
+	//printf("LEFT: Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->type, cur->data, cur->quote, cur->specific_redir, cur->ambiguous, cur->file);
+*/

@@ -125,9 +125,4 @@ typedef enum e_mode
 # define HEREDOC_ERR "maximum here-document count exceeded\n"
 # define HISTORY_SIZE 500
 
-/*POSIX ограничивает диапазон exit status от 0 до 255. 
-При использовании значений выше 255 операционная система может 
-"обрезать" коды до младших 8 бит, что вызовет некорректные 
-результаты*/
-
 #endif

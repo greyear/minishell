@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+//mallocs checked
+
 #include "../../include/minishell.h"
 
 /**
@@ -38,6 +40,7 @@ static void	read_from_history_file(int fd, t_ms *ms) //fill_history +
 		if (!trimmed)
 		{
 			free(buf);
+			print_malloc_set_status(ms);
 			return ;
 		}
 		add_history(trimmed);

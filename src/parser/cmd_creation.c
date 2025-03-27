@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+//mallocs checked
+
 #include "../../include/minishell.h"
 
 /**
@@ -26,7 +28,7 @@
  * @note This function does not allocate memory for `new`. It assumes `new` 
  *       is already allocated.
  */
-static void	default_cmd_values(t_cmd *new, int num) //check r
+static void	default_cmd_values(t_cmd *new, int num)
 {
 	new->name = NULL;
 	new->args = NULL;
@@ -34,7 +36,6 @@ static void	default_cmd_values(t_cmd *new, int num) //check r
 	new->infile = DEF;
 	new->outfile = DEF;
 	new->next = NULL;
-	//some other fields
 }
 
 /**
@@ -83,7 +84,7 @@ int	words_in_cmd_block(t_token *start, t_token *end)
  * 
  * @return `0` on success, `1` if memory allocation for any argument fails.
  */
-int	put_cmg_args(t_cmd *cmd, t_token *start, t_token *end)
+int	put_cmg_args(t_cmd *cmd, t_token *start, t_token *end, t_ms *ms)
 {
 	t_token	*cur;
 	int		i;
@@ -96,7 +97,10 @@ int	put_cmg_args(t_cmd *cmd, t_token *start, t_token *end)
 		{
 			cmd->args[i] = ft_strdup(cur->data);
 			if (!cmd->args[i])
-				return (1); //malloc error?
+			{
+				print_malloc_set_status(ms);
+				return (1);
+			}
 			i++;
 		}
 		cur = cur->next;
@@ -147,9 +151,9 @@ void	redir_in_block(t_block *block, t_cmd *cmd, t_ms *ms)
 				put_heredoc_fd(cur, cmd, ms);
 			if (cmd->infile == NO_FD || cmd->outfile == NO_FD)
 			{
-				ms->exit_status = 1; //error?
+				ms->exit_status = 1;
 				return ;
-			} //if smth failed here we save exit value for the process
+			}
 		}
 		cur = cur->next;
 	}
@@ -189,13 +193,16 @@ t_cmd	*create_new_cmd(t_block *block, int num, t_ms *ms)
 
 	new = (t_cmd *)malloc(1 * sizeof(t_cmd));
 	if (!new)
-		return (NULL);
+		return (print_malloc_set_status(ms));
 	default_cmd_values(new, num);
 	words = words_in_cmd_block(block->start, block->end);
 	new->args = (char **)malloc((words + 1) * sizeof(char *));
 	if (!new->args)
+	{
+		print_malloc_set_status(ms);
 		return (clean_cmd(new));
-	if (put_cmg_args(new, block->start, block->end))
+	}
+	if (put_cmg_args(new, block->start, block->end, ms))
 		return (clean_cmd(new));
 	new->name = new->args[0];
 	redir_in_block(block, new, ms);
@@ -233,7 +240,7 @@ t_cmd	*create_cmd_list(t_block *block, t_ms *ms)
 	int		i;
 
 	if (!block)
-		return (NULL); //is it needed
+		return (NULL);
 	first = create_new_cmd(block, 0, ms);
 	if (!first)
 		return (NULL);

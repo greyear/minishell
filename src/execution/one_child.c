@@ -85,6 +85,7 @@ void	make_one_child(t_cmd *cmd, t_ms *ms)
 	}
 	if (pid == 0)
 		execute_child(cmd, ms);
+	close_fds2(cmd->infile, cmd->outfile);
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		ms->exit_status = WEXITSTATUS(status);

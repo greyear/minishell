@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+//mallocs checked
+
 #include "../../include/minishell.h"
 
 /**
@@ -31,7 +33,6 @@ t_cmd	*clean_cmd(t_cmd *cmd)
 		return (NULL);
 	if (cmd->args)
 		clean_arr(&(cmd->args));
-	//add another fields
 	free(cmd);
 	return (NULL);
 }
@@ -86,7 +87,6 @@ t_block	*clean_block(t_block *block)
 {
 	if (!block)
 		return (NULL);
-	//add fields
 	free(block);
 	return (NULL);
 }

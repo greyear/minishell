@@ -151,3 +151,12 @@ void	print_malloc_error(void)
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
 	ft_putstr_fd(ERR_MALLOC, STDERR_FILENO);
 }
+
+//try this instead of 3 lines
+void	*print_malloc_set_status(t_ms *ms)
+{
+	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
+	ft_putstr_fd(ERR_MALLOC, STDERR_FILENO);
+	ms->exit_status = MALLOC_ERR;
+	return (NULL);
+}

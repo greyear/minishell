@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+//mallocs checked
+
 #include "../../include/minishell.h"
 
 /**
@@ -28,11 +30,10 @@
  */
 static void	merged_values(t_token *first, t_token *second)
 {
-	if (!first->quote && second->quote) // ) + 1 = 1, else we don't need to change the value of the 1st
+	if (!first->quote && second->quote)
 		first->quote = second->quote;
 	if (!first->unclosed && second->quote)
-		first->unclosed = true; //check in debugger if we need it
-	//some other fields
+		first->unclosed = true;
 }
 
 /**
@@ -51,25 +52,23 @@ static void	merged_values(t_token *first, t_token *second)
  * @note This function modifies the linked list in place, freeing redundant 
  *       tokens and updating the structure accordingly.
  */
-t_token	*unite_two_word_tokens(t_token *first)
+t_token	*unite_two_word_tokens(t_token *first, t_ms *ms)
 {
 	t_token	*cur;
 	t_token	*deleted;
 	char	*joined;
 
-	//check r
 	cur = first;
 	while (cur)
 	{
-		if (cur->next && cur->type == WORD && \
-				cur->next->type == WORD)
+		if (cur->next && cur->type == WORD && cur->next->type == WORD)
 		{
 			/*if (cur->data[0] == '$' && cur->quote == 0)
 				joined = ft_strdup(cur->next->data);
 			else*/ //fixed 309 in parsing hell, but ...
 			joined = ft_strjoin(cur->data, cur->next->data);
 			if (!joined)
-				return (NULL);
+				return ((t_token *)print_malloc_set_status(ms));
 			free(cur->data);
 			cur->data = joined;
 			merged_values(cur, cur->next);
@@ -80,19 +79,16 @@ t_token	*unite_two_word_tokens(t_token *first)
 		else
 			cur = cur->next;
 	}
-
-	/*printf("\n inside uniting: after uniting and before deleting whitespaces\n");
-	print_tokens(first);*/
-
 	first = delete_whitespace_tokens(first);
-	
-	/*printf("\n inside uniting: after deleting whitespaces\n");
-	print_tokens(first);*/
-
 	first = delete_empty_word_tokens(first);
-	
-	/*printf("\n inside uniting: after deleting empty\n");
-	print_tokens(first);*/
-
 	return (first);
 }
+
+/*
+	printf("\n inside uniting: after uniting and before deleting whitespaces\n");
+	print_tokens(first);
+	printf("\n inside uniting: after deleting whitespaces\n");
+	print_tokens(first);
+	printf("\n inside uniting: after deleting empty\n");
+	print_tokens(first);
+*/

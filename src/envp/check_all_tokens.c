@@ -24,18 +24,13 @@
  * 
  * @return A pointer to the newly allocated and initialized `t_expand` structure.
  */
-t_expand	*exp_init(void)
+t_expand	*exp_init(t_ms *ms)
 {
 	t_expand	*exp;
 
 	exp = malloc(sizeof(t_expand));
 	if (!exp)
-	{
-		print_malloc_error();
-		//ms->exit_status = MALLOC_ERR;
-		return (NULL);
-		//exit(1); //?
-	}
+		return (print_malloc_set_status(ms));
 	exp->data = NULL;
 	exp->key = NULL;
 	exp->len = 0;
@@ -52,9 +47,13 @@ int	expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str)
 
 	data_copy = ft_strdup(cur->data);
 	if (!data_copy)
-		return (1); //error msg?
-	exp = exp_init();
-	//check for malloc
+	{
+		print_malloc_set_status(ms);
+		return (1);	
+	}
+	exp = exp_init(ms);
+	if (!exp)
+		return (1); //?
 	if (ft_strcmp(cur->data, "$") == 0 && !cur->quote && cur->next && cur->next->quote)
 		expanded = ft_strdup("");
 	else
