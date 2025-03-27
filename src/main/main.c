@@ -180,8 +180,7 @@ static int	init_terminal_signals(void)
  * process it, tokenize the input, and execute the commands. It handles EOF 
  * detection (Ctrl+D), cleans up after each command execution, and continues 
  * running until the shell encounters a critical error (e.g., memory allocation 
- * failure or system error) or the user exits (Ctrl+D). It also manages signals 
- * like SIGINT to ensure proper cleanup.
+ * failure or system error) or the user exits (Ctrl+D).
  * 
  * @param ms A pointer to the `t_ms` structure, which holds the shell's state, 
  *           including the exit status and other shell-related data.
