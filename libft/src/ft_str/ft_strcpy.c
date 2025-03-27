@@ -16,7 +16,7 @@ char	*ft_strcpy(char *dst, const char *src)
 {
 	size_t	lens;
 
-	if (!dst || !src) // Can I add these checks if original lib function segfaults here?
+	if (!dst || !src)
 		return (NULL);
 	lens = ft_strlen(src);
 	ft_memcpy(dst, src, lens);

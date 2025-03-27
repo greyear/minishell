@@ -41,37 +41,6 @@ static void	default_cmd_values(t_cmd *new, int num)
 }
 
 /**
- * @brief Counts the number of WORD tokens in a command block.
- * 
- * This function iterates through a sequence of tokens from `start` to `end`, 
- * counting the number of tokens of type `WORD`. It helps determine the 
- * number of arguments present in a command block.
- * 
- * @param start A pointer to the first token in the block.
- * @param end A pointer to the token marking the end of the block (not included 
- *            in counting).
- * 
- * @return The number of WORD tokens found in the given range.
- * 
- * @note If `start` and `end` are the same, the function returns `0`.
- */
-int	words_in_cmd_block(t_token *start, t_token *end)
-{
-	t_token	*cur;
-	int		res;
-
-	res = 0;
-	cur = start;
-	while (cur != end)
-	{
-		if (cur->type == WORD)
-			res++;
-		cur = cur->next;
-	}
-	return (res);
-}
-
-/**
  * @brief Fills the command arguments array with WORD tokens.
  * 
  * This function iterates through tokens from `start` to `end`, copying the 

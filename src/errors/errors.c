@@ -87,11 +87,7 @@ void	print_syntax_error(char *text)
 void	print_file_error(char *file, t_print reason)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
-	if (reason == HERED_ERR)
-	{
-		//put msg
-	}
-	else
+	if (reason != HERED_ERR)
 		ft_putstr_fd(file, STDERR_FILENO);
 	if (reason == NO_FILE)
 		ft_putstr_fd(NO_FD_ERR, STDERR_FILENO);

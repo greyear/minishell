@@ -58,7 +58,7 @@ typedef enum e_token_type
 	SPACE = 7,
 	END = 8,
 	EMPTY = 9
-}	t_token_type;
+}	t_type;
 
 typedef enum e_err
 {

@@ -10,10 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-//mallocs checked
-
-//mallocs checked
-
 #include "../../include/minishell.h"
 
 /**
@@ -27,7 +23,7 @@
  * 
  * @return `true` if the token type is a redirection operator, otherwise `false`.
  */
-t_bool	is_redirect(t_token_type type)
+t_bool	is_redirect(t_type type)
 {
 	if ((type == IN) || (type == OUT) || \
 			(type == HEREDOC) || (type == APPEND))
@@ -48,7 +44,7 @@ t_bool	is_redirect(t_token_type type)
  */
 void	flags_for_redirections(t_token *cur)
 {
-	t_token_type	specific;
+	t_type	specific;
 
 	specific = EMPTY;
 	while (cur)
@@ -76,6 +72,51 @@ void	flags_for_redirections(t_token *cur)
 }
 
 /**
+ * @brief Processes file names associated with redirection operators.
+ * 
+ * This function processes a token representing a redirection operator 
+ * (`<`, `>`, `<<`, `>>`), assigning the corresponding file name from 
+ * the next token in the list. It handles both ambiguous redirections 
+ * and non-ambiguous cases. For non-ambiguous redirections, it duplicates 
+ * the file name and frees unnecessary data from the next token. In 
+ * ambiguous cases, it propagates the file name from the next token. 
+ * The function also updates the quote information and removes the 
+ * processed token from the linked list.
+ * 
+ * @param cur A pointer to the current token in the list, which is the 
+ * redirection operator.
+ * @param ms A pointer to the shell state structure for managing memory 
+ * and error handling.
+ */
+static void	process_redirection_file(t_token *cur, t_ms *ms)
+{
+	t_token	*deleted;
+
+	deleted = cur->next;
+	cur->ambiguous = cur->next->ambiguous;
+	if (!cur->ambiguous)
+	{
+		cur->file = ft_strdup(cur->next->data);
+		if (!cur->file)
+		{
+			print_malloc_set_status(ms);
+			return ;
+		}
+		free(deleted->data);
+		if (deleted->file)
+			free(deleted->file);
+	}
+	else
+	{
+		cur->file = cur->next->file;
+		free(deleted->data);
+	}
+	cur->quote = cur->next->quote;
+	cur->next = cur->next->next;
+	free(deleted);
+}
+
+/**
  * @brief Associates file names with redirection tokens.
  * 
  * This function iterates through a linked list of tokens and assigns the 
@@ -87,44 +128,10 @@ void	flags_for_redirections(t_token *cur)
  */
 void	put_files_for_redirections(t_token *cur, t_ms *ms)
 {
-	t_token	*deleted;
-
 	while (cur)
 	{
 		if (is_redirect(cur->type) && cur->next && cur->next->type == WORD)
-		{
-			deleted = cur->next;
-			cur->ambiguous = cur->next->ambiguous;
-			if (!cur->ambiguous)
-			{
-				cur->file = ft_strdup(cur->next->data);
-				if (!cur->file)
-				{
-					print_malloc_set_status(ms); //? can I typecast into void?
-					return ;
-				}
-				free(deleted->data);
-				if (deleted->file)
-					free(deleted->file);
-			}
-			else
-			{
-				cur->file = cur->next->file;
-				free(deleted->data);
-			}
-			cur->quote = cur->next->quote;
-			cur->next = cur->next->next;
-			free(deleted);
-		}
+			process_redirection_file(cur, ms);
 		cur = cur->next;
 	}
 }
-
-/*
-	//printf("CUR: Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->type, cur->data, cur->quote, cur->specific_redir, cur->ambiguous, cur->file);
-	//printf("NEXT: Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->next->type, cur->next->data, cur->next->quote, cur->next->specific_redir, cur->next->ambiguous, cur->next->file);
-	//printf("new cur->file: %s\n", cur->file);
-	//printf("new cur->file: %s\n", cur->file);
-	//printf("new cur->file: %s\n", cur->file);
-	//printf("LEFT: Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->type, cur->data, cur->quote, cur->specific_redir, cur->ambiguous, cur->file);
-*/

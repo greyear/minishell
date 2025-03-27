@@ -17,7 +17,7 @@ char	*ft_strcat(char *dst, const char *src)
 	size_t	lend;
 	size_t	lens;
 
-	if (!dst || !src) // Can I add these checks if original lib function segfaults here?
+	if (!dst || !src)
 		return (NULL);
 	lend = ft_strlen(dst);
 	lens = ft_strlen(src);

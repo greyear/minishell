@@ -80,7 +80,7 @@ static char	*find_env_value(char **envp, t_expand *exp)
 			copy = ft_strdup(envp[i] + exp->len + 1);
 			if (!copy)
 				return (NULL);
-			if (exp->quote == 0) //for heredocs????
+			if (exp->quote == 0)
 				return (handle_spaces(copy, exp));
 			else
 				return (copy);
