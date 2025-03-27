@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   initialization_utils.c                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 14:07:50 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 14:07:51 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 /**
@@ -78,10 +90,10 @@ static int	initialize_exp_without_envp(t_ms *ms)
  * is passed to the minishell. It attempts to initialize the exported variables 
  * using `initialize_exp_without_envp`. If this fails, it sets the exit status 
  * to `MALLOC_ERR`. After that, it attempts to initialize the environment 
- * variables with `initialize_envp_without_envp`. If both initializations succeed, 
- * the function continues normally. If any memory allocation fails, the function 
- * sets the exit status to `MALLOC_ERR`, prints an error message, cleans up the 
- * minishell structure, and exits with a failure status.
+ * variables with `initialize_envp_without_envp`. If both initializations 
+ * succeed, the function continues normally. If any memory allocation fails, 
+ * the function sets the exit status to `MALLOC_ERR`, prints an error message, 
+ * cleans up the minishell structure, and exits with a failure status.
  *
  * @param ms The minishell structure to be initialized.
  */
@@ -141,13 +153,14 @@ static char	**copy_array_of_strings(char **original)
 }
 
 /**
- * @brief Initializes the environment variables and exported variables for the minishell.
+ * @brief Initializes the environment variables and exported variables for 
+ *        the minishell.
  *
- * This function sets up the environment variables (`envp`) and exported variables 
- * (`exported`) from the provided `envp` array. If no environment variables are 
- * provided, it initializes the minishell without them. If memory allocation fails 
- * at any step, an error message is printed and the program exits with an error 
- * status.
+ * This function sets up the environment variables (`envp`) and exported 
+ * variables (`exported`) from the provided `envp` array. If no environment 
+ * variables are provided, it initializes the minishell without them. If memory 
+ * allocation fails at any step, an error message is printed and the program 
+ * exits with an error status.
  *
  * @param ms The minishell structure to be initialized with environment and 
  *           exported variables.

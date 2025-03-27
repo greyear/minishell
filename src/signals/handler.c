@@ -1,17 +1,33 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   handler.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 14:29:29 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 14:29:31 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 /**
  * @brief Handles the SIGINT signal in an interactive shell environment.
  * 
- * This function is triggered when the user presses `Ctrl+C` in the terminal. It:
+ * This function is triggered when the user presses `Ctrl+C` in the terminal. 
+ * It:
  * - Prints a newline to the `stderr` stream.
  * - Clears the current line in the readline buffer.
- * - Resets the history with an empty line (using `rl_replace_line` with the `0` flag).
- * - Updates the global signal variable `g_sgnl` with the received signal (`SIGINT`).
+ * - Resets the history with an empty line (using `rl_replace_line` with the 
+ *   `0` flag).
+ * - Updates the global signal variable `g_sgnl` with the received signal 
+ *   (`SIGINT`).
  * - Calls `rl_redisplay` to refresh the input prompt.
  * 
  * This function allows a more user-friendly behavior when `Ctrl+C` is pressed, 
- * preventing the shell from exiting and instead clearing the current line and prompt.
+ * preventing the shell from exiting and instead clearing the current line and 
+ * prompt.
  * 
  * @param sig The signal that triggered the handler, in this case, `SIGINT`.
  */
@@ -29,16 +45,18 @@ void	ctrlc_interactive(int sig)
 }
 
 /**
- * @brief Prints a warning message when a here-document is terminated by an end-of-file (EOF) signal.
+ * @brief Prints a warning message when a here-document is terminated by an 
+ *        end-of-file (EOF) signal.
  * 
- * This function is used when the user interrupts a here-document (a heredoc) with the 
- * end-of-file (EOF) signal (typically Ctrl-D). It prints a warning message indicating 
- * that the here-document was terminated unexpectedly, and shows the delimiter that was 
- * being used to terminate the heredoc.
+ * This function is used when the user interrupts a here-document (a heredoc) 
+ * with the end-of-file (EOF) signal (typically Ctrl-D). It prints a warning 
+ * message indicating that the here-document was terminated unexpectedly, and 
+ * shows the delimiter that was being used to terminate the heredoc.
  * 
  * The format of the warning is:
- * "minishell: warning: here-document at line 1 delimited by end-of-file (wanted `<limiter>`)"
- * where `<limiter>` is replaced with the provided delimiter.
+ * "minishell: warning: here-document at line 1 delimited by end-of-file 
+ * (wanted `<limiter>`)" where `<limiter>` is replaced with the provided 
+ * delimiter.
  * 
  * @param limiter The delimiter used to define the end of the here-document.
  */
@@ -83,20 +101,22 @@ static void	ctrlc_heredoc(int sig)
  * This function sets up custom signal handlers for the SIGINT (Ctrl+C) and 
  * SIGQUIT (Ctrl+\) signals by using the `sigaction` system call. It configures 
  * the handlers specified by the `ctrlc` and `ctrlbackslash` function pointers 
- * and ensures that the signals are properly handled during the execution of the program.
+ * and ensures that the signals are properly handled during the execution of the 
+ * program.
  * 
  * - The `SIGINT` signal is typically generated when the user presses Ctrl+C.
  * - The `SIGQUIT` signal is typically generated when the user presses Ctrl+\.
  * 
- * Both signals are configured to restart system calls after being handled (using `SA_RESTART`).
+ * Both signals are configured to restart system calls after being handled 
+ * (using `SA_RESTART`).
  * 
  * @param ctrlc The custom handler function to handle SIGINT (Ctrl+C).
  * @param ctrlbackslash The custom handler function to handle SIGQUIT (Ctrl+\).
  */
 static void	mode_init(void (*ctrlc)(int), void (*ctrlbackslash)(int))
 {
-	struct sigaction cc;
-	struct sigaction cb;
+	struct sigaction	cc;
+	struct sigaction	cb;
 
 	ft_memset(&cc, 0, sizeof(cc));
 	ft_memset(&cc, 0, sizeof(cb));
@@ -113,24 +133,27 @@ static void	mode_init(void (*ctrlc)(int), void (*ctrlbackslash)(int))
 /**
  * @brief Configures signal handling based on the specified mode.
  * 
- * This function adjusts the signal handlers based on the given mode. The behavior 
- * of signals such as SIGINT and SIGQUIT can be customized depending on whether 
- * the program is running in a default, interactive, heredoc, or ignore mode.
+ * This function adjusts the signal handlers based on the given mode. The 
+ * behavior of signals such as SIGINT and SIGQUIT can be customized depending 
+ * on whether the program is running in a default, interactive, heredoc, or 
+ * ignore mode.
  * 
- * - **DEFAULT mode**: Restores the default signal handlers for SIGINT and SIGQUIT 
- *   (commonly used for standard program execution, e.g., running `cat`).
+ * - **DEFAULT mode**: Restores the default signal handlers for SIGINT and 
+ *   SIGQUIT (commonly used for standard program execution, e.g., running `cat`).
  * 
- * - **INTERACTIVE mode**: Configures the signal handler for SIGINT (Ctrl+C) to call 
- *   `ctrlc_interactive` and SIGQUIT to be ignored (used for interactive shell prompts).
+ * - **INTERACTIVE mode**: Configures the signal handler for SIGINT (Ctrl+C) 
+ *   to call `ctrlc_interactive` and SIGQUIT to be ignored (used for interactive 
+ *   shell prompts).
  * 
- * - **HEREDOC_MODE**: Configures the signal handler for SIGINT (Ctrl+C) to call 
- *   `ctrlc_heredoc` and SIGQUIT to be ignored (used during heredoc input before 
- *   the delimiter).
+ * - **HEREDOC_MODE**: Configures the signal handler for SIGINT (Ctrl+C) to 
+ *   call `ctrlc_heredoc` and SIGQUIT to be ignored (used during heredoc input 
+ *   before the delimiter).
  * 
  * - **IGNORE mode**: Ignores both SIGINT and SIGQUIT (possibly used for certain 
  *   input scenarios like the first heredoc).
  * 
- * @param mode The mode to set the signal handlers for. It can be one of the following:
+ * @param mode The mode to set the signal handlers for. It can be one of the 
+ *        following:
  *        - `DEFAULT`: Restores default signal handling.
  *        - `INTERACTIVE`: Customizes signal handling for interactive prompts.
  *        - `HEREDOC_MODE`: Customizes signal handling during heredoc input.

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   close_fds.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 13:35:42 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 13:35:44 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 /**
@@ -10,7 +22,7 @@
  * @param fd1 The first file descriptor to close.
  * @param fd2 The second file descriptor to close.
  */
-void	close_fds2(int fd1, int fd2)
+void	close_two_fds(int fd1, int fd2)
 {
 	close_file(fd1);
 	close_file(fd2);
@@ -39,7 +51,7 @@ void	close_file(int file)
  * 
  * @param p A pointer to the `t_pipe` structure containing the file descriptors.
  */
-void	close_all_fds(t_pipe *p)
+void	close_pipe_fds(t_pipe *p)
 {
 	close_file(p->fd[0]);
 	close_file(p->fd[1]);
@@ -56,7 +68,7 @@ void	close_all_fds(t_pipe *p)
  * 
  * @param cmd A pointer to the first command in the linked list of commands.
  */
-void	close_fds(t_cmd *cmd)
+void	close_every_cmds_fds(t_cmd *cmd)
 {
 	t_cmd	*cur;
 

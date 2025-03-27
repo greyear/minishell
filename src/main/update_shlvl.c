@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   update_shlvl.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 14:08:01 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 14:08:03 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 /**
@@ -149,7 +161,7 @@ void	update_shlvl(t_ms *ms)
 	{
 		print_malloc_error();
 		ms->exit_status = MALLOC_ERR;
-		return;
+		return ;
 	}
 	if (check == 0)
 	{

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main_utils.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 14:07:32 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 14:07:34 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 /**
@@ -122,6 +134,46 @@ int	create_blocks_and_cmds_lists(t_ms *ms)
 		ft_putstr_fd(CMDS_ERR, STDERR_FILENO);
 		clean_token_list(&(ms->tokens));
 		clean_block_list(&(ms->blocks));
+		return (0);
+	}
+	return (1);
+}
+
+/**
+ * @brief Processes user input for syntax validation and history addition.
+ * 
+ * This function checks if the input is empty or contains syntax errors. 
+ * If the input is empty (i.e., only Enter was pressed), it is ignored.
+ * If a syntax error is found, the error code is set and the input is discarded. 
+ * Otherwise, the input is added to the history.
+ * 
+ * @param input A pointer to the string containing the user input.
+ * @param ms A pointer to the main shell structure, used to store the 
+ *           exit status.
+ * @return 1 if the input is valid and processed, 0 if there was an error 
+ *         or the input was empty.
+ */
+int	process_input(char **input, t_ms *ms)
+{
+	int		err_syntax;
+
+	err_syntax = 0;
+	if (g_sgnl == SIGINT)
+	{
+		ms->exit_status = 130;
+		g_sgnl = 0;
+	}
+	if ((*input)[0] == '\0')
+	{
+		free(*input);
+		return (0);
+	}
+	add_line_to_history(*input, ms);
+	err_syntax = validate_input(*input);
+	if (err_syntax)
+	{
+		free(*input);
+		ms->exit_status = 2;
 		return (0);
 	}
 	return (1);
