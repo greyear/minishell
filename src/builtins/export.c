@@ -129,7 +129,7 @@ static void	change_values_env_ex(char *arg, t_ms *ms)
 	key = extract_key(arg, len);
 	if (!key)
 	{
-		ms->exit_status = MALLOC_ERR;
+		print_malloc_set_status(ms);
 		return ;
 	}
 	if (!check_if_valid_key(key))
@@ -141,8 +141,7 @@ static void	change_values_env_ex(char *arg, t_ms *ms)
 	if (!change_values(arg, &ms->exported, key, 1)
 		|| !change_values(arg, &ms->envp, key, 0))
 	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
+		print_malloc_set_status(ms);
 		free(key);
 		return ;
 	}

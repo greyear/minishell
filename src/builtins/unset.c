@@ -119,7 +119,7 @@ static void	process_unset_entry(char **args, int i, t_ms *ms, int len)
 	key = extract_key(args[i], len);
 	if (!key)
 	{
-		ms->exit_status = MALLOC_ERR;
+		print_malloc_set_status(ms);
 		return ;
 	}
 	if (!check_if_valid_key(key))

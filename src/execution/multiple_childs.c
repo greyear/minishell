@@ -160,10 +160,7 @@ static void	initialize_p(t_pipe *p, int num_cmds, t_ms *ms)
 	p->cur_fd = -1;
 	p->pids = (pid_t *)malloc((p->num_cmds) * sizeof(pid_t));
 	if (!p->pids)
-	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-	}
+		print_malloc_set_status(ms);
 }
 
 /**
