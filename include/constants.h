@@ -76,7 +76,7 @@ typedef enum e_print
 	NO_FILE,
 	DIRECT,
 	HERED_ERR,
-	HIST_ERR,
+	HIST_RD_ERR,
 	NO_FILE_OR_DIR,
 	IS_DIR,
 	NO_CMD,
@@ -116,7 +116,7 @@ typedef enum e_mode
 # define PERM_DEN_ERR ": Permission denied\n"
 # define NO_CMD_ERR ": command not found\n"
 # define AMBIG_ERR ": ambiguos redirect\n"
-# define HISTORY_ERR "Reading from history file failed\n"
+# define HISTORY_RD_ERR "Reading from history file failed\n"
 # define FLAG_ERR ": flags are not supported in minishell\n"
 # define INDENT_ERR "': not a valid identifier\n"
 # define BLOCKS_ERR "Error: failed to create blocks\n"

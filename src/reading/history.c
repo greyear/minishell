@@ -12,8 +12,6 @@
 
 //mallocs checked
 
-//mallocs checked
-
 #include "../../include/minishell.h"
 
 /**
@@ -42,20 +40,21 @@ void	default_history(char **history) //zero_history
  * This function saves the given command line into the history array 
  * within the `t_ms` structure. If the current history slot is occupied, 
  * it frees the memory before storing the new line. The function ensures 
- * a circular buffer behavior by resetting the index when it reaches the limit.
+ * a circular buffer behavior by resetting the index when it reaches the 
+ * limit.
  * 
  * @param line The command line to be stored in history.
  * @param ms A pointer to the shell structure containing the history array.
  */
-void	fill_ms_history_line(char *line, t_ms *ms) //add_to_history_array //fill in struct's field +
+void	fill_ms_history_line(char *line, t_ms *ms) //add_to_history_array
 {
 	if (ms->history[ms->history_num])
-		free(ms->history[ms->history_num]); //free this particular line
-	ms->history[ms->history_num] = ft_strdup(line); //copy given line into it
+		free(ms->history[ms->history_num]);
+	ms->history[ms->history_num] = ft_strdup(line);
 	if (!ms->history[ms->history_num])
 	{
 		print_malloc_set_status(ms);
-		return ; //this one was unsuccessful but it's okay mb
+		return ;
 	}
 	if (ms->history_num == HISTORY_SIZE - 1)
 		ms->history_num = 0;
@@ -72,7 +71,7 @@ void	fill_ms_history_line(char *line, t_ms *ms) //add_to_history_array //fill in
  * @param line The command line to be added to history.
  * @param ms A pointer to the shell structure containing the history.
  */
-void	add_line_to_history(char *line, t_ms *ms) //add_to_history + in main
+void	add_line_to_history(char *line, t_ms *ms) //add_to_history
 {
 	if (line[0] != '\0')
 	{

@@ -34,7 +34,7 @@
 t_token	*tokenization(char *str, t_ms *ms)
 {
 	size_t			i;
-	t_type	type;
+	t_type			type;
 	t_token			*first;
 	t_token			*cur;
 
