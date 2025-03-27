@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fds.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 14:22:54 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 14:22:56 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 /*static int	check_if_dir(char *path)
@@ -92,16 +104,17 @@ void	put_heredoc_fd(t_token *token, t_cmd *cmd, t_ms *ms)
  */
 void	put_outfile_fd(t_token *token, t_cmd *cmd)
 {
+	char	*file;
+
+	file = token->file;
 	if (cmd->outfile > 0)
 		close(cmd->outfile);
-
 	/*if (check_if_dir(token->file))
 	{
 		cmd->outfile = NO_FD;
 		print_file_error(token->file, DIRECT);
 		return ;
 	}*/
-
 	if (token->ambiguous)
 	{
 		cmd->outfile = NO_FD;
@@ -110,11 +123,11 @@ void	put_outfile_fd(t_token *token, t_cmd *cmd)
 	else
 	{
 		if (token->type == OUT)
-			cmd->outfile = open(token->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			cmd->outfile = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		else if (token->type == APPEND)
-			cmd->outfile = open(token->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+			cmd->outfile = open(file, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if (cmd->outfile < 0)
-			check_access(token->file, WR);
+			check_access(file, WR);
 	}
 }
 
