@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   one_child.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 13:52:38 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 13:52:40 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 /**
@@ -20,7 +32,7 @@
 void	execute_child(t_cmd *cmd, t_ms *ms)
 {
 	redirect_process(cmd->infile, cmd->outfile, ms);
-	close_fds2(cmd->infile, cmd->outfile);
+	close_every_cmds_fds(cmd);
 	if (ms->exit_status == SYSTEM_ERR)
 		exit(SYSTEM_ERR);
 	if (is_builtin(cmd))

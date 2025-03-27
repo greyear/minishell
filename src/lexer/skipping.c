@@ -1,3 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   skipping.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 13:59:05 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 13:59:07 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+//mallocs checked
 
 //mallocs checked
 
@@ -7,17 +20,19 @@
  * @brief Skips special tokens in the input string based on their type.
  * 
  * This function advances the index in the input string (`str`) to skip over 
- * special tokens such as redirections (`<<`, `>>`) and other non-word, non-space 
- * characters. It ensures correct parsing by handling multi-character tokens properly.
+ * special tokens such as redirections (`<<`, `>>`) and other non-word, 
+ * non-space characters. It ensures correct parsing by handling multi-character 
+ * tokens properly.
  * 
  * @param str A pointer to the input string being processed.
- * @param i A pointer to the current index in the string, which is updated as needed.
+ * @param i A pointer to the current index in the string, which is updated as 
+ *          needed.
  * @param type The type of token being processed.
  */
 void	skip_special_tokens(char *str, size_t *i, t_token_type type)
 {
 	if (!str || !i)
-		return;
+		return ;
 	if (str[*i + 1] && (type == HEREDOC || type == APPEND))
 		(*i) += 2;
 	else if (str[*i] && (type != WORD && type != SPACE))
@@ -38,7 +53,7 @@ void	skip_special_tokens(char *str, size_t *i, t_token_type type)
 void	skip_whitespaces(char *str, size_t *i)
 {
 	if (!str || !i)
-		return;
+		return ;
 	while (str[*i] && ft_isspace(str[*i]))
 		(*i)++;
 }

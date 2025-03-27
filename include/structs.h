@@ -1,6 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   structs.h                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 12:43:51 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 12:43:52 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef STRUCTS_H
 # define STRUCTS_H
-
 
 typedef struct s_token
 {
@@ -46,7 +57,7 @@ typedef struct s_ms
 	int		heredoc_count;
 	int		no_env;
 	char	*pwd;
-} t_ms;
+}	t_ms;
 
 typedef struct s_expand
 {

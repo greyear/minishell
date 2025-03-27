@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heredoc.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 14:23:06 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 14:23:07 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 /**
@@ -95,14 +107,12 @@ static void	read_input(int temp_fd, char *limiter, t_token *token, t_ms *ms)
 		signal_mode(HEREDOC_MODE);
 		line = readline("> ");
 		signal_mode(IGNORE);
-		 if (g_sgnl == SIGINT)
-        {
-            free(line);
-            close(temp_fd);
-            // Handle cleanup and exit gracefully
-			printf("gere\n");
-            exit(130);  // Exit with status 130 (SIGINT)
-        }
+		if (g_sgnl == SIGINT)
+		{
+			free(line);
+			close(temp_fd);
+			exit(130);
+		}
 		if (!line)
 		{
 			print_heredoc_ctrl_d(limiter);
@@ -176,7 +186,8 @@ static int	handle_heredoc_parent(t_ms *ms, pid_t pid, char *filename)
  * 
  * @param ms A pointer to the `t_ms` structure, which holds the shell's state.
  * @param limiter The string that marks the end of the heredoc input.
- * @param token A pointer to the token structure for processing the heredoc input.
+ * @param token A pointer to the token structure for processing the heredoc 
+ *              input.
  * 
  * @return The file descriptor for the heredoc file if successful, or -1 if an 
  *         error occurs.

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pwd.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 12:56:48 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 12:56:50 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 /**
@@ -19,13 +31,13 @@ void	check_pwd(t_ms *ms)
 	{
 		ft_putstr_fd(cwd, STDOUT_FILENO);
 		ft_putstr_fd("\n", STDOUT_FILENO);
-		return;
+		return ;
 	}
 	if (ms->pwd)
 	{
 		ft_putstr_fd(ms->pwd, STDOUT_FILENO);
 		ft_putstr_fd("\n", STDOUT_FILENO);
-		return;
+		return ;
 	}
 	else
 	{

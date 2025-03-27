@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fds.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 14:22:54 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 14:22:56 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 /**
@@ -79,6 +91,9 @@ void	put_heredoc_fd(t_token *token, t_cmd *cmd, t_ms *ms)
  */
 void	put_outfile_fd(t_token *token, t_cmd *cmd)
 {
+	char	*file;
+
+	file = token->file;
 	if (cmd->outfile > 0)
 		close(cmd->outfile);
 	if (token->ambiguous)
@@ -89,11 +104,11 @@ void	put_outfile_fd(t_token *token, t_cmd *cmd)
 	else
 	{
 		if (token->type == OUT)
-			cmd->outfile = open(token->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			cmd->outfile = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		else if (token->type == APPEND)
-			cmd->outfile = open(token->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+			cmd->outfile = open(file, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if (cmd->outfile < 0)
-			check_access(token->file, WR);
+			check_access(file, WR);
 	}
 }
 
@@ -123,41 +138,5 @@ void	put_infile_fd(t_token *token, t_cmd *cmd)
 		cmd->infile = open(token->file, O_RDONLY);
 		if (cmd->infile < 0)
 			check_access(token->file, RD);
-	}
-}
-
-/**
- * @brief Redirects the input and output of the current process based on the provided file descriptors.
- *
- * This function handles the redirection of input (stdin) and output (stdout) for the current process 
- * using the `dup2` system call. It checks the given file descriptors (`infile` and `outfile`) and, if 
- * they are valid, redirects stdin and/or stdout accordingly. If either file descriptor is invalid, 
- * the function closes the files and exits with an error status. In case of failure during `dup2`, 
- * it sets the shell's exit status to indicate a system error.
- *
- * @param infile The file descriptor for input redirection.
- * @param outfile The file descriptor for output redirection.
- * @param ms The minishell structure containing the exit status and other relevant state.
- */
-void	redirect_process(int infile, int outfile, t_ms *ms)
-{
-	if (infile == NO_FD || outfile == NO_FD)
-	{
-		close_file(infile);
-		close_file(outfile);
-		exit(1);
-	}
-	if (infile != DEF)
-	{
-		if (dup2(infile, STDIN_FILENO) == -1)
-		{
-			ms->exit_status = SYSTEM_ERR;
-			return ;
-		}
-	}
-	if (outfile != DEF)
-	{
-		if (dup2(outfile, STDOUT_FILENO) == -1)
-			ms->exit_status = SYSTEM_ERR;
 	}
 }

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   initialize_struct.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 14:07:41 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 14:07:43 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 /**
@@ -49,12 +61,13 @@ static void	initialize_history(t_ms *ms)
 }
 
 /**
- * @brief Initializes all fields of the minishell structure to NULL or default values.
+ * @brief Initializes all fields of the minishell structure to NULL or 
+ *        default values.
  *
- * This function sets each field of the `t_ms` structure to a NULL pointer or its 
- * appropriate default value (such as 0 for integer fields). It ensures that all 
- * fields are properly initialized before they are used in further processing, 
- * preventing potential issues with uninitialized memory.
+ * This function sets each field of the `t_ms` structure to a NULL pointer or 
+ * its appropriate default value (such as 0 for integer fields). It ensures 
+ * that all fields are properly initialized before they are used in further
+ * processing, preventing potential issues with uninitialized memory.
  *
  * @param ms The minishell structure to be initialized.
  */
