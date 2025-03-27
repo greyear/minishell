@@ -77,7 +77,7 @@ static void	malloc_heredocs(t_ms *ms, t_token *token)
  * @param ms A pointer to the main shell structure, which holds the tokens.
  * @return 1 if tokenization is successful, 0 if there is an error.
  */
-static int	tokenize_input(char **input, t_ms *ms)
+int	tokenize_input(char **input, t_ms *ms)
 {
 	ms->tokens = tokenization(*input, ms);
 	free(*input);
@@ -104,7 +104,7 @@ static int	tokenize_input(char **input, t_ms *ms)
  * @return 1 if both blocks and commands lists are successfully created, 
  *         0 if there was an error.
  */
-static int	create_blocks_and_cmds_lists(t_ms *ms)
+int	create_blocks_and_cmds_lists(t_ms *ms)
 {
 	int		err_syntax;
 
@@ -128,32 +128,41 @@ static int	create_blocks_and_cmds_lists(t_ms *ms)
 }
 
 /**
- * @brief Processes and tokenizes the user input for execution.
+ * @brief Processes user input for syntax validation and history addition.
  * 
- * This function applies multiple processing steps to the input, including 
- * initial validation, tokenization, and the creation of command structures. 
- * It also handles interruption signals and cleans up partially allocated 
- * data if necessary.
+ * This function checks if the input is empty or contains syntax errors. 
+ * If the input is empty (i.e., only Enter was pressed), it is ignored.
+ * If a syntax error is found, the error code is set and the input is discarded. 
+ * Otherwise, the input is added to the history.
  * 
- * @param input A pointer to the user's input string.
- * @param ms A pointer to the main shell structure containing shell state.
- * 
- * @return 1 if processing is successful, 0 if an error occurs or an 
- *         interruption is detected.
+ * @param input A pointer to the string containing the user input.
+ * @param ms A pointer to the main shell structure, used to store the 
+ *           exit status.
+ * @return 1 if the input is valid and processed, 0 if there was an error 
+ *         or the input was empty.
  */
-int	tokenize_and_process_input(char **input, t_ms *ms)
+int	process_input(char **input, t_ms *ms)
 {
-	if (!process_input(input, ms))
-		return (0);
-	if (!tokenize_input(input, ms))
-		return (0);
-	if (!create_blocks_and_cmds_lists(ms))
-		return (0);
+	int		err_syntax;
+
+	err_syntax = 0;
 	if (g_sgnl == SIGINT)
 	{
-		clean_struct_partially(ms);
+		ms->exit_status = 130;
 		g_sgnl = 0;
+	}
+	if ((*input)[0] == '\0')
+	{
+		free(*input);
 		return (0);
 	}
+	err_syntax = validate_input(*input);
+	if (err_syntax)
+	{
+		free(*input);
+		ms->exit_status = 2;
+		return (0);
+	}
+	add_line_to_history(*input, ms);
 	return (1);
 }

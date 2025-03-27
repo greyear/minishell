@@ -101,42 +101,33 @@ static void	execute_commands(t_ms *ms)
 }
 
 /**
- * @brief Processes user input for syntax validation and history addition.
+ * @brief Processes and tokenizes the user input for execution.
  * 
- * This function checks if the input is empty or contains syntax errors. 
- * If the input is empty (i.e., only Enter was pressed), it is ignored.
- * If a syntax error is found, the error code is set and the input is discarded. 
- * Otherwise, the input is added to the history.
+ * This function applies multiple processing steps to the input, including 
+ * initial validation, tokenization, and the creation of command structures. 
+ * It also handles interruption signals and cleans up partially allocated 
+ * data if necessary.
  * 
- * @param input A pointer to the string containing the user input.
- * @param ms A pointer to the main shell structure, used to store the 
- *           exit status.
- * @return 1 if the input is valid and processed, 0 if there was an error 
- *         or the input was empty.
+ * @param input A pointer to the user's input string.
+ * @param ms A pointer to the main shell structure containing shell state.
+ * 
+ * @return 1 if processing is successful, 0 if an error occurs or an 
+ *         interruption is detected.
  */
-int	process_input(char **input, t_ms *ms)
+static int	tokenize_and_process_input(char **input, t_ms *ms)
 {
-	int		err_syntax;
-
-	err_syntax = 0;
+	if (!process_input(input, ms))
+		return (0);
+	if (!tokenize_input(input, ms))
+		return (0);
+	if (!create_blocks_and_cmds_lists(ms))
+		return (0);
 	if (g_sgnl == SIGINT)
 	{
-		ms->exit_status = 130;
+		clean_struct_partially(ms);
 		g_sgnl = 0;
-	}
-	if ((*input)[0] == '\0')
-	{
-		free(*input);
 		return (0);
 	}
-	err_syntax = validate_input(*input);
-	if (err_syntax)
-	{
-		free(*input);
-		ms->exit_status = 2;
-		return (0);
-	}
-	add_line_to_history(*input, ms);
 	return (1);
 }
 
