@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   errors.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 13:41:54 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 13:41:56 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 /**
@@ -46,7 +58,8 @@ void	print_syntax_error(char *text)
 		|| *text == L_REDIR || *text == R_REDIR || *text == AND)
 		cut = 1;
 	else if (ft_isalnum(*text) == 1 || *text == SG_QUOT || *text == DB_QUOT)
-		while (ft_isalnum(text[cut]) == 1 || text[cut] == SG_QUOT || text[cut] == DB_QUOT)
+		while (ft_isalnum(text[cut]) == 1 || text[cut] == SG_QUOT
+			|| text[cut] == DB_QUOT)
 			cut++;
 	if (cut != 0)
 		text[cut] = NULL_TERM;

@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   token_creation.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 13:59:24 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 13:59:27 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 //mallocs checked
 
@@ -84,9 +95,9 @@ static void	process_word_token(char *str, size_t *i, t_token *new, t_ms *ms)
  * 
  * This function allocates memory for a new token and initializes its values. 
  * It determines how to process the token based on its type: words are processed 
- * separately to handle quotes, spaces are skipped, and special tokens are handled 
- * accordingly. If memory allocation fails, the function sets an error status 
- * and returns NULL.
+ * separately to handle quotes, spaces are skipped, and special tokens are 
+ * handled accordingly. If memory allocation fails, the function sets an error 
+ * status and returns NULL.
  * 
  * @param str The input string from which the token is extracted.
  * @param i A pointer to the current index in the string, which will be updated 

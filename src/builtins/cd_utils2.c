@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd_utils2.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 12:55:13 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 12:55:15 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
 /**
@@ -114,22 +126,23 @@ static int	make_cd_args(char ***args, t_ms *ms, char *pwd_before)
 	}
 	(*args)[0] = ft_strdup("export");
 	if (!(*args)[0])
-		return(0);
+		return (0);
 	(*args)[1] = ft_strjoin("OLDPWD=", pwd_before);
 	if (!(*args)[1])
-		return(0);
+		return (0);
 	(*args)[2] = NULL;
 	return (1);
 }
 
 /**
- * @brief Updates the `OLPWD` environment variable with the previous working directory.
+ * @brief Updates the `OLPWD` environment variable with the previous 
+ *        working directory.
  * 
  * This function creates arguments to export the `OLPWD` environment variable, 
  * which stores the previous working directory before a `cd` command. If 
  * argument creation or memory allocation fails, an error is printed, and 
- * the exit status is set to `MALLOC_ERR`. The function then calls `handle_export` 
- * to update the `OLPWD` variable in the environment.
+ * the exit status is set to `MALLOC_ERR`. The function then calls 
+ * `handle_export` to update the `OLPWD` variable in the environment.
  * 
  * @param ms A pointer to the `t_ms` structure, which manages shell-related 
  *           data, including environment variables.

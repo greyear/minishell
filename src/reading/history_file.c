@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   history_file.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssalorin <ssalorin@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/27 14:20:18 by ssalorin          #+#    #+#             */
+/*   Updated: 2025/03/27 14:20:20 by ssalorin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 //mallocs checked
 
@@ -6,9 +17,9 @@
 /**
  * @brief Reads command history from a file and stores it in ms structure.
  * 
- * This function reads up to `HISTORY_SIZE` lines from the given file descriptor `fd` 
- * and stores them in the `ms->history` array. Each line is also added to the readline 
- * history using `add_history()`.
+ * This function reads up to `HISTORY_SIZE` lines from the given file descriptor 
+ * `fd` and stores them in the `ms->history` array. Each line is also added to 
+ * the readline history using `add_history()`.
  * 
  * @param fd File descriptor of the history file.
  * @param ms Pointer to the shell structure where the history is stored.
@@ -41,11 +52,13 @@ static void	read_from_history_file(int fd, t_ms *ms) //fill_history +
 }
 
 /**
- * @brief Opens the history file for reading and puts its contents into the shell structure.
+ * @brief Opens the history file for reading and puts its contents into the 
+ *        shell structure.
  * 
- * This function attempts to open the history file in read-only mode. If the file does not exist, 
- * it creates an empty history file with appropriate permissions. If the file exists, its content 
- * is read and stored in the shell's history structure.
+ * This function attempts to open the history file in read-only mode. If 
+ * the file does not exist, it creates an empty history file with 
+ * appropriate permissions. If the file exists, its content is read and 
+ * stored in the shell's history structure.
  * 
  * @param ms Pointer to the shell structure where the history will be stored.
  * 
@@ -73,8 +86,9 @@ t_bool	open_read_history_file(t_ms *ms) //fetch_history_file +
 /**
  * @brief Writes the shell history to the history file.
  * 
- * This function opens the history file in truncate mode and writes the stored history 
- * from the shell structure into the file. The history is written line by line.
+ * This function opens the history file in truncate mode and writes the 
+ * stored history from the shell structure into the file. The history is 
+ * written line by line.
  * 
  * @param ms Pointer to the shell structure containing the command history.
  * 
