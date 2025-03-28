@@ -121,7 +121,7 @@ int	create_blocks_and_cmds_lists(t_ms *ms)
 	int		err_syntax;
 
 	err_syntax = 0;
-	ms->blocks = create_blocks_list(ms, NULL, &err_syntax);
+	ms->blocks = create_blocks_list(ms, ms->tokens, NULL, &err_syntax);
 	if (err_syntax)
 	{
 		ft_putstr_fd(BLOCKS_ERR, STDERR_FILENO);
