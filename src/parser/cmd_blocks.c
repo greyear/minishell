@@ -73,6 +73,8 @@ int	check_block(t_token *start, t_token *end, int *err_flag)
  * @note If memory allocation fails, the function does not modify the existing 
  *       block list.
  */
+/*
+RIGHT VERSION
 t_block	*create_block(t_ms *ms, t_token *end, t_block *first_block, int *err)
 {
 	t_block	*new;
@@ -88,6 +90,32 @@ t_block	*create_block(t_ms *ms, t_token *end, t_block *first_block, int *err)
 		return (first_block);
 	}
 	new->start = ms->tokens;
+	new->end = end;
+	new->next = NULL;
+	if (!first_block)
+		return (new);
+	cur = first_block;
+	while (cur->next)
+		cur = cur->next;
+	cur->next = new;
+	return (first_block);
+}*/
+
+t_block	*create_block(t_ms *ms, t_token *start, t_token *end, t_block *first_block, int *err)
+{
+	t_block	*new;
+	t_block	*cur;
+
+	if (check_block(start, end, err))
+		return (first_block);
+	new = (t_block *)malloc(1 * sizeof(t_block));
+	if (!new)
+	{
+		*err = 1;
+		print_malloc_set_status(ms);
+		return (first_block);
+	}
+	new->start = start;
 	new->end = end;
 	new->next = NULL;
 	if (!first_block)
@@ -123,6 +151,7 @@ t_block	*create_block(t_ms *ms, t_token *end, t_block *first_block, int *err)
  * @note If an error occurs, the function calls `clean_block_list()` to free 
  *       allocated memory.
  */
+/* RIGHT VERSION
 t_block	*create_blocks_list(t_ms *ms, t_token *end, int *err_flag)
 {
 	t_token	*cur_token;
@@ -142,6 +171,28 @@ t_block	*create_blocks_list(t_ms *ms, t_token *end, int *err_flag)
 			return (clean_block_list(&first_block));
 	}
 	first_block = create_block(ms, cur_token->next, first_block, err_flag);
+	return (first_block);
+}*/
+
+t_block	*create_blocks_list(t_ms *ms, t_token *start, t_token *end, int *err_flag)
+{
+	t_token	*cur_token;
+	t_block	*first_block;
+
+	first_block = NULL;
+	cur_token = start;
+	while (cur_token->next && cur_token != end)
+	{
+		if (cur_token->type == PIPE)
+		{
+			first_block = create_block(ms, start, cur_token, first_block, err_flag);
+			start = cur_token->next;
+		}
+		cur_token = cur_token->next;
+		if (*err_flag)
+			return (clean_block_list(&first_block));
+	}
+	first_block = create_block(ms, start, cur_token->next, first_block, err_flag);
 	return (first_block);
 }
 
