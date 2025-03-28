@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+//mallocs checked
+
 #include "../../include/minishell.h"
 
 /**
@@ -22,7 +24,7 @@
  */
 void	clean_token(t_token *token)
 {
-	 if (!token)
+	if (!token)
 		return ;
 	if (token->data)
 	{

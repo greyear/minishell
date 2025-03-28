@@ -55,7 +55,7 @@ static void	initialize_history(t_ms *ms)
 		ms->history_file = true;
 	else
 	{
-		print_system_error(HIST_ERR);
+		print_system_error(HIST_RD_ERR);
 		ms->history_file = false;
 	}
 }

@@ -15,12 +15,12 @@
 
 typedef struct s_token
 {
-	t_token_type	type;
+	t_type			type;
 	char			*data;
 	char			*file;
 	t_char			quote;
 	t_bool			unclosed;
-	t_token_type	specific_redir;
+	t_type			specific_redir;
 	t_bool			ambiguous;
 	struct s_token	*next;
 }	t_token;

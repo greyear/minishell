@@ -12,6 +12,8 @@
 
 //mallocs checked
 
+//mallocs checked
+
 #include "../../include/minishell.h"
 
 /**
@@ -27,7 +29,7 @@
  *          needed.
  * @param type The type of token being processed.
  */
-void	skip_special_tokens(char *str, size_t *i, t_token_type type)
+void	skip_special_tokens(char *str, size_t *i, t_type type)
 {
 	if (!str || !i)
 		return ;

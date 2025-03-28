@@ -39,7 +39,7 @@ void	pipe_process(int prev_pipe, int next_pipe)
 		{
 			close(prev_pipe);
 			exit(1);
-		}	
+		}
 	}
 	if (next_pipe > 0)
 	{
@@ -47,7 +47,7 @@ void	pipe_process(int prev_pipe, int next_pipe)
 		{
 			close(next_pipe);
 			exit(1);
-		}	
+		}
 	}
 }
 

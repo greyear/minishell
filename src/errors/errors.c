@@ -17,7 +17,7 @@
  * 
  * This function prints a generic error message (`OWN_ERR_MSG`) followed by 
  * a specific error message based on the provided `reason`. For example, 
- * if the `reason` is `HIST_ERR`, it will print an error message indicating 
+ * if the `reason` is `HIST_RD_ERR`, it will print an error message indicating 
  * a failure to read from the history file. The error message is printed to 
  * `stderr` to notify the user about the specific error.
  * 
@@ -29,8 +29,8 @@
 void	print_system_error(t_print reason)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
-	if (reason == HIST_ERR)
-		ft_putendl_fd(HISTORY_ERR, STDERR_FILENO);
+	if (reason == HIST_RD_ERR)
+		ft_putendl_fd(HISTORY_RD_ERR, STDERR_FILENO);
 }
 
 /**
@@ -87,11 +87,7 @@ void	print_syntax_error(char *text)
 void	print_file_error(char *file, t_print reason)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
-	if (reason == HERED_ERR)
-	{
-		//put msg
-	}
-	else
+	if (reason != HERED_ERR)
 		ft_putstr_fd(file, STDERR_FILENO);
 	if (reason == NO_FILE)
 		ft_putstr_fd(NO_FD_ERR, STDERR_FILENO);

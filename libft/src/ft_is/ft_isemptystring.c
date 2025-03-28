@@ -16,7 +16,7 @@ int	ft_isemptystring(char *str)
 {
 	int	i;
 
-	if (str == NULL || *str == '\0') //do we need a check for NULL?
+	if (str == NULL || *str == '\0')
 		return (1);
 	i = 0;
 	while (ft_isspace(str[i]))

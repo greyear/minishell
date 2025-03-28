@@ -39,12 +39,12 @@ static int	skip_spaces(const char *str, char *new)
 	space = 0;
 	while (str[i])
 	{
-		if (ft_isspace(str[i]) && !space) // Combine the conditions
+		if (ft_isspace(str[i]) && !space)
 		{
 			new[j++] = ' ';
 			space = 1;
 		}
-		else if (!ft_isspace(str[i])) // Handle non-space characters
+		else if (!ft_isspace(str[i]))
 		{
 			new[j++] = str[i];
 			space = 0;

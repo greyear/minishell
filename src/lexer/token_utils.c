@@ -12,6 +12,8 @@
 
 //mallocs checked
 
+//mallocs checked
+
 #include "../../include/minishell.h"
 
 /**
