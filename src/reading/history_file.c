@@ -12,6 +12,8 @@
 
 //mallocs checked
 
+//mallocs checked
+
 #include "../../include/minishell.h"
 
 /**
@@ -48,7 +50,6 @@ static void	read_from_history_file(int fd, t_ms *ms) //fill_history +
 		free(buf);
 		free(trimmed);
 	}
-	//printf("read from history file\n");
 }
 
 /**
@@ -70,7 +71,6 @@ t_bool	open_read_history_file(t_ms *ms) //fetch_history_file +
 {
 	int	fd;
 
-	//add logic for file's path
 	fd = open(HISTORY_FILE, O_RDONLY);
 	if (fd < 0)
 	{
@@ -101,7 +101,7 @@ void	write_to_history_file(t_ms *ms) //add_to_history_file +
 
 	fd = open(HISTORY_FILE, O_TRUNC | O_RDWR);
 	if (fd < 0)
-		return ; //?
+		return ;
 	i = 0;
 	while (i < HISTORY_SIZE)
 	{
