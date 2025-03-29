@@ -57,7 +57,8 @@ LEX_FILES		=	tokenization.c \
 					token_utils.c
 PARS_FILES		=	cmd_creation.c \
 					cmd_blocks.c \
-					cmd_cleaning.c
+					cmd_cleaning.c \
+					cmd_utils.c
 BUILT_FILES		=	cd.c \
 					cd_utils.c \
 					cd_utils2.c \
@@ -72,7 +73,6 @@ BUILT_FILES		=	cd.c \
 					unset.c \
 					key_handling.c \
 					helper_functions.c
-#rename many of them!
 EXEC_FILES		=	builtin_check.c \
 					cmd_exec.c \
 					one_child.c \
@@ -89,7 +89,6 @@ ENVP_FILES		=	check_all_tokens.c \
 					spaces_in_expansion.c
 READING_FILES	=	history.c \
 					history_file.c
-#delete initialize_struct
 SIGN_FILES		=	handler.c
 CLEAN_FILES		=	arr_cleaning.c \
 					clean_struct.c \
@@ -133,7 +132,7 @@ $(NAME):			.build
 .build:				$(OBJ) $(LIBFT)
 					@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(HEADERS) $(LIB) $(LDFLAGS) -o $(NAME)
 					@touch $@
-					@echo "$(GREEN)--> Created minishell!$(NC)"
+					@echo "$(GREEN)Created minishell!$(NC)"
 
 # Object file compilation
 $(OBJ_DIR)/%.o: 	$(SRC_DIR)/%.c
@@ -144,13 +143,13 @@ $(OBJ_DIR)/%.o: 	$(SRC_DIR)/%.c
 clean:
 					@$(RM) -r $(OBJ_DIR)
 					@make clean -C $(LIBFT_DIR)
-					@echo "$(BLUE)*.o files removed!$(NC)"
+					@echo "$(BLUE)*.o files removed$(NC)"
 		
 fclean:				clean 
 					@$(RM) $(NAME)
 					@$(RM) $(LIBFT)
 					@$(RM) -r .build
-					@echo "$(BLUE)All files removed!$(NC)"
+					@echo "$(BLUE)All files removed$(NC)"
 			
 re:					fclean all
 
