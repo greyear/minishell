@@ -221,7 +221,11 @@ int	words_in_cmd_block(t_token *start, t_token *end)
 	while (cur != end)
 	{
 		if (cur->type == WORD)
+		{
 			res++;
+			if (cur->expanded == true && ft_strchr(cur->data, ' '))
+				res++;
+		}
 		cur = cur->next;
 	}
 	return (res);
