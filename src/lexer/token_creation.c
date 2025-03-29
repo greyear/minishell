@@ -63,6 +63,7 @@ static void	default_token_values(t_token *new)
 	new->unclosed = false;
 	new->specific_redir = EMPTY;
 	new->ambiguous = false;
+	new->expanded = false;
 }
 
 /**
