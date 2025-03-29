@@ -70,6 +70,25 @@ char	*str_after_space(const char *str)
 	return ft_strdup(space_ptr + 1);
 }
 
+int has_multiple_words(const char *str)
+{
+	int	i = 0;
+	int	found_word;
+	
+	found_word = 0;
+	if (!str)
+		return (0);
+	while (str[i] == ' ')
+		i++;
+	while (str[i] && str[i] != ' ')
+	{
+		found_word = 1;
+		i++;
+	}
+	while (str[i] == ' ')
+		i++;
+	return (found_word && str[i] != '\0');
+}
 
 /**
  * @brief Fills the command arguments array with WORD tokens.
@@ -97,7 +116,7 @@ int	put_cmg_args(t_cmd *cmd, t_token *start, t_token *end, t_ms *ms)
 	{
 		if (cur->type == WORD)
 		{
-			if (cur->expanded == false || (cur->expanded == true && !ft_strchr(cur->data, ' ')))
+			if (cur->expanded == false || (cur->expanded == true && !has_multiple_words(cur->data)))
 			{
 				cmd->args[i] = ft_strdup(cur->data);
 				if (!cmd->args[i])

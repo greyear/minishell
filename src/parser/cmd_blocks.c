@@ -223,7 +223,7 @@ int	words_in_cmd_block(t_token *start, t_token *end)
 		if (cur->type == WORD)
 		{
 			res++;
-			if (cur->expanded == true && ft_strchr(cur->data, ' '))
+			if (cur->expanded == true && has_multiple_words(cur->data))
 				res++;
 		}
 		cur = cur->next;
