@@ -12,13 +12,11 @@
 
 #include "../../include/minishell.h"
 
-//#include <asm-generic/termbits.h> //delete for school computers
-
 volatile sig_atomic_t	g_sgnl;
 
 void print_tokens(t_token *token_list)
 {
-	t_token *cur = token_list;
+	t_token	*cur = token_list;
 
 	printf("Tokens:\n");
 	while (cur)
