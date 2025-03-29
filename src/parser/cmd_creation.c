@@ -40,6 +40,37 @@ static void	default_cmd_values(t_cmd *new, int num)
 	new->next = NULL;
 }
 
+char	*str_before_space(const char *str)
+{
+	int		len;
+	char	*before;
+	
+	if (!str)
+		return (NULL);
+	len = 0;
+	while (str[len] && str[len] != ' ')
+		len++;
+	before = (char *)malloc(len + 1);
+	if (!before)
+		return (NULL); //protect malloc
+	ft_strncpy(before, str, len);
+	before[len] = '\0';
+	return (before);
+}
+
+char	*str_after_space(const char *str)
+{
+	char *space_ptr;
+
+	if (!str)
+		return (NULL);
+	space_ptr = ft_strchr(str, ' ');
+	if (!space_ptr || *(space_ptr + 1) == '\0')
+		return (NULL);
+	return ft_strdup(space_ptr + 1);
+}
+
+
 /**
  * @brief Fills the command arguments array with WORD tokens.
  * 
@@ -66,13 +97,27 @@ int	put_cmg_args(t_cmd *cmd, t_token *start, t_token *end, t_ms *ms)
 	{
 		if (cur->type == WORD)
 		{
-			cmd->args[i] = ft_strdup(cur->data);
-			if (!cmd->args[i])
+			if (cur->expanded == false || (cur->expanded == true && !ft_strchr(cur->data, ' ')))
 			{
-				print_malloc_set_status(ms);
-				return (1);
+				cmd->args[i] = ft_strdup(cur->data);
+				if (!cmd->args[i])
+				{
+					print_malloc_set_status(ms);
+					return (1);
+				}
+				i++;
 			}
-			i++;
+			else
+			{
+				cmd->args[i] = str_before_space(cur->data);
+				cmd->args[i + 1] = str_after_space(cur->data);
+				if (!cmd->args[i] || !cmd->args[i + 1])
+				{
+					print_malloc_set_status(ms);
+					return (1);
+				}
+				i += 2;
+			}
 		}
 		cur = cur->next;
 	}
