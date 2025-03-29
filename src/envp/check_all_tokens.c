@@ -38,6 +38,7 @@ t_expand	*exp_init(t_ms *ms)
 	exp->len = 0;
 	exp->quote = 0;
 	exp->if_first = 0;
+	exp->expanded = false;
 	return (exp);
 }
 
@@ -65,6 +66,7 @@ int	expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str)
 		exp->quote = cur->quote;
 		exp->if_first = first_in_str;
 		expanded = handle_expansion(exp, ms);
+		cur->expanded = exp->expanded;
 	}
 	if (!expanded)
 	{
