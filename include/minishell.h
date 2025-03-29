@@ -108,6 +108,9 @@ t_block			*create_blocks_list(t_ms *ms, t_token *start, t_token *end, int *err_f
 void			redir_in_block(t_block *block, t_cmd *cmd, t_ms *ms);
 t_block			*clean_block(t_block *block);
 t_block			*clean_block_list(t_block **first);
+char			*str_before_space(const char *str);
+char			*str_after_space(const char *str);
+int				has_multiple_words(const char *str);
 
 //Execution
 int				is_builtin(t_cmd *cmd);
