@@ -14,7 +14,7 @@
 
 volatile sig_atomic_t	g_sgnl;
 
-void print_tokens(t_token *token_list)
+void	print_tokens(t_token *token_list)
 {
 	t_token	*cur = token_list;
 

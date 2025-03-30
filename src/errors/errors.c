@@ -148,6 +148,17 @@ void	print_malloc_error(void)
 	ft_putstr_fd(ERR_MALLOC, STDERR_FILENO);
 }
 
+/**
+ * @brief Prints a malloc error message and updates the exit status.
+ * 
+ * This function outputs an error message to `STDERR_FILENO` indicating 
+ * a memory allocation failure. It also sets the shell's exit status 
+ * to `MALLOC_ERR` and returns `NULL` for convenience in error handling.
+ * 
+ * @param ms Pointer to the main shell structure where the exit status is updated.
+ * 
+ * @return Always returns `NULL` to signal a memory allocation failure.
+ */
 void	*print_malloc_set_status(t_ms *ms)
 {
 	ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);

@@ -58,6 +58,7 @@ typedef struct s_ms
 	int		heredoc_count;
 	int		no_env;
 	char	*pwd;
+	int		err;
 }	t_ms;
 
 typedef struct s_expand
