@@ -12,8 +12,6 @@
 
 //mallocs checked
 
-//mallocs checked
-
 #include "../../include/minishell.h"
 
 /**
@@ -32,7 +30,7 @@
  */
 t_bool	is_empty_word_token(t_token *token)
 {
-	if (token && token->type == WORD)
+	if (token && token->type == WORD && token->specific_redir == EMPTY)
 	{
 		if (token->quote == 0 && (!token->data || !token->data[0]))
 			return (1);
