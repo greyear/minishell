@@ -103,8 +103,9 @@ t_cmd			*create_cmd_list(t_block *block, t_ms *ms);
 t_cmd			*clean_cmd(t_cmd *cmd);
 t_cmd			*clean_cmd_list(t_cmd **first);
 int				check_block(t_token *start, t_token *end, int *err_flag);
-t_block			*create_block(t_ms *ms, t_token *start, t_token *end, t_block *first_block, int *err);
-t_block			*create_blocks_list(t_ms *ms, t_token *start, t_token *end, int *err_flag);
+t_block			*create_block(t_ms *ms, t_token *start, t_token *end, \
+				t_block *first_block);
+t_block			*create_blocks_list(t_ms *ms, t_token *start, t_token *end);
 void			redir_in_block(t_block *block, t_cmd *cmd, t_ms *ms);
 t_block			*clean_block(t_block *block);
 t_block			*clean_block_list(t_block **first);

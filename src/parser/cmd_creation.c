@@ -12,8 +12,6 @@
 
 //mallocs checked
 
-//mallocs checked
-
 #include "../../include/minishell.h"
 
 /**
@@ -40,72 +38,7 @@ static void	default_cmd_values(t_cmd *new, int num)
 	new->next = NULL;
 }
 
-char	*str_before_space(const char *str)
-{
-	int		len;
-	char	*before;
-	
-	if (!str)
-		return (NULL);
-	len = 0;
-	while (str[len] && str[len] != ' ')
-		len++;
-	before = (char *)malloc(len + 1);
-	if (!before)
-		return (NULL); //protect malloc
-	ft_strncpy(before, str, len);
-	before[len] = '\0';
-	return (before);
-}
-
-char	*str_after_space(const char *str)
-{
-	char *space_ptr;
-
-	if (!str)
-		return (NULL);
-	space_ptr = ft_strchr(str, ' ');
-	if (!space_ptr || *(space_ptr + 1) == '\0')
-		return (NULL);
-	return ft_strdup(space_ptr + 1);
-}
-
-int has_multiple_words(const char *str)
-{
-	int	i = 0;
-	int	found_word;
-	
-	found_word = 0;
-	if (!str)
-		return (0);
-	while (str[i] == ' ')
-		i++;
-	while (str[i] && str[i] != ' ')
-	{
-		found_word = 1;
-		i++;
-	}
-	while (str[i] == ' ')
-		i++;
-	return (found_word && str[i] != '\0');
-}
-
-/**
- * @brief Fills the command arguments array with WORD tokens.
- * 
- * This function iterates through tokens from `start` to `end`, copying the 
- * data of tokens of type `WORD` into the `args` array of the given `cmd` 
- * structure. The function ensures the last element of `args` is set to `NULL` 
- * for proper termination.
- * 
- * @param cmd A pointer to the command structure where arguments will be stored.
- * @param start A pointer to the first token in the block.
- * @param end A pointer to the token marking the end of the block (not included 
- *            in processing).
- * 
- * @return `0` on success, `1` if memory allocation for any argument fails.
- */
-int	put_cmg_args(t_cmd *cmd, t_token *start, t_token *end, t_ms *ms)
+/*int	put_cmg_args(t_cmd *cmd, t_token *start, t_token *end, t_ms *ms)
 {
 	t_token	*cur;
 	int		i;
@@ -136,6 +69,94 @@ int	put_cmg_args(t_cmd *cmd, t_token *start, t_token *end, t_ms *ms)
 					return (1);
 				}
 				i += 2;
+			}
+		}
+		cur = cur->next;
+	}
+	cmd->args[i] = NULL;
+	return (0);
+}*/
+
+/**
+ * @brief Copies a single word to the command's argument array.
+ * 
+ * @param cmd Pointer to the command structure where the argument is stored.
+ * @param data The string to be copied.
+ * @param index Pointer to the current index in the `args` array.
+ * @param ms Pointer to the shell structure for error handling.
+ * 
+ * @return `1` on allocation failure, `0` on success.
+ */
+static int	copy_single_word(t_cmd *cmd, const char *data, int *index, t_ms *ms)
+{
+	cmd->args[*index] = ft_strdup(data);
+	if (!cmd->args[*index])
+	{
+		print_malloc_set_status(ms);
+		return (1);
+	}
+	(*index)++;
+	return (0);
+}
+
+/**
+ * @brief Splits an expanded word and stores both parts in the command's argument array.
+ * 
+ * @param cmd Pointer to the command structure where the arguments are stored.
+ * @param data The expanded string to be split.
+ * @param index Pointer to the current index in the `args` array.
+ * @param ms Pointer to the shell structure for error handling.
+ * 
+ * @return `1` on allocation failure, `0` on success.
+ */
+static int	copy_expanded_words(t_cmd *cmd, const char *data, int *index, t_ms *ms)
+{
+	cmd->args[*index] = str_before_space(data);
+	cmd->args[*index + 1] = str_after_space(data);
+	if (!cmd->args[*index] || !cmd->args[*index + 1])
+	{
+		print_malloc_set_status(ms);
+		return (1);
+	}
+	*index += 2;
+	return (0);
+}
+
+/**
+ * @brief Fills the command arguments array with WORD tokens.
+ * 
+ * Iterates through tokens from `start` to `end`, copying the 
+ * data of tokens of type `WORD` into the `args` array of the given 
+ * `cmd` structure. If a token was expanded into multiple words, it is 
+ * split and stored as separate arguments.
+ * 
+ * @param cmd A pointer to the command structure where arguments will be stored.
+ * @param start A pointer to the first token in the block.
+ * @param end A pointer to the token marking the end of the block (not included in processing).
+ * @param ms Pointer to the shell structure for error handling.
+ * 
+ * @return `0` on success, `1` if memory allocation fails.
+ */
+int	put_cmg_args(t_cmd *cmd, t_token *start, t_token *end, t_ms *ms)
+{
+	t_token	*cur;
+	int		i;
+
+	i = 0;
+	cur = start;
+	while (cur != end)
+	{
+		if (cur->type == WORD)
+		{
+			if (cur->expanded == false || (cur->expanded == true && !has_multiple_words(cur->data)))
+			{
+				if (copy_single_word(cmd, cur->data, &i, ms))
+					return (1);
+			}
+			else
+			{
+				if (copy_expanded_words(cmd, cur->data, &i, ms))
+					return (1);
 			}
 		}
 		cur = cur->next;
