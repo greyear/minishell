@@ -12,6 +12,19 @@
 
 #include "../../include/minishell.h"
 
+static char	*handle_too_high_shlvl(int level, int *printed_warning)
+{
+	if (!(*printed_warning))
+	{
+		ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
+		ft_putstr_fd("warning: shell level (", STDERR_FILENO);
+		ft_putnbr_fd(level, STDERR_FILENO);
+		ft_putstr_fd(") too high, resetting to 1\n", STDERR_FILENO);
+		*printed_warning = 1;
+	}
+	return (ft_itoa(1));
+}
+
 /**
  * @brief Increases the value of the SHLVL environment variable.
  * 
@@ -26,7 +39,7 @@
  * @return A string representation of the new `SHLVL` value. If the value is 
  *         invalid, it returns "1" or "0".
  */
-static char	*increase_shlvl(char *shlvl_value)
+static char	*increase_shlvl(char *shlvl_value, int *printed_warning)
 {
 	int		level;
 	int		i;
@@ -43,6 +56,8 @@ static char	*increase_shlvl(char *shlvl_value)
 	}
 	if (level < 0)
 		return (ft_itoa(0));
+	if (level >= 999)
+		return (handle_too_high_shlvl(level + 1, printed_warning));
 	return (ft_itoa(level + 1));
 }
 
@@ -60,7 +75,7 @@ static char	*increase_shlvl(char *shlvl_value)
  * @return `1` if `SHLVL` was successfully modified, `2` if a memory error 
  *         occurred, and `0` if `SHLVL` was not found.
  */
-static int	modify_shlvl(char ***env)
+static int	modify_shlvl(char ***env, int *printed_warning)
 {
 	int		i;
 	char	*new_value;
@@ -71,7 +86,7 @@ static int	modify_shlvl(char ***env)
 	{
 		if (ft_strncmp((*env)[i], "SHLVL=", 6) == 0)
 		{
-			new_value = increase_shlvl((*env)[i] + 6);
+			new_value = increase_shlvl((*env)[i] + 6, printed_warning);
 			if (!new_value)
 				return (2);
 			temp = ft_strjoin("SHLVL=", new_value);
@@ -135,8 +150,8 @@ static void	make_args(char ***args, t_ms *ms)
  * `exported` environment variable arrays. If the `SHLVL` variable is not found, 
  * it creates a new one with an initial value of 1. If memory allocation fails 
  * at any point, the function sets the shell's exit status to `MALLOC_ERR` 
- * and returns. After updating `SHLVL`, the function exports the modified 
- * environment variables.
+ * and returns. If SHLVL environmental bariable is not found , it will export 
+ * it to both ms->envp and ms->exported.
  * 
  * @param ms A pointer to the `t_ms` structure, which contains the environment 
  *           variables (`envp`, `exported`) and the exit status.
@@ -148,23 +163,24 @@ void	update_shlvl(t_ms *ms)
 {
 	char	**args;
 	int		check;
+	int		printed_warning;
 
 	args = NULL;
-	modify_shlvl(&ms->envp);
-	if (ms->exit_status == MALLOC_ERR)
-		return ;
-	check = modify_shlvl(&ms->exported);
+	printed_warning = 0;
+	check = modify_shlvl(&ms->envp, &printed_warning);
 	if (check == 2)
 	{
 		print_malloc_set_status(ms);
 		return ;
 	}
-	if (check == 0)
+	else if (check == 0)
 	{
 		make_args(&args, ms);
-		if (!args)
+		if (ms->exit_status == MALLOC_ERR)
 			return ;
 		handle_export(args, ms);
 		clean_arr(&args);
 	}
+	else
+		modify_shlvl(&ms->exported, &printed_warning);
 }
