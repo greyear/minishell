@@ -94,3 +94,49 @@ int	has_multiple_words(const char *str)
 		i++;
 	return (found_word && str[i] != '\0');
 }
+
+/**
+ * @brief Copies a single word to the command's argument array.
+ * 
+ * @param cmd Pointer to the command structure where the argument is stored.
+ * @param data The string to be copied.
+ * @param index Pointer to the current index in the `args` array.
+ * @param ms Pointer to the shell structure for error handling.
+ * 
+ * @return `1` on allocation failure, `0` on success.
+ */
+int	copy_single_word(t_cmd *cmd, const char *data, int *index, t_ms *ms)
+{
+	cmd->args[*index] = ft_strdup(data);
+	if (!cmd->args[*index])
+	{
+		print_malloc_set_status(ms);
+		return (1);
+	}
+	(*index)++;
+	return (0);
+}
+
+/**
+ * @brief Splits an expanded word and stores both parts in the command's 
+ * argument array.
+ * 
+ * @param cmd Pointer to the command structure where the arguments are stored.
+ * @param data The expanded string to be split.
+ * @param index Pointer to the current index in the `args` array.
+ * @param ms Pointer to the shell structure for error handling.
+ * 
+ * @return `1` on allocation failure, `0` on success.
+ */
+int	copy_expanded_words(t_cmd *cmd, const char *data, int *index, t_ms *ms)
+{
+	cmd->args[*index] = str_before_space(data);
+	cmd->args[*index + 1] = str_after_space(data);
+	if (!cmd->args[*index] || !cmd->args[*index + 1])
+	{
+		print_malloc_set_status(ms);
+		return (1);
+	}
+	*index += 2;
+	return (0);
+}

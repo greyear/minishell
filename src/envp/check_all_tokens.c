@@ -42,7 +42,7 @@ t_expand	*exp_init(t_ms *ms)
 	return (exp);
 }
 
-int	expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str)
+/*int	expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str)
 {
 	char		*data_copy;
 	char		*expanded;
@@ -86,6 +86,79 @@ int	expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str)
 		free(data_copy);
 	free(exp);
 	return (0);
+}*/
+
+static char *copy_token_data(t_token *cur, t_ms *ms)
+{
+	char *data_copy = ft_strdup(cur->data);
+	if (!data_copy)
+		print_malloc_set_status(ms);
+	return data_copy;
+}
+
+static t_expand *initialize_expansion(t_ms *ms)
+{
+	t_expand *exp = exp_init(ms);
+	if (!exp)
+		print_malloc_set_status(ms);
+	return exp;
+}
+
+static char *process_expansion(t_expand *exp, t_ms *ms, t_token *cur, t_bool first_in_str)
+{
+	char *expanded = NULL;
+
+	if (ft_strcmp(cur->data, "$") == 0 && !cur->quote && cur->next && cur->next->quote)
+		expanded = ft_strdup("");
+	else
+	{
+		exp->data = cur->data;
+		exp->quote = cur->quote;
+		exp->if_first = first_in_str;
+		expanded = handle_expansion(exp, ms);
+		cur->expanded = exp->expanded;
+	}
+	return expanded;
+}
+
+static void check_ambiguity_and_cleanup(t_token *cur, char *data_copy)
+{
+	if (cur->specific_redir && !cur->quote && data_copy[0] && !cur->data[0])
+	{
+		cur->ambiguous = true;
+		cur->file = data_copy;
+	}
+	else
+		free(data_copy);
+}
+
+int expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str)
+{
+	char		*data_copy;
+	t_expand	*exp;
+	char		*expanded;
+
+	data_copy = copy_token_data(cur, ms);
+	if (!data_copy)
+		return 1;
+	exp = initialize_expansion(ms);
+	if (!exp)
+	{
+		free(data_copy);
+		return 1;
+	}
+	expanded = process_expansion(exp, ms, cur, first_in_str);
+	if (!expanded)
+	{
+		free(data_copy);
+		free(exp);
+		return 1;
+	}
+	free(cur->data);
+	cur->data = expanded;
+	check_ambiguity_and_cleanup(cur, data_copy);
+	free(exp);
+	return 0;
 }
 
 /**

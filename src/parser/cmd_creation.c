@@ -38,90 +38,6 @@ static void	default_cmd_values(t_cmd *new, int num)
 	new->next = NULL;
 }
 
-/*int	put_cmg_args(t_cmd *cmd, t_token *start, t_token *end, t_ms *ms)
-{
-	t_token	*cur;
-	int		i;
-
-	i = 0;
-	cur = start;
-	while (cur != end)
-	{
-		if (cur->type == WORD)
-		{
-			if (cur->expanded == false || (cur->expanded == true && !has_multiple_words(cur->data)))
-			{
-				cmd->args[i] = ft_strdup(cur->data);
-				if (!cmd->args[i])
-				{
-					print_malloc_set_status(ms);
-					return (1);
-				}
-				i++;
-			}
-			else
-			{
-				cmd->args[i] = str_before_space(cur->data);
-				cmd->args[i + 1] = str_after_space(cur->data);
-				if (!cmd->args[i] || !cmd->args[i + 1])
-				{
-					print_malloc_set_status(ms);
-					return (1);
-				}
-				i += 2;
-			}
-		}
-		cur = cur->next;
-	}
-	cmd->args[i] = NULL;
-	return (0);
-}*/
-
-/**
- * @brief Copies a single word to the command's argument array.
- * 
- * @param cmd Pointer to the command structure where the argument is stored.
- * @param data The string to be copied.
- * @param index Pointer to the current index in the `args` array.
- * @param ms Pointer to the shell structure for error handling.
- * 
- * @return `1` on allocation failure, `0` on success.
- */
-static int	copy_single_word(t_cmd *cmd, const char *data, int *index, t_ms *ms)
-{
-	cmd->args[*index] = ft_strdup(data);
-	if (!cmd->args[*index])
-	{
-		print_malloc_set_status(ms);
-		return (1);
-	}
-	(*index)++;
-	return (0);
-}
-
-/**
- * @brief Splits an expanded word and stores both parts in the command's argument array.
- * 
- * @param cmd Pointer to the command structure where the arguments are stored.
- * @param data The expanded string to be split.
- * @param index Pointer to the current index in the `args` array.
- * @param ms Pointer to the shell structure for error handling.
- * 
- * @return `1` on allocation failure, `0` on success.
- */
-static int	copy_expanded_words(t_cmd *cmd, const char *data, int *index, t_ms *ms)
-{
-	cmd->args[*index] = str_before_space(data);
-	cmd->args[*index + 1] = str_after_space(data);
-	if (!cmd->args[*index] || !cmd->args[*index + 1])
-	{
-		print_malloc_set_status(ms);
-		return (1);
-	}
-	*index += 2;
-	return (0);
-}
-
 /**
  * @brief Fills the command arguments array with WORD tokens.
  * 
@@ -132,7 +48,8 @@ static int	copy_expanded_words(t_cmd *cmd, const char *data, int *index, t_ms *m
  * 
  * @param cmd A pointer to the command structure where arguments will be stored.
  * @param start A pointer to the first token in the block.
- * @param end A pointer to the token marking the end of the block (not included in processing).
+ * @param end A pointer to the token marking the end of the block 
+ *            (not included in processing).
  * @param ms Pointer to the shell structure for error handling.
  * 
  * @return `0` on success, `1` if memory allocation fails.
@@ -148,7 +65,8 @@ int	put_cmg_args(t_cmd *cmd, t_token *start, t_token *end, t_ms *ms)
 	{
 		if (cur->type == WORD)
 		{
-			if (cur->expanded == false || (cur->expanded == true && !has_multiple_words(cur->data)))
+			if (cur->expanded == false || (cur->expanded == true && \
+				!has_multiple_words(cur->data)))
 			{
 				if (copy_single_word(cmd, cur->data, &i, ms))
 					return (1);

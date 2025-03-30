@@ -96,6 +96,10 @@ int				check_list_for_tilde(t_token *first, t_ms *ms);
 
 //Parser
 int				words_in_cmd_block(t_token *start, t_token *end);
+int				copy_single_word(t_cmd *cmd, const char *data, int *index, \
+				t_ms *ms);
+int				copy_expanded_words(t_cmd *cmd, const char *data, int *index, \
+				t_ms *ms);
 int				put_cmg_args(t_cmd *cmd, t_token *start, t_token *end,
 					t_ms *ms);
 t_cmd			*create_new_cmd(t_block *block, int num, t_ms *ms);
