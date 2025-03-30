@@ -22,6 +22,7 @@ typedef struct s_token
 	t_bool			unclosed;
 	t_type			specific_redir;
 	t_bool			ambiguous;
+	t_bool			expanded;
 	struct s_token	*next;
 }	t_token;
 
@@ -66,6 +67,7 @@ typedef struct s_expand
 	int		len;
 	t_char	quote;
 	t_bool	if_first;
+	t_bool	expanded;
 }	t_expand;
 
 typedef struct s_envp

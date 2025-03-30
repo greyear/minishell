@@ -125,6 +125,7 @@ static int	dollar_expansion(char **result, t_expand *exp, int *i, t_ms *ms)
 		return (0);
 	exp->len = ft_strlen(exp->key);
 	expand_variable(ms, exp, result);
+	exp->expanded = true;
 	free(exp->key);
 	if (ms->exit_status == MALLOC_ERR)
 		return (0);
