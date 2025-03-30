@@ -152,15 +152,6 @@ static char	**copy_array_of_strings(char **original)
 	return (new);
 }
 
-void	check_for_pwd(t_ms *ms)
-{
-	char	*pwd;
-
-	add_to_exported("OLDPWD", ms);
-	pwd = ft_strjoin("PWD=", ms->pwd);
-	change_values_env_ex(pwd, ms);
-}
-
 /**
  * @brief Initializes the environment variables and exported variables for 
  *        the minishell.
@@ -199,5 +190,5 @@ void	initialize_envp_and_exp(t_ms *ms, char **envp)
 		clean_struct(ms);
 		exit(1);
 	}
-	check_for_pwd(ms);
+	checking_pwds(ms);
 }

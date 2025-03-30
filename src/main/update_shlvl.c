@@ -197,6 +197,8 @@ void	update_shlvl(t_ms *ms)
 
 	args = NULL;
 	printed_warning = 0;
+	if (ms->exit_status == MALLOC_ERR)
+		return;
 	check = modify_shlvl(&ms->envp, &printed_warning);
 	if (check == 2)
 	{

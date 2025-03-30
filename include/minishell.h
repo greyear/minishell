@@ -141,6 +141,7 @@ int				create_blocks_and_cmds_lists(t_ms *ms);
 int				tokenize_input(char **input, t_ms *ms);
 void			update_shlvl(t_ms *ms);
 int				process_input(char **input, t_ms *ms);
+void			checking_pwds(t_ms *ms);
 
 //Redirections
 void			redirect_process(int infile, int outfile, t_ms *ms);

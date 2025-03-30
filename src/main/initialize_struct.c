@@ -36,6 +36,36 @@ static t_ms	*allocate_struct(void)
 }
 
 /**
+ * @brief Checks and updates the `PWD` and `OLDPWD` environment variables.
+ * 
+ * This function performs the following actions:
+ * - It adds the `OLDPWD` variable to the exported environment if it's 
+ *   not already present.
+ * - It constructs a string in the form of `"PWD=<current_directory>"` 
+ *   using the current value of the `pwd` field from the `ms` structure.
+ * - If memory allocation for the `PWD` string fails, it prints the error 
+ *   message and sets the appropriate exit status.
+ * - It updates the environment variables `PWD` and `OLDPWD` by calling 
+ *   `change_values_env_ex()`.
+ * 
+ * @param ms A pointer to the main shell state structure, which holds the 
+ *           current working directory (`pwd`) and environment variables.
+ */
+void	checking_pwds(t_ms *ms)
+{
+	char	*pwd;
+
+	add_to_exported("OLDPWD", ms);
+	pwd = ft_strjoin("PWD=", ms->pwd);
+	if (!pwd)
+	{
+		print_malloc_set_status(ms);
+		return ;
+	}
+	change_values_env_ex(pwd, ms);
+}
+
+/**
  * @brief Initializes the shell's history functionality.
  *
  * This function sets up the shell's history by calling `default_history` to 
@@ -119,8 +149,8 @@ t_ms	*initialize_struct(char **envp)
 		free(ms);
 		exit(1);
 	}
-	initialize_envp_and_exp(ms, envp);
 	initialize_history(ms);
+	initialize_envp_and_exp(ms, envp);
 	update_shlvl(ms);
 	g_sgnl = 0;
 	return (ms);
