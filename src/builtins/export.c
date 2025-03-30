@@ -191,22 +191,21 @@ static void	process_arguments(char **args, t_ms *ms)
 }
 
 /**
- * @brief Handles the `export` built-in command in the shell.
- *
- * This function processes the `export` command, which is used to add or modify 
- * environment variables. It follows these steps:
+ * @brief Handles the `export` command by either displaying the exported 
+ *        variables or processing new ones.
  * 
- * 1. If `ms` or `args` are NULL, or if the command is not "export", it returns 
- * immediately.
- * 2. If only "export" is provided with no arguments, it sorts and prints the 
- * exported variables.
- * 3. If arguments are provided, it processes each argument to update the 
- * environment variables.
- *
- * @param args A null-terminated array of strings representing the command and 
- *             its arguments.
- * @param ms A pointer to the shell's main structure containing environment 
- *           variables and state.
+ * This function checks the number of arguments passed to the `export` command:
+ * - If there is only one argument (i.e., `export` with no variable), it 
+ *   sorts and prints the list of exported variables in alphabetical order.
+ * - If the argument is `export _`, the function returns early without 
+ *   making any changes.
+ * - For other cases, it processes the arguments by calling `process_arguments()` 
+ *   to add or modify the exported environment variables.
+ * 
+ * @param args An array of strings representing the arguments passed to the 
+ *             `export` command.
+ * @param ms A pointer to the main shell state structure, which holds 
+ *           environment variables and the exit status.
  */
 void	handle_export(char **args, t_ms *ms)
 {
@@ -222,5 +221,7 @@ void	handle_export(char **args, t_ms *ms)
 		print_exported(ms);
 		return ;
 	}
+	if (args[1][0] == '_' && (!args[1][1] || args[1][1] == '='))
+		return;
 	process_arguments(args, ms);
 }

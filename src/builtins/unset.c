@@ -134,17 +134,22 @@ static void	process_unset_entry(char **args, int i, t_ms *ms, int len)
 }
 
 /**
- * @brief Handles the "unset" command, which removes environment variables.
- *
- * This function processes the given arguments and attempts to remove the 
- * corresponding environment variables from both the exported and shell 
- * environments. If the argument is not a valid environment variable key, it 
- * skips the removal. The exit status is updated based on the success or 
- * failure of the unset operation.
- *
- * @param args The array of command arguments.
- * @param ms The shell structure containing execution state information, 
- *           including the exit status.
+ * @brief Handles the `unset` command to remove environment variables.
+ * 
+ * This function processes the arguments passed to the `unset` command and 
+ * removes the corresponding environment variables from the shell's environment:
+ * - If the first argument is missing or matches `_`, the function returns 
+ *   early without making changes.
+ * - If the first argument starts with `-`, it prints an error message for 
+ *   invalid flags.
+ * - For each valid argument, it checks if the variable has a key-value pair 
+ *   and proceeds to remove it using `process_unset_entry()`.
+ * - The function stops if memory allocation fails (`MALLOC_ERR`).
+ * 
+ * @param args An array of strings representing the arguments passed to the 
+ *             `unset` command.
+ * @param ms A pointer to the main shell state structure, which holds 
+ *           environment variables and the exit status.
  */
 void	handle_unset(char **args, t_ms *ms)
 {
@@ -153,8 +158,9 @@ void	handle_unset(char **args, t_ms *ms)
 
 	i = 1;
 	ms->exit_status = 0;
-	if (!args[1])
-		return ;
+	if (!args[1] || (args[1][0] == '_' 
+		&& (!args[1][1] || args[1][1] == '=')))
+		return;
 	if (args[1][0] && args[1][0] == '-')
 	{
 		print_flag_error(args);
