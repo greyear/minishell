@@ -51,6 +51,7 @@ void			print_exported(t_ms *ms);
 void			add_to_exported(char *key, t_ms *ms);
 void			sort_exported_alphaorder(t_ms *ms);
 void			handle_export(char **args, t_ms *ms);
+void			change_values_env_ex(char *arg, t_ms *ms);
 void			handle_unset(char **args, t_ms *ms);
 int				check_env(char *env, char *name, int len, int flag);
 char			**allocate_temp_env(char **env, int x);

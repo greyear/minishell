@@ -58,8 +58,7 @@ void	update_cd_env(t_ms *ms, char *pwd_before)
 	else
 		update_env_var(ms, "OLDPWD=", pwd_before);
 	if (ms->exit_status != MALLOC_ERR
-		&& !get_env_value("OLDPWD", ms->envp)
-		&& ms->no_env == true)
+		&& !get_env_value("OLDPWD", ms->envp))
 		add_oldpwd_to_envp(ms, pwd_before);
 	if (ms->exit_status != MALLOC_ERR)
 		update_env_var(ms, "PWD=", cwd);

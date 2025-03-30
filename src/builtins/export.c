@@ -120,7 +120,7 @@ static int	change_values(char *arg, char ***env, char *key, int flag)
  * 
  * @return None. Updates the environment variables directly.
  */
-static void	change_values_env_ex(char *arg, t_ms *ms)
+void	change_values_env_ex(char *arg, t_ms *ms)
 {
 	int		len;
 	char	*key;
