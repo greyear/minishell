@@ -178,7 +178,8 @@ static void	make_args(char ***args, t_ms *ms)
  *        and exported variables.
  * 
  * This function checks and modifies the `SHLVL` variable in the environment 
- * (`ms->envp`). If the `SHLVL` is found, it is incremented using `modify_shlvl()`. 
+ * (`ms->envp`). If the `SHLVL` is found, it is incremented using 
+ * `modify_shlvl()`. 
  * - If the `SHLVL` variable does not exist, a new variable is created and 
  *   exported using `handle_export()`.
  * - If memory allocation fails during the process, the function handles 

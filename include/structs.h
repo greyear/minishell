@@ -59,6 +59,7 @@ typedef struct s_ms
 	int		no_env;
 	char	*pwd;
 	int		err;
+	int		unset_pwd_exp_old;
 }	t_ms;
 
 typedef struct s_expand

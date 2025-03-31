@@ -130,3 +130,39 @@ void	print_array(char **a)
 		i++;
 	}
 }
+
+/**
+ * @brief Creates arguments for exporting the `OLDPWD` environment variable.
+ * 
+ * This function dynamically allocates memory for an array of strings to store 
+ * the `export` command and the `OLDPWD` environment variable with its value 
+ * set to the previous working directory (`pwd_before`). If any memory 
+ * allocation fails, the function sets the exit status to `MALLOC_ERR` and 
+ * prints an error message. The generated arguments are returned in the `args` 
+ * parameter.
+ * 
+ * @param args A pointer to a pointer to an array of strings, which will 
+ *             store the `export` command and the `OLDPWD` variable.
+ * @param ms A pointer to the `t_ms` structure, which manages shell-related 
+ *           data, including exit status.
+ * @param pwd_before A string representing the previous working directory.
+ * 
+ * @return 1 on success, 0 on failure (due to memory allocation errors).
+ */
+int	make_cd_args(char ***args, t_ms *ms, char *pwd_before)
+{
+	(*args) = malloc(sizeof(char *) * 3);
+	if (!(*args))
+	{
+		print_malloc_set_status(ms);
+		return (0);
+	}
+	(*args)[0] = ft_strdup("export");
+	if (!(*args)[0])
+		return (0);
+	(*args)[1] = ft_strjoin("OLDPWD=", pwd_before);
+	if (!(*args)[1])
+		return (0);
+	(*args)[2] = NULL;
+	return (1);
+}
