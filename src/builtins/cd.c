@@ -29,7 +29,6 @@
  */
 static void	update_cd_env(t_ms *ms, char *pwd_before)
 {
-	char	*current_pwd;
 	char	cwd[1024];
 
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
