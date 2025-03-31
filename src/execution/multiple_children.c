@@ -181,7 +181,7 @@ static void	initialize_p(t_pipe *p, int num_cmds, t_ms *ms)
  * to be executed.
  * @param ms The minishell structure containing the environment and exit status.
  */
-void	make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms)
+void	make_multiple_children(int num_cmds, t_cmd *cmds, t_ms *ms)
 {
 	t_pipe	p;
 	t_cmd	*cur;

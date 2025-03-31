@@ -13,52 +13,54 @@
 #include "../../include/minishell.h"
 
 /**
- * @brief Allocates and initializes a t_expand structure for variable 
- * expansion.
+ * @brief Duplicates the data of a given token.
  * 
- * This function dynamically allocates memory for a `t_expand` structure, which 
- * is used to store the parameters needed for variable expansion. It 
- * initializes all fields to default values to ensure safe usage.
+ * This function creates a copy of the `data` field from the given token 
+ * structure. It uses `ft_strdup` to allocate memory and duplicate the string. 
+ * If memory allocation fails, an error message is printed using 
+ * `print_malloc_set_status`.
  * 
- * If memory allocation fails, an error message is printed using `perror`, and 
- * the program terminates with `exit(1)`.
+ * @param cur A pointer to the token whose data needs to be copied.
+ * @param ms A pointer to the main shell structure, used for error handling.
  * 
- * @return A pointer to the newly allocated and initialized `t_expand` 
- *         structure.
+ * @return A pointer to the newly allocated string containing the copied data, 
+ *         or `NULL` if memory allocation fails.
  */
-t_expand	*exp_init(t_ms *ms)
+static char	*copy_token_data(t_token *cur, t_ms *ms)
 {
-	t_expand	*exp;
-
-	exp = malloc(sizeof(t_expand));
-	if (!exp)
-		return (print_malloc_set_status(ms));
-	exp->data = NULL;
-	exp->key = NULL;
-	exp->len = 0;
-	exp->quote = 0;
-	exp->if_first = 0;
-	exp->expanded = false;
-	return (exp);
-}
-
-/*int	expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str)
-{
-	char		*data_copy;
-	char		*expanded;
-	t_expand	*exp;
+	char	*data_copy;
 
 	data_copy = ft_strdup(cur->data);
 	if (!data_copy)
-	{
 		print_malloc_set_status(ms);
-		return (1);
-	}
-	exp = exp_init(ms);
-	if (!exp)
-		return (1); //?
-	if (ft_strcmp(cur->data, "$") == 0 && \
-			!cur->quote && cur->next && cur->next->quote)
+	return (data_copy);
+}
+
+/**
+ * @brief Expands a token's data if necessary.
+ * 
+ * This function processes a token's data to handle variable expansion. 
+ * If the token is a standalone `$` followed by a quoted token, it expands to 
+ * an empty string. Otherwise, it initializes the expansion structure and 
+ * calls `handle_expansion` to perform the expansion.
+ * 
+ * @param exp A pointer to the expansion structure used for processing.
+ * @param ms A pointer to the main shell structure for error handling.
+ * @param cur A pointer to the token being processed.
+ * @param first_in_str A boolean indicating if the token is the first in a 
+ *                     string (affects expansion behavior).
+ * 
+ * @return A newly allocated string containing the expanded data, or `NULL` if 
+ *         expansion fails.
+ */
+static char	*process_expansion(t_expand *exp, t_ms *ms, t_token *cur, \
+	t_bool first_in_str)
+{
+	char	*expanded;
+
+	expanded = NULL;
+	if (ft_strcmp(cur->data, "$") == 0 && !cur->quote && cur->next && \
+			cur->next->quote)
 		expanded = ft_strdup("");
 	else
 	{
@@ -68,60 +70,21 @@ t_expand	*exp_init(t_ms *ms)
 		expanded = handle_expansion(exp, ms);
 		cur->expanded = exp->expanded;
 	}
-	if (!expanded)
-	{
-		free(data_copy);
-		free(exp);
-		return (1);
-	}
-	free(cur->data);
-	cur->data = expanded;
-	if (cur->specific_redir && !cur->quote && \
-			data_copy[0] && !cur->data[0])
-	{
-		cur->ambiguous = true;
-		cur->file = data_copy;
-	}
-	else
-		free(data_copy);
-	free(exp);
-	return (0);
-}*/
-
-static char *copy_token_data(t_token *cur, t_ms *ms)
-{
-	char *data_copy = ft_strdup(cur->data);
-	if (!data_copy)
-		print_malloc_set_status(ms);
-	return data_copy;
+	return (expanded);
 }
 
-static t_expand *initialize_expansion(t_ms *ms)
-{
-	t_expand *exp = exp_init(ms);
-	if (!exp)
-		print_malloc_set_status(ms);
-	return exp;
-}
-
-static char *process_expansion(t_expand *exp, t_ms *ms, t_token *cur, t_bool first_in_str)
-{
-	char *expanded = NULL;
-
-	if (ft_strcmp(cur->data, "$") == 0 && !cur->quote && cur->next && cur->next->quote)
-		expanded = ft_strdup("");
-	else
-	{
-		exp->data = cur->data;
-		exp->quote = cur->quote;
-		exp->if_first = first_in_str;
-		expanded = handle_expansion(exp, ms);
-		cur->expanded = exp->expanded;
-	}
-	return expanded;
-}
-
-static void check_ambiguity_and_cleanup(t_token *cur, char *data_copy)
+/**
+ * @brief Checks for ambiguous redirections and cleans up memory.
+ * 
+ * This function determines whether a token used in a redirection is ambiguous.
+ * If the token is marked as a specific redirection, is unquoted, and either
+ * expands to an empty string or multiple words, it is flagged as ambiguous.
+ * Otherwise, the allocated copy of the token's data is freed.
+ * 
+ * @param cur A pointer to the token being processed.
+ * @param data_copy A dynamically allocated copy of the token's original data.
+ */
+static void	check_ambiguity_and_cleanup(t_token *cur, char *data_copy)
 {
 	if (cur->specific_redir && !cur->quote && data_copy[0] && \
 		(!cur->data[0] || has_multiple_words(cur->data)))
@@ -133,7 +96,24 @@ static void check_ambiguity_and_cleanup(t_token *cur, char *data_copy)
 		free(data_copy);
 }
 
-int expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str)
+/**
+ * @brief Expands a token by replacing variables and handling special cases.
+ * 
+ * This function processes a token to expand any variables it contains, ensuring 
+ * proper memory allocation and error handling. It first creates a copy of the 
+ * token's data, initializes the expansion structure, and then performs the 
+ * expansion. If the expansion results in an empty string or multiple words in 
+ * the context of a redirection, the token is marked as ambiguous. All allocated 
+ * memory is properly managed to avoid leaks.
+ * 
+ * @param cur A pointer to the token that needs to be expanded.
+ * @param ms A pointer to the main shell structure for error handling.
+ * @param first_in_str A boolean indicating if this is the first token in
+ *        a string.
+ * 
+ * @return `0` on success, `1` if memory allocation fails at any stage.
+ */
+int	expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str)
 {
 	char		*data_copy;
 	t_expand	*exp;
@@ -141,25 +121,25 @@ int expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str)
 
 	data_copy = copy_token_data(cur, ms);
 	if (!data_copy)
-		return 1;
+		return (1);
 	exp = initialize_expansion(ms);
 	if (!exp)
 	{
 		free(data_copy);
-		return 1;
+		return (1);
 	}
 	expanded = process_expansion(exp, ms, cur, first_in_str);
 	if (!expanded)
 	{
 		free(data_copy);
 		free(exp);
-		return 1;
+		return (1);
 	}
 	free(cur->data);
 	cur->data = expanded;
 	check_ambiguity_and_cleanup(cur, data_copy);
 	free(exp);
-	return 0;
+	return (0);
 }
 
 /**
@@ -198,83 +178,6 @@ int	check_list_for_expansions(t_token *first, t_ms *ms)
 			first_in_str = 0;
 		if (cur->type != WORD)
 			first_in_str = 1;
-		cur = cur->next;
-	}
-	return (0);
-}
-
-/**
- * @brief Expands the tilde (`~`) in a token to the user's home directory.
- * 
- * This function checks if the given token starts with a tilde (`~`). If 
- * it does, it replaces it with the user's home directory path. The function 
- * handles the following cases:
- * - `~` alone is replaced with the home directory.
- * - `~/something` expands to `<home>/something`.
- * - If `~` is part of another word (e.g., `hello~`), no expansion occurs.
- * 
- * @param cur A pointer to the token containing the potential tilde.
- * @param ms A pointer to the main shell structure, used to retrieve the 
- * home directory.
- * 
- * @return Returns `0` if expansion is successful or not needed, and `1` 
- * if a memory allocation error occurs.
- */
-int	expand_tilde(t_token *cur, t_ms *ms)
-{
-	char	*home;
-	char	*new_data;
-
-	if (!cur->data || cur->data[0] != '~')
-		return (0);
-	home = get_home_directory(ms, 1);
-	if (!home)
-		return (0);
-	if (cur->data[1] == '\0')
-		new_data = ft_strdup(home);
-	else if (cur->data[1] == '/')
-		new_data = ft_strjoin(home, &cur->data[1]);
-	else
-	{
-		free(home);
-		return (0);
-	}
-	free(home);
-	if (!new_data)
-		return (1);
-	free(cur->data);
-	cur->data = new_data;
-	return (0);
-}
-
-/**
- * @brief Scans a list of tokens and expands tilde (`~`) where applicable.
- * 
- * This function iterates through a linked list of tokens and checks for 
- * the tilde (`~`) character at the beginning of each token's data. If the 
- * token is not enclosed in single (`'`) or double (`"`) quotes, the tilde 
- * is expanded to the user's home directory.
- * 
- * @param first A pointer to the first token in the list.
- * @param ms A pointer to the main shell structure, used to retrieve the home 
- *           directory.
- * 
- * @return Returns `0` if successful, or `1` if an expansion fails due to memory 
- *         allocation errors.
- */
-int	check_list_for_tilde(t_token *first, t_ms *ms)
-{
-	t_token	*cur;
-
-	cur = first;
-	while (cur)
-	{
-		if (cur->type == WORD && cur->quote != SG_QUOT && cur->quote != DB_QUOT
-			&& cur->data[0] == '~')
-		{
-			if (expand_tilde(cur, ms) == 1)
-				return (1);
-		}
 		cur = cur->next;
 	}
 	return (0);
