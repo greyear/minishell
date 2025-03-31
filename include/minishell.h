@@ -20,7 +20,7 @@
 # include "../libft/include/ft_printf.h"
 # include "../libft/include/get_next_line.h"
 # include <unistd.h>
-# include <stdio.h>
+//# include <stdio.h>
 # include <stdlib.h>
 # include <sys/stat.h>
 # include <sys/wait.h>
@@ -28,9 +28,7 @@
 # include <dirent.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-# include <errno.h>
 # include <signal.h>
-# include <sys/ioctl.h>
 # include <termios.h>
 
 extern volatile sig_atomic_t	g_sgnl;
@@ -94,7 +92,6 @@ t_token			*unite_two_word_tokens(t_token *first, t_ms *ms);
 t_bool			is_redirect(t_type type);
 void			flags_for_redirections(t_token *cur);
 void			put_files_for_redirections(t_token *cur, t_ms *ms);
-void			print_tokens(t_token *token_list);                           //remember to delete!
 int				check_list_for_tilde(t_token *first, t_ms *ms);
 
 //Parser
