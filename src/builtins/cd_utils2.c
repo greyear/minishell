@@ -13,23 +13,56 @@
 #include "../../include/minishell.h"
 
 /**
- * @brief Handles the case where OLDPWD is empty.
- * 
- * This function retrieves the current working directory
- * from the PWD environment variable. If PWD is not set or empty,
- * it attempts to get the directory using 
- * getcwd() and updates PWD accordingly. Otherwise, it updates OLDPWD with the 
- * current PWD value.
- * 
- * @param ms A pointer to the `t_ms` structure, which contains environment 
- *           variables and shell-related data.
- * 
- * @return A newly allocated string containing the current working directory 
- *         (previously stored in PWD) or NULL if PWD was empty and updated 
- *         from getcwd().
+ * @brief Updates the `OLDPWD` environment variable.
+ *
+ * This function ensures `OLDPWD` is properly updated when changing 
+ * directories.
+ * - If `PWD` exists, `OLDPWD` is set to its value.
+ * - If `PWD` was unset and `unset_pwd_exp_old` is true, `OLDPWD` is 
+ *   removed from both `envp` and `exported` and then re-added to 
+ *   `exported`.
+ * - Otherwise, `OLDPWD` is set to `pwd_before`.
+ *
+ * @param ms A pointer to the main shell structure containing 
+ *           environment variables.
+ * @param pwd_before The previous working directory.
  */
+void	handle_updating_oldpwd(t_ms*ms, char *pwd_before)
+{
+	char	*current_pwd;
 
-static char	*handle_empty_oldpwd(t_ms *ms)
+	current_pwd = get_env_value("PWD", ms->envp);
+	if (current_pwd)
+		update_env_var(ms, "OLDPWD=", current_pwd);
+	else if (ms->unset_pwd_exp_old == true)
+	{
+		if (!rm_from_env_ex(&ms->exported, "OLDPWD", 1)
+			|| !rm_from_env_ex(&ms->envp, "OLDPWD", 0))
+			print_malloc_set_status(ms);
+		if (ms->exit_status != MALLOC_ERR)
+			add_to_exported("OLDPWD", ms);
+		ms->unset_pwd_exp_old = false;
+	}
+	else
+		update_env_var(ms, "OLDPWD=", pwd_before);
+}
+
+/**
+ * @brief Handles an empty OLDPWD variable.
+ *
+ * If OLDPWD is empty, this function updates it with the current PWD.
+ * If PWD is also empty, it retrieves the current working directory 
+ * using getcwd() and updates PWD instead.
+ * 
+ * - Retrieves PWD from the environment.
+ * - If PWD is empty, calls getcwd() and updates PWD.
+ * - Otherwise, updates OLDPWD with the current PWD value.
+ * - If getcwd() fails, prints an error and sets exit_status to 1.
+ * 
+ * @param ms A pointer to the main shell structure containing 
+ *           environment variables.
+ */
+static void	handle_empty_oldpwd(t_ms *ms)
 {
 	char	*current_pwd;
 	char	cwd[1024];
@@ -42,13 +75,13 @@ static char	*handle_empty_oldpwd(t_ms *ms)
 		{
 			perror("getcwd failed");
 			ms->exit_status = 1;
-			return (NULL);
+			return ;
 		}
 		update_env_var(ms, "PWD=", cwd);
-		return (NULL);
+		return ;
 	}
 	update_env_var(ms, "OLDPWD=", current_pwd);
-	return (ft_strdup(current_pwd));
+	return ;
 }
 
 /**
@@ -58,7 +91,8 @@ static char	*handle_empty_oldpwd(t_ms *ms)
  * This function attempts to fetch the value of the `OLDPWD` environment 
  * variable and perform several checks:
  * - If `OLDPWD` is not set, it prints an error message and returns `NULL`.
- * - If `OLDPWD` is empty, it calls `handle_empty_oldpwd` to handle this case.
+ * - If `OLDPWD` is empty, it calls `handle_empty_oldpwd` to handle this case
+ *   and returns `NULL`.
  * - If `OLDPWD` points to a non-existent file or directory, it prints an 
  *   error and returns `NULL`.
  * - If `OLDPWD` is valid, it prints the directory and returns a duplicate 
@@ -86,7 +120,10 @@ char	*get_oldpwd_directory(t_ms *ms)
 		return (NULL);
 	}
 	if (*target == '\0')
-		return (handle_empty_oldpwd(ms));
+	{
+		handle_empty_oldpwd(ms);
+		return (NULL);
+	}
 	if (access(target, F_OK) != 0)
 	{
 		print_cd_error(target, NO_FILE_OR_DIR);
@@ -95,42 +132,6 @@ char	*get_oldpwd_directory(t_ms *ms)
 	}
 	ft_putendl_fd(target, STDOUT_FILENO);
 	return (ft_strdup(target));
-}
-
-/**
- * @brief Creates arguments for exporting the `OLDPWD` environment variable.
- * 
- * This function dynamically allocates memory for an array of strings to store 
- * the `export` command and the `OLDPWD` environment variable with its value 
- * set to the previous working directory (`pwd_before`). If any memory 
- * allocation fails, the function sets the exit status to `MALLOC_ERR` and 
- * prints an error message. The generated arguments are returned in the `args` 
- * parameter.
- * 
- * @param args A pointer to a pointer to an array of strings, which will 
- *             store the `export` command and the `OLDPWD` variable.
- * @param ms A pointer to the `t_ms` structure, which manages shell-related 
- *           data, including exit status.
- * @param pwd_before A string representing the previous working directory.
- * 
- * @return 1 on success, 0 on failure (due to memory allocation errors).
- */
-static int	make_cd_args(char ***args, t_ms *ms, char *pwd_before)
-{
-	(*args) = malloc(sizeof(char *) * 3);
-	if (!(*args))
-	{
-		print_malloc_set_status(ms);
-		return (0);
-	}
-	(*args)[0] = ft_strdup("export");
-	if (!(*args)[0])
-		return (0);
-	(*args)[1] = ft_strjoin("OLDPWD=", pwd_before);
-	if (!(*args)[1])
-		return (0);
-	(*args)[2] = NULL;
-	return (1);
 }
 
 /**
@@ -150,7 +151,7 @@ static int	make_cd_args(char ***args, t_ms *ms, char *pwd_before)
  * @return None. The function updates the `OLPWD` environment variable and 
  *         modifies `ms->exit_status` on failure.
  */
-static void	export_olpwd(t_ms *ms, char *pwd_before)
+static void	export_oldpwd(t_ms *ms, char *pwd_before)
 {
 	char	**args;
 
@@ -207,5 +208,5 @@ void	add_oldpwd_to_envp(t_ms *ms, char *pwd_before)
 		i++;
 	}
 	if (check == 1)
-		export_olpwd(ms, pwd_before);
+		export_oldpwd(ms, pwd_before);
 }

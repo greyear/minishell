@@ -63,6 +63,7 @@ void	checking_pwds(t_ms *ms)
 		return ;
 	}
 	change_values_env_ex(pwd, ms);
+	free(pwd);
 }
 
 /**
@@ -111,6 +112,7 @@ static void	initialize_to_null(t_ms *ms)
 	ms->heredoc_count = 0;
 	ms->heredoc_files = NULL;
 	ms->pwd = NULL;
+	ms->unset_pwd_exp_old = false;
 }
 
 /**

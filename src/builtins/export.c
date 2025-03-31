@@ -199,8 +199,8 @@ static void	process_arguments(char **args, t_ms *ms)
  *   sorts and prints the list of exported variables in alphabetical order.
  * - If the argument is `export _`, the function returns early without 
  *   making any changes.
- * - For other cases, it processes the arguments by calling `process_arguments()` 
- *   to add or modify the exported environment variables.
+ * - For other cases, it processes the arguments by calling 
+ *   `process_arguments()` to add or modify the exported environment variables.
  * 
  * @param args An array of strings representing the arguments passed to the 
  *             `export` command.
@@ -222,6 +222,6 @@ void	handle_export(char **args, t_ms *ms)
 		return ;
 	}
 	if (args[1][0] == '_' && (!args[1][1] || args[1][1] == '='))
-		return;
+		return ;
 	process_arguments(args, ms);
 }

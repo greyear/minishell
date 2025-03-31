@@ -13,35 +13,23 @@
 #include "../../include/minishell.h"
 
 /**
- * @brief Updates the `PWD` (current working directory) and `OLDPWD` 
- * (previous working directory) environment variables during a `cd` 
- * command.
- * 
- * This function performs the following actions:
- * - Retrieves the current working directory using `getcwd()` and stores 
- *   it in `PWD`.
- * - Checks if the `PWD` environment variable is set. If it is, it updates 
- *   the `OLDPWD` environment variable to store the previous value of `PWD`. 
- *   If `PWD` isn't set or is empty, it uses the `pwd_before` argument as 
- *   the value for `OLDPWD`.
- * - If the `OLDPWD` environment variable doesn't exist, it calls 
- *   `add_oldpwd_to_envp` to add `OLDPWD` to the environment.
- * - Finally, it updates the `PWD` environment variable to the newly 
- *   retrieved `cwd`.
- * 
- * The `PWD` variable reflects the current working directory, and `OLDPWD` 
- * stores the previous working directory to allow users to return to it 
- * using the `cd -` command.
- * 
- * @param ms The main shell structure, containing the environment variables 
- *           `envp` and flags like `no_env`.
- * @param pwd_before The value of `PWD` before the `cd` operation, used for 
- *                   updating `OLDPWD` when necessary.
+ * @brief Updates environment variables after changing directories.
+ *
+ * This function updates `PWD` and `OLDPWD` in the shell's environment:
+ * - Retrieves the current working directory using `getcwd()`.
+ * - If `OLDPWD` does not exist in `envp`, it adds it using 
+ *   `add_oldpwd_to_envp()`.
+ * - Calls `handle_updating_oldpwd()` to properly set `OLDPWD`.
+ * - Updates `PWD` with the new directory path if no memory allocation 
+ *   error occurs.
+ *
+ * @param ms A pointer to the main shell structure containing 
+ *           environment variables.
+ * @param pwd_before The previous working directory before the change.
  */
-void	update_cd_env(t_ms *ms, char *pwd_before)
+static void	update_cd_env(t_ms *ms, char *pwd_before)
 {
 	char	cwd[1024];
-	char	*current_pwd;
 
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
@@ -49,16 +37,10 @@ void	update_cd_env(t_ms *ms, char *pwd_before)
 		ms->exit_status = 1;
 		return ;
 	}
-	current_pwd = get_env_value("PWD", ms->envp);
-	if (!current_pwd)
-		current_pwd = "";
-	if (current_pwd && *current_pwd != '\0')
-		update_env_var(ms, "OLDPWD=", current_pwd);
-	else
-		update_env_var(ms, "OLDPWD=", pwd_before);
 	if (ms->exit_status != MALLOC_ERR
 		&& !get_env_value("OLDPWD", ms->envp))
 		add_oldpwd_to_envp(ms, pwd_before);
+	handle_updating_oldpwd(ms, pwd_before);
 	if (ms->exit_status != MALLOC_ERR)
 		update_env_var(ms, "PWD=", cwd);
 }
@@ -144,22 +126,23 @@ static int	handle_cd_directory_checks(char *target_dir, t_ms *ms)
 }
 
 /**
- * @brief Checks for errors in the `cd` command arguments.
- * 
- * This function verifies if the provided arguments for `cd` are valid. It 
- * ensures that the command is correctly formatted and checks for the presence 
- * of too many arguments. If an error is detected, an appropriate error message 
- * is printed, and the shell's exit status is updated.
- * 
- * @param args An array of command arguments.
- * @param ms A pointer to the `t_ms` structure, which holds shell-related data, 
- *           including the exit status.
- * 
- * @return `1` if an error occurs (too many arguments), 
- *         otherwise `0` if the arguments are valid.
+ * @brief Handles errors and argument validation for the `cd` command.
+ *
+ * This function checks for errors in the `cd` command, including:
+ * - No arguments, in which case no error occurs.
+ * - More than one argument, triggering an error message and setting
+ *   `exit_status` to 1.
+ * - Trailing slashes in the argument, which are removed for consistency.
+ *
+ * @param args The arguments passed to the `cd` command.
+ * @param ms A pointer to the main shell structure containing environment
+ *           variables.
+ * @return 1 if an error occurs (too many arguments), 0 otherwise.
  */
 static int	cd_error(char **args, t_ms *ms)
 {
+	int		len;
+
 	if (!args[1])
 		return (0);
 	if (args[2])
@@ -169,6 +152,9 @@ static int	cd_error(char **args, t_ms *ms)
 		ms->exit_status = 1;
 		return (1);
 	}
+	len = ft_strlen(args[1]);
+	if (len > 1 && args[1][len - 1] == '/')
+		args[1][len - 1] = '\0';
 	return (0);
 }
 
