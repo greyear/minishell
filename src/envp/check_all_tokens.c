@@ -123,7 +123,8 @@ static char *process_expansion(t_expand *exp, t_ms *ms, t_token *cur, t_bool fir
 
 static void check_ambiguity_and_cleanup(t_token *cur, char *data_copy)
 {
-	if (cur->specific_redir && !cur->quote && data_copy[0] && !cur->data[0])
+	if (cur->specific_redir && !cur->quote && data_copy[0] && \
+		(!cur->data[0] || has_multiple_words(cur->data)))
 	{
 		cur->ambiguous = true;
 		cur->file = data_copy;
