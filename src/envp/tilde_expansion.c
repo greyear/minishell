@@ -70,7 +70,10 @@ int	check_list_for_tilde(t_token *first, t_ms *ms)
 			&& cur->data[0] == '~')
 		{
 			if (expand_tilde(cur, ms) == 1)
+			{
+				print_malloc_set_status(ms);
 				return (1);
+			}
 		}
 		cur = cur->next;
 	}

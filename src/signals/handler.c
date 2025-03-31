@@ -38,7 +38,7 @@ void	ctrlc_interactive(int sig)
 		write(STDERR_FILENO, "\n", 1);
 		//ioctl(0, TIOCSTI, "\n");
 		rl_on_new_line();
-		rl_replace_line("", 0); //0 is a flag to unclear the history
+		rl_replace_line("", 0);
 		g_sgnl = sig;
 		rl_redisplay();
 	}

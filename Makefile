@@ -74,7 +74,6 @@ BUILT_FILES		=	cd.c \
 					key_handling.c \
 					helper_functions.c
 EXEC_FILES		=	builtin_check.c \
-					cmd_exec.c \
 					one_child.c \
 					multiple_children.c \
 					find_path_and_execve.c \
