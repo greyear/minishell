@@ -51,6 +51,7 @@ void			print_exported(t_ms *ms);
 void			add_to_exported(char *key, t_ms *ms);
 void			sort_exported_alphaorder(t_ms *ms);
 void			handle_export(char **args, t_ms *ms);
+void			change_values_env_ex(char *arg, t_ms *ms);
 void			handle_unset(char **args, t_ms *ms);
 int				check_env(char *env, char *name, int len, int flag);
 char			**allocate_temp_env(char **env, int x);
@@ -117,7 +118,7 @@ int				is_builtin(t_cmd *cmd);
 void			handle_builtin(t_cmd *cmd, t_ms *ms, int in_child);
 int				if_children_needed(t_cmd *cmd);
 void			make_one_child(t_cmd *cmd, t_ms *ms);
-void			execute_command(char **envp, char **cmd);
+void			execute_command(char **envp, char **cmd, t_ms *ms);
 void			make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms);
 void			pipe_process(int prev_pipe, int next_pipe);
 void			handle_absolute_or_relative_path(char **envp, char **cmds);
@@ -140,6 +141,7 @@ int				create_blocks_and_cmds_lists(t_ms *ms);
 int				tokenize_input(char **input, t_ms *ms);
 void			update_shlvl(t_ms *ms);
 int				process_input(char **input, t_ms *ms);
+void			checking_pwds(t_ms *ms);
 
 //Redirections
 void			redirect_process(int infile, int outfile, t_ms *ms);
@@ -176,7 +178,6 @@ void			print_numeric_error(char **array);
 void			print_too_many_args_error(void);
 void			print_env_error(char **args);
 void			print_flag_error(char **args);
-void			print_malloc_error(void);
 void			*print_malloc_set_status(t_ms *ms);
 
 //Cleaners

@@ -85,17 +85,14 @@ static void	child_process(t_cmd *cur, t_pipe *p, t_cmd *cmds)
 	close_every_cmds_fds(cmds);
 	if (p->ms->exit_status == SYSTEM_ERR)
 		exit(SYSTEM_ERR);
+	signal_mode(DEFAULT);
 	if (is_builtin(cur))
 	{
 		handle_builtin(cur, p->ms, 1);
 		exit(p->ms->exit_status);
 	}
 	else
-	{
-		//we are not sure if we need to put it for ALL child processes or only for externals
-		signal_mode(DEFAULT);
-		execute_command(p->ms->envp, cur->args);
-	}
+		execute_command(p->ms->envp, cur->args, p->ms);
 }
 
 /**
@@ -160,10 +157,7 @@ static void	initialize_p(t_pipe *p, int num_cmds, t_ms *ms)
 	p->cur_fd = -1;
 	p->pids = (pid_t *)malloc((p->num_cmds) * sizeof(pid_t));
 	if (!p->pids)
-	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-	}
+		print_malloc_set_status(ms);
 }
 
 /**

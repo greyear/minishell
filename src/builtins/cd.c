@@ -24,9 +24,8 @@
  *   the `OLDPWD` environment variable to store the previous value of `PWD`. 
  *   If `PWD` isn't set or is empty, it uses the `pwd_before` argument as 
  *   the value for `OLDPWD`.
- * - If the `OLDPWD` environment variable doesn't exist and the shell is 
- *   not using `envp`, it calls `add_oldpwd_to_envp` to add `OLDPWD` to 
- *   the environment.
+ * - If the `OLDPWD` environment variable doesn't exist, it calls 
+ *   `add_oldpwd_to_envp` to add `OLDPWD` to the environment.
  * - Finally, it updates the `PWD` environment variable to the newly 
  *   retrieved `cwd`.
  * 
@@ -58,8 +57,7 @@ void	update_cd_env(t_ms *ms, char *pwd_before)
 	else
 		update_env_var(ms, "OLDPWD=", pwd_before);
 	if (ms->exit_status != MALLOC_ERR
-		&& !get_env_value("OLDPWD", ms->envp)
-		&& ms->no_env == true)
+		&& !get_env_value("OLDPWD", ms->envp))
 		add_oldpwd_to_envp(ms, pwd_before);
 	if (ms->exit_status != MALLOC_ERR)
 		update_env_var(ms, "PWD=", cwd);
