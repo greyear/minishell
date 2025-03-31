@@ -120,8 +120,7 @@ static int	make_cd_args(char ***args, t_ms *ms, char *pwd_before)
 	(*args) = malloc(sizeof(char *) * 3);
 	if (!(*args))
 	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
+		print_malloc_set_status(ms);
 		return (0);
 	}
 	(*args)[0] = ft_strdup("export");
@@ -159,8 +158,7 @@ static void	export_olpwd(t_ms *ms, char *pwd_before)
 	if (!make_cd_args(&args, ms, pwd_before))
 	{
 		clean_arr(&args);
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
+		print_malloc_set_status(ms);
 		return ;
 	}
 	handle_export(args, ms);

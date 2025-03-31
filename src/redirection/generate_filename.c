@@ -114,10 +114,6 @@ char	*generate_filename(int index, t_ms *ms)
 	convert_index_to_digits(index, buffer, &len);
 	filename = ft_strdup(buffer);
 	if (!filename)
-	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return (NULL);
-	}
+		return (print_malloc_set_status(ms));
 	return (filename);
 }
