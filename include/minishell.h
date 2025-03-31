@@ -20,7 +20,7 @@
 # include "../libft/include/ft_printf.h"
 # include "../libft/include/get_next_line.h"
 # include <unistd.h>
-# include <stdio.h>
+//# include <stdio.h>
 # include <stdlib.h>
 # include <sys/stat.h>
 # include <sys/wait.h>
@@ -28,9 +28,7 @@
 # include <dirent.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-# include <errno.h>
 # include <signal.h>
-# include <sys/ioctl.h>
 # include <termios.h>
 
 extern volatile sig_atomic_t	g_sgnl;
