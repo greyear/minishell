@@ -24,4 +24,6 @@ output*
 .heredoc*
 tmp_err_bash*
 tmp_err_minishell*
+fuzzing/
+seeds/
 
