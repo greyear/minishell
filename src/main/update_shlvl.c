@@ -13,20 +13,54 @@
 #include "../../include/minishell.h"
 
 /**
- * @brief Increases the value of the SHLVL environment variable.
+ * @brief Handles excessively high shell levels by resetting SHLVL to 1.
  * 
- * This function takes the current value of the `SHLVL` environment variable, 
- * parses it as an integer, and increments it by 1. If the value is invalid 
- * (non-numeric or negative), it resets the value to `1` or `0` depending on 
- * the situation. The function ensures the value is valid before incrementing.
+ * If the shell level (`SHLVL`) exceeds a reasonable limit, this function 
+ * prints a warning message (only once per execution) and resets the level to 1.
  * 
- * @param shlvl_value The current value of the `SHLVL` environment variable as 
- *                    a string.
+ * @param level The current shell level that is too high.
+ * @param printed_warning A pointer to an integer flag indicating if the warning 
+ *                        has already been printed (to avoid duplicate warnings).
  * 
- * @return A string representation of the new `SHLVL` value. If the value is 
- *         invalid, it returns "1" or "0".
+ * @return A newly allocated string containing the value `"1"`, representing the 
+ *         reset shell level. The caller is responsible for freeing this memory.
+ * 
+ * @note The function prints a warning message to standard error if the warning 
+ *       has not been printed before.
  */
-static char	*increase_shlvl(char *shlvl_value)
+static char	*handle_too_high_shlvl(int level, int *printed_warning)
+{
+	if (!(*printed_warning))
+	{
+		ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
+		ft_putstr_fd("warning: shell level (", STDERR_FILENO);
+		ft_putnbr_fd(level, STDERR_FILENO);
+		ft_putstr_fd(") too high, resetting to 1\n", STDERR_FILENO);
+		*printed_warning = 1;
+	}
+	return (ft_itoa(1));
+}
+
+/**
+ * @brief Increments the shell level (`SHLVL`) while handling edge cases.
+ * 
+ * This function increases the shell level based on its current value, ensuring 
+ * that:
+ * - Non-numeric or negative values reset `SHLVL` appropriately.
+ * - Extremely high values trigger a warning and reset `SHLVL` to 1.
+ * - If `SHLVL` exceeds `INT_MAX`, it resets to 0.
+ * - If `SHLVL` reaches 999 or more, it calls `handle_too_high_shlvl` to handle 
+ *   the overflow case.
+ * 
+ * @param shlvl_value The current `SHLVL` value as a string.
+ * @param printed_warning A pointer to an integer flag indicating whether a 
+ *                        warning has already been printed (to avoid redundant 
+ *                        warnings).
+ * 
+ * @return A newly allocated string containing the new `SHLVL` value. The caller 
+ *         is responsible for freeing this memory.
+ */
+static char	*increase_shlvl(char *shlvl_value, int *printed_warning)
 {
 	int		level;
 	int		i;
@@ -43,24 +77,35 @@ static char	*increase_shlvl(char *shlvl_value)
 	}
 	if (level < 0)
 		return (ft_itoa(0));
+	if (level >= INT_MAX)
+		return (ft_itoa(0));
+	if (level >= 999)
+		return (handle_too_high_shlvl(level + 1, printed_warning));
 	return (ft_itoa(level + 1));
 }
 
 /**
- * @brief Modifies the `SHLVL` environment variable by incrementing its value.
- *
- * This function searches through the environment array for the `SHLVL` 
- * variable. If found, it increments the value of `SHLVL`, constructs a new 
- * value string, and updates the corresponding entry in the environment array. 
- * If memory allocation fails during this process, it returns an error code. 
- * If `SHLVL` is not found, it returns `0` to indicate no modification was made.
- *
- * @param env A pointer to the environment variable array to be modified.
+ * @brief Modifies the `SHLVL` environment variable by increasing its value.
  * 
- * @return `1` if `SHLVL` was successfully modified, `2` if a memory error 
- *         occurred, and `0` if `SHLVL` was not found.
+ * This function searches for the `SHLVL` variable in the environment and 
+ * updates it accordingly. It ensures that:
+ * - `SHLVL` is properly incremented using `increase_shlvl()`.
+ * - The new value is allocated dynamically and replaces the old entry.
+ * - If `SHLVL` is too high, it handles the reset and warning logic.
+ * - If `SHLVL` is not found, the function returns 0 (indicating no 
+ *   modification was made).
+ * 
+ * @param env A pointer to the environment variable array (`char ***`), where 
+ *            `SHLVL` will be updated in place.
+ * @param printed_warning A pointer to an integer flag used to track whether a 
+ *                        warning about a high `SHLVL` has already been printed.
+ * 
+ * @return An integer indicating the outcome:
+ *         - `1` if `SHLVL` was successfully modified.
+ *         - `0` if `SHLVL` was not found in the environment.
+ *         - `2` if a memory allocation failure occurred.
  */
-static int	modify_shlvl(char ***env)
+static int	modify_shlvl(char ***env, int *printed_warning)
 {
 	int		i;
 	char	*new_value;
@@ -71,7 +116,7 @@ static int	modify_shlvl(char ***env)
 	{
 		if (ft_strncmp((*env)[i], "SHLVL=", 6) == 0)
 		{
-			new_value = increase_shlvl((*env)[i] + 6);
+			new_value = increase_shlvl((*env)[i] + 6, printed_warning);
 			if (!new_value)
 				return (2);
 			temp = ft_strjoin("SHLVL=", new_value);
@@ -108,67 +153,66 @@ static void	make_args(char ***args, t_ms *ms)
 	*args = malloc(sizeof(char *) * 3);
 	if (!*args)
 	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
+		print_malloc_set_status(ms);
 		return ;
 	}
 	(*args)[0] = ft_strdup("export");
 	if (!(*args)[0])
 	{
 		clean_arr(&(*args));
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
+		print_malloc_set_status(ms);
 		return ;
 	}
 	(*args)[1] = ft_strdup("SHLVL=1");
 	if (!(*args)[1])
 	{
 		clean_arr(&(*args));
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
+		print_malloc_set_status(ms);
 		return ;
 	}
 	(*args)[2] = NULL;
 }
 
 /**
- * @brief Updates the `SHLVL` environment variable.
+ * @brief Updates the `SHLVL` environment variable in both the environment 
+ *        and exported variables.
  * 
- * This function attempts to modify the `SHLVL` value in both the `envp` and 
- * `exported` environment variable arrays. If the `SHLVL` variable is not found, 
- * it creates a new one with an initial value of 1. If memory allocation fails 
- * at any point, the function sets the shell's exit status to `MALLOC_ERR` 
- * and returns. After updating `SHLVL`, the function exports the modified 
- * environment variables.
+ * This function checks and modifies the `SHLVL` variable in the environment 
+ * (`ms->envp`). If the `SHLVL` is found, it is incremented using `modify_shlvl()`. 
+ * - If the `SHLVL` variable does not exist, a new variable is created and 
+ *   exported using `handle_export()`.
+ * - If memory allocation fails during the process, the function handles 
+ *   the error and returns early.
+ * - If the `SHLVL` value exceeds the maximum allowed, a warning is printed 
+ *   once and the value is reset.
  * 
- * @param ms A pointer to the `t_ms` structure, which contains the environment 
- *           variables (`envp`, `exported`) and the exit status.
- * 
- * @return None. This function modifies the `envp` and `exported` arrays and 
- *         updates `ms->exit_status` on failure.
+ * @param ms A pointer to the main shell state structure, which holds 
+ *           environment and exported variables and the exit status.
  */
 void	update_shlvl(t_ms *ms)
 {
 	char	**args;
 	int		check;
+	int		printed_warning;
 
 	args = NULL;
-	modify_shlvl(&ms->envp);
+	printed_warning = 0;
 	if (ms->exit_status == MALLOC_ERR)
-		return ;
-	check = modify_shlvl(&ms->exported);
+		return;
+	check = modify_shlvl(&ms->envp, &printed_warning);
 	if (check == 2)
 	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
+		print_malloc_set_status(ms);
 		return ;
 	}
-	if (check == 0)
+	else if (check == 0)
 	{
 		make_args(&args, ms);
-		if (!args)
+		if (ms->exit_status == MALLOC_ERR)
 			return ;
 		handle_export(args, ms);
 		clean_arr(&args);
 	}
+	else
+		modify_shlvl(&ms->exported, &printed_warning);
 }

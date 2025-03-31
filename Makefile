@@ -31,7 +31,7 @@ LIB				=	-L$(LIBFT_DIR)
 
 # Compiler and compilation flags
 CC				=	cc
-CFLAGS			=	-g -Wall -Wextra -Werror
+CFLAGS			=	-Wall -Wextra -Werror
 LDFLAGS			=	-lreadline
 RM				=	rm -f
 

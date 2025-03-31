@@ -106,10 +106,7 @@ char	**allocate_temp_env(char **env, int x)
 		i++;
 	temp = malloc(sizeof(char *) * (i + x));
 	if (!temp)
-	{
-		print_malloc_error();
 		return (NULL);
-	}
 	return (temp);
 }
 

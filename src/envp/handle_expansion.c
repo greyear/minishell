@@ -41,15 +41,13 @@ static void	append_literal_char(char **result, char c, t_ms *ms)
 	substr = ft_substr(str, 0, 1);
 	if (!substr)
 	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
+		print_malloc_set_status(ms);
 		return ;
 	}
 	temp = ft_strjoin(*result, substr);
 	if (!temp)
 	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
+		print_malloc_set_status(ms);
 		free(substr);
 		return ;
 	}
@@ -93,11 +91,7 @@ static char	*extract_key_export(char *args, int *i, t_ms *ms)
 	}
 	key = ft_substr(args, *i, x);
 	if (!key)
-	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return (NULL);
-	}
+		return (print_malloc_set_status(ms));
 	*i += x;
 	return (key);
 }
@@ -120,22 +114,22 @@ static char	*extract_key_export(char *args, int *i, t_ms *ms)
  * @param ms A pointer to the `t_ms` structure, which contains shell-related 
  *           information.
  * 
- * @return Returns `1` if memory allocation fails, setting `ms->exit_status` 
- *         to `MALLOC_ERR`, otherwise returns `0` on success.
+ * @return Returns `0` if memory allocation fails, setting `ms->exit_status` 
+ *         to `MALLOC_ERR`, otherwise returns `1` on success.
  */
 static int	dollar_expansion(char **result, t_expand *exp, int *i, t_ms *ms)
 {
 	(*i)++;
 	exp->key = extract_key_export(exp->data, i, ms);
 	if (!exp->key)
-		return (1);
+		return (0);
 	exp->len = ft_strlen(exp->key);
 	expand_variable(ms, exp, result);
 	exp->expanded = true;
 	free(exp->key);
 	if (ms->exit_status == MALLOC_ERR)
-		return (1);
-	return (0);
+		return (0);
+	return (1);
 }
 
 /**
@@ -169,7 +163,7 @@ static char	*expand(t_expand *exp, t_ms *ms, char **result)
 		if (exp->data[i] == '$' && exp->data[i + 1] && exp->data[i + 1] != '$'
 			&& !ft_isspace(exp->data[i + 1]) && exp->data[i + 1] != '/')
 		{
-			if (dollar_expansion(result, exp, &i, ms))
+			if (!dollar_expansion(result, exp, &i, ms))
 			{
 				free(*result);
 				return (NULL);
@@ -209,10 +203,6 @@ char	*handle_expansion(t_expand *exp, t_ms *ms)
 
 	result = ft_strdup("");
 	if (!result)
-	{
-		print_malloc_error();
-		ms->exit_status = MALLOC_ERR;
-		return (NULL);
-	}
+		return (print_malloc_set_status(ms));
 	return (expand(exp, ms, &result));
 }

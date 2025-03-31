@@ -46,17 +46,14 @@ int	get_key_length(char *arg)
  */
 char	*extract_key(char *arg, int len)
 {
-	char	*name;
+	char	*key;
 
-	name = malloc(sizeof(char) * (len + 1));
-	if (!name)
-	{
-		print_malloc_error();
+	key = malloc(sizeof(char) * (len + 1));
+	if (!key)
 		return (NULL);
-	}
-	ft_strncpy(name, arg, len);
-	name[len] = '\0';
-	return (name);
+	ft_strncpy(key, arg, len);
+	key[len] = '\0';
+	return (key);
 }
 
 /**
@@ -67,21 +64,21 @@ char	*extract_key(char *arg, int len)
  * - Not start with a digit.
  * - Contain only alphanumeric characters or underscores.
  *
- * @param name The string to validate as a key.
+ * @param key The string to validate as a key.
  * @return 0 if the key is invalid, 1 if it is valid.
  */
-int	check_if_valid_key(char *name)
+int	check_if_valid_key(char *key)
 {
 	int		x;
 
 	x = 0;
-	if (!name || !*name)
+	if (!key || !*key)
 		return (0);
-	if (name[0] >= '0' && name[0] <= '9')
+	if (key[0] >= '0' && key[0] <= '9')
 		return (0);
-	while (name[x])
+	while (key[x])
 	{
-		if (!ft_isalnum(name[x]) && name[x] != '_')
+		if (!ft_isalnum(key[x]) && key[x] != '_')
 			return (0);
 		x++;
 	}
