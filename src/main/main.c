@@ -14,7 +14,7 @@
 
 volatile sig_atomic_t	g_sgnl;
 
-void print_tokens(t_token *token_list)
+void	print_tokens(t_token *token_list)
 {
 	t_token	*cur = token_list;
 
@@ -105,7 +105,7 @@ static void	execute_commands(t_ms *ms)
 		if (i == 1)
 			make_one_child(ms->cmds, ms);
 		else
-			make_multiple_childs(i, ms->cmds, ms);
+			make_multiple_children(i, ms->cmds, ms);
 	}
 	close_every_cmds_fds(ms->cmds);
 }

@@ -76,7 +76,7 @@ BUILT_FILES		=	cd.c \
 EXEC_FILES		=	builtin_check.c \
 					cmd_exec.c \
 					one_child.c \
-					multiple_childs.c \
+					multiple_children.c \
 					find_path_and_execve.c \
 					cmd_handling.c \
 					pipe_and_redirect.c
@@ -86,7 +86,9 @@ REDIR_FILES		=	fds.c \
 ENVP_FILES		=	check_all_tokens.c \
 					handle_expansion.c \
 					expansion_utils.c \
-					spaces_in_expansion.c
+					expand_struct.c \
+					spaces_in_expansion.c \
+					tilde_expansion.c
 READING_FILES	=	history.c \
 					history_file.c
 SIGN_FILES		=	handler.c
@@ -156,6 +158,6 @@ re:					fclean all
 valgrind:
 					valgrind --leak-check=full --show-reachable=yes --show-leak-kinds=all \
 					--track-origins=yes --track-fds=yes --trace-children=yes \
-					--suppressions=ignore_readline.supp --gen-suppressions=all ./minishell
+					--suppressions=val.supp --gen-suppressions=all ./minishell
 
 .PHONY:				all clean fclean re valgrind
