@@ -119,69 +119,30 @@ char	*build_relative_path(char *target, char *cwd, t_ms *ms)
 	return (full_path);
 }
 
-/**
- * @brief Updates the value of an exported environment variable.
- * 
- * This function creates a new exported environment variable entry by 
- * concatenating the provided `key` and `new_value`. It then searches 
- * through the exported environment variable array (`exported`) for an 
- * existing entry with the same `key`, replacing it with the new entry.
- * 
- * @param ms A pointer to the `t_ms` structure, which manages shell-related 
- *           data including exported environment variables.
- * @param key The name of the exported environment variable to update.
- * @param new_value The new value to assign to the exported environment variable.
- * 
- * @return None. The function modifies `ms->exported`.
- */
-static void	update_exp_var(t_ms *ms, char *key, char *new_value)
+
+static void	update_exp_var(t_ms *ms, char *key, char *new_env_entry)
 {
 	int		i;
-	char	*new_env_entry;
 
 	i = 0;
-	new_env_entry = malloc(ft_strlen(key) + ft_strlen(new_value) + 1);
-	if (!new_env_entry)
-	{
-		print_malloc_set_status(ms);
-		return ;
-	}
-	ft_strcpy(new_env_entry, key);
-	ft_strcat(new_env_entry, new_value);
 	while (ms->exported[i])
 	{
 		if (ft_strncmp(ms->exported[i], key, ft_strlen(key)) == 0)
 		{
 			free(ms->exported[i]);
-			ms->exported[i] = new_env_entry;
+			ms->exported[i] = ft_strdup(new_env_entry);
 			return ;
 		}
 		i++;
 	}
 }
 
-/**
- * @brief Updates the value of an environment variable.
- * 
- * This function creates a new environment variable entry by concatenating the 
- * provided `key` and `new_value`. It then searches through the environment 
- * variable array (`envp`) for an existing entry with the same `key`, replacing 
- * it with the new entry. After updating the environment variable in `envp`, 
- * it also updates the corresponding exported variable using the 
- * `update_exp_var` function.
- * 
- * @param ms A pointer to the `t_ms` structure, which manages shell-related 
- *           data including environment variables.
- * @param key The name of the environment variable to update.
- * @param new_value The new value to assign to the environment variable.
- * 
- * @return None. The function modifies `ms->envp` and updates the exported 
- *         variables in `ms->exported`.
- */
+
 void	update_env_var(t_ms *ms, char *key, char *new_value)
 {
 	int		i;
 	char	*new_env_entry;
+	
 
 	i = 0;
 	new_env_entry = malloc(ft_strlen(key) + ft_strlen(new_value) + 1);
@@ -197,10 +158,11 @@ void	update_env_var(t_ms *ms, char *key, char *new_value)
 		if (ft_strncmp(ms->envp[i], key, ft_strlen(key)) == 0)
 		{
 			free(ms->envp[i]);
-			ms->envp[i] = new_env_entry;
+			ms->envp[i] = ft_strdup(new_env_entry);
 			break ;
 		}
 		i++;
 	}
-	update_exp_var(ms, key, new_value);
+	update_exp_var(ms, key, new_env_entry);
+	free(new_env_entry);
 }

@@ -150,7 +150,7 @@ static int	make_cd_args(char ***args, t_ms *ms, char *pwd_before)
  * @return None. The function updates the `OLPWD` environment variable and 
  *         modifies `ms->exit_status` on failure.
  */
-static void	export_olpwd(t_ms *ms, char *pwd_before)
+static void	export_oldpwd(t_ms *ms, char *pwd_before)
 {
 	char	**args;
 
@@ -207,5 +207,5 @@ void	add_oldpwd_to_envp(t_ms *ms, char *pwd_before)
 		i++;
 	}
 	if (check == 1)
-		export_olpwd(ms, pwd_before);
+		export_oldpwd(ms, pwd_before);
 }
