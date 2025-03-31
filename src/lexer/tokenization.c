@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-//should I protect functions that contain malloc protections?
-
 #include "../../include/minishell.h"
 
 /**

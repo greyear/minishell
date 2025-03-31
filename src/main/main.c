@@ -25,49 +25,6 @@ void	print_tokens(t_token *token_list)
 		cur = cur->next;
 	}
 }
-/*
-static void print_blocks(t_block *block_list)
-{
-	t_block *cur = block_list;
-
-	printf("\nBlocks:\n");
-	while (cur)
-	{
-		printf("Block Start: %s (Type: %d) | Block End: %s (Type: %d)\n",
-		cur->start ? cur->start->data : "NULL",
-		cur->start ? cur->start->type : (t_type)-1,  // <-- приведение типа
-		cur->end ? cur->end->data : "NULL",
-		cur->end ? cur->end->type : (t_type)-1);  // <-- приведение типа
-
-		cur = cur->next;
-	}
-}
-
-*//*static void print_cmds(t_cmd *cmd_list)
-{
-	t_cmd *cur = cmd_list;
-
-	printf("\nCommands:\n");
-	while (cur)
-	{
-		printf("\nCommand %d:\n", cur->num);
-		printf("  Name: %s\n", cur->name ? cur->name : "NULL");
-		printf("Infile %d:\n", cur->infile);
-		printf("Outfile %d:\n", cur->outfile);
-
-		if (cur->args)
-		{
-			printf("  Args: ");
-			for (int i = 0; cur->args[i]; i++)
-				printf("\"%s\" ", cur->args[i]);
-			printf("\n");
-		}
-		else
-			printf("  Args: NULL\n");
-
-		cur = cur->next;
-	}
-}*/
 
 /**
  * @brief Executes a list of commands.
