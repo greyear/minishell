@@ -156,7 +156,7 @@ static int	cd_error(char **args, t_ms *ms)
 	len = ft_strlen(args[1]);
 	if (len > 1 && args[1][len - 1] == '/')
 		args[1][len - 1] = '\0';
- 	return (0);
+	return (0);
 }
 
 /**
