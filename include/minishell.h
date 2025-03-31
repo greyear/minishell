@@ -97,6 +97,10 @@ int				check_list_for_tilde(t_token *first, t_ms *ms);
 
 //Parser
 int				words_in_cmd_block(t_token *start, t_token *end);
+int				copy_single_word(t_cmd *cmd, const char *data, int *index, \
+				t_ms *ms);
+int				copy_expanded_words(t_cmd *cmd, const char *data, int *index, \
+				t_ms *ms);
 int				put_cmg_args(t_cmd *cmd, t_token *start, t_token *end,
 					t_ms *ms);
 t_cmd			*create_new_cmd(t_block *block, int num, t_ms *ms);
@@ -104,8 +108,9 @@ t_cmd			*create_cmd_list(t_block *block, t_ms *ms);
 t_cmd			*clean_cmd(t_cmd *cmd);
 t_cmd			*clean_cmd_list(t_cmd **first);
 int				check_block(t_token *start, t_token *end, int *err_flag);
-t_block			*create_block(t_ms *ms, t_token *start, t_token *end, t_block *first_block, int *err);
-t_block			*create_blocks_list(t_ms *ms, t_token *start, t_token *end, int *err_flag);
+t_block			*create_block(t_ms *ms, t_token *start, t_token *end, \
+				t_block *first_block);
+t_block			*create_blocks_list(t_ms *ms, t_token *start, t_token *end);
 void			redir_in_block(t_block *block, t_cmd *cmd, t_ms *ms);
 t_block			*clean_block(t_block *block);
 t_block			*clean_block_list(t_block **first);
@@ -119,7 +124,7 @@ void			handle_builtin(t_cmd *cmd, t_ms *ms, int in_child);
 int				if_children_needed(t_cmd *cmd);
 void			make_one_child(t_cmd *cmd, t_ms *ms);
 void			execute_command(char **envp, char **cmd, t_ms *ms);
-void			make_multiple_childs(int num_cmds, t_cmd *cmds, t_ms *ms);
+void			make_multiple_children(int num_cmds, t_cmd *cmds, t_ms *ms);
 void			pipe_process(int prev_pipe, int next_pipe);
 void			handle_absolute_or_relative_path(char **envp, char **cmds);
 void			handle_no_path_variable(char **envp, char **cmd);
@@ -130,12 +135,13 @@ void			redirect_process(int infile, int outfile, t_ms *ms);
 //Envp
 int				check_list_for_expansions(t_token *first, t_ms *ms);
 t_expand		*exp_init(t_ms *ms);
+t_expand		*initialize_expansion(t_ms *ms);
 int				expand_in_token(t_token *cur, t_ms *ms, t_bool first_in_str);
 void			expand_variable(t_ms *ms, t_expand *exp, char **result);
-t_ms			*initialize_struct(char **envp);
 char			*handle_spaces(char *copy, t_expand *exp);
 
 //Main
+t_ms			*initialize_struct(char **envp);
 void			initialize_envp_and_exp(t_ms *ms, char **envp);
 int				create_blocks_and_cmds_lists(t_ms *ms);
 int				tokenize_input(char **input, t_ms *ms);
