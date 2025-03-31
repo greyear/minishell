@@ -77,7 +77,7 @@ static int	copy_env_entries(char ***dest, char **src, char *key, int flag)
  * 
  * @return 1 if the removal and replacement are successful, 0 if an error occurs.
  */
-static int	rm_from_env_ex(char ***env, char *key, int flag)
+int	rm_from_env_ex(char ***env, char *key, int flag)
 {
 	char	**new_env;
 
@@ -127,6 +127,8 @@ static void	process_unset_entry(char **args, int i, t_ms *ms, int len)
 		free(key);
 		return ;
 	}
+	if (!ft_strcmp(key, "PWD"))
+		ms->unset_pwd_exp_old = true;
 	if (!rm_from_env_ex(&ms->exported, key, 1)
 		|| !rm_from_env_ex(&ms->envp, key, 0))
 		print_malloc_set_status(ms);
@@ -158,9 +160,9 @@ void	handle_unset(char **args, t_ms *ms)
 
 	i = 1;
 	ms->exit_status = 0;
-	if (!args[1] || (args[1][0] == '_' 
+	if (!args[1] || (args[1][0] == '_'
 		&& (!args[1][1] || args[1][1] == '=')))
-		return;
+		return ;
 	if (args[1][0] && args[1][0] == '-')
 	{
 		print_flag_error(args);

@@ -136,7 +136,8 @@ char	*build_relative_path(char *target, char *cwd, t_ms *ms)
  * 
  * @param ms A pointer to the main shell structure containing exported variables.
  * @param key The environment variable name (e.g., `"PWD="`).
- * @param new_env_entry The new environment entry to assign to the exported variable.
+ * @param new_env_entry The new environment entry to assign to the 
+ *                      exported variable.
  */
 static void	update_exp_var(t_ms *ms, char *key, char *new_env_entry)
 {

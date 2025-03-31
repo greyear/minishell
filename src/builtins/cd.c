@@ -13,54 +13,49 @@
 #include "../../include/minishell.h"
 
 /**
- * @brief Updates the `PWD` (current working directory) and `OLDPWD` 
- * (previous working directory) environment variables during a `cd` 
- * command.
+ * @brief Updates the `PWD` and `OLDPWD` environment variables.
+ *
+ * This function updates the shell's `PWD` and `OLDPWD` environment variables
+ * based on the current and previous working directories after a `cd` operation.
+ * It handles cases where `OLDPWD` might be missing and ensures that environment
+ * variables are updated accordingly.
  * 
- * This function performs the following actions:
- * - Retrieves the current working directory using `getcwd()` and stores 
- *   it in `PWD`.
- * - Checks if the `PWD` environment variable is set. If it is, it updates 
- *   the `OLDPWD` environment variable to store the previous value of `PWD`. 
- *   If `PWD` isn't set or is empty, it uses the `pwd_before` argument as 
- *   the value for `OLDPWD`.
- * - If the `OLDPWD` environment variable doesn't exist, it calls 
- *   `add_oldpwd_to_envp` to add `OLDPWD` to the environment.
- * - Finally, it updates the `PWD` environment variable to the newly 
- *   retrieved `cwd`.
+ * - If `OLDPWD` is not set, it adds the previous working directory to the
+ *   environment.
+ * - If the `PWD` value is present, it updates `OLDPWD` with the current
+ *   directory.
+ * - If `PWD` is not found, and the variable `unset_pwd_exp_old` is true, it
+ *   removes `OLDPWD` from the environment and re-adds it.
+ * - It updates `PWD` to the new working directory.
  * 
- * The `PWD` variable reflects the current working directory, and `OLDPWD` 
- * stores the previous working directory to allow users to return to it 
- * using the `cd -` command.
- * 
- * @param ms The main shell structure, containing the environment variables 
- *           `envp` and flags like `no_env`.
- * @param pwd_before The value of `PWD` before the `cd` operation, used for 
- *                   updating `OLDPWD` when necessary.
+ * @param ms A pointer to the main shell structure containing environment
+ *           variables.
+ * @param pwd_before The previous working directory (before `cd`).
+ * @param pwd_now The current working directory (after `cd`).
  */
-void	update_cd_env(t_ms *ms, char *pwd_before)
+void	update_cd_env(t_ms *ms, char *pwd_before, char *pwd_now)
 {
-	char	cwd[1024];
 	char	*current_pwd;
 
-	if (getcwd(cwd, sizeof(cwd)) == NULL)
-	{
-		perror("cd: getcwd failed");
-		ms->exit_status = 1;
-		return ;
-	}
-	current_pwd = get_env_value("PWD", ms->envp);
-	if (!current_pwd)
-		current_pwd = "";
-	if (current_pwd && *current_pwd != '\0')
-		update_env_var(ms, "OLDPWD=", current_pwd);
-	else
-		update_env_var(ms, "OLDPWD=", pwd_before);
 	if (ms->exit_status != MALLOC_ERR
 		&& !get_env_value("OLDPWD", ms->envp))
 		add_oldpwd_to_envp(ms, pwd_before);
+	current_pwd = get_env_value("PWD", ms->envp);
+	if (current_pwd)
+		update_env_var(ms, "OLDPWD=", current_pwd);
+	else if (ms->unset_pwd_exp_old == true)
+	{
+		if (!rm_from_env_ex(&ms->exported, "OLDPWD", 1)
+			|| !rm_from_env_ex(&ms->envp, "OLDPWD", 0))
+			print_malloc_set_status(ms);
+		if (ms->exit_status != MALLOC_ERR)
+			add_to_exported("OLDPWD", ms);
+		ms->unset_pwd_exp_old = false;
+	}
+	else
+		update_env_var(ms, "OLDPWD=", pwd_before);
 	if (ms->exit_status != MALLOC_ERR)
-		update_env_var(ms, "PWD=", cwd);
+		update_env_var(ms, "PWD=", pwd_now);
 }
 
 /**
@@ -208,7 +203,7 @@ void	handle_cd(char **args, t_ms *ms)
 		ms->exit_status = 1;
 		return ;
 	}
-	update_cd_env(ms, ms->pwd);
+	update_cd_env(ms, ms->pwd, target_dir);
 	if (ms->pwd)
 		free(ms->pwd);
 	ms->pwd = ft_strdup(target_dir);
