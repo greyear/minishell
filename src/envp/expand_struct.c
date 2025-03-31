@@ -47,7 +47,5 @@ t_expand	*initialize_expansion(t_ms *ms)
 	t_expand	*exp;
 
 	exp = exp_init(ms);
-	if (!exp)
-		print_malloc_set_status(ms);
 	return (exp);
 }
