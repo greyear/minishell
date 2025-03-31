@@ -71,9 +71,10 @@ void			check_exit(char	**array, t_ms *ms);
 long long		convert_to_ll(char *str, int *error);
 char			*handle_expansion(t_expand *exp, t_ms *ms);
 char			*dup_or_replace(char *entry, char *arg, char *key, int *flag);
-void			update_cd_env(t_ms *ms, char *pwd_before, char *pwd_now);
 void			add_oldpwd_to_envp(t_ms *ms, char *pwd_before);
 int				rm_from_env_ex(char ***env, char *key, int flag);
+int				make_cd_args(char ***args, t_ms *ms, char *pwd_before);
+void			handle_updating_oldpwd(t_ms*ms, char *pwd_before);
 
 //Lexer
 t_token			*tokenization(char *str, t_ms *ms);

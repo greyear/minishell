@@ -13,6 +13,41 @@
 #include "../../include/minishell.h"
 
 /**
+ * @brief Updates the `OLDPWD` environment variable.
+ *
+ * This function ensures `OLDPWD` is properly updated when changing 
+ * directories.
+ * - If `PWD` exists, `OLDPWD` is set to its value.
+ * - If `PWD` was unset and `unset_pwd_exp_old` is true, `OLDPWD` is 
+ *   removed from both `envp` and `exported` and then re-added to 
+ *   `exported`.
+ * - Otherwise, `OLDPWD` is set to `pwd_before`.
+ *
+ * @param ms A pointer to the main shell structure containing 
+ *           environment variables.
+ * @param pwd_before The previous working directory.
+ */
+void	handle_updating_oldpwd(t_ms*ms, char *pwd_before)
+{
+	char	*current_pwd;
+
+	current_pwd = get_env_value("PWD", ms->envp);
+	if (current_pwd)
+		update_env_var(ms, "OLDPWD=", current_pwd);
+	else if (ms->unset_pwd_exp_old == true)
+	{
+		if (!rm_from_env_ex(&ms->exported, "OLDPWD", 1)
+			|| !rm_from_env_ex(&ms->envp, "OLDPWD", 0))
+			print_malloc_set_status(ms);
+		if (ms->exit_status != MALLOC_ERR)
+			add_to_exported("OLDPWD", ms);
+		ms->unset_pwd_exp_old = false;
+	}
+	else
+		update_env_var(ms, "OLDPWD=", pwd_before);
+}
+
+/**
  * @brief Handles an empty OLDPWD variable.
  *
  * If OLDPWD is empty, this function updates it with the current PWD.
@@ -97,42 +132,6 @@ char	*get_oldpwd_directory(t_ms *ms)
 	}
 	ft_putendl_fd(target, STDOUT_FILENO);
 	return (ft_strdup(target));
-}
-
-/**
- * @brief Creates arguments for exporting the `OLDPWD` environment variable.
- * 
- * This function dynamically allocates memory for an array of strings to store 
- * the `export` command and the `OLDPWD` environment variable with its value 
- * set to the previous working directory (`pwd_before`). If any memory 
- * allocation fails, the function sets the exit status to `MALLOC_ERR` and 
- * prints an error message. The generated arguments are returned in the `args` 
- * parameter.
- * 
- * @param args A pointer to a pointer to an array of strings, which will 
- *             store the `export` command and the `OLDPWD` variable.
- * @param ms A pointer to the `t_ms` structure, which manages shell-related 
- *           data, including exit status.
- * @param pwd_before A string representing the previous working directory.
- * 
- * @return 1 on success, 0 on failure (due to memory allocation errors).
- */
-static int	make_cd_args(char ***args, t_ms *ms, char *pwd_before)
-{
-	(*args) = malloc(sizeof(char *) * 3);
-	if (!(*args))
-	{
-		print_malloc_set_status(ms);
-		return (0);
-	}
-	(*args)[0] = ft_strdup("export");
-	if (!(*args)[0])
-		return (0);
-	(*args)[1] = ft_strjoin("OLDPWD=", pwd_before);
-	if (!(*args)[1])
-		return (0);
-	(*args)[2] = NULL;
-	return (1);
 }
 
 /**
