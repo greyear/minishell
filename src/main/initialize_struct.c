@@ -63,6 +63,7 @@ void	checking_pwds(t_ms *ms)
 		return ;
 	}
 	change_values_env_ex(pwd, ms);
+	free(pwd);
 }
 
 /**
