@@ -155,6 +155,8 @@ static int	handle_cd_directory_checks(char *target_dir, t_ms *ms)
  */
 static int	cd_error(char **args, t_ms *ms)
 {
+	int		len;
+
 	if (!args[1])
 		return (0);
 	if (args[2])
@@ -164,7 +166,10 @@ static int	cd_error(char **args, t_ms *ms)
 		ms->exit_status = 1;
 		return (1);
 	}
-	return (0);
+	len = ft_strlen(args[1]);
+	if (len > 1 && args[1][len - 1] == '/')
+		args[1][len - 1] = '\0';
+ 	return (0);
 }
 
 /**
