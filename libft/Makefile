@@ -99,11 +99,17 @@ SRC 			=	$(FTIS_DIR) $(FTLST_DIR) $(FTMEM_DIR) $(FTPUT_DIR) $(FTSTR_DIR) $(FTTO_
 # Object files
 OBJ				=	$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRC))
 
+# Colors
+BLUE			=	\033[1;34m
+GREEN			=	\033[1;32m
+NC				=	\033[0m
+
 #Build rules
 all:			$(NAME)
 
 $(NAME):		$(OBJ)
 				@$(AR) $(NAME) $(OBJ)
+				@echo "$(BLUE)Created Libft$(NC)"
 
 $(OBJ_DIR)%.o:	$(SRC_DIR)%.c
 				@mkdir -p $(@D)
@@ -115,6 +121,7 @@ clean:
 		
 fclean:			clean 
 				@$(RM) $(NAME)
+				@echo "$(BLUE)Libft removed!$(NC)"
 			
 re:				fclean all
 

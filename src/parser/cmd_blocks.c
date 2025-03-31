@@ -50,68 +50,37 @@ int	check_block(t_token *start, t_token *end, int *err_flag)
 }
 
 /**
- * @brief Creates a new command block from a sequence of tokens.
+ * @brief Creates and appends a new block to the list of command blocks.
  * 
- * This function initializes a new `t_block` structure representing a command 
- * block. The block starts from `ms->tokens` and ends at `end`. If memory 
- * allocation fails, the function sets an error flag, prints an error message, 
- * and returns the original `first_block` without modification.
+ * This function allocates memory for a new `t_block` structure, 
+ * initializing its `start` and `end` pointers with the given tokens. 
+ * If memory allocation fails, it sets the `ms->err` flag to `1`, 
+ * prints an error message, and returns the original `first_block` list.
  * 
- * If `first_block` is `NULL`, the new block is returned as the first block in 
- * the list. Otherwise, it is appended to the end of the existing block list.
+ * If `first_block` is `NULL`, the function returns the newly created block
+ * as the first element of the list. Otherwise, it appends the new block to 
+ * the end of the existing linked list.
  * 
- * @param ms A pointer to the main shell structure containing tokenized input.
- * @param end A pointer to the token marking the end of the block.
- * @param first_block A pointer to the first block in the linked list of blocks.
- * @param err_flag A pointer to an integer flag used to indicate errors. If 
- *                 memory allocation fails, the flag is set to `1`.
+ * @param ms Pointer to the main shell structure containing error status.
+ * @param start Pointer to the first token of the new block.
+ * @param end Pointer to the last token (not included) of the new block.
+ * @param first_block Pointer to the first block in the linked list.
  * 
- * @return A pointer to the first block in the linked list (either updated or 
- *         unchanged).
- * @note If `first_block` is `NULL`, a new block is created and returned as 
- *       the first block.
- * @note If memory allocation fails, the function does not modify the existing 
- *       block list.
+ * @return Pointer to the head of the block list, either the same as 
+ *         `first_block` or a newly created block if the list was empty.
  */
-/*
-RIGHT VERSION
-t_block	*create_block(t_ms *ms, t_token *end, t_block *first_block, int *err)
+t_block	*create_block(t_ms *ms, t_token *start, t_token *end, \
+		t_block *first_block)
 {
 	t_block	*new;
 	t_block	*cur;
 
-	if (check_block(ms->tokens, end, err))
+	if (check_block(start, end, &(ms->err)))
 		return (first_block);
 	new = (t_block *)malloc(1 * sizeof(t_block));
 	if (!new)
 	{
-		*err = 1;
-		print_malloc_set_status(ms);
-		return (first_block);
-	}
-	new->start = ms->tokens;
-	new->end = end;
-	new->next = NULL;
-	if (!first_block)
-		return (new);
-	cur = first_block;
-	while (cur->next)
-		cur = cur->next;
-	cur->next = new;
-	return (first_block);
-}*/
-
-t_block	*create_block(t_ms *ms, t_token *start, t_token *end, t_block *first_block, int *err)
-{
-	t_block	*new;
-	t_block	*cur;
-
-	if (check_block(start, end, err))
-		return (first_block);
-	new = (t_block *)malloc(1 * sizeof(t_block));
-	if (!new)
-	{
-		*err = 1;
+		ms->err = 1;
 		print_malloc_set_status(ms);
 		return (first_block);
 	}
@@ -128,53 +97,27 @@ t_block	*create_block(t_ms *ms, t_token *start, t_token *end, t_block *first_blo
 }
 
 /**
- * @brief Creates a linked list of command blocks by splitting tokens at 
- * pipes.
+ * @brief Splits tokens into command blocks based on pipe (`|`) tokens.
  * 
- * This function processes a sequence of tokens and splits them into command 
- * blocks whenever a `PIPE` token is encountered. Each block is created using 
- * `create_block()`, and all blocks are linked together in a list. The function 
- * stops processing if an error occurs (e.g., memory allocation failure).
+ * This function iterates through a list of tokens, dividing them into 
+ * separate command blocks whenever a `PIPE` token is encountered. 
+ * Each created block represents a segment of the command sequence.
  * 
- * @param ms A pointer to the main shell structure containing tokenized input.
- * @param end A pointer to the token marking the end of parsing.
- * @param err_flag A pointer to an integer flag used to indicate errors. If an 
- *                 error occurs during block creation, the flag is set to `1`, 
- *                 and all allocated blocks are cleaned up before returning 
- *                 `NULL`.
+ * - If a `PIPE` token is found, a new block is created from `start` to 
+ *   the current token, and `start` is updated to the next token.
+ * - If an error occurs (`ms->err` is set), the function cleans up any 
+ *   allocated blocks and returns `NULL`.
+ * - Finally, it creates a block for the last segment of tokens and returns 
+ *   the head of the linked list of blocks.
  * 
- * @return A pointer to the first block in the linked list, or `NULL` if an 
- *         error occurs.
+ * @param ms Pointer to the main shell structure containing error status.
+ * @param start Pointer to the first token in the sequence.
+ * @param end Pointer to the last token (not included) in the sequence.
  * 
- * @note If a `PIPE` token is found, a new block is created before the pipe, and 
- *       parsing continues with the next token.
- * @note If an error occurs, the function calls `clean_block_list()` to free 
- *       allocated memory.
+ * @return Pointer to the head of the list of created blocks, or `NULL` 
+ *         if an error occurs.
  */
-/* RIGHT VERSION
-t_block	*create_blocks_list(t_ms *ms, t_token *end, int *err_flag)
-{
-	t_token	*cur_token;
-	t_block	*first_block;
-
-	first_block = NULL;
-	cur_token = ms->tokens;
-	while (cur_token->next && cur_token != end)
-	{
-		if (cur_token->type == PIPE)
-		{
-			first_block = create_block(ms, cur_token, first_block, err_flag);
-			ms->tokens = cur_token->next;
-		}
-		cur_token = cur_token->next;
-		if (*err_flag)
-			return (clean_block_list(&first_block));
-	}
-	first_block = create_block(ms, cur_token->next, first_block, err_flag);
-	return (first_block);
-}*/
-
-t_block	*create_blocks_list(t_ms *ms, t_token *start, t_token *end, int *err_flag)
+t_block	*create_blocks_list(t_ms *ms, t_token *start, t_token *end)
 {
 	t_token	*cur_token;
 	t_block	*first_block;
@@ -185,14 +128,14 @@ t_block	*create_blocks_list(t_ms *ms, t_token *start, t_token *end, int *err_fla
 	{
 		if (cur_token->type == PIPE)
 		{
-			first_block = create_block(ms, start, cur_token, first_block, err_flag);
+			first_block = create_block(ms, start, cur_token, first_block);
 			start = cur_token->next;
 		}
 		cur_token = cur_token->next;
-		if (*err_flag)
+		if (ms->err)
 			return (clean_block_list(&first_block));
 	}
-	first_block = create_block(ms, start, cur_token->next, first_block, err_flag);
+	first_block = create_block(ms, start, cur_token->next, first_block);
 	return (first_block);
 }
 
