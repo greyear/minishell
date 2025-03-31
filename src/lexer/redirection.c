@@ -93,7 +93,6 @@ static void	process_redirection_file(t_token *cur, t_ms *ms)
 	t_token	*deleted;
 
 	deleted = cur->next;
-	//printf("To delete in redirs: type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", deleted->type, deleted->data, deleted->quote, deleted->specific_redir, deleted->ambiguous, deleted->file);
 	cur->ambiguous = cur->next->ambiguous;
 	if (!cur->ambiguous)
 	{
