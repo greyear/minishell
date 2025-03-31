@@ -13,23 +13,21 @@
 #include "../../include/minishell.h"
 
 /**
- * @brief Handles the case where OLDPWD is empty.
+ * @brief Handles an empty OLDPWD variable.
+ *
+ * If OLDPWD is empty, this function updates it with the current PWD.
+ * If PWD is also empty, it retrieves the current working directory 
+ * using getcwd() and updates PWD instead.
  * 
- * This function retrieves the current working directory
- * from the PWD environment variable. If PWD is not set or empty,
- * it attempts to get the directory using 
- * getcwd() and updates PWD accordingly. Otherwise, it updates OLDPWD with the 
- * current PWD value.
+ * - Retrieves PWD from the environment.
+ * - If PWD is empty, calls getcwd() and updates PWD.
+ * - Otherwise, updates OLDPWD with the current PWD value.
+ * - If getcwd() fails, prints an error and sets exit_status to 1.
  * 
- * @param ms A pointer to the `t_ms` structure, which contains environment 
- *           variables and shell-related data.
- * 
- * @return A newly allocated string containing the current working directory 
- *         (previously stored in PWD) or NULL if PWD was empty and updated 
- *         from getcwd().
+ * @param ms A pointer to the main shell structure containing 
+ *           environment variables.
  */
-
-static char	*handle_empty_oldpwd(t_ms *ms)
+static void	handle_empty_oldpwd(t_ms *ms)
 {
 	char	*current_pwd;
 	char	cwd[1024];
@@ -42,13 +40,13 @@ static char	*handle_empty_oldpwd(t_ms *ms)
 		{
 			perror("getcwd failed");
 			ms->exit_status = 1;
-			return (NULL);
+			return ;
 		}
 		update_env_var(ms, "PWD=", cwd);
-		return (NULL);
+		return ;
 	}
 	update_env_var(ms, "OLDPWD=", current_pwd);
-	return (ft_strdup(current_pwd));
+	return ;
 }
 
 /**
@@ -58,7 +56,8 @@ static char	*handle_empty_oldpwd(t_ms *ms)
  * This function attempts to fetch the value of the `OLDPWD` environment 
  * variable and perform several checks:
  * - If `OLDPWD` is not set, it prints an error message and returns `NULL`.
- * - If `OLDPWD` is empty, it calls `handle_empty_oldpwd` to handle this case.
+ * - If `OLDPWD` is empty, it calls `handle_empty_oldpwd` to handle this case
+ *   and returns `NULL`.
  * - If `OLDPWD` points to a non-existent file or directory, it prints an 
  *   error and returns `NULL`.
  * - If `OLDPWD` is valid, it prints the directory and returns a duplicate 
@@ -86,7 +85,10 @@ char	*get_oldpwd_directory(t_ms *ms)
 		return (NULL);
 	}
 	if (*target == '\0')
-		return (handle_empty_oldpwd(ms));
+	{
+		handle_empty_oldpwd(ms);
+		return (NULL);
+	}
 	if (access(target, F_OK) != 0)
 	{
 		print_cd_error(target, NO_FILE_OR_DIR);

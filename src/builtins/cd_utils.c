@@ -119,30 +119,76 @@ char	*build_relative_path(char *target, char *cwd, t_ms *ms)
 	return (full_path);
 }
 
-
+/**
+ * @brief Updates an exported environment variable.
+ *
+ * This function searches for the specified key in the exported environment 
+ * variables list (`ms->exported`) and updates it with the new value. If the 
+ * key is not found, the new environment entry is discarded.
+ * 
+ * - If the shell's exit status is `MALLOC_ERR`, the function returns early 
+ *   without modifying the list.
+ * - It searches for the key in `ms->exported` and updates the corresponding 
+ *   entry with the new value.
+ * - If memory allocation fails, it prints an error message and updates the 
+ *   exit status.
+ * - Frees the allocated memory for the new entry after updating.
+ * 
+ * @param ms A pointer to the main shell structure containing exported variables.
+ * @param key The environment variable name (e.g., `"PWD="`).
+ * @param new_env_entry The new environment entry to assign to the exported variable.
+ */
 static void	update_exp_var(t_ms *ms, char *key, char *new_env_entry)
 {
 	int		i;
 
 	i = 0;
+	if (ms->exit_status == MALLOC_ERR)
+	{
+		free(new_env_entry);
+		return ;
+	}
 	while (ms->exported[i])
 	{
 		if (ft_strncmp(ms->exported[i], key, ft_strlen(key)) == 0)
 		{
 			free(ms->exported[i]);
 			ms->exported[i] = ft_strdup(new_env_entry);
+			if (!ms->exported[i])
+				print_malloc_set_status(ms);
+			free(new_env_entry);
 			return ;
 		}
 		i++;
 	}
+	free(new_env_entry);
 }
 
-
+/**
+ * @brief Updates an environment variable in the shell's environment.
+ *
+ * This function allocates memory for a new entry in the format `"KEY=VALUE"`,
+ * searches for the key in the environment variables array, and updates it with
+ * the new value. It also updates the exported environment variables list.
+ * 
+ * - Allocates memory for the new environment entry.
+ * - If memory allocation fails, it prints an error message and updates 
+ *   the exit status.
+ * - Searches for the key in `ms->envp`, and if found, replaces the old 
+ *   entry with the new one.
+ * - Calls `update_exp_var()` to ensure consistency with the exported 
+ *   environment.
+ * - Frees the memory allocated for the new entry after updating.
+ * 
+ * @param ms A pointer to the main shell structure containing environment 
+ *           variables.
+ * @param key The environment variable name (e.g., `"PWD="`).
+ * @param new_value The new value to assign to the variable.
+ */
 void	update_env_var(t_ms *ms, char *key, char *new_value)
 {
 	int		i;
 	char	*new_env_entry;
-	
 
 	i = 0;
 	new_env_entry = malloc(ft_strlen(key) + ft_strlen(new_value) + 1);
@@ -159,10 +205,11 @@ void	update_env_var(t_ms *ms, char *key, char *new_value)
 		{
 			free(ms->envp[i]);
 			ms->envp[i] = ft_strdup(new_env_entry);
+			if (!ms->envp[i])
+				print_malloc_set_status(ms);
 			break ;
 		}
 		i++;
 	}
 	update_exp_var(ms, key, new_env_entry);
-	free(new_env_entry);
 }
