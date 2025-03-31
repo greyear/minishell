@@ -24,7 +24,7 @@
  * 
  * @note If memory allocation fails, the function stops reading further lines.
  */
-static void	read_from_history_file(int fd, t_ms *ms) //fill_history +
+static void	read_from_history_file(int fd, t_ms *ms)
 {
 	char	*buf;
 	char	*trimmed;
@@ -63,7 +63,7 @@ static void	read_from_history_file(int fd, t_ms *ms) //fill_history +
  * 
  * @note If the file does not exist, it is created but remains empty.
  */
-t_bool	open_read_history_file(t_ms *ms) //fetch_history_file +
+t_bool	open_read_history_file(t_ms *ms)
 {
 	int	fd;
 
@@ -90,7 +90,7 @@ t_bool	open_read_history_file(t_ms *ms) //fetch_history_file +
  * 
  * @note The function overwrites the existing history file.
  */
-void	write_to_history_file(t_ms *ms) //add_to_history_file +
+void	write_to_history_file(t_ms *ms)
 {
 	int	fd;
 	int	i;

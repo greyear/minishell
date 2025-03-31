@@ -14,18 +14,6 @@
 
 volatile sig_atomic_t	g_sgnl;
 
-void	print_tokens(t_token *token_list)
-{
-	t_token	*cur = token_list;
-
-	printf("Tokens:\n");
-	while (cur)
-	{
-		printf("Type: %d, Data: %s, Quotes: %c, Redir: %d, Ambig: %d, File: %s\n", cur->type, cur->data, cur->quote, cur->specific_redir, cur->ambiguous, cur->file);
-		cur = cur->next;
-	}
-}
-
 /**
  * @brief Executes a list of commands.
  * 
