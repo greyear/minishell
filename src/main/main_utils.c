@@ -118,13 +118,8 @@ int	tokenize_input(char **input, t_ms *ms)
  */
 int	create_blocks_and_cmds_lists(t_ms *ms)
 {
-	//int		err_syntax;
-
-	//err_syntax = 0;
 	ms->err = 0;
-	//ms->blocks = create_blocks_list(ms, ms->tokens, NULL, &err_syntax);
 	ms->blocks = create_blocks_list(ms, ms->tokens, NULL);
-	//if (err_syntax)
 	if (ms->err)
 	{
 		ft_putstr_fd(BLOCKS_ERR, STDERR_FILENO);
