@@ -144,11 +144,11 @@ static void	run_minishell(t_ms *ms)
 			|| ms->exit_status == SYSTEM_ERR)
 			break ;
 		// FOR USUAL EXECUTION
-		/*signal_mode(INTERACTIVE);
+		signal_mode(INTERACTIVE);
 		input = readline("minishell> ");
-		signal_mode(IGNORE);*/
+		signal_mode(IGNORE);
 		//FOR TESTER
-		if (isatty(fileno(stdin)))
+		/*if (isatty(fileno(stdin)))
 			input = readline("minishell> ");
 		else
 		{
@@ -157,7 +157,7 @@ static void	run_minishell(t_ms *ms)
 				break ;
 			input = ft_strtrim(line, "\n");
 			free(line);
-		}
+		}*/
 		if (!input)
 		{
 			ft_putstr_fd("exit\n", STDOUT_FILENO);
