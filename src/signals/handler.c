@@ -118,7 +118,7 @@ static void	mode_init(void (*ctrlc)(int), void (*ctrlbackslash)(int))
 	struct sigaction	cb;
 
 	ft_memset(&cc, 0, sizeof(cc));
-	ft_memset(&cc, 0, sizeof(cb));
+	ft_memset(&cb, 0, sizeof(cb));
 	cc.sa_handler = ctrlc;
 	cb.sa_handler = ctrlbackslash;
 	sigemptyset(&cc.sa_mask);
