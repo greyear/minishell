@@ -13,23 +13,22 @@
 #include "../../include/minishell.h"
 
 /**
- * @brief Handles the execution of commands given as absolute or relative paths.
+ * @brief Executes commands given as absolute or relative paths.
  * 
- * This function checks whether the provided command is a directory, an 
- * existing file, or an executable. If it is a directory, it prints an error 
- * and exits. If it exists but lacks execution permissions, it prints an error 
- * and exits. If the command does not exist, it prints an error and exits.
+ * Checks if the command is a directory, an existing file, or an executable.  
+ * If it is a directory, prints an error and exits. If it exists but lacks  
+ * execution permissions, prints an error and exits. If it does not exist,  
+ * prints an error and exits. If executable, attempts to run it with execve.  
  * 
- * @param envp The environment variables.
- * @param cmds The command and its arguments.
+ * @param envp The environment variables.  
+ * @param cmds The command and its arguments.  
+ * @param ms The minishell struct for cleanup.  
  * 
- * @return This function does not return; it either executes the command or 
- *         exits the process with:
- *         - `126` if the command is a directory or lacks execution 
- *           permissions.
- *         - `127` if the command does not exist.
+ * @return This function does not return; it either executes or exits with:  
+ *         - `126` if the command is a directory or lacks execution perms.  
+ *         - `127` if the command does not exist.  
  */
-void	handle_absolute_or_relative_path(char **envp, char **cmds)
+void	handle_absolute_or_relative_path(char **envp, char **cmds, t_ms *ms)
 {
 	DIR	*dir;
 
@@ -38,6 +37,7 @@ void	handle_absolute_or_relative_path(char **envp, char **cmds)
 	{
 		closedir(dir);
 		print_cmd_error(cmds[0], IS_DIR);
+		clean_in_child(ms);
 		exit(CMD_EXEC);
 	}
 	if (access(cmds[0], F_OK) == 0)
@@ -45,30 +45,27 @@ void	handle_absolute_or_relative_path(char **envp, char **cmds)
 		if (access(cmds[0], X_OK) == 0)
 			execve(cmds[0], cmds, envp);
 		print_cmd_error(cmds[0], PERM_DEN);
+		clean_in_child(ms);
 		exit(CMD_EXEC);
 	}
 	print_cmd_error(cmds[0], NO_FILE_OR_DIR);
+	clean_in_child(ms);
 	exit(CMD_NF);
 }
 
 /**
- * @brief Checks if the command is only a dot (`.`) or starts with multiple dots.
- *
- * This function checks if the first command in `cmds` consists only of dots 
- * (`.`). If the condition is met, an error message is printed, and the 
- * program exits with a status code of 127, indicating a command not found 
- * error.
+ * @brief Checks if the command consists only of dots (`.`).
  * 
- * The function iterates over the characters of the command, ensuring there 
- * are no valid commands beyond the dots.
+ * Iterates through the command to verify if it only contains dots. If so,  
+ * prints an error, cleans up, and exits.  
  * 
- * @param cmds A pointer to the array of command strings, with `cmds[0]` 
- *             being the command to check.
- *
- * @return None. The function does not return a value. If the condition is 
- *         met, it prints an error and exits the program.
+ * @param cmds The command and its arguments.  
+ * @param ms The minishell struct for cleanup.  
+ * 
+ * @return This function does not return; it exits with `127` if the command  
+ *         consists only of dots.  
  */
-void	check_if_dot(char **cmds)
+void	check_if_dot(char **cmds, t_ms *ms)
 {
 	int		i;
 
@@ -78,38 +75,37 @@ void	check_if_dot(char **cmds)
 	if (cmds[0][i] == '\0')
 	{
 		print_cmd_error(cmds[0], NO_CMD);
+		clean_in_child(ms);
 		exit(CMD_NF);
 	}
 }
 
 /**
- * @brief Handles the case when the `PATH` environment variable is not set and 
- *        attempts to execute a command directly.
+ * @brief Handles command execution when no PATH variable is set.
  * 
- * This function checks if the command provided as the first argument (`cmd[0]`) 
- * exists and is executable. If the command exists and has execute permissions, 
- * it calls `execve` to run the command. If the command exists but does not have 
- * execute permissions, it prints a permission denied error and exits with 
- * status 126. If the command does not exist, it prints a "command not found"
- * error and exits with status 127.
+ * Checks if the command exists and has execution permissions. If the file  
+ * exists and is executable, it runs with execve. Otherwise, prints an error,  
+ * cleans up, and exits.  
  * 
- * @param envp An array of environment variables, which is passed to `execve`.
- * @param cmd An array of command arguments, where `cmd[0]` is the command to 
- *            be executed.
+ * @param envp The environment variables.  
+ * @param cmd The command and its arguments.  
+ * @param ms The minishell struct for cleanup.  
  * 
- * @return This function does not return. If the command is not found or 
- *         executable, the program exits with an appropriate status code 
- *         (127 for command not found, 126 for permission denied).
+ * @return This function does not return; it either executes or exits with:  
+ *         - `126` if the command lacks execution permissions.  
+ *         - `127` if the command does not exist.  
  */
-void	handle_no_path_variable(char **envp, char **cmd)
+void	handle_no_path_variable(char **envp, char **cmd, t_ms *ms)
 {
 	if (access(cmd[0], F_OK) == 0)
 	{
 		if (access(cmd[0], X_OK) == 0)
 			execve(cmd[0], cmd, envp);
 		print_cmd_error(cmd[0], PERM_DEN);
+		clean_in_child(ms);
 		exit(CMD_EXEC);
 	}
 	print_cmd_error(cmd[0], NO_CMD);
+	clean_in_child(ms);
 	exit(CMD_NF);
 }
