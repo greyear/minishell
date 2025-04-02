@@ -20,7 +20,6 @@
 # include "../libft/include/ft_printf.h"
 # include "../libft/include/get_next_line.h"
 # include <unistd.h>
-//# include <stdio.h>
 # include <stdlib.h>
 # include <sys/stat.h>
 # include <sys/wait.h>
@@ -125,9 +124,9 @@ void			make_one_child(t_cmd *cmd, t_ms *ms);
 void			execute_command(char **envp, char **cmd, t_ms *ms);
 void			make_multiple_children(int num_cmds, t_cmd *cmds, t_ms *ms);
 void			pipe_process(int prev_pipe, int next_pipe);
-void			handle_absolute_or_relative_path(char **envp, char **cmds);
-void			handle_no_path_variable(char **envp, char **cmd);
-void			check_if_dot(char **cmds);
+void			handle_absolute_or_relative_path(char **envp, char **cmds, t_ms *ms);
+void			handle_no_path_variable(char **envp, char **cmd, t_ms *ms);
+void			check_if_dot(char **cmds, t_ms *ms);
 void			setup_pipes(int *pipe_fd, int i, int num_cmds, int cur_fd);
 void			redirect_process(int infile, int outfile, t_ms *ms);
 
@@ -190,6 +189,7 @@ void			clean_arr(char ***arr);
 void			clean_struct(t_ms *ms);
 void			clean_struct_partially(t_ms *ms);
 void			cleanup_heredocs(char **filenames, t_ms *ms);
+void			clean_in_child(t_ms *ms);
 void			free_pids(t_pipe *p);
 void			close_every_cmds_fds(t_cmd *cmd);
 void			close_pipe_fds(t_pipe *p);
