@@ -54,7 +54,7 @@ valgrind --leak-check=full --show-leak-kinds=all --suppressions=val.supp ./minis
 - **Environment variable expansion** (`$VARIABLE`)
 - **Special variable support** (`$?` for the last exit status)
 
-##### ✅ Signal handling:
+#### ✅ Signal handling:
   - `Ctrl+C` interrupts the current command and shows a new prompt
   - `Ctrl+D` exits the shell
   - `Ctrl+\` does nothing (just like Bash)
@@ -68,6 +68,6 @@ valgrind --leak-check=full --show-leak-kinds=all --suppressions=val.supp ./minis
   - `env` (print environment variables)
   - `exit` (close the shell)
 
-💡 Two months of teamwork, debugging, and late-night coding sessions paid off. We pushed ourselves, learned so much, and had a great time working together! 💪🎉 
+### 💡 Two months of teamwork, debugging, and late-night coding sessions paid off. We pushed ourselves, learned so much, and had a great time working together! 💪🎉 
 
 ## Moving on to next coding adventures ! 🏆
