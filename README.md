@@ -17,19 +17,25 @@ We’re super proud to say we got 101/100 points! ✅
 
 ⚙️ How to Run It
 
-1️⃣ Compile the project:
+1️⃣ Clone the repository:
+
+git clone https://github.com/greyear/minishell && cd minishell
+
+2️⃣ Compile the project:
 
 make
 
-2️⃣ Launch the shell:
+3️⃣ Launch the shell:
 
 ./minishell
 
 🔍 Leak Checking
 
-To check for memory leaks using Valgrind (with a suppression file to ignore readline-related leaks), run:
+To check for memory leaks using Valgrind (with a suppression file to ignore
+readline-related leaks), run:
 
 valgrind --leak-check=full --show-leak-kinds=all --suppressions=val.supp ./minishell
+
 
 ✨ Features
 
