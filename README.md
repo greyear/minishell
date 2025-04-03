@@ -44,39 +44,24 @@ valgrind --leak-check=full --show-leak-kinds=all --suppressions=val.supp ./minis
 ✅ Command execution using absolute/relative paths or searching in $PATH
 ✅ Working command history
 ✅ Redirections & Pipes:
-
     < Input redirection
-
     > Output redirection
-
     << Here-document (read until delimiter)
-
     >> Append mode
-
     | Piping between commands
-    ✅ Environment variable expansion ($VARIABLE)
-    ✅ Special variable support ($? for the last exit status)
-    ✅ Signal handling:
-
+ ✅ Environment variable expansion ($VARIABLE)
+ ✅ Special variable support ($? for the last exit status)
+ ✅ Signal handling:
     Ctrl+C interrupts the current command and shows a new prompt
-
     Ctrl+D exits the shell
-
     Ctrl+\ does nothing (just like Bash)
-    ✅ Built-in commands:
-
+ ✅ Built-in commands:
     echo (with -n option)
-
     cd (relative/absolute paths)
-
     pwd (print working directory)
-
     export (set environment variables)
-
     unset (remove environment variables)
-
     env (print environment variables)
-
     exit (close the shell)
 
 💡 Two months of teamwork, debugging, and late-night coding sessions paid off. We pushed ourselves, learned so much, and had a great time working together! 💪🎉 
