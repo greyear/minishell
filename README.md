@@ -36,8 +36,7 @@ make
 To check for memory leaks using Valgrind (with a suppression file to ignore readline-related leaks), run:
 ```sh
 valgrind --leak-check=full --show-leak-kinds=all --suppressions=val.supp ./minishell
-
-
+```
 
 ✨ Features
 
