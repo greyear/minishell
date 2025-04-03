@@ -1,19 +1,19 @@
 # 🐚 Minishell – A Tiny Bash Clone
 ## Made by [@Anya Zinchenko](https://github.com/greyear) and [@Seela Salorinta](https://github.com/SeelaSalorinta)
 
-### Minishell is our very own small-scale Unix shell, built entirely from scratch.
-### Over the course of two intense months, we poured our time, energy, and
-### countless discussions into bringing this project to life. It was a true test of
-### our problem-solving skills, attention to detail, and ability to push each other
-### forward.
+Minishell is our very own small-scale Unix shell, built entirely from scratch.
+Over the course of two intense months, we poured our time, energy, and
+countless discussions into bringing this project to life. It was a true test of
+our problem-solving skills, attention to detail, and ability to push each other
+forward.
 
-### This project was more than just writing a shell—it was about learning to think
-### like one. We dissected how command execution works, how processes communicate,
-### and how to manage an ever-changing environment. Through long debugging
-### sessions, design choices, and moments of triumph, we kept each other motivated
-### and on pace, making this one of the most rewarding projects we've tackled.
+This project was more than just writing a shell—it was about learning to think
+like one. We dissected how command execution works, how processes communicate,
+and how to manage an ever-changing environment. Through long debugging
+sessions, design choices, and moments of triumph, we kept each other motivated
+and on pace, making this one of the most rewarding projects we've tackled.
 
-### We’re super proud to say we got 101/100 points! ✅
+We’re super proud to say we got 101/100 points! ✅
 
 ⚙️ How to Run It
 
