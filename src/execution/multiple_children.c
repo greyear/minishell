@@ -79,7 +79,6 @@ static void	wait_for_children(pid_t last_pid, t_ms *ms, t_pipe *p)
 static void	child_process(t_cmd *cur, t_pipe *p, t_cmd *cmds)
 {
 	int	exit_num;
-
 	if (!cur->args || !cur->args[0])
 	{
 		close_every_cmds_fds(cmds);
