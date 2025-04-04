@@ -122,7 +122,6 @@ static char	*find_path_from_envp(char **envp, char **cmds, t_ms *ms)
 void	execute_command(char **envp, char **cmd, t_ms *ms)
 {
 	char	*path;
-
 	check_if_dot(cmd, ms);
 	if (cmd[0][0] == '/' || cmd[0][0] == '.')
 		handle_absolute_or_relative_path(envp, cmd, ms);
