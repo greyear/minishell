@@ -99,40 +99,49 @@ static char	*find_path_from_envp(char **envp, char **cmds, t_ms *ms)
 }
 
 /**
- * @brief Executes a command by searching for its path and calling `execve`.
+ * @brief Executes a command by determining its execution path.
  * 
- * This function checks if the provided command is valid, resolves its path 
- * (either through the `PATH` environment variable or directly if it's an 
- * absolute/relative path), and then attempts to execute it using `execve`. 
- * It also handles errors related to command not found, permission denied, 
- * or memory allocation failure.
+ * Handles different cases based on the command format:
+ * - If the command consists only of dots, prints an error and exits.  
+ * - If it is an absolute or relative path, attempts to execute it.  
+ * - If no PATH variable is found, handles execution without PATH.  
+ * - Otherwise, searches for the command in the PATH directories.  
  * 
- * @param envp A pointer to the environment variables.
- * @param cmd A pointer to the command arguments.
- * @param ms A pointer to the main shell structure containing shell state.
+ * If a valid path is found, it runs with execve. If execution fails due to  
+ * permission issues, prints an error and exits.  
  * 
- * @return This function does not return; it exits the program after attempting 
- *         to execute the command.
+ * @param envp The environment variables.  
+ * @param cmd The command and its arguments.  
+ * @param ms The minishell struct for cleanup and error handling.  
+ * 
+ * @return This function does not return; it either executes or exits with:  
+ *         - `126` if execution is denied.  
+ *         - `127` if the command does not exist.  
+ *         - `MALLOC_ERR` if memory allocation fails.  
  */
 void	execute_command(char **envp, char **cmd, t_ms *ms)
 {
 	char	*path;
-
-	check_if_dot(cmd);
+	check_if_dot(cmd, ms);
 	if (cmd[0][0] == '/' || cmd[0][0] == '.')
-		handle_absolute_or_relative_path(envp, cmd);
+		handle_absolute_or_relative_path(envp, cmd, ms);
 	if (!get_env_value("PATH", envp))
-		handle_no_path_variable(envp, cmd);
+		handle_no_path_variable(envp, cmd, ms);
 	path = find_path_from_envp(envp, cmd, ms);
 	if (ms->exit_status == MALLOC_ERR)
+	{
+		clean_in_child(ms);
 		exit(MALLOC_ERR);
+	}
 	if (!path)
 	{
 		print_cmd_error(cmd[0], NO_CMD);
+		clean_in_child(ms);
 		exit(CMD_NF);
 	}
 	execve(path, cmd, envp);
 	print_cmd_error(path, PERM_DEN);
 	free(path);
+	clean_in_child(ms);
 	exit(CMD_EXEC);
 }

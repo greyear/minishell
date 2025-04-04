@@ -3518,6 +3518,104 @@
    match-leak-kinds: reachable
    fun:malloc
    fun:xmalloc
+   fun:_rl_init_locale
+   fun:_rl_reset_locale
+   fun:rl_initialize
+   fun:readline
+   fun:run_minishell
+   fun:main
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:xrealloc
+   obj:/usr/lib/x86_64-linux-gnu/libreadline.so.8.2
+   fun:rl_expand_prompt
+   fun:rl_set_prompt
+   fun:readline
+   fun:run_minishell
+   fun:main
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib/x86_64-linux-gnu/libtinfo.so.6.4
+   fun:_nc_tiparm
+   fun:tgoto
+   obj:/usr/lib/x86_64-linux-gnu/libreadline.so.8.2
+   fun:rl_redisplay
+   fun:_rl_internal_char_cleanup
+   fun:readline_internal_char
+   fun:readline
+   fun:run_minishell
+   fun:main
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:_nc_doalloc
+   fun:_nc_tiparm
+   fun:tgoto
+   obj:/usr/lib/x86_64-linux-gnu/libreadline.so.8.2
+   fun:rl_redisplay
+   fun:_rl_internal_char_cleanup
+   fun:readline_internal_char
+   fun:readline
+   fun:run_minishell
+   fun:main
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:tsearch
+   obj:/usr/lib/x86_64-linux-gnu/libtinfo.so.6.4
+   fun:_nc_tiparm
+   fun:tgoto
+   obj:/usr/lib/x86_64-linux-gnu/libreadline.so.8.2
+   fun:rl_redisplay
+   fun:_rl_internal_char_cleanup
+   fun:readline_internal_char
+   fun:readline
+   fun:run_minishell
+   fun:main
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   obj:/usr/lib/x86_64-linux-gnu/libtinfo.so.6.4
+   fun:_nc_tiparm
+   fun:tgoto
+   obj:/usr/lib/x86_64-linux-gnu/libreadline.so.8.2
+   fun:rl_redisplay
+   fun:_rl_internal_char_cleanup
+   fun:readline_internal_char
+   fun:readline
+   fun:run_minishell
+   fun:main
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:xmalloc
    fun:rl_make_bare_keymap
    fun:rl_generic_bind
    fun:rl_bind_keyseq_if_unbound_in_map

@@ -58,25 +58,32 @@ static void	wait_for_children(pid_t last_pid, t_ms *ms, t_pipe *p)
 }
 
 /**
- * @brief Executes a command in a child process.
+ * @brief Executes a child process in a pipeline.
  * 
- * This function is called within a forked process. It sets up pipes, 
- * redirects input/output as needed, and executes either a built-in or 
- * an external command.
+ * Handles command execution within a pipeline by setting up pipes,  
+ * managing redirections, and closing unnecessary file descriptors.  
+ * If the command is missing, it cleans up and exits. If it's a builtin,  
+ * it executes and exits with the appropriate status. Otherwise, it  
+ * executes the command as an external program.  
  * 
- * @param cur The current command to be executed.
- * @param p A pointer to the pipe structure managing process execution.
- * @param cmds A pointer to the first command in the linked list.
+ * @param cur The current command in the pipeline.  
+ * @param p The pipeline structure containing pipe info and shell state.  
+ * @param cmds The list of commands in the pipeline.  
  * 
- * @return None. The function terminates the child process with an 
- *         appropriate exit status.
+ * @return This function does not return; it either executes or exits with:  
+ *         - `0` if no command is provided.  
+ *         - `SYSTEM_ERR` if a system-related error occurs.  
+ *         - The exit status of the executed builtin.  
+ *         - The exit status of the external command execution.  
  */
 static void	child_process(t_cmd *cur, t_pipe *p, t_cmd *cmds)
 {
+	int	exit_num;
 	if (!cur->args || !cur->args[0])
 	{
 		close_every_cmds_fds(cmds);
 		close_pipe_fds(p);
+		clean_in_child(p->ms);
 		exit(0);
 	}
 	setup_pipes(p->fd, p->cmd_num, p->num_cmds, p->cur_fd);
@@ -84,12 +91,17 @@ static void	child_process(t_cmd *cur, t_pipe *p, t_cmd *cmds)
 	redirect_process(cur->infile, cur->outfile, p->ms);
 	close_every_cmds_fds(cmds);
 	if (p->ms->exit_status == SYSTEM_ERR)
+	{
+		clean_in_child(p->ms);
 		exit(SYSTEM_ERR);
+	}
 	signal_mode(DEFAULT);
 	if (is_builtin(cur))
 	{
 		handle_builtin(cur, p->ms, 1);
-		exit(p->ms->exit_status);
+		exit_num = p->ms->exit_status;
+		clean_in_child(p->ms);
+		exit(exit_num);
 	}
 	else
 		execute_command(p->ms->envp, cur->args, p->ms);
