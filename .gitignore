@@ -25,7 +25,6 @@ tmp_err_bash*
 tmp_err_minishell*
 fuzzing/
 seeds/
-.mailmap
 commit_history.txt
 
 
