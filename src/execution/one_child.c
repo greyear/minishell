@@ -13,33 +13,39 @@
 #include "../../include/minishell.h"
 
 /**
- * @brief Executes a command within a child process.
+ * @brief Executes a child process for a command.
  * 
- * This function handles input/output redirection and determines whether the 
- * command is a built-in or an external program. If the command is a built-in, 
- * it is executed, and the child process exits with the appropriate status. 
- * Otherwise, the function sets the signal mode and executes an external 
- * command using `execve()`.
+ * Handles redirections, closes unnecessary file descriptors, and checks  
+ * for system errors. If the command is a builtin, it executes and exits  
+ * with the appropriate status. Otherwise, it proceeds to execute it  
+ * as an external command.  
  * 
- * @param cmd A pointer to the `t_cmd` structure containing command details, 
- *            such as arguments and input/output files.
- * @param ms A pointer to the `t_ms` structure, which holds shell-related data, 
- *           including environment variables and exit status.
+ * @param cmd The command structure containing arguments and file descriptors.  
+ * @param ms The minishell struct for cleanup and error handling.  
  * 
- * @return None. The function either executes the command or exits the child 
- *         process.
+ * @return This function does not return; it either executes or exits with:  
+ *         - `SYSTEM_ERR` if a system-related error occurs.  
+ *         - The exit status of the executed builtin.  
+ *         - The exit status of the external command execution.  
  */
 void	execute_child(t_cmd *cmd, t_ms *ms)
 {
+	int		exit_num;
+
 	redirect_process(cmd->infile, cmd->outfile, ms);
 	close_every_cmds_fds(cmd);
 	if (ms->exit_status == SYSTEM_ERR)
+	{
+		clean_in_child(ms);
 		exit(SYSTEM_ERR);
+	}
 	signal_mode(DEFAULT);
 	if (is_builtin(cmd))
 	{
 		handle_builtin(cmd, ms, 1);
-		exit(ms->exit_status);
+		exit_num = ms->exit_status;
+		clean_in_child(ms);
+		exit(exit_num);
 	}
 	else
 		execute_command(ms->envp, cmd->args, ms);
