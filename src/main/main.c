@@ -143,9 +143,21 @@ static void	run_minishell(t_ms *ms)
 		if (ms->exit_status == MALLOC_ERR
 			|| ms->exit_status == SYSTEM_ERR)
 			break ;
-		signal_mode(INTERACTIVE);
+		// FOR USUAL EXECUTION
+		/*signal_mode(INTERACTIVE);
 		input = readline("minishell> ");
-		signal_mode(IGNORE);
+		signal_mode(IGNORE);*/
+		//FOR TESTER
+		if (isatty(fileno(stdin)))
+			input = readline("minishell> ");
+		else
+		{
+			char	*line = get_next_line(fileno(stdin));
+			if (!line)
+				break ;
+			input = ft_strtrim(line, "\n");
+			free(line);
+		}
 		if (!input)
 		{
 			ft_putstr_fd("exit\n", STDOUT_FILENO);
