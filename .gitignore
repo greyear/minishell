@@ -14,7 +14,6 @@ obj
 docs
 html
 latex
-
 infile
 outfile
 file*.txt
@@ -26,4 +25,4 @@ tmp_err_bash*
 tmp_err_minishell*
 fuzzing/
 seeds/
-
+.mailmap

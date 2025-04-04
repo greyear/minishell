@@ -98,24 +98,18 @@ void	clean_struct(t_ms *ms)
 }
 
 /**
- * @brief Resets the heredoc files and count for the current execution state.
+ * @brief Cleans up allocated resources in a child process.
  * 
- * This function allocates memory for the `heredoc_files` array, setting it 
- * to hold 100 pointers to strings, and initializes the array to zero using 
- * `ft_memset`. It also resets the `heredoc_count` to 0, indicating no heredocs 
- * are currently being tracked. This is useful for clearing the heredoc state 
- * before starting a new execution cycle.
+ * Frees memory used for command history, command structures, and the  
+ * minishell state before exiting the child process.  
  * 
- * @param ms A pointer to the `t_ms` structure that holds the global execution 
- * state, including the heredoc files and count.
- * 
- * @return This function does not return; it modifies the `ms` structure to 
- * reset the heredoc state.
+ * @param ms The minishell struct containing allocated resources.  
  */
-void	reset_heredocs(t_ms *ms)
+void	clean_in_child(t_ms *ms)
 {
-	ms->heredoc_count = 0;
-	ms->heredoc_files = NULL;
+	clean_ms_history(ms);
+	clean_cmd_list(&(ms->cmds));
+	clean_struct(ms);
 }
 
 /**
@@ -132,7 +126,8 @@ void	clean_struct_partially(t_ms *ms)
 {
 	if (ms->heredoc_files)
 		cleanup_heredocs(ms->heredoc_files, ms);
-	reset_heredocs(ms);
+	ms->heredoc_count = 0;
+	ms->heredoc_files = NULL;
 	clean_token_list(&(ms->tokens));
 	clean_block_list(&(ms->blocks));
 	clean_cmd_list(&(ms->cmds));
