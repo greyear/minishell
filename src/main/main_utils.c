@@ -63,6 +63,7 @@ static void	malloc_heredocs(t_ms *ms, t_token *token)
 	{
 		ft_putstr_fd(OWN_ERR_MSG, STDERR_FILENO);
 		ft_putstr_fd(HEREDOC_ERR, STDERR_FILENO);
+		clean_ms_history(ms);
 		clean_struct(ms);
 		exit(2);
 	}
@@ -70,6 +71,7 @@ static void	malloc_heredocs(t_ms *ms, t_token *token)
 	if (!ms->heredoc_files)
 	{
 		print_malloc_set_status(ms);
+		clean_ms_history(ms);
 		clean_struct(ms);
 		exit(1);
 	}
