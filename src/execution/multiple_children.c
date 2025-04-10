@@ -98,7 +98,7 @@ static void	child_process(t_cmd *cur, t_pipe *p, t_cmd *cmds)
 	signal_mode(DEFAULT);
 	if (is_builtin(cur))
 	{
-		handle_builtin(cur, p->ms, 1);
+		handle_builtin(cur, p->ms);
 		exit_num = p->ms->exit_status;
 		clean_in_child(p->ms);
 		exit(exit_num);
