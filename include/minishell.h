@@ -118,7 +118,7 @@ int				has_multiple_words(const char *str);
 
 //Execution
 int				is_builtin(t_cmd *cmd);
-void			handle_builtin(t_cmd *cmd, t_ms *ms, int in_child);
+void			handle_builtin(t_cmd *cmd, t_ms *ms);
 int				if_children_needed(t_cmd *cmd);
 void			make_one_child(t_cmd *cmd, t_ms *ms);
 void			execute_command(char **envp, char **cmd, t_ms *ms);
