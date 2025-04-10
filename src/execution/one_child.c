@@ -42,7 +42,7 @@ void	execute_child(t_cmd *cmd, t_ms *ms)
 	signal_mode(DEFAULT);
 	if (is_builtin(cmd))
 	{
-		handle_builtin(cmd, ms, 1);
+		handle_builtin(cmd, ms);
 		exit_num = ms->exit_status;
 		clean_in_child(ms);
 		exit(exit_num);
