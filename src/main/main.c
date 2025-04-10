@@ -44,7 +44,7 @@ static void	execute_commands(t_ms *ms)
 		i++;
 	}
 	if (is_builtin(ms->cmds) && if_children_needed(ms->cmds) == false && i == 1)
-		handle_builtin(ms->cmds, ms, 0);
+		handle_builtin(ms->cmds, ms);
 	else
 	{
 		if (i == 1)
