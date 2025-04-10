@@ -84,6 +84,7 @@ static void	child_process(t_cmd *cur, t_pipe *p, t_cmd *cmds)
 		close_every_cmds_fds(cmds);
 		close_pipe_fds(p);
 		clean_in_child(p->ms);
+		free_pids(p);
 		exit(0);
 	}
 	setup_pipes(p->fd, p->cmd_num, p->num_cmds, p->cur_fd);
@@ -93,6 +94,7 @@ static void	child_process(t_cmd *cur, t_pipe *p, t_cmd *cmds)
 	if (p->ms->exit_status == SYSTEM_ERR)
 	{
 		clean_in_child(p->ms);
+		free_pids(p);
 		exit(SYSTEM_ERR);
 	}
 	signal_mode(DEFAULT);
@@ -101,6 +103,7 @@ static void	child_process(t_cmd *cur, t_pipe *p, t_cmd *cmds)
 		handle_builtin(cur, p->ms);
 		exit_num = p->ms->exit_status;
 		clean_in_child(p->ms);
+		free_pids(p);
 		exit(exit_num);
 	}
 	else
