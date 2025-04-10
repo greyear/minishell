@@ -50,12 +50,8 @@ int	is_builtin(t_cmd *cmd)
  *            should hold the arguments.
  * @param ms A pointer to a `t_ms` structure representing the shell state.
  *           This is used to manage environment variables and execution context.
- * @param in_child An integer flag indicating whether the command is executed
- *                 in a child process (`1`) or in a parent process (`0`).
- *                 Some commands (`export` and `unset`) behave differently based
- *                 on this flag.
  */
-void	handle_builtin(t_cmd *cmd, t_ms *ms, int in_child)
+void	handle_builtin(t_cmd *cmd, t_ms *ms)
 {
 	if (ft_strcmp(cmd->name, "echo") == 0)
 		handle_echo(cmd->args, ms);
@@ -64,17 +60,9 @@ void	handle_builtin(t_cmd *cmd, t_ms *ms, int in_child)
 	else if (ft_strcmp(cmd->name, "pwd") == 0)
 		check_pwd(ms);
 	else if (ft_strcmp(cmd->name, "export") == 0)
-	{
-		if (in_child && cmd->args[1])
-			handle_export(cmd->args, NULL);
-		else
-			handle_export(cmd->args, ms);
-	}
+		handle_export(cmd->args, ms);
 	else if (ft_strcmp(cmd->name, "unset") == 0)
-	{
-		if (!in_child)
-			handle_unset(cmd->args, ms);
-	}
+		handle_unset(cmd->args, ms);
 	else if (ft_strcmp(cmd->name, "env") == 0)
 		handle_env(cmd->args, ms);
 	else if (ft_strcmp(cmd->name, "exit") == 0)
